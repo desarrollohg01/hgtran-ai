@@ -25,18 +25,37 @@ red()   { printf '\033[31m%s\033[0m\n' "$1"; }
 dim()   { printf '\033[2m%s\033[0m\n' "$1"; }
 
 # --- occurrence census, by risk class (see exploration.md §1.1) -------------
+#
+# The census uses `git grep`, not `rg`, on purpose. What is being renamed is
+# versioned repository content, and git is the authoritative view of that.
+# ripgrep applies its own text/binary heuristics and reported 10 fewer files
+# than git on identical content — a constant offset, but one that invites
+# doubt about whether a number moved because of a change or because of a
+# filter. git grep removes the ambiguity: if git does not track it, it is not
+# part of the rename.
+#
+# The harness itself and the baseline file are excluded — they legitimately
+# contain the old strings as search patterns and as recorded history.
+SELF=':!scripts/rename-harness.sh :!.rename-baseline.txt'
 
-count() { rg -c "$1" --glob '!.git' --glob '!.rename-baseline.txt' --glob "!scripts/rename-harness.sh" "${@:2}" 2>/dev/null | awk -F: '{s+=$NF} END {print s+0}'; }
+count() { # <basic-regex> [pathspec...]
+  # shellcheck disable=SC2086
+  git grep -I -c -e "$1" -- "${@:2}" $SELF 2>/dev/null | awk -F: '{s+=$NF} END {print s+0}'
+}
+countfiles() {
+  # shellcheck disable=SC2086
+  git grep -I -l -e "$1" -- "${@:2}" $SELF 2>/dev/null | wc -l | tr -d ' '
+}
 
 census() {
   echo "I1_binary=$(count '\bgentle-ai\b')"
-  echo "I2_module=$(count 'gentleman-programming/gentle-ai' --glob '*.go')"
+  echo "I2_module=$(count 'gentleman-programming/gentle-ai' '*.go')"
   echo "I3_gga=$(count '\bgga\b')"
   echo "I4_urls=$(count 'github.com/Gentleman-Programming')"
   echo "I5_brand=$(count 'Gentle AI')"
-  echo "I6_golden=$(rg -il 'gentleman|gentle-ai' --glob '*.golden' 2>/dev/null | wc -l | tr -d ' ')"
-  echo "TOTAL=$(count -i 'gentleman|gentle-ai')"
-  echo "FILES=$(rg -il 'gentleman|gentle-ai' --glob '!.git' 2>/dev/null | wc -l | tr -d ' ')"
+  echo "I6_golden=$(countfiles '\(gentleman\|gentle-ai\)' '*.golden')"
+  echo "TOTAL=$(count '\(gentleman\|gentle-ai\|Gentleman\|Gentle AI\)')"
+  echo "FILES=$(countfiles '\(gentleman\|gentle-ai\|Gentleman\|Gentle AI\)')"
 }
 
 # --- functional state -------------------------------------------------------
@@ -44,8 +63,36 @@ census() {
 # Packages whose tests pass right now. Comparing this set before/after is what
 # catches "the rename silently broke a package" — a raw pass/fail count would
 # hide a package that stopped being compiled at all.
+#
+# e2e/organicruntime is excluded by default: it exceeds the per-package timeout
+# and is killed at 11m, so including it costs eleven minutes per run to learn
+# nothing. It already fails on the baseline, so it can never be a regression
+# signal. Set RENAME_HARNESS_FULL=1 to include it before the final slice.
+EXCLUDE_PKG="${RENAME_HARNESS_EXCLUDE:-e2e/organicruntime}"
+
+packages() {
+  if [[ -n "$EXCLUDE_PKG" && "${RENAME_HARNESS_FULL:-0}" != "1" ]]; then
+    go list ./... 2>/dev/null | rg -v "$EXCLUDE_PKG"
+  else
+    go list ./... 2>/dev/null
+  fi
+}
+
+# Package identity is recorded WITHOUT the module prefix.
+#
+# This matters: renaming the module changes the import path of every package in
+# it. Comparing full paths across that rename reports the entire repository as
+# "lost" — which is what the first run of this harness did. The part that must
+# stay stable is the path *within* the module, so that is what gets compared.
+strip_module() {
+  local mod
+  mod="$(go list -m 2>/dev/null)"
+  if [[ -n "$mod" ]]; then sed "s|^${mod}/||; s|^${mod}$|.|"; else cat; fi
+}
+
 passing_packages() {
-  go test ./... 2>/dev/null | awk '/^ok /{print $2}' | sort
+  # shellcheck disable=SC2046
+  go test $(packages) 2>/dev/null | awk '/^ok /{print $2}' | strip_module | sort
 }
 
 build_state() {
