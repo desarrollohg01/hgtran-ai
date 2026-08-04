@@ -4,11 +4,11 @@ import (
 	"errors"
 	"testing"
 
-	tea "github.com/charmbracelet/bubbletea"
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/backup"
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/tui/screens"
+	tea "github.com/charmbracelet/bubbletea"
 )
 
 func TestRunningScreensRejectInputAndExposeNoOptions(t *testing.T) {

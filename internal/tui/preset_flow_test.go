@@ -6,10 +6,10 @@ import (
 	"path/filepath"
 	"testing"
 
-	tea "github.com/charmbracelet/bubbletea"
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/tui/screens"
+	tea "github.com/charmbracelet/bubbletea"
 )
 
 var updateTUIGoldens = flag.Bool("update", false, "update TUI golden files")

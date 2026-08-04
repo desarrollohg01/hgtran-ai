@@ -7,11 +7,11 @@ import (
 	"strings"
 	"testing"
 
-	tea "github.com/charmbracelet/bubbletea"
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/cli"
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/planner"
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/tui"
+	tea "github.com/charmbracelet/bubbletea"
 )
 
 func TestInstallDefaultsMatchTUIModelDefaults(t *testing.T) {

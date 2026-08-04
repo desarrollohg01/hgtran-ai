@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/charmbracelet/lipgloss"
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/tui/styles"
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/update"
+	"github.com/charmbracelet/lipgloss"
 	"github.com/rivo/uniseg"
 )
 

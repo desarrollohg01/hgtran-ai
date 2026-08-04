@@ -4,11 +4,11 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/charmbracelet/bubbles/textarea"
-	tea "github.com/charmbracelet/bubbletea"
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agentbuilder"
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
+	"github.com/charmbracelet/bubbles/textarea"
+	tea "github.com/charmbracelet/bubbletea"
 )
 
 // ─── Helper: set up a model on the agent builder engine screen ───────────────

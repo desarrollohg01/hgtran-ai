@@ -15,8 +15,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/charmbracelet/bubbles/textarea"
-	tea "github.com/charmbracelet/bubbletea"
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agentbuilder"
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/backup"
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/catalog"
@@ -33,6 +31,8 @@ import (
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/tui/screens"
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/update"
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/update/upgrade"
+	"github.com/charmbracelet/bubbles/textarea"
+	tea "github.com/charmbracelet/bubbletea"
 )
 
 // tuiNowFn returns the current time for the update-check cooldown gate.
