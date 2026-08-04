@@ -54,6 +54,12 @@ census() {
   echo "I4_urls=$(count 'github.com/Gentleman-Programming')"
   echo "I5_brand=$(count 'Gentle AI')"
   echo "I6_golden=$(countfiles '\(gentleman\|gentle-ai\)' '*.golden')"
+  # The user state root, tracked apart from the binary name because it is the
+  # one class where getting it wrong orphans data instead of breaking a build.
+  # The quoted form excludes the three filename prefixes that merely start with
+  # the old name (.gentle-ai-*.tmp, .gentle-ai-default-agent.json, and the
+  # OpenCode uninstall marker) — those are brand, not the state root.
+  echo "I7_stateroot=$(count '"\.gentle-ai"')"
   echo "TOTAL=$(count '\(gentleman\|gentle-ai\|Gentleman\|Gentle AI\)')"
   echo "FILES=$(countfiles '\(gentleman\|gentle-ai\|Gentleman\|Gentle AI\)')"
 }
@@ -98,6 +104,12 @@ passing_packages() {
 build_state() {
   if go build ./... >/dev/null 2>&1; then echo "BUILD=ok"; else echo "BUILD=fail"; fi
   if go vet ./... >/dev/null 2>&1; then echo "VET=ok"; else echo "VET=fail"; fi
+  # The format gate belongs here and was missing from the first version of this
+  # harness. The module rename reordered import blocks — bitbucket.org sorts
+  # before github.com — and gofmt requires imports sorted within their group.
+  # Build and vet were both happy; ci.yml:34 would not have been. A verification
+  # harness that omits a gate CI enforces is a harness that lies by omission.
+  if go run ./internal/gofmtcheck >/dev/null 2>&1; then echo "FMT=ok"; else echo "FMT=fail"; fi
 }
 
 # --- modes ------------------------------------------------------------------
@@ -122,13 +134,13 @@ if [[ ! -f "$BASELINE" ]]; then
 fi
 
 fails=0
-echo "== Build and vet =="
+echo "== Build, vet and format =="
 now_build="$(build_state)"
-base_build="$(rg '^(BUILD|VET)=' "$BASELINE")"
+base_build="$(rg '^(BUILD|VET|FMT)=' "$BASELINE")"
 if [[ "$now_build" == "$base_build" ]]; then
-  green "  build/vet unchanged from baseline"
+  green "  build/vet/fmt unchanged from baseline"
 else
-  red "  build/vet regressed"
+  red "  build/vet/fmt regressed"
   printf '    baseline: %s\n    now:      %s\n' "$(echo "$base_build" | tr '\n' ' ')" "$(echo "$now_build" | tr '\n' ' ')"
   fails=$((fails + 1))
 fi
