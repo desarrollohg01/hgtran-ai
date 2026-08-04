@@ -13,8 +13,8 @@ import (
 	"runtime/debug"
 	"strings"
 
-	"github.com/gentleman-programming/gentle-ai/v2/internal/model"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/reviewtransaction"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/reviewtransaction"
 )
 
 const ReviewIntegrationContractV1 = "gentle-ai.review-integration/v1"

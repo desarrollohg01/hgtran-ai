@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/gentleman-programming/gentle-ai/v2/internal/components/skills"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/model"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/tui/styles"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/skills"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/tui/styles"
 )
 
 // skillLabels maps each SkillID to a human-readable display label.

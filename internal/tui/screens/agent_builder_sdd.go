@@ -3,7 +3,7 @@ package screens
 import (
 	"strings"
 
-	"github.com/gentleman-programming/gentle-ai/v2/internal/tui/styles"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/tui/styles"
 )
 
 // ABSDDOptions returns the display labels for SDD integration modes.

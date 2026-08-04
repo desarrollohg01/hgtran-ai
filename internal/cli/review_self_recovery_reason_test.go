@@ -3,7 +3,7 @@ package cli
 import (
 	"testing"
 
-	"github.com/gentleman-programming/gentle-ai/v2/internal/reviewtransaction"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/reviewtransaction"
 )
 
 // allReviewSelfRecoveryShapes is the closed enumeration this test walks. A

@@ -8,8 +8,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/gentleman-programming/gentle-ai/v2/internal/components/filemerge"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/components/mutationjournal"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/filemerge"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/mutationjournal"
 )
 
 const (

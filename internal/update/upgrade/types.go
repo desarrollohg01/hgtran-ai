@@ -3,7 +3,7 @@ package upgrade
 import (
 	"errors"
 
-	"github.com/gentleman-programming/gentle-ai/v2/internal/update"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/update"
 )
 
 // ToolUpgradeStatus describes the outcome of a single tool upgrade attempt.

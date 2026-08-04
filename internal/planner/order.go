@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"slices"
 
-	"github.com/gentleman-programming/gentle-ai/v2/internal/model"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
 )
 
 var ErrDependencyCycle = errors.New("dependency cycle detected")

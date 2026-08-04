@@ -10,10 +10,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/gentleman-programming/gentle-ai/v2/internal/state"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/system"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/update"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/update/upgrade"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/state"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/update"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/update/upgrade"
 )
 
 // stubProfile returns a minimal PlatformProfile for testing.

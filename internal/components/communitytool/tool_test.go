@@ -12,10 +12,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/gentleman-programming/gentle-ai/v2/internal/agents"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/agents/claude"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/agents/opencode"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/model"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/claude"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/opencode"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
 )
 
 func TestMain(m *testing.M) {

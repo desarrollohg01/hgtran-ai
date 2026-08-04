@@ -8,7 +8,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/gentleman-programming/gentle-ai/v2/internal/components/filemerge"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/filemerge"
 )
 
 type jsonPath []string

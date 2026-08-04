@@ -3,7 +3,7 @@ package agentbuilder
 import (
 	"time"
 
-	"github.com/gentleman-programming/gentle-ai/v2/internal/model"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
 )
 
 // SDDIntegrationMode defines how a generated agent integrates with SDD phases.

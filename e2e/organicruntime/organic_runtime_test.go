@@ -28,7 +28,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/gentleman-programming/gentle-ai/v2/internal/versions"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/versions"
 )
 
 const (

@@ -7,10 +7,10 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/gentleman-programming/gentle-ai/v2/internal/agents"
-	piagent "github.com/gentleman-programming/gentle-ai/v2/internal/agents/pi"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/catalog"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/model"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents"
+	piagent "bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/pi"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/catalog"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
 )
 
 type Availability string

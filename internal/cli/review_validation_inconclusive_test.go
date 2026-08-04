@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/gentleman-programming/gentle-ai/v2/internal/reviewtransaction"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/reviewtransaction"
 )
 
 // A scoped-fix validator that could not inspect the immutable corrected

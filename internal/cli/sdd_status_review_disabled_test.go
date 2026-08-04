@@ -11,8 +11,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/gentleman-programming/gentle-ai/v2/internal/reviewtransaction"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/sddstatus"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/reviewtransaction"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/sddstatus"
 )
 
 // The kill switch reaches SDD status through this layer, which owns the single

@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/gentleman-programming/gentle-ai/v2/internal/reviewtransaction"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/reviewtransaction"
 )
 
 // TestReviewStartSelectsCanonicalFourRForSubprocessWrapper is the issue #1438

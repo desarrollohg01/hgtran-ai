@@ -1,7 +1,7 @@
 package screens
 
 import (
-	"github.com/gentleman-programming/gentle-ai/v2/internal/tui/styles"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/tui/styles"
 )
 
 func renderOptions(options []string, cursor int) string {

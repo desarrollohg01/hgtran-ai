@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/gentleman-programming/gentle-ai/v2/internal/storage"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/storage"
 )
 
 func TestAvailableBytes_TempDir(t *testing.T) {

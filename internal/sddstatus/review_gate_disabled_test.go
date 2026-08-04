@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/gentleman-programming/gentle-ai/v2/internal/reviewtransaction"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/reviewtransaction"
 )
 
 // The maintainer's rule for this file is the same one RuntimeStore.ReviewDisabled

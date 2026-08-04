@@ -12,12 +12,12 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/gentleman-programming/gentle-ai/v2/internal/backup"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/components/gga"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/model"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/state"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/system"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/update"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/backup"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/gga"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/state"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/update"
 )
 
 // --- helpers ---

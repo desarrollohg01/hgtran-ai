@@ -4,8 +4,8 @@ import (
 	"strings"
 	"testing"
 
-	componentuninstall "github.com/gentleman-programming/gentle-ai/v2/internal/components/uninstall"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/model"
+	componentuninstall "bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/uninstall"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
 )
 
 func TestRenderUninstallResultIncludesManualCleanup(t *testing.T) {

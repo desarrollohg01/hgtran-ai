@@ -6,8 +6,8 @@ import (
 	"time"
 
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/backup"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/system"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/backup"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
 )
 
 func makeTestBackup(id string, t time.Time, source backup.BackupSource) backup.Manifest {

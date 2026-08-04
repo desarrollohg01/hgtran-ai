@@ -12,9 +12,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gentleman-programming/gentle-ai/v2/internal/doctor"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/state"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/storage"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/doctor"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/state"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/storage"
 )
 
 type CheckStatus = doctor.Status

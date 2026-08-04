@@ -3,7 +3,7 @@ package cli
 import (
 	"context"
 
-	"github.com/gentleman-programming/gentle-ai/v2/internal/reviewtransaction"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/reviewtransaction"
 )
 
 // The kill switch freezes review authority read-only; it never destroys it.

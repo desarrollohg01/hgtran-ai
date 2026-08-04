@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/gentleman-programming/gentle-ai/v2/internal/verify"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/verify"
 )
 
 // TestWithFailedSyncVerificationNoteNamesSyncCommand closes finding 1 of the

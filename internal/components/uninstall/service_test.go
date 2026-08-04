@@ -10,13 +10,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/gentleman-programming/gentle-ai/v2/internal/agents"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/agents/claude"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/agents/codex"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/backup"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/components/communitytool"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/components/engram"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/model"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/claude"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/codex"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/backup"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/communitytool"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/engram"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
 )
 
 type stubSnapshotter struct{}

@@ -11,17 +11,17 @@ import (
 	"testing"
 	"time"
 
-	"github.com/gentleman-programming/gentle-ai/v2/internal/agents"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/agents/claude"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/agents/hermes"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/agents/kilocode"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/agents/kimi"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/agents/openclaw"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/agents/opencode"
-	windsurfagent "github.com/gentleman-programming/gentle-ai/v2/internal/agents/windsurf"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/assets"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/model"
-	opencodemodel "github.com/gentleman-programming/gentle-ai/v2/internal/opencode"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/claude"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/hermes"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/kilocode"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/kimi"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/openclaw"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/opencode"
+	windsurfagent "bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/windsurf"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/assets"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
+	opencodemodel "bitbucket.org/hgt_development/hgtran-ai/v2/internal/opencode"
 	// agents/cursor, agents/gemini, agents/vscode used via agents.NewAdapter()
 )
 

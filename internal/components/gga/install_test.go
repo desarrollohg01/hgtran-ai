@@ -10,8 +10,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/gentleman-programming/gentle-ai/v2/internal/system"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/versions"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/versions"
 )
 
 // resolveGitBashForTest derives the Git Bash path the same way the installcmd

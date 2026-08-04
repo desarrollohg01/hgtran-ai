@@ -7,9 +7,9 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/gentleman-programming/gentle-ai/v2/internal/assets"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/components/filemerge"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/model"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/assets"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/filemerge"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
 )
 
 // ggaConfigDir returns the platform-appropriate directory that GGA reads its

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/gentleman-programming/gentle-ai/v2/internal/reviewtransaction"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/reviewtransaction"
 )
 
 // ReviewFacadeFinalizeNewLineageResult is finalize's v3 activation-branch

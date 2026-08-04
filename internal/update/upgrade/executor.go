@@ -3,9 +3,9 @@
 // isolated from install, pipeline, planner, and config-sync code paths.
 //
 // Import boundary: this package MUST NOT import:
-//   - github.com/gentleman-programming/gentle-ai/v2/internal/pipeline
-//   - github.com/gentleman-programming/gentle-ai/v2/internal/planner
-//   - github.com/gentleman-programming/gentle-ai/v2/internal/cli
+//   - bitbucket.org/hgt_development/hgtran-ai/v2/internal/pipeline
+//   - bitbucket.org/hgt_development/hgtran-ai/v2/internal/planner
+//   - bitbucket.org/hgt_development/hgtran-ai/v2/internal/cli
 package upgrade
 
 import (
@@ -20,17 +20,17 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gentleman-programming/gentle-ai/v2/internal/agents"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/agents/claude"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/assets"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/backup"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/components/gga"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/components/sdd"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/components/skills"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/model"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/state"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/system"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/update"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/claude"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/assets"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/backup"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/gga"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/sdd"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/skills"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/state"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/update"
 )
 
 // Package-level vars for testability — same pattern as internal/update/detect.go.

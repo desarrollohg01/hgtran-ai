@@ -174,7 +174,7 @@ func TestGoReleaserSignsBoundManifestAndInjectsTrustAnchors(t *testing.T) {
 		`- "${artifact}"`,
 		`- "${signature}"`,
 		`repo=Gentleman-Programming/gentle-ai;tag={{ .Tag }}`,
-		`github.com/gentleman-programming/gentle-ai/v2/internal/update/upgrade.releaseMinisignPublicKeys={{ .Env.MINISIGN_PUBLIC_KEYS_CANONICAL }}`,
+		`bitbucket.org/hgt_development/hgtran-ai/v2/internal/update/upgrade.releaseMinisignPublicKeys={{ .Env.MINISIGN_PUBLIC_KEYS_CANONICAL }}`,
 		"-trimpath",
 	} {
 		if !strings.Contains(config, required) {
@@ -414,7 +414,7 @@ cat "$FAKE_GH_RESPONSE"
 func TestCanonicalReleasePublicKeysControlRealLinkerBuild(t *testing.T) {
 	repoRoot := filepath.Clean(filepath.Join("..", ".."))
 	publicKey := strings.TrimSpace(readRepositoryFile(t, "internal", "update", "upgrade", "testdata", "minisign-test.pub"))
-	const linkerTarget = "github.com/gentleman-programming/gentle-ai/v2/internal/update/upgrade.releaseMinisignPublicKeys"
+	const linkerTarget = "bitbucket.org/hgt_development/hgtran-ai/v2/internal/update/upgrade.releaseMinisignPublicKeys"
 	const injectedOverride = "AUDIT_OVERRIDE"
 
 	build := func(t *testing.T, raw string) (string, []byte, error) {

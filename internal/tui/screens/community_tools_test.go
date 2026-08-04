@@ -4,8 +4,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/gentleman-programming/gentle-ai/v2/internal/components/communitytool"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/model"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/communitytool"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
 )
 
 func TestRenderCommunityToolsShowsCodeGraph(t *testing.T) {

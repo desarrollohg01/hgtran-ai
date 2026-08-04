@@ -8,16 +8,16 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/gentleman-programming/gentle-ai/v2/internal/agents"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/agents/antigravity"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/agents/claude"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/agents/hermes"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/agents/kilocode"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/agents/kimi"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/agents/openclaw"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/agents/opencode"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/assets"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/model"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/antigravity"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/claude"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/hermes"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/kilocode"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/kimi"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/openclaw"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/opencode"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/assets"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
 )
 
 func antigravityAdapter() agents.Adapter { return antigravity.NewAdapter() }

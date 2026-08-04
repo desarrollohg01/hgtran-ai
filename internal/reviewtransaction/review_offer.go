@@ -11,7 +11,7 @@ import (
 	"io/fs"
 	"os"
 
-	"github.com/gentleman-programming/gentle-ai/v2/internal/state"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/state"
 )
 
 // OfferRequest names the one candidate an offer decision would be made for.

@@ -5,7 +5,7 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/gentleman-programming/gentle-ai/v2/internal/reviewtransaction"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/reviewtransaction"
 )
 
 // resolveGoverningAuthority is Amendment C's single shared branch (design
