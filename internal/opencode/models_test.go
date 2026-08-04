@@ -395,12 +395,20 @@ func TestDefaultVariantsCachePath(t *testing.T) {
 	if got == "" {
 		t.Fatal("DefaultVariantsCachePath() returned empty string")
 	}
-	if !strings.HasSuffix(got, filepath.Join(".gentle-ai", "cache", "model-variants.json")) {
-		t.Fatalf("expected path suffix .gentle-ai/cache/model-variants.json, got %q", got)
+	want := filepath.Join(".hgtran-ai", "cache", "model-variants.json")
+	if !strings.HasSuffix(got, want) {
+		t.Fatalf("expected path suffix %s, got %q", want, got)
 	}
-	legacy := filepath.Join(".cache", "gentle-ai")
-	if strings.Contains(got, legacy) {
-		t.Fatalf("path must not contain legacy %s, got %q", legacy, got)
+	// Both prior homes are guarded, oldest first. This cache has moved twice:
+	// .cache/gentle-ai -> .gentle-ai -> .hgtran-ai. Each move left a guard
+	// behind so a regression names the era it fell back to.
+	for _, legacy := range []string{
+		filepath.Join(".cache", "gentle-ai"),
+		".gentle-ai",
+	} {
+		if strings.Contains(got, legacy) {
+			t.Fatalf("path must not contain legacy %s, got %q", legacy, got)
+		}
 	}
 }
 

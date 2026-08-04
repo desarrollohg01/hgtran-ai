@@ -3,15 +3,12 @@ package state
 import (
 	"encoding/json"
 	"os"
-	"path/filepath"
 	"time"
 
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/filemerge"
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/statepath"
 )
-
-const stateDir = ".gentle-ai"
-const stateFile = "state.json"
 
 // ModelAssignmentState is the JSON-serialisable form of a provider+model pair
 // used by OpenCode-style model assignments. It mirrors model.ModelAssignment
@@ -133,7 +130,7 @@ type InstallState struct {
 
 // Path returns the absolute path to the state file for the given home directory.
 func Path(homeDir string) string {
-	return filepath.Join(homeDir, stateDir, stateFile)
+	return statepath.StateFile(homeDir)
 }
 
 // Read reads and unmarshals the state file from the given home directory.
@@ -219,9 +216,9 @@ func MergeAgents(existing InstallState, newAgents []string) InstallState {
 }
 
 // Write persists the full install state to disk under the given home directory.
-// It creates the .gentle-ai directory if it does not already exist.
+// It creates the state root if it does not already exist.
 func Write(homeDir string, s InstallState) error {
-	dir := filepath.Join(homeDir, stateDir)
+	dir := statepath.Root(homeDir)
 	if err := os.MkdirAll(dir, 0o755); err != nil {
 		return err
 	}

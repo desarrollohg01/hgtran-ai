@@ -105,7 +105,7 @@ func TestRunInstallReturnsStatePersistenceFailure(t *testing.T) {
 		t.Fatal(err)
 	}
 	statePath := state.Path(home)
-	target := filepath.Join(home, ".gentle-ai", "persisted-state.json")
+	target := filepath.Join(home, ".hgtran-ai", "persisted-state.json")
 	if err := os.Rename(statePath, target); err != nil {
 		t.Fatal(err)
 	}

@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/backup"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/statepath"
 )
 
 // RestoreFunc is the function signature for restoring a backup from its manifest.
@@ -223,7 +224,7 @@ func listBackupsFromDir(homeDir string) []backup.Manifest {
 
 // backupRootDir returns the path to the backup directory under homeDir.
 func backupRootDir(homeDir string) string {
-	return homeDir + "/.gentle-ai/backups"
+	return statepath.Backups(homeDir)
 }
 
 // defaultRestorer returns the standard backup.RestoreService.Restore function.

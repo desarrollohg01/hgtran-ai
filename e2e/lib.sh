@@ -73,6 +73,9 @@ cleanup_test_env() {
     rm -f "$HOME/.claude.json" 2>/dev/null || true
     rm -rf "$HOME/.codex" 2>/dev/null || true
     rm -rf "$HOME/.gemini" 2>/dev/null || true
+    rm -rf "$HOME/.hgtran-ai" 2>/dev/null || true
+    # The pre-rename root is cleaned too: a leftover from an older binary would
+    # otherwise survive between runs and let a suite pass on inherited state.
     rm -rf "$HOME/.gentle-ai" 2>/dev/null || true
     rm -rf "$HOME/.codeium" 2>/dev/null || true
     rm -rf "$HOME/.cursor" 2>/dev/null || true

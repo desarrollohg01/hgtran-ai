@@ -11,8 +11,6 @@ import (
 	"strings"
 	"testing"
 
-	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/backup"
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/communitytool"
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/opencodeplugin"
@@ -26,6 +24,8 @@ import (
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/tui/screens"
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/update"
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/update/upgrade"
+	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
 )
 
 func TestNavigationWelcomeToDetection(t *testing.T) {
@@ -5473,7 +5473,7 @@ func TestStartUpgradeSync_NoClobberOnCorruptStateFile(t *testing.T) {
 	t.Setenv("USERPROFILE", home)
 
 	// Write a corrupt state file so state.Read returns a non-ErrNotExist error.
-	stateDir := filepath.Join(home, ".gentle-ai")
+	stateDir := filepath.Join(home, ".hgtran-ai")
 	if err := os.MkdirAll(stateDir, 0o755); err != nil {
 		t.Fatalf("MkdirAll: %v", err)
 	}

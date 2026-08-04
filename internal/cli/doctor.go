@@ -14,6 +14,7 @@ import (
 
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/doctor"
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/state"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/statepath"
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/storage"
 )
 
@@ -486,7 +487,7 @@ func checkEngramReachable() CheckResult {
 // checkDiskSpace reports free space on the ~/.gentle-ai filesystem.
 func checkDiskSpace(homeDir string) CheckResult {
 	const id = doctor.CheckDiskSpace
-	dir := filepath.Join(homeDir, ".gentle-ai")
+	dir := statepath.Root(homeDir)
 
 	free, err := availableBytesFn(dir)
 	if err != nil {

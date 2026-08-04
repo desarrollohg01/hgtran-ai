@@ -669,7 +669,9 @@ func nonsenseGlobalMode(sandbox *Sandbox) error {
 	if err := stageProse(sandbox.Repo, "nonsense")(sandbox); err != nil {
 		return err
 	}
-	path := filepath.Join(sandbox.Home, ".gentle-ai", "state.json")
+	// bench is a separate module and cannot import internal/statepath, so the
+	// state root is spelled out here. It must track internal/statepath.DirName.
+	path := filepath.Join(sandbox.Home, ".hgtran-ai", "state.json")
 	record := globalModeRecord{RDDMode: "sometimes", RDDModeRecorded: "2026-01-01T00:00:00Z"}
 	encoded, err := json.MarshalIndent(record, "", "  ")
 	if err != nil {

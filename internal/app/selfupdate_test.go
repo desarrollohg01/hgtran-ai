@@ -723,7 +723,7 @@ func TestSelfUpdate_NoClobberOnCorruptStateFile(t *testing.T) {
 	selfUpdateHomeDirFn = func() (string, error) { return tmpHome, nil }
 
 	// Write a corrupt (non-missing) state file so state.Read returns a non-ErrNotExist error.
-	stateDir := filepath.Join(tmpHome, ".gentle-ai")
+	stateDir := filepath.Join(tmpHome, ".hgtran-ai")
 	if err := os.MkdirAll(stateDir, 0o755); err != nil {
 		t.Fatalf("MkdirAll: %v", err)
 	}

@@ -14,6 +14,7 @@ import (
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/capabilitymanifest"
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/filemerge"
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/statepath"
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
 )
 
@@ -72,7 +73,7 @@ func CodeGraphPaths(homeDir string) CodeGraphPathSet {
 	return CodeGraphPathSet{
 		AgentDir:  agentDir,
 		MCPConfig: filepath.Join(agentDir, piEngramMCPConfigFile),
-		Manifest:  filepath.Join(homeDir, ".gentle-ai", "pi-codegraph.json"),
+		Manifest:  statepath.PiCodeGraphManifest(homeDir),
 	}
 }
 

@@ -29,6 +29,7 @@ import (
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/skills"
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/state"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/statepath"
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/update"
 )
@@ -456,7 +457,7 @@ func ExecuteWithOptions(ctx context.Context, results []update.UpdateResult, prof
 	backupWarning := ""
 	if !dryRun && len(executable) > 0 && !options.SkipBackup {
 		sp := NewSpinner(pw, "Creating pre-upgrade backup")
-		snapshotDir := filepath.Join(homeDir, ".gentle-ai", "backups",
+		snapshotDir := filepath.Join(statepath.Backups(homeDir),
 			fmt.Sprintf("upgrade-%s", time.Now().UTC().Format("20060102T150405Z")))
 		manifest, err := snapshotCreator(snapshotDir, configPathsForBackup(homeDir, options.BackupDiagnostics))
 		if err != nil {
@@ -482,7 +483,7 @@ func ExecuteWithOptions(ctx context.Context, results []update.UpdateResult, prof
 		// snapshot fails due to disk pressure caused by prior accumulated
 		// backups, pruning is the recovery path. Non-fatal: a prune failure
 		// must not prevent the upgrade from completing.
-		backupRoot := filepath.Join(homeDir, ".gentle-ai", "backups")
+		backupRoot := statepath.Backups(homeDir)
 		if _, pruneErr := backup.Prune(backupRoot, backup.DefaultRetentionCount); pruneErr != nil {
 			log.Printf("backup: prune: %v", pruneErr)
 		}

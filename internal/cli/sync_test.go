@@ -1115,7 +1115,7 @@ func TestRunSyncRollbackRestoresClaudeEngramMigrationSource(t *testing.T) {
 			}
 		}
 	}
-	backups, err := os.ReadDir(filepath.Join(home, ".gentle-ai", "backups"))
+	backups, err := os.ReadDir(filepath.Join(home, ".hgtran-ai", "backups"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1786,7 +1786,7 @@ func TestRunSyncReportsLegacySelectionMigrationPersistenceFailure(t *testing.T) 
 		t.Fatal(err)
 	}
 	statePath := state.Path(home)
-	stateTarget := filepath.Join(home, ".gentle-ai", "persisted-state.json")
+	stateTarget := filepath.Join(home, ".hgtran-ai", "persisted-state.json")
 	if err := os.Rename(statePath, stateTarget); err != nil {
 		t.Fatal(err)
 	}
@@ -1819,7 +1819,7 @@ func TestRunSyncReportsLegacySelectionMigrationPersistenceFailure(t *testing.T) 
 
 func writeManagedPiCodeGraphManifest(t *testing.T, home string) {
 	t.Helper()
-	manifestPath := filepath.Join(home, ".gentle-ai", "pi-codegraph.json")
+	manifestPath := filepath.Join(home, ".hgtran-ai", "pi-codegraph.json")
 	mcpPath := filepath.Join(home, ".pi", "agent", "mcp.json")
 	mustWriteFile(t, manifestPath, []byte(`{"mcpPath":`+strconv.Quote(mcpPath)+`,"mcp":{"afterHash":"managed"},"children":{}}`))
 	if err := os.Chmod(manifestPath, 0o600); err != nil {

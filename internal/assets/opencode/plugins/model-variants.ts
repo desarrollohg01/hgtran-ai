@@ -4,7 +4,7 @@
  *
  * On OpenCode startup, fetches the provider list via the in-process SDK client,
  * extracts variant keys per model, and writes a minimal JSON cache to
- * ~/.gentle-ai/cache/model-variants.json. gentle-ai reads this file
+ * ~/.hgtran-ai/cache/model-variants.json. The CLI reads this file
  * to populate the effort level picker without needing a live API connection.
  */
 
@@ -49,7 +49,10 @@ export const ModelVariantsPlugin: Plugin = async (input) => {
         }
       }
 
-      const cacheDir = path.join(homedir(), ".gentle-ai", "cache")
+      // Must stay in step with internal/statepath: this is the only writer of
+      // the cache that lives outside the Go binary, so a divergence here is
+      // invisible to the compiler and to every Go test.
+      const cacheDir = path.join(homedir(), ".hgtran-ai", "cache")
       await mkdir(cacheDir, { recursive: true })
 
       // Always write through a per-invocation tmp file before renaming, so

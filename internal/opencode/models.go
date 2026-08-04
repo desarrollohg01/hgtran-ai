@@ -11,6 +11,8 @@ import (
 	"sort"
 	"strings"
 	"time"
+
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/statepath"
 )
 
 // DefaultCachePath returns the default path to the OpenCode models cache file.
@@ -285,7 +287,7 @@ func DefaultVariantsCachePath() string {
 	if err != nil {
 		return ""
 	}
-	return filepath.Join(home, ".gentle-ai", "cache", "model-variants.json")
+	return statepath.ModelVariantsCache(home)
 }
 
 // LoadVariants reads the plugin-generated model-variants.json file.

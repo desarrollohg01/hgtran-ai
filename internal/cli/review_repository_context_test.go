@@ -177,7 +177,7 @@ func TestOpaqueContextErrorsDoNotExposeProviderPaths(t *testing.T) {
 			writeReviewStartCandidate(t, repo, "candidate.go", "package candidate\n\nfunc opaqueFailure() {}\n", 0o644)
 			started := runNegotiatedReviewStart(t, repo, "opaque-error-"+damage)
 			if damage == "locator" {
-				if err := os.RemoveAll(filepath.Join(home, ".gentle-ai", "review-contexts")); err != nil {
+				if err := os.RemoveAll(filepath.Join(home, ".hgtran-ai", "review-contexts")); err != nil {
 					t.Fatal(err)
 				}
 			} else {

@@ -31,6 +31,7 @@ import (
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/pipeline"
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/state"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/statepath"
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/verify"
 )
 
@@ -453,7 +454,7 @@ type syncRuntime struct {
 }
 
 func newSyncRuntime(homeDir string, selection model.Selection) (*syncRuntime, error) {
-	backupRoot := filepath.Join(homeDir, ".gentle-ai", "backups")
+	backupRoot := statepath.Backups(homeDir)
 	if err := os.MkdirAll(backupRoot, 0o755); err != nil {
 		return nil, fmt.Errorf("create backup root directory %q: %w", backupRoot, err)
 	}
@@ -1549,7 +1550,7 @@ func restorePersistedCommunityTools(homeDir string, selection *model.Selection, 
 }
 
 func hasManagedPiCodeGraphManifest(homeDir string) bool {
-	path := filepath.Join(homeDir, ".gentle-ai", "pi-codegraph.json")
+	path := statepath.PiCodeGraphManifest(homeDir)
 	info, err := os.Lstat(path)
 	if err != nil || !info.Mode().IsRegular() || runtime.GOOS != "windows" && info.Mode().Perm()&0o077 != 0 {
 		return false

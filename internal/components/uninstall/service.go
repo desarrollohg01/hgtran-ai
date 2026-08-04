@@ -22,6 +22,7 @@ import (
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/sdd"
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/state"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/statepath"
 )
 
 type Manager interface {
@@ -146,7 +147,7 @@ func NewService(homeDir, workspaceDir, appVersion string) (*Service, error) {
 		return nil, fmt.Errorf("create adapter registry: %w", err)
 	}
 
-	backupRoot := filepath.Join(homeDir, ".gentle-ai", "backups")
+	backupRoot := statepath.Backups(homeDir)
 	if err := os.MkdirAll(backupRoot, 0o755); err != nil {
 		return nil, fmt.Errorf("create backup root %q: %w", backupRoot, err)
 	}
@@ -653,7 +654,7 @@ func (s *Service) componentOperations(adapter agents.Adapter, componentID model.
 			}
 			ops = append(ops, removeDirIfEmpty(pluginDir))
 
-			modelVariantsCacheDir := filepath.Join(homeDir, ".gentle-ai", "cache")
+			modelVariantsCacheDir := statepath.Cache(homeDir)
 			for _, cachePath := range modelVariantsCachePaths(modelVariantsCacheDir) {
 				targets = append(targets, cachePath)
 				ops = append(ops, removeFile(cachePath))
