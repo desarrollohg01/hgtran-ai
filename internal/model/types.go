@@ -91,6 +91,8 @@ const (
 	SkillBackendCRUD       SkillID = "backend-crud-standard"
 	SkillFrontendCRUD      SkillID = "frontend-crud-standard"
 	SkillDBChange          SkillID = "db-change-standard"
+	SkillRealVerification  SkillID = "real-system-verification"
+	SkillPatternStandard   SkillID = "pattern-to-standard"
 )
 
 type PersonaID string

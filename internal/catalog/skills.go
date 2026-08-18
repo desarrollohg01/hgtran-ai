@@ -40,6 +40,8 @@ var mvpSkills = []Skill{
 	{ID: model.SkillBackendCRUD, Name: "backend-crud-standard", Category: "standards", Priority: "p0"},
 	{ID: model.SkillFrontendCRUD, Name: "frontend-crud-standard", Category: "standards", Priority: "p0"},
 	{ID: model.SkillDBChange, Name: "db-change-standard", Category: "standards", Priority: "p0"},
+	{ID: model.SkillRealVerification, Name: "real-system-verification", Category: "standards", Priority: "p0"},
+	{ID: model.SkillPatternStandard, Name: "pattern-to-standard", Category: "standards", Priority: "p0"},
 }
 
 func MVPSkills() []Skill {
