@@ -4,6 +4,8 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/symlinktest"
 )
 
 // TestValidateRunMarkerRejectsAMarkerInsideASymlinkedDist pins the same
@@ -21,9 +23,7 @@ func TestValidateRunMarkerRejectsAMarkerInsideASymlinkedDist(t *testing.T) {
 	if err := os.MkdirAll(realDist, 0o755); err != nil {
 		t.Fatal(err)
 	}
-	if err := os.Symlink(realDist, filepath.Join(root, "dist")); err != nil {
-		t.Fatal(err)
-	}
+	symlinktest.MustSymlink(t, realDist, filepath.Join(root, "dist"))
 	marker := filepath.Join(realDist, "run-marker")
 	if err := os.WriteFile(marker, []byte("run-1\n"), 0o644); err != nil {
 		t.Fatal(err)

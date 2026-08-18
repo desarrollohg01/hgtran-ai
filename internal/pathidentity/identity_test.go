@@ -5,6 +5,8 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/symlinktest"
 )
 
 // aliasedRoots returns two different spellings of one directory: the real
@@ -22,9 +24,7 @@ func aliasedRoots(t *testing.T) (real string, aliased string) {
 	if err := os.MkdirAll(real, 0o755); err != nil {
 		t.Fatal(err)
 	}
-	if err := os.Symlink(filepath.Join(base, "real"), filepath.Join(base, "alias")); err != nil {
-		t.Fatal(err)
-	}
+	symlinktest.MustSymlink(t, filepath.Join(base, "real"), filepath.Join(base, "alias"))
 	return real, filepath.Join(base, "alias", "repo")
 }
 

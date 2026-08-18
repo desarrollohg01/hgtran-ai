@@ -22,6 +22,7 @@ import (
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/qwen"
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/vscode"
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/symlinktest"
 )
 
 func claudeAdapter() agents.Adapter   { return claude.NewAdapter() }
@@ -867,9 +868,7 @@ func TestInjectClaudePreservesManagedLegacyParentLayouts(t *testing.T) {
 				if err := os.MkdirAll(filepath.Dir(parent), 0o755); err != nil {
 					t.Fatal(err)
 				}
-				if err := os.Symlink(actualParent, parent); err != nil {
-					t.Fatal(err)
-				}
+				symlinktest.MustSymlink(t, actualParent, parent)
 			} else if err := os.MkdirAll(parent, 0o755); err != nil {
 				t.Fatal(err)
 			}

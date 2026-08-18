@@ -6,11 +6,11 @@ import (
 	"os/exec"
 	"path/filepath"
 	"regexp"
-	"runtime"
 	"strings"
 	"testing"
 	"time"
 
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/symlinktest"
 	"gopkg.in/yaml.v3"
 )
 
@@ -195,12 +195,7 @@ func TestReleaseDistributionPolicyAssertionFailsClosed(t *testing.T) {
 				if err := os.WriteFile(outside, []byte("stale external binary"), 0o600); err != nil {
 					t.Fatal(err)
 				}
-				if err := os.Symlink(outside, output); err != nil {
-					if runtime.GOOS == "windows" {
-						t.Skipf("Windows runner cannot create symlink fixture: %v", err)
-					}
-					t.Fatal(err)
-				}
+				symlinktest.MustSymlink(t, outside, output)
 			},
 		},
 		{

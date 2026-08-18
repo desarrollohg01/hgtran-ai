@@ -6,6 +6,8 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/symlinktest"
 )
 
 func FuzzNormalizeJSON_NoPanic(f *testing.F) {
@@ -277,9 +279,7 @@ func TestReadManagedFile_RejectsSymlink(t *testing.T) {
 		t.Fatalf("WriteFile(target) error = %v", err)
 	}
 	link := filepath.Join(dir, "link.json")
-	if err := os.Symlink(target, link); err != nil {
-		t.Fatalf("Symlink() error = %v", err)
-	}
+	symlinktest.MustSymlink(t, target, link)
 
 	_, err := readManagedFile(link)
 	if err == nil || !strings.Contains(err.Error(), "refusing to read symlink") {

@@ -8,6 +8,7 @@ import (
 	"strings"
 	"testing"
 
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/symlinktest"
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
 )
 
@@ -44,8 +45,8 @@ func TestDetectHomebrewOwnershipWith(t *testing.T) {
 		must(os.WriteFile(path, []byte("binary"), 0o755))
 	}
 	formulaLink, caskLink := filepath.Join(root, "formula-link"), filepath.Join(root, "cask-link")
-	must(os.Symlink(filepath.Join(formula, "bin/engram"), formulaLink))
-	must(os.Symlink(filepath.Join(cask, "bin/engram"), caskLink))
+	symlinktest.MustSymlink(t, filepath.Join(formula, "bin/engram"), formulaLink)
+	symlinktest.MustSymlink(t, filepath.Join(cask, "bin/engram"), caskLink)
 	tests := []struct {
 		name, formulaList, caskList, formulaRoot, caskPrefix, fail, active string
 		want                                                               HomebrewOwnership
