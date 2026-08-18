@@ -36,6 +36,10 @@ var mvpSkills = []Skill{
 	{ID: model.SkillCommentWriter, Name: "comment-writer", Category: "workflow", Priority: "p0"},
 	{ID: model.SkillWorkUnitCommits, Name: "work-unit-commits", Category: "workflow", Priority: "p0"},
 	{ID: model.SkillRDDDefectWorkflow, Name: "rdd-defect-workflow", Category: "workflow", Priority: "p0"},
+	// Estandares de HG Transportaciones por capa. Se cargan segun el archivo que se toque.
+	{ID: model.SkillBackendCRUD, Name: "backend-crud-standard", Category: "standards", Priority: "p0"},
+	{ID: model.SkillFrontendCRUD, Name: "frontend-crud-standard", Category: "standards", Priority: "p0"},
+	{ID: model.SkillDBChange, Name: "db-change-standard", Category: "standards", Priority: "p0"},
 }
 
 func MVPSkills() []Skill {

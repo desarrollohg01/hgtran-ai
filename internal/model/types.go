@@ -88,6 +88,9 @@ const (
 	SkillCommentWriter     SkillID = "comment-writer"
 	SkillWorkUnitCommits   SkillID = "work-unit-commits"
 	SkillRDDDefectWorkflow SkillID = "rdd-defect-workflow"
+	SkillBackendCRUD       SkillID = "backend-crud-standard"
+	SkillFrontendCRUD      SkillID = "frontend-crud-standard"
+	SkillDBChange          SkillID = "db-change-standard"
 )
 
 type PersonaID string
