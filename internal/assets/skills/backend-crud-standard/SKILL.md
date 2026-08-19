@@ -73,6 +73,8 @@ hora local: todas las fechas se corren el tamaño del huso.
 ## Autorización
 
 RECHAZA un controlador que sólo declare `[Authorize]` cuando el recurso es de un rol específico.
+`[Authorize]` responde "¿el token es válido?", no "¿este usuario puede hacer esto?". Si los usuarios
+finales también tienen tokens válidos, ya está abierto.
 
 Ocultar la opción en la interfaz es comodidad visual, **no** la garantía. La prueba de que está
 bien: construir la petición a mano con el token de un usuario sin permiso y recibir **403**.
@@ -80,6 +82,45 @@ bien: construir la petición a mano con el token de un usuario sin permiso y rec
 Verifica también que el rol del recurso no sea el MISMO que se asigna a los usuarios finales: si
 coinciden, todos heredan la administración. Pasó, y se demostró con un `PUT` de un proveedor sobre
 un usuario de otro que devolvió 200.
+
+### Primero: ¿el token trae el rol?
+
+No lo supongas, **decodifícalo**. Si no lo trae, la decisión obliga a consultar al emisor, y eso
+cambia el diseño entero — deja de ser una comprobación local y pasa a ser una llamada de red dentro
+del camino de autorización. De ahí salen tres exigencias que hay que resolver a propósito:
+
+| Exigencia | Por qué |
+|---|---|
+| **Falla CERRADO**: si el emisor no responde, NIEGA | Asumir permiso convierte una caída del servicio de seguridad en una puerta abierta |
+| **Cachea sólo veredictos concluyentes** | Sin caché hay una llamada externa por petición. Pero un "no pude preguntar" jamás se guarda: se reintenta |
+| **Exige el rol Y que esté activo** | Un rol revocado no habilita nada |
+
+### El manejador va Scoped, no Singleton
+
+Si consume un cliente que lleva el token del usuario, ese cliente vive **por petición**. Un
+manejador de vida larga captura el de la PRIMERA petición y resuelve a todos los demás con esa
+identidad. El caché puede seguir compartido si el componente de caché sí es de vida larga.
+
+Esto NO lo detecta ninguna prueba unitaria: lo detecta el contenedor al arrancar. Ver
+`real-system-verification`.
+
+### Probar el 403 no alcanza
+
+Hay que probar también el **200 con el rol correcto**. Un manejador que niega todo pasa igual la
+prueba del 403, y no es una política: es una pared. Matriz mínima, contra el servicio real:
+
+| Caso | Esperado |
+|---|---|
+| Rol que el usuario NO tiene | 403 en **todos** los verbos, no sólo en el GET |
+| Rol que el usuario SÍ tiene | 200 |
+| Sin token / token fabricado | 401 |
+
+### Protección apagada a propósito: que GRITE
+
+Si la política queda desactivada por configuración —porque el rol todavía no existe, por ejemplo—
+el arranque **DEBE** emitir una advertencia que lo diga. Un `= 0` silencioso es una vulnerabilidad
+que nadie va a notar hasta que alguien la use. Y documenta en la configuración misma por qué está
+en ese valor y qué hace falta para encenderla.
 
 ## Pruebas
 
@@ -94,7 +135,9 @@ un usuario de otro que devolvió 200.
 
 ## Antes de dar por cerrado
 
-- [ ] La API arranca y responde 401 sin token, 200 con token válido
+- [ ] La API ARRANCA (el contenedor valida el registro; las pruebas no lo hacen)
+- [ ] Responde 401 sin token, 200 con token válido
+- [ ] Si hay política de rol: 403 con un rol que no la cumple **y** 200 con uno que sí
 - [ ] Probado el ciclo completo contra los servicios reales, no sólo las pruebas
 - [ ] Datos de prueba creados y ELIMINADOS, verificado con un SELECT posterior
 - [ ] Ningún secreto nuevo en `appsettings.json` versionado

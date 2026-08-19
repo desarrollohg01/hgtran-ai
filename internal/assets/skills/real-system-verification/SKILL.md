@@ -32,6 +32,8 @@ Cada uno pasó desapercibido con la suite en verde:
 | El código sugería que `[Authorize]` bastaba | `PUT` con el token de otro tenant devolvió **200** |
 | Ancho declarado 10 % vs 18 % | Ambas medían 244 px: el contenido imponía el ancho, no la declaración |
 | Build correcto | El dev server servía un bundle viejo de un error intermedio |
+| 7 pruebas verdes y build limpio | La aplicación **no arrancaba**: el contenedor rechazaba el registro. Las pruebas construían el objeto a mano y jamás tocaban el contenedor |
+| `go test ./...` → `ok` | Decía `(cached)`. No corrió nada. Con `-count=1` sí corre |
 | El JSON "se veía bien" | La misma propiedad salía con `Z` al crear y sin `Z` al leer: seis horas de corrimiento |
 
 ## Qué hacer
@@ -43,6 +45,8 @@ Cada uno pasó desapercibido con la suite en verde:
 | Asumir el esquema | Describir la tabla con las herramientas de base de datos antes de escribir SQL |
 | Suponer que el archivo llegó | Confirmar la petición en la red, no un `check()` que devuelve booleanos optimistas |
 | Decir "debería funcionar" | Provocar el caso: crear el dato, cambiarlo, borrarlo, y volver a consultarlo |
+| Probar el objeto construido a mano | LEVANTAR la aplicación: el contenedor de dependencias es parte del sistema, y valida cosas que ninguna prueba unitaria ve |
+| Leer el `ok` del corredor de pruebas | Mirar si dice `cached`. Un caché verde no es una corrida verde |
 
 ## Cuando un arreglo corrige un PATRÓN
 
@@ -52,8 +56,27 @@ clasificar cada uso como correcto o defectuoso.
 Un mismo defecto —pasar un token opaco a un parser de JWT— reapareció TRES veces porque el primer
 arreglo tocó sólo el lugar donde se reportó.
 
+## El doble no ve cómo se CONSTRUYE el objeto
+
+Una prueba unitaria instancia la clase con `new`. La aplicación no: la arma el contenedor de
+dependencias, que además valida tiempos de vida, resuelve interfaces y falla si algo no cuadra.
+
+Esa diferencia deja pasar defectos que ninguna prueba puede ver, porque no están en el
+comportamiento del objeto sino en su construcción:
+
+- un componente de vida larga que consume otro de vida por petición **captura el primero que le
+  toca** y sigue usándolo para todos los demás. Si ese componente llevaba la identidad del usuario,
+  todos quedan resueltos con la identidad de quien pasó primero
+- una interfaz sin registrar, o registrada dos veces
+- un servicio que exige configuración que en ese ambiente no existe
+
+Levantar la aplicación cuesta segundos y cubre las tres. **Un cambio que toca el registro de
+dependencias no está probado hasta que el proceso arranca.**
+
 ## Antes de decir que está listo
 
+- [ ] La aplicación ARRANCA con el cambio, no sólo compila y pasa las pruebas
+- [ ] El corredor de pruebas CORRIÓ de verdad, no devolvió caché
 - [ ] Se ejecutó contra el sistema real, no sólo contra dobles
 - [ ] El caso contrario también se probó (no sólo el camino feliz)
 - [ ] Si se afirmó algo visual, hay una MEDICIÓN que lo respalda
