@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/pathidentity"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/symlinktest"
 )
 
 // aliasedRepository builds a repository that is reachable under two different
@@ -23,9 +24,7 @@ func aliasedRepository(t *testing.T, change string) (realRepo string, aliasedRep
 	if err := os.MkdirAll(realRepo, 0o755); err != nil {
 		t.Fatal(err)
 	}
-	if err := os.Symlink(filepath.Join(base, "real"), filepath.Join(base, "alias")); err != nil {
-		t.Fatal(err)
-	}
+	symlinktest.MustSymlink(t, filepath.Join(base, "real"), filepath.Join(base, "alias"))
 	changeRoot := seedReadyChange(t, realRepo, change, "- [x] 1.1 Done\n")
 	writeApprovedCompactAuthorityForChange(t, realRepo, changeRoot, change+"-lineage")
 	return realRepo, filepath.Join(base, "alias", "repo")

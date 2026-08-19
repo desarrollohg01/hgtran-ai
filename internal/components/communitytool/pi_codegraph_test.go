@@ -17,6 +17,7 @@ import (
 
 	piagent "bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/pi"
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/filemerge"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/symlinktest"
 )
 
 func TestPiCodeGraphUnselectedIsNoOp(t *testing.T) {
@@ -321,9 +322,7 @@ func TestPiCodeGraphPathsExcludesUnsafeManifestPaths(t *testing.T) {
 	if err := os.MkdirAll(paths.AgentDir, 0o755); err != nil {
 		t.Fatal(err)
 	}
-	if err := os.Symlink(filepath.Dir(outside), escapedDir); err != nil {
-		t.Fatal(err)
-	}
+	symlinktest.MustSymlink(t, filepath.Dir(outside), escapedDir)
 
 	for _, tt := range []struct {
 		name     string
@@ -933,9 +932,7 @@ func TestPiCodeGraphUninstallRejectsSwappedSymlinkParent(t *testing.T) {
 	if err := os.WriteFile(external, managed, 0o644); err != nil {
 		t.Fatal(err)
 	}
-	if err := os.Symlink(externalDir, parent); err != nil {
-		t.Skipf("parent symlink unavailable: %v", err)
-	}
+	symlinktest.MustSymlink(t, externalDir, parent)
 
 	if _, err := UninstallPiCodeGraph(home); err == nil {
 		t.Fatal("UninstallPiCodeGraph() error = nil, want swapped parent rejection")
