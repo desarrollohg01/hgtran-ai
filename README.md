@@ -1,5 +1,7 @@
 <div align="center">
 
+<img width="900" alt="HGTran AI — Ecosystem, Framework, Workflows" src="docs/assets/brand/hgtran-ai-banner.png" />
+
 <h1>hgtran-ai</h1>
 
 <p><strong>Ecosystem, frameworks and workflows for AI coding agents — internal tooling for HG Transportaciones.</strong></p>
