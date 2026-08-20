@@ -54,7 +54,7 @@ func TestExecute_NoopWhenNothingIsExecutable(t *testing.T) {
 		makeResult("gentle-ai", update.UpToDate, "1.0.0", "1.0.0", update.InstallBinary),
 		makeResult("engram", update.NotInstalled, "", "0.4.0", update.InstallGoInstall),
 		// gga: CheckFailed — should also be omitted from results.
-		makeResult("gga", update.CheckFailed, "", "", update.InstallScript),
+		makeResult("hga", update.CheckFailed, "", "", update.InstallScript),
 	}
 
 	report := Execute(context.Background(), results, brewProfile(), t.TempDir(), false)
@@ -334,7 +334,7 @@ func TestExecute_PerToolSuccessAndFailure(t *testing.T) {
 
 	execCommand = func(name string, args ...string) *exec.Cmd {
 		// engram go install succeeds, gga curl/download attempt fails — we simulate
-		// the failure by having execCommand return false for "gga" detection.
+		// the failure by having execCommand return false for "hga" detection.
 		if name == "go" {
 			return mockCmd("echo", "go install ok")
 		}

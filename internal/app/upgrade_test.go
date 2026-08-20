@@ -197,14 +197,14 @@ func TestRenderUpgradeReport_PerToolSemantics_Deterministic(t *testing.T) {
 			name: "real failure shows error details",
 			results: []upgrade.ToolUpgradeResult{
 				{
-					ToolName:   "gga",
+					ToolName:   "hga",
 					OldVersion: "1.0.0",
 					NewVersion: "2.0.0",
 					Status:     upgrade.UpgradeFailed,
 					Err:        errors.New("brew upgrade gga: exit status 1"),
 				},
 			},
-			wantContains:   []string{"gga", "FAILED", "exit status 1", "[!!]"},
+			wantContains:   []string{"hga", "FAILED", "exit status 1", "[!!]"},
 			wantNotContain: []string{"manual update required"},
 		},
 		{
@@ -238,14 +238,14 @@ func TestRenderUpgradeReport_PerToolSemantics_Deterministic(t *testing.T) {
 					ManualHint: "source build — upgrade manually",
 				},
 				{
-					ToolName:   "gga",
+					ToolName:   "hga",
 					OldVersion: "1.0.0",
 					NewVersion: "2.0.0",
 					Status:     upgrade.UpgradeSkipped,
 					ManualHint: "Download from https://github.com/Gentleman-Programming/gga/releases",
 				},
 			},
-			wantContains:   []string{"engram", "[ok]", "gentle-ai", "[--]", "gga", "1 succeeded", "2 skipped"},
+			wantContains:   []string{"engram", "[ok]", "gentle-ai", "[--]", "hga", "1 succeeded", "2 skipped"},
 			wantNotContain: []string{"FAILED", "[!!]"},
 		},
 	}

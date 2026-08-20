@@ -1309,7 +1309,7 @@ func TestRunInstallGGASkipsInstallWhenAlreadyOnPath(t *testing.T) {
 
 	detection := macOSDetectionResult()
 	result, err := RunInstall(
-		[]string{"--agent", "opencode", "--component", "gga"},
+		[]string{"--agent", "opencode", "--component", "hga"},
 		detection,
 	)
 	if err != nil {
@@ -1322,12 +1322,12 @@ func TestRunInstallGGASkipsInstallWhenAlreadyOnPath(t *testing.T) {
 
 	// No brew/git clone commands for GGA should have been recorded.
 	for _, cmd := range recorder.get() {
-		if strings.Contains(cmd, "gga") || strings.Contains(cmd, "gentleman-guardian-angel") {
+		if strings.Contains(cmd, "hga") || strings.Contains(cmd, "gentleman-guardian-angel") {
 			t.Fatalf("expected gga install to be skipped, but got command: %s", cmd)
 		}
 	}
 
-	prModePath := filepath.Join(home, ".local", "share", "gga", "lib", "pr_mode.sh")
+	prModePath := filepath.Join(home, ".local", "share", "hga", "lib", "pr_mode.sh")
 	content, err := os.ReadFile(prModePath)
 	if err != nil {
 		t.Fatalf("expected gga runtime asset at %q: %v", prModePath, err)
@@ -1350,7 +1350,7 @@ func TestRunInstallGGALinuxIncludesTempCleanupBeforeClone(t *testing.T) {
 
 	osUserHomeDir = func() (string, error) { return home, nil }
 	cmdLookPath = func(name string) (string, error) {
-		if name == "gga" {
+		if name == "hga" {
 			return "", exec.ErrNotFound
 		}
 		return "/usr/local/bin/" + name, nil
@@ -1359,7 +1359,7 @@ func TestRunInstallGGALinuxIncludesTempCleanupBeforeClone(t *testing.T) {
 	runCommand = recorder.record
 
 	result, err := RunInstall(
-		[]string{"--agent", "opencode", "--component", "gga"},
+		[]string{"--agent", "opencode", "--component", "hga"},
 		linuxDetectionResult(system.LinuxDistroUbuntu, "apt"),
 	)
 	if err != nil {

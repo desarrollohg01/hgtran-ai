@@ -102,7 +102,7 @@ func runStrategy(ctx context.Context, r update.UpdateResult, profile system.Plat
 		// only downloads and runs the script in isolation (bash -c <content>), which
 		// breaks because those relative paths don't exist. Use the git clone approach
 		// (same as the initial install resolver) for GGA specifically.
-		if r.Tool.Name == "gga" {
+		if r.Tool.Name == "hga" {
 			return false, ggaScriptUpgrade(ctx, r)
 		}
 		return false, scriptUpgrade(ctx, r, profile)
@@ -496,8 +496,8 @@ func goInstallUpgrade(ctx context.Context, tool update.ToolInfo, latestVersion s
 
 func isBetaGentleAIUpgrade(r update.UpdateResult) bool {
 	return r.Tool.Name == "gentle-ai" &&
-		strings.EqualFold(r.Tool.Owner, "Gentleman-Programming") &&
-		r.Tool.Repo == "gentle-ai" &&
+		strings.EqualFold(r.Tool.Owner, "desarrollohg01") &&
+		r.Tool.Repo == "hgtran-ai" &&
 		strings.HasPrefix(strings.TrimSpace(r.LatestVersion), "main@")
 }
 

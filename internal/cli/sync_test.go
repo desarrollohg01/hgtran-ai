@@ -813,7 +813,7 @@ func TestComponentSyncStepRunsGGAInjectWithoutBinaryInstall(t *testing.T) {
 	}
 
 	// GGA runtime asset should be written.
-	prModePath := filepath.Join(home, ".local", "share", "gga", "lib", "pr_mode.sh")
+	prModePath := filepath.Join(home, ".local", "share", "hga", "lib", "pr_mode.sh")
 	if _, err := os.Stat(prModePath); err != nil {
 		t.Errorf("expected GGA runtime asset at %q: %v", prModePath, err)
 	}

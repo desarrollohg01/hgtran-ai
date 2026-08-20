@@ -17,8 +17,8 @@ import (
 var Tools = []ToolInfo{
 	{
 		Name:          "gentle-ai",
-		Owner:         "Gentleman-Programming",
-		Repo:          "gentle-ai",
+		Owner:         "desarrollohg01",
+		Repo:          "hgtran-ai",
 		DetectCmd:     nil, // version comes from build-time ldflags (app.Version)
 		VersionPrefix: "v",
 		// gentle-ai: Homebrew when the package is brew-owned, authenticated binary
@@ -33,7 +33,7 @@ var Tools = []ToolInfo{
 	},
 	{
 		Name:              "engram",
-		Owner:             "Gentleman-Programming",
+		Owner:             "desarrollohg01",
 		Repo:              "engram",
 		DetectCmd:         []string{"engram", "version"},
 		VersionPrefix:     "v",
@@ -62,27 +62,27 @@ var Tools = []ToolInfo{
 		},
 	},
 	{
-		Name:          "gga",
-		Owner:         "Gentleman-Programming",
-		Repo:          "gentleman-guardian-angel",
-		DetectCmd:     []string{"gga", "--version"},
+		Name:          "hga",
+		Owner:         "desarrollohg01",
+		Repo:          "hgtran-guardian-angel",
+		DetectCmd:     []string{"hga", "--version"},
 		VersionPrefix: "v",
-		// gga: Homebrew when the package is brew-owned, install.sh script elsewhere.
-		// GGA does not publish pre-built release binary assets — only source archives.
+		// hga: Homebrew when the package is brew-owned, install.sh script elsewhere.
+		// HGA does not publish pre-built release binary assets — only source archives.
 		// Using InstallScript runs curl | bash via the project's install.sh.
 		InstallMethod: InstallScript,
-		// FallbackPaths covers the Windows stale-PATH scenario: gga installs a
-		// PowerShell shim to ~/bin/gga.ps1, and the bash script to ~/.local/bin/gga.
+		// FallbackPaths covers the Windows stale-PATH scenario: hga installs a
+		// PowerShell shim to ~/bin/hga.ps1, and the bash script to ~/.local/bin/hga.
 		// Both locations may not be in PATH immediately after install.
 		FallbackPaths: func(homeDir, localAppData string) []string {
 			var paths []string
 			if homeDir != "" {
-				// Windows: ~/bin/gga.ps1 (PowerShell shim, callable as "gga" in PS)
-				paths = append(paths, filepath.Join(homeDir, "bin", "gga.ps1"))
-				// Linux/macOS: ~/.local/bin/gga
-				paths = append(paths, filepath.Join(homeDir, ".local", "bin", "gga"))
-				// Linux/macOS: ~/bin/gga
-				paths = append(paths, filepath.Join(homeDir, "bin", "gga"))
+				// Windows: ~/bin/hga.ps1 (PowerShell shim, callable as "hga" in PS)
+				paths = append(paths, filepath.Join(homeDir, "bin", "hga.ps1"))
+				// Linux/macOS: ~/.local/bin/hga
+				paths = append(paths, filepath.Join(homeDir, ".local", "bin", "hga"))
+				// Linux/macOS: ~/bin/hga
+				paths = append(paths, filepath.Join(homeDir, "bin", "hga"))
 			}
 			return paths
 		},

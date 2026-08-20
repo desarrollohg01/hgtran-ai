@@ -264,8 +264,8 @@ func TestGentleAIWindowsWithoutGoNamesRunnableSourceInstall(t *testing.T) {
 	r := update.UpdateResult{
 		Tool: update.ToolInfo{
 			Name:          "gentle-ai",
-			Owner:         "Gentleman-Programming",
-			Repo:          "gentle-ai",
+			Owner:         "desarrollohg01",
+			Repo:          "hgtran-ai",
 			InstallMethod: update.InstallBinary,
 			GoImportPath:  "bitbucket.org/hgt_development/hgtran-ai/v2/cmd/gentle-ai",
 		},

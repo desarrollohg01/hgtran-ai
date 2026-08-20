@@ -13,7 +13,7 @@ import (
 func TestGGAAvailableDetectsViaLookPath(t *testing.T) {
 	origLookPath := cmdLookPath
 	cmdLookPath = func(file string) (string, error) {
-		if file == "gga" {
+		if file == "hga" {
 			return "/usr/local/bin/gga", nil
 		}
 		return "", os.ErrNotExist
@@ -33,7 +33,7 @@ func TestGGAAvailableDetectsViaLocalBin(t *testing.T) {
 	if err := os.MkdirAll(localBin, 0o755); err != nil {
 		t.Fatal(err)
 	}
-	if err := os.WriteFile(filepath.Join(localBin, "gga"), []byte("fake"), 0o755); err != nil {
+	if err := os.WriteFile(filepath.Join(localBin, "hga"), []byte("fake"), 0o755); err != nil {
 		t.Fatal(err)
 	}
 
@@ -58,7 +58,7 @@ func TestGGAAvailableDetectsViaLocalBin(t *testing.T) {
 // true when gga exists at /opt/homebrew/bin/gga (Apple Silicon Homebrew default).
 func TestGGAAvailableDetectsViaHomebrewOptPrefix(t *testing.T) {
 	tmpDir := t.TempDir()
-	fakeOptHomebrew := filepath.Join(tmpDir, "opt", "homebrew", "bin", "gga")
+	fakeOptHomebrew := filepath.Join(tmpDir, "opt", "homebrew", "bin", "hga")
 	if err := os.MkdirAll(filepath.Dir(fakeOptHomebrew), 0o755); err != nil {
 		t.Fatal(err)
 	}

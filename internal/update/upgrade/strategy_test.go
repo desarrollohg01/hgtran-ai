@@ -118,8 +118,8 @@ func TestRunStrategy_BetaGentleAISelfUpgradeUsesGoInstallMain(t *testing.T) {
 	r := update.UpdateResult{
 		Tool: update.ToolInfo{
 			Name:          "gentle-ai",
-			Owner:         "Gentleman-Programming",
-			Repo:          "gentle-ai",
+			Owner:         "desarrollohg01",
+			Repo:          "hgtran-ai",
 			InstallMethod: update.InstallBinary,
 		},
 		LatestVersion: "main@972997650b51",
@@ -334,7 +334,7 @@ func TestEffectiveMethod_NonGentleAIToolsOnWindowsUseBinary(t *testing.T) {
 		},
 		{
 			name: "gga uses script",
-			tool: update.ToolInfo{Name: "gga", InstallMethod: update.InstallScript},
+			tool: update.ToolInfo{Name: "hga", InstallMethod: update.InstallScript},
 			want: update.InstallScript,
 		},
 		{
@@ -377,14 +377,14 @@ func TestEffectiveMethod(t *testing.T) {
 		},
 		{
 			name:          "brew-owned package overrides binary",
-			tool:          update.ToolInfo{Name: "gga", InstallMethod: update.InstallBinary},
+			tool:          update.ToolInfo{Name: "hga", InstallMethod: update.InstallBinary},
 			profile:       system.PlatformProfile{PackageManager: "brew"},
 			brewInstalled: true,
 			want:          update.InstallBrew,
 		},
 		{
 			name:          "brew-owned package overrides script",
-			tool:          update.ToolInfo{Name: "gga", InstallMethod: update.InstallScript},
+			tool:          update.ToolInfo{Name: "hga", InstallMethod: update.InstallScript},
 			profile:       system.PlatformProfile{PackageManager: "brew"},
 			brewInstalled: true,
 			want:          update.InstallBrew,
@@ -409,13 +409,13 @@ func TestEffectiveMethod(t *testing.T) {
 		},
 		{
 			name:    "apt profile respects declared method (binary)",
-			tool:    update.ToolInfo{Name: "gga", InstallMethod: update.InstallBinary},
+			tool:    update.ToolInfo{Name: "hga", InstallMethod: update.InstallBinary},
 			profile: system.PlatformProfile{PackageManager: "apt"},
 			want:    update.InstallBinary,
 		},
 		{
 			name:    "apt profile respects declared method (script)",
-			tool:    update.ToolInfo{Name: "gga", InstallMethod: update.InstallScript},
+			tool:    update.ToolInfo{Name: "hga", InstallMethod: update.InstallScript},
 			profile: system.PlatformProfile{PackageManager: "apt"},
 			want:    update.InstallScript,
 		},
@@ -1212,7 +1212,7 @@ func TestRunStrategy_ScriptUpgradeSuccess(t *testing.T) {
 
 	r := update.UpdateResult{
 		Tool: update.ToolInfo{
-			Name:          "gga",
+			Name:          "hga",
 			Owner:         "Gentleman-Programming",
 			Repo:          "gentleman-guardian-angel",
 			InstallMethod: update.InstallScript,
@@ -1253,7 +1253,7 @@ func TestRunStrategy_ScriptUpgradeDownloadFailure(t *testing.T) {
 
 	r := update.UpdateResult{
 		Tool: update.ToolInfo{
-			Name:          "gga",
+			Name:          "hga",
 			Owner:         "Gentleman-Programming",
 			Repo:          "gentleman-guardian-angel",
 			InstallMethod: update.InstallScript,
@@ -1282,7 +1282,7 @@ func TestRunStrategy_ScriptUpgradeWindowsManualFallback(t *testing.T) {
 
 	r := update.UpdateResult{
 		Tool: update.ToolInfo{
-			Name:          "gga",
+			Name:          "hga",
 			Owner:         "Gentleman-Programming",
 			Repo:          "gentleman-guardian-angel",
 			InstallMethod: update.InstallScript,
@@ -1331,7 +1331,7 @@ func TestGGAScriptUpgradeUsesGitClone(t *testing.T) {
 
 	r := update.UpdateResult{
 		Tool: update.ToolInfo{
-			Name:          "gga",
+			Name:          "hga",
 			Owner:         "Gentleman-Programming",
 			Repo:          "gentleman-guardian-angel",
 			InstallMethod: update.InstallScript,
@@ -1418,7 +1418,7 @@ func TestGGAScriptUpgradeWindowsManualFallback(t *testing.T) {
 
 	r := update.UpdateResult{
 		Tool: update.ToolInfo{
-			Name:          "gga",
+			Name:          "hga",
 			Owner:         "Gentleman-Programming",
 			Repo:          "gentleman-guardian-angel",
 			InstallMethod: update.InstallScript,
@@ -1466,7 +1466,7 @@ func TestRunStrategy_GGAUsesGitClone(t *testing.T) {
 
 	r := update.UpdateResult{
 		Tool: update.ToolInfo{
-			Name:          "gga",
+			Name:          "hga",
 			Owner:         "Gentleman-Programming",
 			Repo:          "gentleman-guardian-angel",
 			InstallMethod: update.InstallScript,
@@ -1682,7 +1682,7 @@ func TestRunStrategy_ScriptUpgradeExecFailure(t *testing.T) {
 
 	r := update.UpdateResult{
 		Tool: update.ToolInfo{
-			Name:          "gga",
+			Name:          "hga",
 			Owner:         "Gentleman-Programming",
 			Repo:          "gentleman-guardian-angel",
 			InstallMethod: update.InstallScript,

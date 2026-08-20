@@ -96,7 +96,7 @@ func TestAssetURLResolution(t *testing.T) {
 		{
 			name:       "linux amd64",
 			owner:      "Gentleman-Programming",
-			repo:       "gga",
+			repo:       "hga",
 			version:    "2.0.0",
 			goos:       "linux",
 			goarch:     "amd64",
@@ -247,8 +247,8 @@ func TestDownload_WindowsAlwaysManualFallback(t *testing.T) {
 	r := update.UpdateResult{
 		Tool: update.ToolInfo{
 			Name:          "gentle-ai",
-			Owner:         "Gentleman-Programming",
-			Repo:          "gentle-ai",
+			Owner:         "desarrollohg01",
+			Repo:          "hgtran-ai",
 			InstallMethod: update.InstallBinary,
 		},
 		LatestVersion: "1.5.0",

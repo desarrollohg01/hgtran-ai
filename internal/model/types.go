@@ -41,7 +41,7 @@ const (
 	ComponentContext7           ComponentID = "context7"
 	ComponentPersona            ComponentID = "persona"
 	ComponentPermission         ComponentID = "permissions"
-	ComponentGGA                ComponentID = "gga"
+	ComponentGGA                ComponentID = "hga"
 	ComponentTheme              ComponentID = "theme"
 	ComponentClaudeTheme        ComponentID = "claude-theme"
 	ComponentOpenCodeGentleLogo ComponentID = "opencode-gentle-logo"

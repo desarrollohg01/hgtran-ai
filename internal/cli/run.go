@@ -1613,14 +1613,14 @@ func ggaAvailable(profile system.PlatformProfile) bool {
 	if ggaAvailableCheck != nil {
 		return ggaAvailableCheck(profile)
 	}
-	if _, err := cmdLookPath("gga"); err == nil {
+	if _, err := cmdLookPath("hga"); err == nil {
 		return true
 	}
 	homeDir, err := osUserHomeDir()
 	if err != nil {
 		return false
 	}
-	if _, err := osStat(filepath.Join(homeDir, ".local", "bin", "gga")); err == nil {
+	if _, err := osStat(filepath.Join(homeDir, ".local", "bin", "hga")); err == nil {
 		return true
 	}
 	// Check well-known Homebrew prefixes for macOS (arm64 and x86).
@@ -1637,7 +1637,7 @@ func ggaAvailable(profile system.PlatformProfile) bool {
 		}
 	}
 	if profile.OS == "windows" {
-		if _, err := osStat(filepath.Join(homeDir, "bin", "gga")); err == nil {
+		if _, err := osStat(filepath.Join(homeDir, "bin", "hga")); err == nil {
 			return true
 		}
 	}
