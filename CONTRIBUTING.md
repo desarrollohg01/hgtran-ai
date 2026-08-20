@@ -170,7 +170,13 @@ Some unit tests require OS-level capabilities that are restricted on Windows by 
 
 #### Symlink tests (`SeCreateSymbolicLinkPrivilege`)
 
-Tests that create symbolic links (e.g. in `internal/components/filemerge`) will be **skipped automatically** on Windows builds where the process lacks `SeCreateSymbolicLinkPrivilege` (`ERROR_PRIVILEGE_NOT_HELD`, errno 1314). This is a Windows security policy, not a bug in the code.
+Windows withholds `SeCreateSymbolicLinkPrivilege` by default, so `os.Symlink` returns `ERROR_PRIVILEGE_NOT_HELD` (errno 1314). This is a Windows security policy, not a bug in the code.
+
+**A test only skips on that error if it creates the link through `internal/symlinktest`.** Use `symlinktest.MustSymlink(t, target, link)` — it skips on errno 1314 and fails on anything else.
+
+A bare `os.Symlink` followed by `t.Fatal` does NOT skip: it fails, and a failing test makes its whole package report FAIL, which drops every other test in that package from the regression gate. That is not hypothetical — it removed nine packages, and 1 326 tests in three of them were invisible until `8e4b7e1b`. Sites still unguarded are tracked in `openspec/changes/gate-regresion-windows/`.
+
+Do not reach for `t.Skipf` on any error you happen to get from `os.Symlink`, either. That skips on genuine symlink bugs as readily as on the missing privilege.
 
 To run these tests without restrictions, choose one of:
 
