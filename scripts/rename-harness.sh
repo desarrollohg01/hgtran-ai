@@ -74,7 +74,30 @@ census() {
 # and is killed at 11m, so including it costs eleven minutes per run to learn
 # nothing. It already fails on the baseline, so it can never be a regression
 # signal. Set RENAME_HARNESS_FULL=1 to include it before the final slice.
-EXCLUDE_PKG="${RENAME_HARNESS_EXCLUDE:-e2e/organicruntime}"
+# Packages excluded from the gate, and why each one earns its exclusion.
+#
+# The rule: a package that does not pass today can never produce a regression
+# signal, because a regression is "used to pass, now does not". Running one
+# costs its full time budget to learn nothing. Excluding it costs no signal.
+#
+# What this exclusion MUST NOT become is a silent cap. The count is printed on
+# every run, and every entry is listed here with its measured reason:
+#
+#   e2e/organicruntime                exceeds the budget; killed at ~11m
+#   internal/reviewtransaction        exceeds the budget (documented debt)
+#   internal/sddstatus                exceeds 300s
+#   internal/cli                      exceeds the budget
+#   internal/components/sdd           fails
+#   internal/components/communitytool fails
+#
+# Set RENAME_HARNESS_FULL=1 to run everything before the final slice.
+EXCLUDE_PKG="${RENAME_HARNESS_EXCLUDE:-e2e/organicruntime|internal/reviewtransaction|internal/sddstatus|internal/cli|internal/components/sdd|internal/components/communitytool}"
+
+# Per-package time budget. Measured, not guessed: internal/update needs 165s on
+# this hardware, so a 60s bound reports it as failing and blinds the gate to
+# every real regression in it. 300s clears the slowest package that passes,
+# with margin.
+PKG_TIMEOUT="${RENAME_HARNESS_PKG_TIMEOUT:-300s}"
 
 packages() {
   if [[ -n "$EXCLUDE_PKG" && "${RENAME_HARNESS_FULL:-0}" != "1" ]]; then
@@ -82,6 +105,13 @@ packages() {
   else
     go list ./... 2>/dev/null
   fi
+}
+
+excluded_count() {
+  local all kept
+  all="$(go list ./... 2>/dev/null | rg -c '' || echo 0)"
+  kept="$(packages | rg -c '' || echo 0)"
+  echo $((all - kept))
 }
 
 # Package identity is recorded WITHOUT the module prefix.
@@ -96,9 +126,27 @@ strip_module() {
   if [[ -n "$mod" ]]; then sed "s|^${mod}/||; s|^${mod}$|.|"; else cat; fi
 }
 
+# Packages whose tests pass, as a sorted, deduplicated list of REAL packages.
+#
+# The naive version harvested every line matching /^ok / from the combined test
+# output. Test bodies print to stdout too, so an arbitrary line beginning with
+# "ok " was collected as if it were a package result. A stray "e" landed in the
+# baseline that way, out of order and followed by a second sorted run of
+# duplicates — and `comm` on unsorted input silently reports garbage, so the
+# gate claimed three regressions while comparing the baseline to itself.
+#
+# The fix is to intersect against `go list`: whatever is not a package Go knows
+# about is noise by definition. `sort -u` then guarantees the total order and
+# uniqueness `comm` requires.
 passing_packages() {
+  local known reported
+  known="$(mktemp)"; reported="$(mktemp)"
+  packages | strip_module | sort -u > "$known"
   # shellcheck disable=SC2046
-  go test $(packages) 2>/dev/null | awk '/^ok /{print $2}' | strip_module | sort
+  go test -timeout "$PKG_TIMEOUT" $(packages) 2>/dev/null \
+    | awk '/^ok /{print $2}' | strip_module | sort -u > "$reported"
+  comm -12 "$reported" "$known"
+  rm -f "$known" "$reported"
 }
 
 build_state() {
@@ -116,6 +164,7 @@ build_state() {
 
 if [[ "$MODE" == "baseline" ]]; then
   echo "Capturing baseline — this runs the full suite, expect a few minutes."
+  dim "Excluded from the gate: $(excluded_count) package(s) that do not pass today — see the list in this script."
   {
     echo "# rename harness baseline"
     build_state
