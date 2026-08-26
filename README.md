@@ -19,13 +19,7 @@
 > [!IMPORTANT]
 > **Receipt-Driven Development (RDD) is the supported stable path** as of `v2.2.0`. It started in `v1.47.0` and became stable once the outcome-first workflow was restored: small work stays direct, broader implementation is delegated, SDD stays optional, and every route converges on structural proof, bounded review, an exact receipt, and delivery authorization.
 >
-> Install the latest release:
-> ```bash
-> go install github.com/gentleman-programming/gentle-ai/v2/cmd/gentle-ai@latest
-> ```
-> Use `@main` only for unreleased development changes. See the [full RDD version policy](docs/quickstart.md#version-policy).
->
-> Note the `/v2` suffix: Go requires it for major version 2 and above. Releases before `v2.0.0` use the unsuffixed import path.
+> **Install by building from source** — see [Quick Start](#quick-start). `go install` is not available yet: the module path names a repository that has not been published, so Go cannot resolve it from either host.
 
 ## What It Does
 
@@ -84,17 +78,15 @@ Implementation routing does not decide review strength, and per-action test, bui
 > [!NOTE]
 > `gentle-ai install` requires Node.js 18+ and npm on every platform (it warns if either is missing). See [Prerequisites](docs/quickstart.md#prerequisites) for your distro's install hint.
 
-**macOS / Linux**
+**Every platform** — build from source. Requires Go 1.25.10+.
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Gentleman-Programming/gentle-ai/main/scripts/install.sh | bash
+git clone https://github.com/desarrollohg01/hgtran-ai.git
+cd hgtran-ai
+go build ./cmd/gentle-ai
 ```
 
-**Windows (PowerShell)**
-
-```powershell
-go install github.com/gentleman-programming/gentle-ai/v2/cmd/gentle-ai@latest
-```
+Put the resulting binary somewhere on your `PATH`. On Windows the file is `gentle-ai.exe`.
 
 > [!WARNING]
 > Windows source builds and CI/runtime tests remain supported, but official Windows binary distribution and Scoop are temporarily unavailable. Windows installation and upgrades require Go 1.25.10+ and fail closed to source-install guidance; they never download an unsigned hgtran-ai executable or execute a remote update script.
@@ -115,24 +107,9 @@ Run `gentle-ai doctor` at any time for a read-only health check of your ecosyste
 <details>
 <summary><strong>Alternative install and scope options</strong></summary>
 
-**Homebrew (macOS / Linux)**
+**Homebrew, Scoop and `go install` are not available yet.**
 
-```bash
-brew tap Gentleman-Programming/homebrew-tap
-brew trust --formula gentleman-programming/tap/gentle-ai  # one-time, for Homebrew tap trust
-brew install gentle-ai
-```
-
-**Go install (any platform with Go 1.25.10+)**
-
-```bash
-go install github.com/gentleman-programming/gentle-ai/v2/cmd/gentle-ai@latest
-```
-
-Note the `/v2` in the module path: Go requires it for major version 2 and
-above. Releases before `v2.0.0` use the unsuffixed path.
-
-**Scoop (Windows)** — temporarily unavailable while official Windows binary distribution is held for public-trust Authenticode signing. Use the Windows `go install` command above.
+`go.mod` declares the module as `bitbucket.org/hgt_development/hgtran-ai/v2`, and Go resolves a module by that declared path — not by where a clone came from. Until the repository is published there, `go install` cannot reach this code from either host. HG publishes no Homebrew tap and no Scoop bucket of its own either. Build from source as shown above.
 
 By default, `gentle-ai install` writes agent-scoped files to each selected agent's global config directory. To keep the hgtran-ai stack isolated to one project, run:
 
@@ -142,44 +119,20 @@ gentle-ai install --scope=workspace
 
 Workspace scope applies to selected agents for agent-scoped files such as system prompts, skills, SDD agents, and persona files. Global-only integrations remain global by design.
 
-**Beta channel** — use only to test unreleased `main` builds. It requires Go 1.25.10+:
-
-```bash
-# macOS / Linux
-curl -fsSL https://raw.githubusercontent.com/Gentleman-Programming/gentle-ai/main/scripts/install.sh | bash -s -- --channel beta
-
-# Windows (PowerShell)
-$env:GENTLE_AI_CHANNEL="beta"; go install github.com/gentleman-programming/gentle-ai/v2/cmd/gentle-ai@main
-```
+**Beta channel** — not available yet. It relies on the same unpublished module path and on an install script HG does not host; see the note above.
 
 ### RDD version policy
 
-Receipt-Driven Development (RDD) started in `gentle-ai` `v1.47.0` on 2026-07-10, with the first bounded native review transactions, and became the supported stable path in `v2.2.0`. The negotiated public review contract was published in `v2.1.6`.
+Receipt-Driven Development (RDD) started in `v1.47.0` on 2026-07-10, with the first bounded native review transactions, and became the supported stable path in `v2.2.0`. The negotiated public review contract was published in `v2.1.6`.
 
-Use `@latest` for the current release. Use `@main` only when you explicitly want unreleased development changes.
-
-**Latest release**
+Until the module is published, pinning a version means checking out its tag and building it:
 
 ```bash
-go install github.com/gentleman-programming/gentle-ai/v2/cmd/gentle-ai@latest
-gentle-ai version
+git checkout v2.2.0
+go build ./cmd/gentle-ai
 ```
 
-**Unreleased `main`**
-
-```bash
-go install github.com/gentleman-programming/gentle-ai/v2/cmd/gentle-ai@main
-gentle-ai version
-```
-
-**Unreleased RDD development build (`main`)**
-
-```bash
-go install github.com/gentleman-programming/gentle-ai/v2/cmd/gentle-ai@main
-gentle-ai version
-```
-
-The managed installer tracks the channel's latest version and does not accept an arbitrary release pin. Use `go install` when reproducibility requires an exact version.
+Selecting `@latest` or `@main` returns once `go install` can resolve the module.
 
 </details>
 
@@ -401,7 +354,7 @@ When you select OpenCode in the installer, hgtran-ai asks whether to register ea
 
 ### Contributors
 
-This project exists because of the community. See [CONTRIBUTORS.md](CONTRIBUTORS.md) for the full list.
+This is HG Transportaciones' internal fork. The code was written by the contributors of the upstream project, [Gentleman-Programming/gentle-ai](https://github.com/Gentleman-Programming/gentle-ai). See [CONTRIBUTORS.md](CONTRIBUTORS.md) for the full list.
 
 <a href="https://github.com/Gentleman-Programming/gentle-ai/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=Gentleman-Programming/gentle-ai" />
@@ -416,7 +369,7 @@ This project exists because of the community. See [CONTRIBUTORS.md](CONTRIBUTORS
 - **Reviewing a focused change?** Start with the [Organic RDD architecture](docs/architecture/organic-rdd.md) and [review authority threat model](docs/review-authority-threat-model.md).
 - **Maintaining hgtran-ai?** Use the [Codebase Guide](docs/CODEBASE-GUIDE.md) to find package ownership and review boundaries.
 - **Using Pi?** Read [Pi Agent](docs/pi.md) for the `gentle-pi` harness, Pi commands, persona, and model assignments.
-- **Ready to contribute?** Start at the [Community Roadmap](docs/community-roadmap.md) — everything labelled [`up-for-grabs`](https://github.com/Gentleman-Programming/gentle-ai/issues?q=is%3Aissue+is%3Aopen+label%3Aup-for-grabs) is scoped, approved and unclaimed. Then read [CONTRIBUTING.md](CONTRIBUTING.md).
+- **Ready to contribute?** Read [CONTRIBUTING.md](CONTRIBUTING.md). Issue tracking moves to HG's Bitbucket workspace along with the repository; until then there is no backlog here to claim from.
 
 ---
 
