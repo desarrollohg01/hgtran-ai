@@ -2,13 +2,15 @@
 schema: spec-driven
 
 context: |
-  Tech stack: Go 1.25.10, Bubbletea TUI (charmbracelet/bubbletea v1.3.10), lipgloss v1.1.0
-  Architecture: cmd/ entrypoints, internal/ packages (agents, tui, model, pipeline, catalog, system, planner, verify, update, opencode, installcmd, cli, app, components, state, backup, assets, agentbuilder)
-  Feature branch: feat/claude-contextual-skill-loading — contextual skill loading from Claude Code
+  Repo: desarrollohg01/hgtran-ai — HG Transportaciones fork of Gentleman-Programming/gentle-ai
+  Tech stack: Go (go.mod 1.25.10, local toolchain 1.26.2), Bubbletea TUI v1.3.10, bubbles v1.0.0, lipgloss v1.1.0
+  Architecture: cmd/gentle-ai is the product entrypoint, but NOT the only main package — go list reports three in the root module: cmd/gentle-ai, internal/gofmtcheck and internal/releasepolicycmd. There are NO .go files at the repo root, so CONTRIBUTING.md:98 "go build -o gga ." fails with "no Go files" — use go build ./cmd/gentle-ai. 29 top-level internal/ directories holding 64 Go packages per go list ./internal/... (agentbuilder, agents, app, assets, backup, catalog, cli, components, doctor, gofmtcheck, installcmd, model, opencode, pathidentity, pipeline, planner, recoverytrace, releasepolicy, releasepolicycmd, reviewtransaction, sddstatus, skillregistry, state, storage, system, tui, update, verify, versions)
+  Domain: RDD (receipt-driven development) — review authority, receipts/lineage, delivery gates, kill switches
   Agents: multi-agent support (claude, opencode, cursor, codex, gemini, vscode, windsurf, antigravity)
-  Skills catalog: internal/catalog/skills.go — known skill registry; project skills in skills/
-  Build: goreleaser (.goreleaser.yaml), CI: GitHub Actions (ci.yml, pr-check.yml, release.yml)
-  Style: gofmt (standard), go vet, no golangci-lint config found
+  Skills: AGENTS.md is the index; .atl/skill-registry.md is the generated delegator registry; internal/catalog/skills.go is the in-code known-skill registry; project skills in skills/
+  Build: goreleaser (.goreleaser.yaml). CI: GitHub Actions (ci.yml, pr-check.yml, release.yml, discord-notifications.yml, windows-full-suite.yml)
+  Style: gofmt + go vet; no golangci-lint config in repo
+  Artifact store: engram (namespace `hgtran-ai`) — this file is config only, not the artifact trail
 
 strict_tdd: true
 
@@ -27,42 +29,54 @@ rules:
     - Use hierarchical numbering (1.1, 1.2, etc.)
     - Keep tasks small enough to complete in one session
   apply:
-    - Load gentleman-bubbletea skill for TUI work (internal/tui/)
-    - Load gentleman-installer skill for installation steps
-    - Load gentleman-system skill for OS/system detection
+    - Resolve skills from .atl/skill-registry.md; pass exact SKILL.md paths, never summaries
     - Load go-testing skill when writing tests
+    - Load rdd-defect-workflow skill for receipt, authority, lineage, or delivery-gate work
+    - Load work-unit-commits skill when splitting implementation into commits
+    - For TUI work (internal/tui/), follow existing Bubbletea patterns in that package — tests drive model.Update() directly with tea.KeyMsg, teatest is not used
     - Follow existing code patterns in internal/ packages
   verify:
     - Run: go test ./...
     - Run: go vet ./...
     - Compare implementation against every spec scenario
+    - Check root ratchet baselines (.deadcode-baseline.txt, .guard-population-baseline.txt, .refusal-ratchet-baseline.txt); update them deliberately, never silently
   archive:
     - Warn before merging destructive deltas (large removals)
 
 testing:
   strict_tdd: true
-  detected: "2026-05-05"
+  detected: "2026-08-03"
 
   runner:
     command: "go test ./..."
     framework: "Go standard testing"
+    note: "Runner reachable as of 2026-08-03, spot-checked with go test ./internal/versions/... — the full ./... suite was not run at detection time"
 
   layers:
     unit:
       available: true
       tool: "go test"
-      note: "132 test files across internal/ packages"
+      note: "517 *_test.go files total — 501 under internal/, 11 under bench/, 5 under e2e/organicruntime. None at the repo root"
     integration:
       available: true
       tool: "net/http/httptest (built-in)"
     e2e:
       available: true
-      tool: "Docker-based E2E (e2e/docker-test.sh)"
-      note: "Dockerfile.ubuntu, Dockerfile.fedora, Dockerfile.arch — triggered by RUN_FULL_E2E=1"
+      tool: "Docker-based E2E (e2e/docker-test.sh, e2e/e2e_test.sh)"
+      note: >-
+        Tiers per e2e/e2e_test.sh:5-7 — Tier 1 (binary + dry-run) is the default; RUN_FULL_E2E=1
+        adds Tier 2 (full install, writes to filesystem); RUN_BACKUP_TESTS=1 adds Tier 3
+        (backup/restore). RUN_FULL_E2E does NOT gate Tier 3. Both variables share the same
+        activation expression in ci.yml:342-343 — push or schedule events only — so pull_request
+        runs are Tier 1. Two other E2E jobs are gated by neither variable and both run on every
+        trigger: claude-network-none (ci.yml:109), and organic-runtime-e2e (ci.yml:237) — the
+        latter has no job-level condition. GENTLE_AI_REAL_AGENT_E2E is hardcoded to "1"
+        (ci.yml:286) and GENTLE_AI_LARGE_WORKSPACE_E2E varies only by matrix OS (ci.yml:291);
+        they select which journeys self-skip inside the test binary, they do not gate the job.
     tui:
       available: true
       tool: "bubbletea tea.KeyMsg simulation (no teatest — direct model.Update() testing)"
-      note: "TUI tests use direct Bubbletea model updates, not teatest library"
+      note: "TUI tests use direct Bubbletea model updates, not the teatest library"
 
   coverage:
     available: true
@@ -77,4 +91,8 @@ testing:
       command: "go vet ./..."
     formatter:
       available: true
-      command: "gofmt"
+      command: "go run ./internal/gofmtcheck"
+      note: >-
+        Use the in-repo checker, not gofmt directly. Bare gofmt reads stdin and never fails;
+        gofmt -l . lists unformatted files but still exits 0. The plain-shell form that does
+        fail is: test -z "$(gofmt -l .)"

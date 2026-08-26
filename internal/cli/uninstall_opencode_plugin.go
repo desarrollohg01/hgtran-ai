@@ -9,8 +9,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/gentleman-programming/gentle-ai/v2/internal/components/opencodeplugin"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/model"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/opencodeplugin"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
 )
 
 // UninstallOpenCodePluginFlags are the parsed flags for the

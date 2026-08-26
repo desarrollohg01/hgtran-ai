@@ -273,7 +273,7 @@ func TestGitCommonDirectoryMismatchFailsBeforeAuthorityMutation(t *testing.T) {
 			if err := operation.run(ctx, repo); err == nil {
 				t.Error("operation accepted an unrelated Git common directory")
 			}
-			for _, path := range []string{filepath.Join(unrelated, "gentle-ai"), filepath.Join(home, ".gentle-ai")} {
+			for _, path := range []string{filepath.Join(unrelated, "gentle-ai"), filepath.Join(home, ".hgtran-ai")} {
 				if _, err := os.Lstat(path); !os.IsNotExist(err) {
 					t.Errorf("rejected common directory mutated %q: %v", path, err)
 				}

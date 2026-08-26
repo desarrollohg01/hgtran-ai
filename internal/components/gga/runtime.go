@@ -4,18 +4,18 @@ import (
 	"fmt"
 	"path/filepath"
 
-	"github.com/gentleman-programming/gentle-ai/v2/internal/assets"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/components/filemerge"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/assets"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/filemerge"
 )
 
 // RuntimeLibDir returns the runtime lib path used by gga.
 func RuntimeLibDir(homeDir string) string {
-	return filepath.Join(homeDir, ".local", "share", "gga", "lib")
+	return filepath.Join(homeDir, ".local", "share", "hga", "lib")
 }
 
 // RuntimeBinDir returns ~/.local/share/gga/bin — where GGA's bash script lives on Linux/Windows.
 func RuntimeBinDir(homeDir string) string {
-	return filepath.Join(homeDir, ".local", "share", "gga", "bin")
+	return filepath.Join(homeDir, ".local", "share", "hga", "bin")
 }
 
 // RuntimePRModePath returns the expected pr_mode.sh runtime path.
@@ -26,13 +26,13 @@ func RuntimePRModePath(homeDir string) string {
 // RuntimePS1Path returns the expected gga.ps1 path.
 // On Windows, the shim goes to ~/bin/ so PowerShell finds it as a native command.
 func RuntimePS1Path(homeDir string) string {
-	return filepath.Join(homeDir, "bin", "gga.ps1")
+	return filepath.Join(homeDir, "bin", "hga.ps1")
 }
 
 // RuntimeCMDPath returns the expected gga.cmd path.
 // On Windows, cmd.exe and exec.LookPath resolve .cmd files through PATHEXT.
 func RuntimeCMDPath(homeDir string) string {
-	return filepath.Join(homeDir, "bin", "gga.cmd")
+	return filepath.Join(homeDir, "bin", "hga.cmd")
 }
 
 // EnsureRuntimeAssets ensures critical gga runtime files are current.
@@ -63,7 +63,7 @@ func EnsureRuntimeAssets(homeDir string) error {
 func EnsurePowerShellShim(homeDir string) error {
 	ps1Path := RuntimePS1Path(homeDir)
 
-	content, err := assets.Read("gga/gga.ps1")
+	content, err := assets.Read("gga/hga.ps1")
 	if err != nil {
 		return fmt.Errorf("read embedded gga runtime asset gga.ps1: %w", err)
 	}
@@ -80,7 +80,7 @@ func EnsurePowerShellShim(homeDir string) error {
 func EnsureCommandShim(homeDir string) error {
 	cmdPath := RuntimeCMDPath(homeDir)
 
-	content, err := assets.Read("gga/gga.cmd")
+	content, err := assets.Read("gga/hga.cmd")
 	if err != nil {
 		return fmt.Errorf("read embedded gga runtime asset gga.cmd: %w", err)
 	}

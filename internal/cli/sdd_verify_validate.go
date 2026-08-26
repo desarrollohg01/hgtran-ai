@@ -9,7 +9,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/gentleman-programming/gentle-ai/v2/internal/sddstatus"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/sddstatus"
 )
 
 const maxVerifyReportBytes = 1 << 20

@@ -4,9 +4,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/gentleman-programming/gentle-ai/v2/internal/model"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/planner"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/verify"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/planner"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/verify"
 )
 
 // TestWithPostInstallNotesNamesOnlyTheInstalledRunnableAgents closes fisidj

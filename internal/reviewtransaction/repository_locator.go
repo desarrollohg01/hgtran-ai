@@ -14,6 +14,8 @@ import (
 	"path/filepath"
 	"runtime"
 	"strings"
+
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/statepath"
 )
 
 const (
@@ -397,7 +399,7 @@ func reviewRepositoryContextPath(handle string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return filepath.Join(home, ".gentle-ai", "review-contexts", "v1", handle+".json"), nil
+	return filepath.Join(statepath.ReviewContexts(home), "v1", handle+".json"), nil
 }
 
 func reviewRepositoryContextHome() (string, error) {
@@ -409,7 +411,7 @@ func reviewRepositoryContextHome() (string, error) {
 }
 
 func ensureReviewRepositoryContextStorageRoot(home string, create bool) (string, error) {
-	root := filepath.Join(home, ".gentle-ai")
+	root := statepath.Root(home)
 	if !locatorPathWithin(home, root) {
 		return "", errors.New("review repository context storage root escapes HOME")
 	}

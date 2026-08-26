@@ -1,6 +1,6 @@
 package catalog
 
-import "github.com/gentleman-programming/gentle-ai/v2/internal/model"
+import "bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
 
 type Agent struct {
 	ID         model.AgentID

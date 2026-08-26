@@ -13,8 +13,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/gentleman-programming/gentle-ai/v2/internal/system"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/update"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/update"
 )
 
 func TestMain(m *testing.M) {
@@ -118,8 +118,8 @@ func TestRunStrategy_BetaGentleAISelfUpgradeUsesGoInstallMain(t *testing.T) {
 	r := update.UpdateResult{
 		Tool: update.ToolInfo{
 			Name:          "gentle-ai",
-			Owner:         "Gentleman-Programming",
-			Repo:          "gentle-ai",
+			Owner:         "desarrollohg01",
+			Repo:          "hgtran-ai",
 			InstallMethod: update.InstallBinary,
 		},
 		LatestVersion: "main@972997650b51",
@@ -135,14 +135,14 @@ func TestRunStrategy_BetaGentleAISelfUpgradeUsesGoInstallMain(t *testing.T) {
 	if gotName != "go" {
 		t.Fatalf("exec name = %q, want %q", gotName, "go")
 	}
-	wantArgs := []string{"install", "github.com/gentleman-programming/gentle-ai/v2/cmd/gentle-ai@main"}
+	wantArgs := []string{"install", "bitbucket.org/hgt_development/hgtran-ai/v2/cmd/gentle-ai@main"}
 	if len(gotArgs) != len(wantArgs) || gotArgs[0] != wantArgs[0] || gotArgs[1] != wantArgs[1] {
 		t.Fatalf("exec args = %v, want %v", gotArgs, wantArgs)
 	}
 	for _, want := range []string{
-		"GONOSUMDB=github.com/gentleman-programming/gentle-ai/v2",
-		"GOPRIVATE=github.com/gentleman-programming/gentle-ai/v2",
-		"GONOPROXY=github.com/gentleman-programming/gentle-ai/v2",
+		"GONOSUMDB=bitbucket.org/hgt_development/hgtran-ai/v2",
+		"GOPRIVATE=bitbucket.org/hgt_development/hgtran-ai/v2",
+		"GONOPROXY=bitbucket.org/hgt_development/hgtran-ai/v2",
 	} {
 		if !envContains(gotCmd.Env, want) {
 			t.Fatalf("go install env missing %q in %v", want, gotCmd.Env)
@@ -160,19 +160,19 @@ func envContains(env []string, want string) bool {
 }
 
 func TestGoProxyBypassEnvPreservesExistingPatterns(t *testing.T) {
-	module := "github.com/gentleman-programming/gentle-ai/v2"
+	module := "bitbucket.org/hgt_development/hgtran-ai/v2"
 	env := goProxyBypassEnv([]string{
 		"PATH=/usr/bin",
 		"GONOSUMDB=example.com/private",
 		"GOPRIVATE=github.com/acme/*",
-		"GONOPROXY=github.com/gentleman-programming/gentle-ai/v2",
+		"GONOPROXY=bitbucket.org/hgt_development/hgtran-ai/v2",
 	}, module)
 
 	for _, want := range []string{
 		"PATH=/usr/bin",
-		"GONOSUMDB=github.com/gentleman-programming/gentle-ai/v2,example.com/private",
-		"GOPRIVATE=github.com/gentleman-programming/gentle-ai/v2,github.com/acme/*",
-		"GONOPROXY=github.com/gentleman-programming/gentle-ai/v2",
+		"GONOSUMDB=bitbucket.org/hgt_development/hgtran-ai/v2,example.com/private",
+		"GOPRIVATE=bitbucket.org/hgt_development/hgtran-ai/v2,github.com/acme/*",
+		"GONOPROXY=bitbucket.org/hgt_development/hgtran-ai/v2",
 	} {
 		if !envContains(env, want) {
 			t.Fatalf("env missing %q in %v", want, env)
@@ -307,7 +307,7 @@ func TestEffectiveMethodGentleAIOnWindowsUsesFailClosedBinaryPolicy(t *testing.T
 	// against the Go checksum database, since goInstallUpgrade does not touch
 	// cmd.Env — is the only automatic upgrade path Windows has.
 	t.Run("Go availability upgrades through a pinned go install", func(t *testing.T) {
-		tool := update.ToolInfo{Name: "gentle-ai", InstallMethod: update.InstallBinary, GoImportPath: "github.com/Gentleman-Programming/gentle-ai/v2/cmd/gentle-ai"}
+		tool := update.ToolInfo{Name: "gentle-ai", InstallMethod: update.InstallBinary, GoImportPath: "bitbucket.org/hgt_development/hgtran-ai/v2/cmd/gentle-ai"}
 		profile := system.PlatformProfile{OS: "windows", PackageManager: "winget", GoAvailable: true}
 		method := effectiveMethod(tool, profile)
 		if method != update.InstallGoInstall {
@@ -334,7 +334,7 @@ func TestEffectiveMethod_NonGentleAIToolsOnWindowsUseBinary(t *testing.T) {
 		},
 		{
 			name: "gga uses script",
-			tool: update.ToolInfo{Name: "gga", InstallMethod: update.InstallScript},
+			tool: update.ToolInfo{Name: "hga", InstallMethod: update.InstallScript},
 			want: update.InstallScript,
 		},
 		{
@@ -377,14 +377,14 @@ func TestEffectiveMethod(t *testing.T) {
 		},
 		{
 			name:          "brew-owned package overrides binary",
-			tool:          update.ToolInfo{Name: "gga", InstallMethod: update.InstallBinary},
+			tool:          update.ToolInfo{Name: "hga", InstallMethod: update.InstallBinary},
 			profile:       system.PlatformProfile{PackageManager: "brew"},
 			brewInstalled: true,
 			want:          update.InstallBrew,
 		},
 		{
 			name:          "brew-owned package overrides script",
-			tool:          update.ToolInfo{Name: "gga", InstallMethod: update.InstallScript},
+			tool:          update.ToolInfo{Name: "hga", InstallMethod: update.InstallScript},
 			profile:       system.PlatformProfile{PackageManager: "brew"},
 			brewInstalled: true,
 			want:          update.InstallBrew,
@@ -409,13 +409,13 @@ func TestEffectiveMethod(t *testing.T) {
 		},
 		{
 			name:    "apt profile respects declared method (binary)",
-			tool:    update.ToolInfo{Name: "gga", InstallMethod: update.InstallBinary},
+			tool:    update.ToolInfo{Name: "hga", InstallMethod: update.InstallBinary},
 			profile: system.PlatformProfile{PackageManager: "apt"},
 			want:    update.InstallBinary,
 		},
 		{
 			name:    "apt profile respects declared method (script)",
-			tool:    update.ToolInfo{Name: "gga", InstallMethod: update.InstallScript},
+			tool:    update.ToolInfo{Name: "hga", InstallMethod: update.InstallScript},
 			profile: system.PlatformProfile{PackageManager: "apt"},
 			want:    update.InstallScript,
 		},
@@ -1212,7 +1212,7 @@ func TestRunStrategy_ScriptUpgradeSuccess(t *testing.T) {
 
 	r := update.UpdateResult{
 		Tool: update.ToolInfo{
-			Name:          "gga",
+			Name:          "hga",
 			Owner:         "Gentleman-Programming",
 			Repo:          "gentleman-guardian-angel",
 			InstallMethod: update.InstallScript,
@@ -1253,7 +1253,7 @@ func TestRunStrategy_ScriptUpgradeDownloadFailure(t *testing.T) {
 
 	r := update.UpdateResult{
 		Tool: update.ToolInfo{
-			Name:          "gga",
+			Name:          "hga",
 			Owner:         "Gentleman-Programming",
 			Repo:          "gentleman-guardian-angel",
 			InstallMethod: update.InstallScript,
@@ -1282,7 +1282,7 @@ func TestRunStrategy_ScriptUpgradeWindowsManualFallback(t *testing.T) {
 
 	r := update.UpdateResult{
 		Tool: update.ToolInfo{
-			Name:          "gga",
+			Name:          "hga",
 			Owner:         "Gentleman-Programming",
 			Repo:          "gentleman-guardian-angel",
 			InstallMethod: update.InstallScript,
@@ -1331,7 +1331,7 @@ func TestGGAScriptUpgradeUsesGitClone(t *testing.T) {
 
 	r := update.UpdateResult{
 		Tool: update.ToolInfo{
-			Name:          "gga",
+			Name:          "hga",
 			Owner:         "Gentleman-Programming",
 			Repo:          "gentleman-guardian-angel",
 			InstallMethod: update.InstallScript,
@@ -1418,7 +1418,7 @@ func TestGGAScriptUpgradeWindowsManualFallback(t *testing.T) {
 
 	r := update.UpdateResult{
 		Tool: update.ToolInfo{
-			Name:          "gga",
+			Name:          "hga",
 			Owner:         "Gentleman-Programming",
 			Repo:          "gentleman-guardian-angel",
 			InstallMethod: update.InstallScript,
@@ -1466,7 +1466,7 @@ func TestRunStrategy_GGAUsesGitClone(t *testing.T) {
 
 	r := update.UpdateResult{
 		Tool: update.ToolInfo{
-			Name:          "gga",
+			Name:          "hga",
 			Owner:         "Gentleman-Programming",
 			Repo:          "gentleman-guardian-angel",
 			InstallMethod: update.InstallScript,
@@ -1682,7 +1682,7 @@ func TestRunStrategy_ScriptUpgradeExecFailure(t *testing.T) {
 
 	r := update.UpdateResult{
 		Tool: update.ToolInfo{
-			Name:          "gga",
+			Name:          "hga",
 			Owner:         "Gentleman-Programming",
 			Repo:          "gentleman-guardian-angel",
 			InstallMethod: update.InstallScript,

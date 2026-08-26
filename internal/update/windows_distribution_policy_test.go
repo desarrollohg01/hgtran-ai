@@ -6,11 +6,11 @@ import (
 	"os/exec"
 	"path/filepath"
 	"regexp"
-	"runtime"
 	"strings"
 	"testing"
 	"time"
 
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/symlinktest"
 	"gopkg.in/yaml.v3"
 )
 
@@ -70,7 +70,7 @@ func TestWindowsInstallAndUpgradeContainNoRemoteBinaryOrScriptPath(t *testing.T)
 	}
 	for _, required := range []string{
 		"Windows binary distribution and Scoop are temporarily unavailable",
-		"go install github.com/gentleman-programming/gentle-ai/v2/cmd/gentle-ai@latest",
+		"go install bitbucket.org/hgt_development/hgtran-ai/v2/cmd/gentle-ai@latest",
 	} {
 		if !strings.Contains(installer, required) {
 			t.Errorf("Windows installer is missing safe source guidance %q", required)
@@ -195,12 +195,7 @@ func TestReleaseDistributionPolicyAssertionFailsClosed(t *testing.T) {
 				if err := os.WriteFile(outside, []byte("stale external binary"), 0o600); err != nil {
 					t.Fatal(err)
 				}
-				if err := os.Symlink(outside, output); err != nil {
-					if runtime.GOOS == "windows" {
-						t.Skipf("Windows runner cannot create symlink fixture: %v", err)
-					}
-					t.Fatal(err)
-				}
+				symlinktest.MustSymlink(t, outside, output)
 			},
 		},
 		{

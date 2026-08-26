@@ -1,6 +1,6 @@
 package assets
 
-import "github.com/gentleman-programming/gentle-ai/v2/internal/model"
+import "bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
 
 // SDDCommandsAssetDir returns the embedded slash-command asset directory for an
 // agent. Claude uses Claude-native frontmatter under claude/commands; agents

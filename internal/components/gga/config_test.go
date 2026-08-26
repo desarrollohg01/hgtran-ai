@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/gentleman-programming/gentle-ai/v2/internal/model"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
 )
 
 func TestProviderForAgents(t *testing.T) {
@@ -212,12 +212,12 @@ func TestGGAConfigDirLinux(t *testing.T) {
 		{
 			name:    "standard home dir",
 			homeDir: "/home/user",
-			want:    filepath.Join("/home/user", ".config", "gga"),
+			want:    filepath.Join("/home/user", ".config", "hga"),
 		},
 		{
 			name:    "root home dir",
 			homeDir: "/root",
-			want:    filepath.Join("/root", ".config", "gga"),
+			want:    filepath.Join("/root", ".config", "hga"),
 		},
 	}
 	for _, tt := range tests {
@@ -232,7 +232,7 @@ func TestGGAConfigDirLinux(t *testing.T) {
 
 func TestGGAConfigDirDarwin(t *testing.T) {
 	got := ggaConfigDir("/Users/testuser", "darwin")
-	want := filepath.Join("/Users/testuser", ".config", "gga")
+	want := filepath.Join("/Users/testuser", ".config", "hga")
 	if got != want {
 		t.Fatalf("ggaConfigDir(%q, \"darwin\") = %q, want %q", "/Users/testuser", got, want)
 	}
@@ -249,13 +249,13 @@ func TestGGAConfigDirWindows(t *testing.T) {
 			name:       "APPDATA set to standard roaming path",
 			homeDir:    `C:\Users\testuser`,
 			appDataEnv: `C:\Users\testuser\AppData\Roaming`,
-			wantSuffix: filepath.Join(`C:\Users\testuser\AppData\Roaming`, "gga"),
+			wantSuffix: filepath.Join(`C:\Users\testuser\AppData\Roaming`, "hga"),
 		},
 		{
 			name:       "APPDATA set to custom path",
 			homeDir:    `C:\Users\other`,
 			appDataEnv: `D:\custom\appdata`,
-			wantSuffix: filepath.Join(`D:\custom\appdata`, "gga"),
+			wantSuffix: filepath.Join(`D:\custom\appdata`, "hga"),
 		},
 	}
 	for _, tt := range tests {
@@ -273,7 +273,7 @@ func TestGGAConfigDirWindowsNoAPPDATA(t *testing.T) {
 	// When APPDATA is unset, the fallback must be derived from homeDir.
 	t.Setenv("APPDATA", "")
 	got := ggaConfigDir(`C:\Users\testuser`, "windows")
-	want := filepath.Join(`C:\Users\testuser`, "AppData", "Roaming", "gga")
+	want := filepath.Join(`C:\Users\testuser`, "AppData", "Roaming", "hga")
 	if got != want {
 		t.Fatalf("ggaConfigDir fallback = %q, want %q", got, want)
 	}

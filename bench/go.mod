@@ -1,3 +1,3 @@
-module github.com/gentleman-programming/gentle-ai/bench
+module bitbucket.org/hgt_development/hgtran-ai/bench
 
 go 1.25.10

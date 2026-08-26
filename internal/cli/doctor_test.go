@@ -12,7 +12,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/gentleman-programming/gentle-ai/v2/internal/doctor"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/doctor"
 )
 
 // --- checkOneTool ---
@@ -178,19 +178,19 @@ func TestCheckOneTool_WindowsPowerShellShimFallback(t *testing.T) {
 	executableExtsFn = func() []string { return []string{".exe", ".cmd"} }
 
 	dir := t.TempDir()
-	ps1Path := filepath.Join(dir, "gga.ps1")
+	ps1Path := filepath.Join(dir, "hga.ps1")
 	if err := os.WriteFile(ps1Path, []byte("fake"), 0o755); err != nil {
 		t.Fatal(err)
 	}
 
 	lookPathFn = func(file string) (string, error) {
-		if file == "gga.ps1" {
+		if file == "hga.ps1" {
 			return ps1Path, nil
 		}
 		return "", errors.New("not found")
 	}
 
-	got := checkOneTool("gga", []string{dir})
+	got := checkOneTool("hga", []string{dir})
 
 	if got.Status != CheckStatusPass {
 		t.Fatalf("expected pass, got %s: %s", got.Status, got.Detail)
@@ -213,21 +213,21 @@ func TestCheckOneTool_WindowsShimVariantsInSameDirAreNotDuplicates(t *testing.T)
 	executableExtsFn = func() []string { return []string{".cmd"} }
 
 	dir := t.TempDir()
-	cmdPath := filepath.Join(dir, "gga.cmd")
-	for _, path := range []string{cmdPath, filepath.Join(dir, "gga.ps1")} {
+	cmdPath := filepath.Join(dir, "hga.cmd")
+	for _, path := range []string{cmdPath, filepath.Join(dir, "hga.ps1")} {
 		if err := os.WriteFile(path, []byte("fake"), 0o755); err != nil {
 			t.Fatal(err)
 		}
 	}
 
 	lookPathFn = func(file string) (string, error) {
-		if file == "gga" {
+		if file == "hga" {
 			return cmdPath, nil
 		}
 		return "", errors.New("not found")
 	}
 
-	got := checkOneTool("gga", []string{dir})
+	got := checkOneTool("hga", []string{dir})
 
 	if got.Status != CheckStatusPass {
 		t.Fatalf("expected pass for same-directory shim variants, got %s: %s", got.Status, got.Detail)
@@ -307,7 +307,7 @@ func TestCheckStateJSON_Missing(t *testing.T) {
 
 func TestCheckStateJSON_Malformed(t *testing.T) {
 	homeDir := t.TempDir()
-	stateDir := filepath.Join(homeDir, ".gentle-ai")
+	stateDir := filepath.Join(homeDir, ".hgtran-ai")
 	if err := os.MkdirAll(stateDir, 0o755); err != nil {
 		t.Fatal(err)
 	}
@@ -327,7 +327,7 @@ func TestCheckStateJSON_Malformed(t *testing.T) {
 
 func TestCheckStateJSON_AgentConfigDirMissing(t *testing.T) {
 	homeDir := t.TempDir()
-	stateDir := filepath.Join(homeDir, ".gentle-ai")
+	stateDir := filepath.Join(homeDir, ".hgtran-ai")
 	if err := os.MkdirAll(stateDir, 0o755); err != nil {
 		t.Fatal(err)
 	}
@@ -349,7 +349,7 @@ func TestCheckStateJSON_AgentConfigDirMissing(t *testing.T) {
 
 func TestCheckStateJSON_OK(t *testing.T) {
 	homeDir := t.TempDir()
-	stateDir := filepath.Join(homeDir, ".gentle-ai")
+	stateDir := filepath.Join(homeDir, ".hgtran-ai")
 	if err := os.MkdirAll(stateDir, 0o755); err != nil {
 		t.Fatal(err)
 	}
@@ -491,7 +491,7 @@ func TestRunDoctor_IntegrationAllMocked(t *testing.T) {
 	}()
 
 	homeDir := t.TempDir()
-	stateDir := filepath.Join(homeDir, ".gentle-ai")
+	stateDir := filepath.Join(homeDir, ".hgtran-ai")
 	if err := os.MkdirAll(stateDir, 0o755); err != nil {
 		t.Fatal(err)
 	}
@@ -538,7 +538,7 @@ func TestRunDoctor_IntegrationAllMocked(t *testing.T) {
 
 Summary: 7 passed, 0 failed, 0 warnings
 Status:  healthy
-`, filepath.Join(homeDir, ".gentle-ai"))
+`, filepath.Join(homeDir, ".hgtran-ai"))
 	if got := buf.String(); got != want {
 		t.Fatalf("RunDoctor output mismatch\ngot:\n%s\nwant:\n%s", got, want)
 	}
@@ -769,7 +769,7 @@ func TestRunDoctor_OnlySelectedAgentsAreRequired(t *testing.T) {
 	executableExtsFn = func() []string { return []string{""} }
 
 	homeDir := t.TempDir()
-	stateDir := filepath.Join(homeDir, ".gentle-ai")
+	stateDir := filepath.Join(homeDir, ".hgtran-ai")
 	if err := os.MkdirAll(stateDir, 0o755); err != nil {
 		t.Fatal(err)
 	}

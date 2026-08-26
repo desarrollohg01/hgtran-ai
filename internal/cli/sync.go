@@ -14,24 +14,25 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gentleman-programming/gentle-ai/v2/internal/agents"
-	opencodeagent "github.com/gentleman-programming/gentle-ai/v2/internal/agents/opencode"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/backup"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/components/communitytool"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/components/engram"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/components/filemerge"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/components/gga"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/components/mcp"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/components/opencodeplugin"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/components/permissions"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/components/persona"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/components/sdd"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/components/skills"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/components/theme"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/model"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/pipeline"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/state"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/verify"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents"
+	opencodeagent "bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/opencode"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/backup"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/communitytool"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/engram"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/filemerge"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/gga"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/mcp"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/opencodeplugin"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/permissions"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/persona"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/sdd"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/skills"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/theme"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/pipeline"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/state"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/statepath"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/verify"
 )
 
 // SyncFlags holds parsed CLI flags for the sync command.
@@ -453,7 +454,7 @@ type syncRuntime struct {
 }
 
 func newSyncRuntime(homeDir string, selection model.Selection) (*syncRuntime, error) {
-	backupRoot := filepath.Join(homeDir, ".gentle-ai", "backups")
+	backupRoot := statepath.Backups(homeDir)
 	if err := os.MkdirAll(backupRoot, 0o755); err != nil {
 		return nil, fmt.Errorf("create backup root directory %q: %w", backupRoot, err)
 	}
@@ -1549,7 +1550,7 @@ func restorePersistedCommunityTools(homeDir string, selection *model.Selection, 
 }
 
 func hasManagedPiCodeGraphManifest(homeDir string) bool {
-	path := filepath.Join(homeDir, ".gentle-ai", "pi-codegraph.json")
+	path := statepath.PiCodeGraphManifest(homeDir)
 	info, err := os.Lstat(path)
 	if err != nil || !info.Mode().IsRegular() || runtime.GOOS != "windows" && info.Mode().Perm()&0o077 != 0 {
 		return false

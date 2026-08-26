@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
+
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/statepath"
 )
 
 // BackupSource identifies what operation created a backup.
@@ -139,7 +141,7 @@ func backupRoot() (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("resolve home directory: %w", err)
 	}
-	return filepath.Join(home, ".gentle-ai", "backups"), nil
+	return statepath.Backups(home), nil
 }
 
 // BackupRootFn is the function used to resolve the backup root directory.

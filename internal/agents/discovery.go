@@ -4,7 +4,7 @@ import (
 	"context"
 	"os"
 
-	"github.com/gentleman-programming/gentle-ai/v2/internal/model"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
 )
 
 // InstalledAgent pairs an agent ID with its resolved config root directory.

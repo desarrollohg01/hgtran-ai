@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strings"
 
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/tui/styles"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/update"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/tui/styles"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/update"
 	"github.com/rivo/uniseg"
 )
 

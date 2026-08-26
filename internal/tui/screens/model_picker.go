@@ -10,10 +10,10 @@ import (
 	"time"
 	"unicode"
 
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/opencode"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/tui/styles"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/model"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/opencode"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/tui/styles"
 )
 
 // ModelPickerMode represents the current sub-mode of the model picker screen.

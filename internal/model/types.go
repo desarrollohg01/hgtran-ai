@@ -41,7 +41,7 @@ const (
 	ComponentContext7           ComponentID = "context7"
 	ComponentPersona            ComponentID = "persona"
 	ComponentPermission         ComponentID = "permissions"
-	ComponentGGA                ComponentID = "gga"
+	ComponentGGA                ComponentID = "hga"
 	ComponentTheme              ComponentID = "theme"
 	ComponentClaudeTheme        ComponentID = "claude-theme"
 	ComponentOpenCodeGentleLogo ComponentID = "opencode-gentle-logo"
@@ -88,6 +88,11 @@ const (
 	SkillCommentWriter     SkillID = "comment-writer"
 	SkillWorkUnitCommits   SkillID = "work-unit-commits"
 	SkillRDDDefectWorkflow SkillID = "rdd-defect-workflow"
+	SkillBackendCRUD       SkillID = "backend-crud-standard"
+	SkillFrontendCRUD      SkillID = "frontend-crud-standard"
+	SkillDBChange          SkillID = "db-change-standard"
+	SkillRealVerification  SkillID = "real-system-verification"
+	SkillPatternStandard   SkillID = "pattern-to-standard"
 )
 
 type PersonaID string

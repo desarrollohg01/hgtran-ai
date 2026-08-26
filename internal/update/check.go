@@ -8,7 +8,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/gentleman-programming/gentle-ai/v2/internal/system"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
 )
 
 var updateChannelEnv = os.Getenv
@@ -164,7 +164,7 @@ func usesBetaMainHeadCheck(tool ToolInfo, currentVersion string) bool {
 }
 
 func isGentleAIRepo(tool ToolInfo) bool {
-	return tool.Name == "gentle-ai" && strings.EqualFold(tool.Owner, "Gentleman-Programming") && tool.Repo == "gentle-ai"
+	return tool.Name == "gentle-ai" && strings.EqualFold(tool.Owner, "desarrollohg01") && tool.Repo == "hgtran-ai"
 }
 
 func isBetaUpdateChannel() bool {

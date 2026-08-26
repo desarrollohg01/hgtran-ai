@@ -13,32 +13,33 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gentleman-programming/gentle-ai/v2/internal/agents"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/agents/claude"
-	codexagent "github.com/gentleman-programming/gentle-ai/v2/internal/agents/codex"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/agents/kimi"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/assets"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/backup"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/components/agentguidance"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/components/communitytool"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/components/engram"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/components/filemerge"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/components/gga"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/components/mcp"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/components/opencodedefault"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/components/opencodeplugin"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/components/permissions"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/components/persona"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/components/sdd"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/components/skills"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/components/theme"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/installcmd"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/model"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/pipeline"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/planner"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/state"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/system"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/verify"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/claude"
+	codexagent "bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/codex"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/kimi"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/assets"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/backup"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/agentguidance"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/communitytool"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/engram"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/filemerge"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/gga"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/mcp"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/opencodedefault"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/opencodeplugin"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/permissions"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/persona"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/sdd"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/skills"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/theme"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/installcmd"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/pipeline"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/planner"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/state"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/statepath"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/verify"
 )
 
 type InstallResult struct {
@@ -577,7 +578,7 @@ func (s *runtimeState) cleanupRollbackSnapshot() {
 }
 
 func newInstallRuntime(homeDir string, scope InstallScope, channel InstallChannel, selection model.Selection, resolved planner.ResolvedPlan, profile system.PlatformProfile) (*installRuntime, error) {
-	backupRoot := filepath.Join(homeDir, ".gentle-ai", "backups")
+	backupRoot := statepath.Backups(homeDir)
 	if err := os.MkdirAll(backupRoot, 0o755); err != nil {
 		return nil, fmt.Errorf("create backup root directory %q: %w", backupRoot, err)
 	}
@@ -1545,7 +1546,7 @@ func windowsGoCandidates() []string {
 // It is used by both the CLI and TUI paths.
 // scope controls where agent config files are written (ScopeGlobal writes to homeDir, ScopeWorkspace writes to cwd).
 func BuildRealStagePlan(homeDir string, scope InstallScope, selection model.Selection, resolved planner.ResolvedPlan, profile system.PlatformProfile) (pipeline.StagePlan, error) {
-	backupRoot := filepath.Join(homeDir, ".gentle-ai", "backups")
+	backupRoot := statepath.Backups(homeDir)
 	if err := os.MkdirAll(backupRoot, 0o755); err != nil {
 		return pipeline.StagePlan{}, fmt.Errorf("create backup root directory %q: %w", backupRoot, err)
 	}
@@ -1612,14 +1613,14 @@ func ggaAvailable(profile system.PlatformProfile) bool {
 	if ggaAvailableCheck != nil {
 		return ggaAvailableCheck(profile)
 	}
-	if _, err := cmdLookPath("gga"); err == nil {
+	if _, err := cmdLookPath("hga"); err == nil {
 		return true
 	}
 	homeDir, err := osUserHomeDir()
 	if err != nil {
 		return false
 	}
-	if _, err := osStat(filepath.Join(homeDir, ".local", "bin", "gga")); err == nil {
+	if _, err := osStat(filepath.Join(homeDir, ".local", "bin", "hga")); err == nil {
 		return true
 	}
 	// Check well-known Homebrew prefixes for macOS (arm64 and x86).
@@ -1636,7 +1637,7 @@ func ggaAvailable(profile system.PlatformProfile) bool {
 		}
 	}
 	if profile.OS == "windows" {
-		if _, err := osStat(filepath.Join(homeDir, "bin", "gga")); err == nil {
+		if _, err := osStat(filepath.Join(homeDir, "bin", "hga")); err == nil {
 			return true
 		}
 	}

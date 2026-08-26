@@ -10,21 +10,22 @@ import (
 	"path/filepath"
 	"strings"
 
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/backup"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/cli"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/opencodeplugin"
+	componentuninstall "bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/uninstall"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/pipeline"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/planner"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/skillregistry"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/state"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/statepath"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/tui"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/update"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/update/upgrade"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/verify"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/backup"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/cli"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/components/opencodeplugin"
-	componentuninstall "github.com/gentleman-programming/gentle-ai/v2/internal/components/uninstall"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/model"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/pipeline"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/planner"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/skillregistry"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/state"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/system"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/tui"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/update"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/update/upgrade"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/verify"
 )
 
 // Version is set from main via ldflags at build time.
@@ -65,6 +66,11 @@ func RunArgs(args []string, stdout io.Writer) error {
 	// manifests record which version of gentle-ai created them.
 	cli.AppVersion = Version
 	upgrade.AppVersion = Version
+
+	// Report — never adopt, never move — a state directory left by a version
+	// from before the identity rename. Goes to stderr: it describes the
+	// environment, not the result of this command. See legacy_state_notice.go.
+	noticeLegacyState()
 
 	// --yes as a global CLI flag for self-update is handled via GENTLE_AI_YES=1.
 	// Per-subcommand --yes flags (e.g. restore --yes) are parsed by each subcommand.
@@ -985,7 +991,7 @@ func ListBackups() []backup.Manifest {
 		return nil
 	}
 
-	backupRoot := filepath.Join(homeDir, ".gentle-ai", "backups")
+	backupRoot := statepath.Backups(homeDir)
 	entries, err := os.ReadDir(backupRoot)
 	if err != nil {
 		return nil

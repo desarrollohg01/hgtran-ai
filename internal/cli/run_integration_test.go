@@ -11,16 +11,16 @@ import (
 	"testing"
 	"time"
 
-	"github.com/gentleman-programming/gentle-ai/v2/internal/agents/codex"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/agents/kimi"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/agents/opencode"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/backup"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/installcmd"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/model"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/planner"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/state"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/system"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/versions"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/codex"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/kimi"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/opencode"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/backup"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/installcmd"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/planner"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/state"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/versions"
 )
 
 // missingBinaryLookPath simulates all installable binaries (engram, gga) as
@@ -105,7 +105,7 @@ func TestRunInstallReturnsStatePersistenceFailure(t *testing.T) {
 		t.Fatal(err)
 	}
 	statePath := state.Path(home)
-	target := filepath.Join(home, ".gentle-ai", "persisted-state.json")
+	target := filepath.Join(home, ".hgtran-ai", "persisted-state.json")
 	if err := os.Rename(statePath, target); err != nil {
 		t.Fatal(err)
 	}
@@ -1309,7 +1309,7 @@ func TestRunInstallGGASkipsInstallWhenAlreadyOnPath(t *testing.T) {
 
 	detection := macOSDetectionResult()
 	result, err := RunInstall(
-		[]string{"--agent", "opencode", "--component", "gga"},
+		[]string{"--agent", "opencode", "--component", "hga"},
 		detection,
 	)
 	if err != nil {
@@ -1322,12 +1322,12 @@ func TestRunInstallGGASkipsInstallWhenAlreadyOnPath(t *testing.T) {
 
 	// No brew/git clone commands for GGA should have been recorded.
 	for _, cmd := range recorder.get() {
-		if strings.Contains(cmd, "gga") || strings.Contains(cmd, "gentleman-guardian-angel") {
+		if strings.Contains(cmd, "hga") || strings.Contains(cmd, "gentleman-guardian-angel") {
 			t.Fatalf("expected gga install to be skipped, but got command: %s", cmd)
 		}
 	}
 
-	prModePath := filepath.Join(home, ".local", "share", "gga", "lib", "pr_mode.sh")
+	prModePath := filepath.Join(home, ".local", "share", "hga", "lib", "pr_mode.sh")
 	content, err := os.ReadFile(prModePath)
 	if err != nil {
 		t.Fatalf("expected gga runtime asset at %q: %v", prModePath, err)
@@ -1350,7 +1350,7 @@ func TestRunInstallGGALinuxIncludesTempCleanupBeforeClone(t *testing.T) {
 
 	osUserHomeDir = func() (string, error) { return home, nil }
 	cmdLookPath = func(name string) (string, error) {
-		if name == "gga" {
+		if name == "hga" {
 			return "", exec.ErrNotFound
 		}
 		return "/usr/local/bin/" + name, nil
@@ -1359,7 +1359,7 @@ func TestRunInstallGGALinuxIncludesTempCleanupBeforeClone(t *testing.T) {
 	runCommand = recorder.record
 
 	result, err := RunInstall(
-		[]string{"--agent", "opencode", "--component", "gga"},
+		[]string{"--agent", "opencode", "--component", "hga"},
 		linuxDetectionResult(system.LinuxDistroUbuntu, "apt"),
 	)
 	if err != nil {

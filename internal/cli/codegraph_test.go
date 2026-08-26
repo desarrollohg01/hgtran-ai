@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/symlinktest"
 )
 
 func TestRunCodeGraphInitValidatesCanonicalProjectAndPropagatesInitFailure(t *testing.T) {
@@ -70,9 +72,7 @@ func TestRunCodeGraphInitRejectsUnsafeOrUnrecognizedRoots(t *testing.T) {
 		t.Fatal(err)
 	}
 	symlink := filepath.Join(workspace, "escape")
-	if err := os.Symlink(outside, symlink); err != nil {
-		t.Fatal(err)
-	}
+	symlinktest.MustSymlink(t, outside, symlink)
 
 	originalRoot := codeGraphGitTopLevel
 	originalInit := codeGraphInit

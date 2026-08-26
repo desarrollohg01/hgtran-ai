@@ -7,9 +7,9 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/gentleman-programming/gentle-ai/v2/internal/assets"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/components/filemerge"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/model"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/assets"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/filemerge"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
 )
 
 // ggaConfigDir returns the platform-appropriate directory that GGA reads its
@@ -32,9 +32,9 @@ func ggaConfigDir(homeDir string, goos string) string {
 			// defensively so we never produce an empty path.
 			appData = filepath.Join(homeDir, "AppData", "Roaming")
 		}
-		return filepath.Join(appData, "gga")
+		return filepath.Join(appData, "hga")
 	}
-	return filepath.Join(homeDir, ".config", "gga")
+	return filepath.Join(homeDir, ".config", "hga")
 }
 
 // InjectionResult describes all files written by the GGA config injection.

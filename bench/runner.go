@@ -126,7 +126,7 @@ func (s *Sandbox) initRepo(path string) error {
 		return err
 	}
 	// The installed agent config must never leak into a reviewed diff.
-	return s.write(filepath.Join(path, ".gitignore"), ".claude/\n.gentle-ai/\n")
+	return s.write(filepath.Join(path, ".gitignore"), ".claude/\n.hgtran-ai/\n")
 }
 
 func (s *Sandbox) write(path, content string) error {

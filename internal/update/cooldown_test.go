@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/gentleman-programming/gentle-ai/v2/internal/state"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/system"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/state"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
 )
 
 // TestCheckAllWithCooldown_FreshCacheSkipsNetwork verifies that when
@@ -174,9 +174,9 @@ func TestCheckAllWithCooldown_EmptyHomeDirAlwaysChecks(t *testing.T) {
 	// Ensure the CWD-relative state directory does not pre-exist from a
 	// previous (buggy) run, so we can detect a fresh write unambiguously.
 	cwd, _ := os.Getwd()
-	stateInCWD := filepath.Join(cwd, ".gentle-ai", "state.json")
+	stateInCWD := filepath.Join(cwd, ".hgtran-ai", "state.json")
 	_ = os.Remove(stateInCWD)
-	_ = os.Remove(filepath.Join(cwd, ".gentle-ai"))
+	_ = os.Remove(filepath.Join(cwd, ".hgtran-ai"))
 
 	checkCalled := 0
 	stubCheckAll := func(_ context.Context, _ string, _ system.PlatformProfile) []UpdateResult {
@@ -274,7 +274,7 @@ func TestCheckAllWithCooldown_NonMissingReadErrorSkipsWrite(t *testing.T) {
 
 	// Write a corrupt (non-parseable) state file so state.Read returns a
 	// non-missing error (file exists but JSON is invalid).
-	stateDir := filepath.Join(home, ".gentle-ai")
+	stateDir := filepath.Join(home, ".hgtran-ai")
 	if err := os.MkdirAll(stateDir, 0o755); err != nil {
 		t.Fatalf("MkdirAll: %v", err)
 	}

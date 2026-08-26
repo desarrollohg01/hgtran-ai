@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/gentleman-programming/gentle-ai/v2/internal/releasepolicy"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/releasepolicy"
 )
 
 func main() {

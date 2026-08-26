@@ -22,7 +22,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/gentleman-programming/gentle-ai/v2/internal/reviewtransaction"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/reviewtransaction"
 )
 
 const reviewTestZeroTarget = "sha256:0000000000000000000000000000000000000000000000000000000000000000"

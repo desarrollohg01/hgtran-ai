@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/gentleman-programming/gentle-ai/v2/internal/assets"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/assets"
 )
 
 func TestEnsureRuntimeAssetsCreatesPRModeWhenMissing(t *testing.T) {
@@ -123,8 +123,8 @@ func TestRuntimeBinDir(t *testing.T) {
 		homeDir    string
 		wantSuffix string
 	}{
-		{"/home/user", filepath.Join(".local", "share", "gga", "bin")},
-		{"/root", filepath.Join(".local", "share", "gga", "bin")},
+		{"/home/user", filepath.Join(".local", "share", "hga", "bin")},
+		{"/root", filepath.Join(".local", "share", "hga", "bin")},
 	}
 	for _, tc := range tests {
 		got := RuntimeBinDir(tc.homeDir)
@@ -139,8 +139,8 @@ func TestRuntimePS1Path(t *testing.T) {
 		homeDir    string
 		wantSuffix string
 	}{
-		{"/home/user", filepath.Join("bin", "gga.ps1")},
-		{"/root", filepath.Join("bin", "gga.ps1")},
+		{"/home/user", filepath.Join("bin", "hga.ps1")},
+		{"/root", filepath.Join("bin", "hga.ps1")},
 	}
 	for _, tc := range tests {
 		got := RuntimePS1Path(tc.homeDir)
@@ -155,8 +155,8 @@ func TestRuntimeCMDPath(t *testing.T) {
 		homeDir    string
 		wantSuffix string
 	}{
-		{"/home/user", filepath.Join("bin", "gga.cmd")},
-		{"/root", filepath.Join("bin", "gga.cmd")},
+		{"/home/user", filepath.Join("bin", "hga.cmd")},
+		{"/root", filepath.Join("bin", "hga.cmd")},
 	}
 	for _, tc := range tests {
 		got := RuntimeCMDPath(tc.homeDir)
@@ -237,7 +237,7 @@ func TestEnsureCommandShimCreatesFileWhenMissing(t *testing.T) {
 	}
 
 	text := string(content)
-	if !strings.Contains(text, "gga.ps1") {
+	if !strings.Contains(text, "hga.ps1") {
 		t.Fatalf("gga.cmd missing expected PowerShell shim delegation, got: %s", text)
 	}
 }
@@ -266,7 +266,7 @@ func TestEnsureCommandShimOverwritesStaleShim(t *testing.T) {
 	if string(content) == stale {
 		t.Fatalf("EnsureCommandShim did not overwrite stale gga.cmd")
 	}
-	if !strings.Contains(string(content), "gga.ps1") {
+	if !strings.Contains(string(content), "hga.ps1") {
 		t.Fatalf("overwritten gga.cmd missing expected embedded content")
 	}
 }
@@ -352,8 +352,8 @@ func TestPowerShellShimResolvesGitBash(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			root := t.TempDir()
-			shim := filepath.Join(root, "gga.ps1")
-			content, err := assets.Read("gga/gga.ps1")
+			shim := filepath.Join(root, "hga.ps1")
+			content, err := assets.Read("gga/hga.ps1")
 			if err != nil {
 				t.Fatalf("assets.Read() error = %v", err)
 			}
@@ -455,12 +455,12 @@ func copyShimHelper(t *testing.T, source, destination string) {
 // TestAssetGGAPS1IsEmbeddedAndReadable verifies the gga.ps1 asset is
 // correctly embedded and can be read via the assets package.
 func TestAssetGGAPS1IsEmbeddedAndReadable(t *testing.T) {
-	content, err := assets.Read("gga/gga.ps1")
+	content, err := assets.Read("gga/hga.ps1")
 	if err != nil {
-		t.Fatalf("assets.Read(\"gga/gga.ps1\") error = %v", err)
+		t.Fatalf("assets.Read(\"gga/hga.ps1\") error = %v", err)
 	}
 	if content == "" {
-		t.Fatal("assets.Read(\"gga/gga.ps1\") returned empty content")
+		t.Fatal("assets.Read(\"gga/hga.ps1\") returned empty content")
 	}
 	if !strings.Contains(content, "Get-Command git") {
 		t.Fatalf("embedded gga.ps1 missing expected content, got: %s", content)

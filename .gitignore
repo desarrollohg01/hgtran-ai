@@ -35,3 +35,6 @@ dist/
 # Engram local runtime state (project sync chunks are intentionally versioned)
 .engram/engram.db
 .engram/cloud.json
+
+# Local baseline for the identity rename harness (per-machine, not product code)
+.rename-baseline.txt

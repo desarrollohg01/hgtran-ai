@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/gentleman-programming/gentle-ai/v2/internal/system"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
 )
 
 const WindowsDistributionHoldMessage = "Windows binary distribution and Scoop are temporarily unavailable until publicly trusted Authenticode signing is enforced."
@@ -19,7 +19,7 @@ func GentleAISourceInstallCommand(version string) string {
 	} else if version != "" {
 		target = "v" + strings.TrimPrefix(version, "v")
 	}
-	return "go install github.com/gentleman-programming/gentle-ai/v2/cmd/gentle-ai@" + target
+	return "go install bitbucket.org/hgt_development/hgtran-ai/v2/cmd/gentle-ai@" + target
 }
 
 // updateHint returns a platform-specific instruction string for updating the given tool.
@@ -29,7 +29,7 @@ func updateHint(tool ToolInfo, profile system.PlatformProfile) string {
 		return gentleAIHint(profile)
 	case "engram":
 		return engramHint(profile)
-	case "gga":
+	case "hga":
 		return ggaHint(profile)
 	case "opencode-subagent-statusline", "opencode-sdd-engram-manage":
 		return "gentle-ai upgrade updates ~/.config/opencode npm deps, clears this plugin's @latest cache, then requires OpenCode restart/reload"
@@ -78,7 +78,7 @@ func engramHint(profile system.PlatformProfile) string {
 }
 
 func ggaHint(profile system.PlatformProfile) string {
-	if profile.PackageManager == "brew" && homebrewPackageInstalled("gga") {
+	if profile.PackageManager == "brew" && homebrewPackageInstalled("hga") {
 		return "brew upgrade gga"
 	}
 	return "See https://github.com/Gentleman-Programming/gentleman-guardian-angel"

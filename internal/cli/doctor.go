@@ -12,9 +12,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gentleman-programming/gentle-ai/v2/internal/doctor"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/state"
-	"github.com/gentleman-programming/gentle-ai/v2/internal/storage"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/doctor"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/state"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/statepath"
+	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/storage"
 )
 
 type CheckStatus = doctor.Status
@@ -31,7 +32,7 @@ const (
 // regardless of which agents the user installed. Agent-specific binaries are
 // derived from state.json's InstalledAgents field (see #709) so the doctor
 // only reports missing agents the user actually selected.
-var coreTools = []string{"gentle-ai", "gga", "engram"}
+var coreTools = []string{"gentle-ai", "hga", "engram"}
 
 // agentToolBinaries maps an agent ID from state.json's InstalledAgents to the
 // CLI binary name exec.LookPath should resolve. An empty string means "no CLI
@@ -486,7 +487,7 @@ func checkEngramReachable() CheckResult {
 // checkDiskSpace reports free space on the ~/.gentle-ai filesystem.
 func checkDiskSpace(homeDir string) CheckResult {
 	const id = doctor.CheckDiskSpace
-	dir := filepath.Join(homeDir, ".gentle-ai")
+	dir := statepath.Root(homeDir)
 
 	free, err := availableBytesFn(dir)
 	if err != nil {
