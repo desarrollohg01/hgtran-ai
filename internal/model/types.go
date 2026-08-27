@@ -89,6 +89,7 @@ const (
 	SkillWorkUnitCommits   SkillID = "work-unit-commits"
 	SkillRDDDefectWorkflow SkillID = "rdd-defect-workflow"
 	SkillBackendCRUD       SkillID = "backend-crud-standard"
+	SkillWorkerService     SkillID = "worker-service-standard"
 	SkillFrontendCRUD      SkillID = "frontend-crud-standard"
 	SkillDBChange          SkillID = "db-change-standard"
 	SkillRealVerification  SkillID = "real-system-verification"

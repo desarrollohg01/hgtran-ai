@@ -66,3 +66,34 @@ func TestMVPSkillsIncludeRequestedBundledSkillsWithCanonicalNames(t *testing.T) 
 		}
 	}
 }
+
+// TestMVPSkillsShipEveryHGLayerStandard guards the set the team relies on to
+// keep one standard across machines.
+//
+// A layer standard that exists as a file but is missing from this catalog never
+// reaches anyone: the installer works from MVPSkills(), not from the assets
+// directory, so an unregistered SKILL.md is embedded in the binary and then
+// silently ignored.
+func TestMVPSkillsShipEveryHGLayerStandard(t *testing.T) {
+	required := map[model.SkillID]string{
+		model.SkillBackendCRUD:   "backend-crud-standard",
+		model.SkillFrontendCRUD:  "frontend-crud-standard",
+		model.SkillDBChange:      "db-change-standard",
+		model.SkillWorkerService: "worker-service-standard",
+	}
+
+	found := make(map[model.SkillID]string)
+	for _, skill := range MVPSkills() {
+		found[skill.ID] = skill.Name
+	}
+
+	for id, wantName := range required {
+		name, ok := found[id]
+		if !ok {
+			t.Fatalf("MVPSkills() missing HG layer standard %q", id)
+		}
+		if name != wantName {
+			t.Fatalf("MVPSkills() name for %q = %q, want %q", id, name, wantName)
+		}
+	}
+}
