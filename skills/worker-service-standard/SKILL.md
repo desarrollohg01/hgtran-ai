@@ -31,6 +31,10 @@ workers y no se traslada. Para una API, `api-crud-standard` fija **API / CORE / 
 a `portaltools-api`, `etruckssecurity-api` y `portaltools-webapp` (`spec.md:359`). Llevar `Domain`
 y `Business` a esos repositorios contradice la convención vigente ahí.
 
+El repositorio se llama `{funcionalidad}-worker` o `{funcionalidad}-ws` — `ws` por *worker
+service*. **No `-service` ni `-winservice`**: así se nombraban los servicios de .NET Framework, y
+el nombre arrastra esa expectativa. Los repositorios existentes no se renombran de paso.
+
 Para una API nueva el vocabulario todavía no está definido: la spec gobierna esos repositorios y
 fuera de ellos no hay respuesta acordada. Es decisión pendiente del equipo, no un hueco a llenar
 por cuenta propia.
@@ -132,8 +136,12 @@ consulta cruda —Dapper o `SqlConnection`— explicando por qué no se usó el 
 
 ## Reintentos
 
-Polly se configura en `AddPollyConfig`. Lo que MUST estar escrito, y hoy no lo está en ningún
-worker revisado: **qué se reintenta, cuántas veces, y qué operaciones son idempotentes**.
+Polly se configura en `AddPollyConfig`, con los parámetros leídos desde `appsettings`. **El
+default son 3 reintentos.** Más de 3 se admite cuando el caso lo justifica, pero sigue siendo
+configuración: nunca un número incrustado en el código.
+
+Lo que MUST estar escrito es **qué operaciones son idempotentes**. Cuántas veces se reintenta y
+qué se reintenta ya se leen de la configuración; la idempotencia no se lee de ningún lado.
 
 Un ETL que reintenta un `upsert` no idempotente duplica datos, y lo hace en silencio. Antes de
 envolver una operación en una política de reintento, verificá que correrla dos veces deje el
@@ -150,15 +158,18 @@ imposible saber si rompió el framework o el rediseño.
 4. Reemplazar el scheduler propio por Quartz.NET.
 5. Mover el envío de correo al submódulo compartido.
 6. **Recién ahora** subir a `net10.0`.
-7. Agregar health check y pipeline.
+7. Agregar el aviso de ciclo de vida y el pipeline.
 
 El framework va en el paso 6, no en el 1. Migrar la versión primero convierte cualquier falla
 posterior en una discusión sobre quién la causó.
 
 ## Lo mínimo antes de dar por terminado
 
-- Proyecto de pruebas. Un worker corre solo, de noche, sin nadie mirando: es justo el que más
-  necesita una red.
-- Health check.
-- Pipeline en Bitbucket.
-- El clon limpio compila, con los submódulos inicializados.
+- **Aviso de ciclo de vida.** Un worker no tiene superficie HTTP, así que un health check clásico
+  no aplica: lo que se usa es la notificación de arranque y parada, que `email-branding` marca
+  obligatoria para todo winservice o worker de ciclo largo (`spec.md:459`). `ServiceStopNotifier`
+  es la implementación de referencia.
+- **Pipeline en Bitbucket.**
+- **El clon limpio compila**, con los submódulos inicializados.
+- Proyecto de pruebas: **pendiente, depende del caso** y todavía no es requisito. Vale recordar
+  igual que un worker corre solo, de noche y sin nadie mirando.
