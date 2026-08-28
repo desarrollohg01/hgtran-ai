@@ -9,8 +9,13 @@ metadata:
 
 ## Cuándo usarla
 
-Al escribir o revisar un CRUD en .NET. **El vocabulario de capas depende del repositorio**: `api-crud-standard` fija API / CORE / SERVICE / DATA para `portaltools-api` y `etruckssecurity-api`, donde `SERVICE` es la capa de negocio; DOMAIN / DATA / BUSINESS / API es la de `hgproveedorextranet-api`. Verificá cuál usa la solución antes de crear proyectos.
-repositorios EF Core, servicios de negocio o integraciones con servicios externos.
+Al escribir o revisar un CRUD en .NET: controladores, repositorios EF Core, servicios de negocio
+o integraciones con servicios externos.
+
+**El vocabulario de capas depende del repositorio.** `api-crud-standard` fija API / CORE / SERVICE
+/ DATA para `portaltools-api` y `etruckssecurity-api`, donde `SERVICE` es la capa de negocio;
+DOMAIN / DATA / BUSINESS / API es la de `hgproveedorextranet-api`. Verificá cuál usa la solución
+antes de crear proyectos.
 
 Cada regla de aquí nació de un defecto real que llegó a un ambiente. No son preferencias.
 
@@ -30,7 +35,7 @@ El punto 2 sorprende a quien llega nuevo: consumir la API asumiendo "200 = sali�
 | Regla | Por qué |
 |---|---|
 | REQUIERE guardar el **identificador** del operador, no su nombre | Un nombre deja de apuntar a nadie si la persona se renombra |
-| Guarda además el nombre como fotografía, en columna aparte | Evita una llamada por renglón al servicio de identidad sólo para poder listar |
+| El nombre en texto va en la vista o el DTO, no en la tabla base | Evita una llamada por renglón al servicio de identidad sin duplicar el dato en cada tabla |
 | El autor sale del TOKEN, nunca del cuerpo de la petición | Si viene del cliente, cualquiera firma una baja con el nombre de otro |
 | RECHAZA escribir auditoría incompleta | Sin identidad completa se responde 401. Un registro a medias parece confiable y no lo es |
 
@@ -39,14 +44,13 @@ mismo token al momento de escribir.
 
 **Las cuatro reglas de arriba son para escrituras hechas por una persona.** Un ETL o un job no
 tiene sesión ni token, y exigirle uno lo lleva a responder 401 por algo que no puede tener. Un
-actor no humano MUST identificarse con una constante propia y explícita —`cat.Proveedor` usa
-`ETL_ProveedorSync`— y en ese esquema la columna es texto, no `uniqueidentifier`. Antes de aplicar
-estas reglas a una tabla, verificá quién escribe en ella.
+actor no humano REQUIERE una constante propia y explícita — `cat.Proveedor` usa
+`ETL_ProveedorSync`. Antes de aplicar estas reglas a una tabla, verificá quién escribe en ella.
 
-La columna de nombre tiene tres formas vivas y ninguna es la de HG: `CreadoPorNombre` existe en un
-solo proyecto, `portaltools-api` usa `usuarioCreadoPor`, y `api-crud-standard` da como canónica una
-navegación marcada `[JsonIgnore]` sobre la vista de usuarios. En un proyecto existente se sigue la
-que ya tiene.
+El tipo y el nombre de las columnas los fija `db-change-standard`: una tabla nueva lleva
+`uniqueidentifier` con FK y la navegación marcada `[JsonIgnore]`, con el nombre en texto en la
+vista o el DTO. La forma de texto es la excepción de las tablas que escribe únicamente un proceso,
+y vale porque `api-crud-standard` declara su alcance exclusivo (`spec.md:359`).
 
 ## Fechas
 

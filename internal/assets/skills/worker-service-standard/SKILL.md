@@ -16,12 +16,7 @@ Para un CRUD de API usá `backend-crud-standard`. Para cambios de esquema, `db-c
 
 ## El esqueleto
 
-Cuatro proyectos. **Es el objetivo, no un censo.** De los tres workers del workspace hoy: uno lo
-cumple (`sendmailkpi-winservice`), otro llama `Service` a su host y sigue en `net8.0`
-(`kpizametl-winservice`), y el más nuevo usa cinco proyectos bajo `src/`, con `Core` e
-`Infrastructure` en vez de `Domain` y `Data`, y `BackgroundService` en lugar de Quartz
-(`zametlordenescompra-winservice`). Un worker existente que no coincida NO es un defecto a
-corregir de paso.
+Cuatro proyectos. **Es el objetivo, no un censo.**
 
 ```
 Hg.<Contexto>.Domain     entidades, DTOs, interfaces, helpers
@@ -31,13 +26,23 @@ Hg.<Contexto>.Worker     host, Jobs de Quartz, Program.cs, Configs/
 ```
 
 El host se llama **`Worker`**, no `Service`, **en un worker nuevo**. Esa nomenclatura es de
-workers y no se traslada: para una API el vocabulario de capas lo fija `api-crud-standard` y es
-**API / CORE / SERVICE / DATA**, donde `SERVICE` **es** la capa de negocio. Llevar `Domain` y
-`Business` a `portaltools-api` o a `etruckssecurity-api` contradice la convención vigente ahí.
+workers y no se traslada. Para una API, `api-crud-standard` fija **API / CORE / SERVICE / DATA**
+—donde `SERVICE` **es** la capa de negocio— y su propio alcance declara que aplica exclusivamente
+a `portaltools-api`, `etruckssecurity-api` y `portaltools-webapp` (`spec.md:359`). Llevar `Domain`
+y `Business` a esos repositorios contradice la convención vigente ahí.
+
+Para una API nueva el vocabulario todavía no está definido: la spec gobierna esos repositorios y
+fuera de ellos no hay respuesta acordada. Es decisión pendiente del equipo, no un hueco a llenar
+por cuenta propia.
 
 `net10.0` en todos los `.csproj` de un proyecto nuevo. No se elige una versión más vieja por
 alinearse con proyectos legacy — pero tampoco se sube un worker existente como limpieza
 incidental: eso es una migración y tiene su propio orden más abajo.
+
+Lo que un agente encuentra en repositorios existentes es otra cosa. Conviven esta forma de cuatro
+capas, una variante con los proyectos bajo `src/` y `Core`/`Infrastructure` en lugar de
+`Domain`/`Data` —`zametlordenescompra-winservice` es un ejemplo—, y servicios de un solo proyecto
+sin separación de capas. Un worker existente que no coincida NO es un defecto a corregir de paso.
 
 ## Registro de dependencias
 
@@ -70,14 +75,13 @@ va a correr dos veces sobre los mismos datos.
 
 ## Librería de correo
 
-`hgt_development/smtpemailclient-library`. Hay dos formas de consumirla y la elección no es
-libre: submódulo git, salvo que exista una razón que lo impida y quede escrita.
+`hgt_development/smtpemailclient-library`. La elección no es libre: submódulo git, salvo que
+exista una razón que lo impida y quede escrita.
 
-Estado medido: cinco montajes en el workspace, con dos nombres de ruta distintos y dos proyectos
-que la vendorizan como copia rastreada. La ruta mayoritaria hoy es `libs/Hg.SMTP.LIB`;
-`libs/smtpemailclient-library` la usa uno solo. Un proyecto nuevo MUST montarla en
-`libs/smtpemailclient-library`. Los existentes NO se renombran de paso: mover la ruta rompe lo
-que ya compila, y merece su propia tarea.
+La consumen de más de una forma: submódulo git, copia vendorizada dentro del repositorio, un DLL
+por `HintPath`, y un `PackageReference` que no resuelve. Buscar solo submódulos no las encuentra
+todas. Un proyecto nuevo MUST montarla en `libs/smtpemailclient-library`. Los existentes NO se
+renombran de paso: mover la ruta rompe lo que ya compila, y merece su propia tarea.
 
 Vendorizar es legítimo cuando el submódulo no sirve, y hoy hay dos razones reales y verificadas:
 no existe un NuGet consumible porque el feed privado devuelve 401, y el submódulo está en

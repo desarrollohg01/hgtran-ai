@@ -33,13 +33,21 @@ y tipos de columna, contar filas.
 Columnas mínimas: `Activo`, `FechaCreacion`, `CreadoPor`, `FechaModificacion`, `ModificadoPor`.
 
 - `CreadoPor` / `ModificadoPor` guardan el **identificador** del operador, no su nombre: un nombre
-  deja de apuntar a nadie si la persona se renombra. El tipo depende de quién escribe —
-  `uniqueidentifier` cuando el autor es una persona con sesión, texto cuando es un proceso. En
-  `CXPdb` conviven las dos: `cat.Proveedor` usa `VARCHAR(100)` porque la puebla un ETL sin token.
-- Una columna con el nombre como fotografía del momento es **una de tres formas vivas**, no la
-  convención de HG: `CreadoPorNombre` existe en un solo proyecto, `portaltools-api` usa
-  `usuarioCreadoPor`, y `api-crud-standard` da como canónica una navegación sobre la vista de
-  usuarios. En una tabla existente se sigue la que ya usa su base.
+  deja de apuntar a nadie si la persona se renombra. Una tabla nueva REQUIERE `uniqueidentifier`
+  con FK a la tabla de usuario, y el nombre en texto vive en la vista o el DTO, nunca como columna
+  de la tabla base. Es la forma que `api-crud-standard` da como canónica, y `portaltools-api` la
+  implementa.
+- **La excepción son las tablas que escribe únicamente un proceso sin sesión.** Ahí la columna es
+  texto con una constante explícita — `cat.Proveedor` usa `ETL_ProveedorSync`. Vale porque
+  `api-crud-standard` declara que aplica exclusivamente a `portaltools-api`, `etruckssecurity-api`
+  y `portaltools-webapp` (`spec.md:359`); fuera de ese alcance, la excepción se cita con su
+  repositorio.
+- Si una tabla la puebla un proceso **y** la edita una persona, va la forma canónica: el actor no
+  humano REQUIERE su propia fila en la tabla de usuarios. Aplica a tablas nuevas; las columnas de
+  texto que ya existen se quedan y se citan como excepción.
+- Existe además una columna escalar con el nombre: `CreadoPorNombre` aparece en
+  `hgproveedorextranet-api`. **No va en tabla nueva.** En una tabla existente se sigue la que ya
+  usa su base.
 - Índice por `CreadoPor`: responde "qué hizo esta persona", la consulta típica de auditoría.
 
 ## Fechas
