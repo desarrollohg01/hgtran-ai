@@ -32,10 +32,14 @@ y tipos de columna, contar filas.
 
 Columnas mínimas: `Activo`, `FechaCreacion`, `CreadoPor`, `FechaModificacion`, `ModificadoPor`.
 
-- `CreadoPor` / `ModificadoPor` son **`uniqueidentifier`**, no texto: guardan el identificador del
-  operador. Un nombre deja de apuntar a nadie si la persona se renombra.
-- Junto a ellas, `CreadoPorNombre` / `ModificadoPorNombre` guardan el login como fotografía del
-  momento. Es lo único que se muestra; el identificador es la referencia.
+- `CreadoPor` / `ModificadoPor` guardan el **identificador** del operador, no su nombre: un nombre
+  deja de apuntar a nadie si la persona se renombra. El tipo depende de quién escribe —
+  `uniqueidentifier` cuando el autor es una persona con sesión, texto cuando es un proceso. En
+  `CXPdb` conviven las dos: `cat.Proveedor` usa `VARCHAR(100)` porque la puebla un ETL sin token.
+- Una columna con el nombre como fotografía del momento es **una de tres formas vivas**, no la
+  convención de HG: `CreadoPorNombre` existe en un solo proyecto, `portaltools-api` usa
+  `usuarioCreadoPor`, y `api-crud-standard` da como canónica una navegación sobre la vista de
+  usuarios. En una tabla existente se sigue la que ya usa su base.
 - Índice por `CreadoPor`: responde "qué hizo esta persona", la consulta típica de auditoría.
 
 ## Fechas

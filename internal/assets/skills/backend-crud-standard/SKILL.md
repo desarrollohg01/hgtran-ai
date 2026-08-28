@@ -9,7 +9,7 @@ metadata:
 
 ## Cuándo usarla
 
-Al escribir o revisar un CRUD en .NET con capas DOMAIN / DATA / BUSINESS / API: controladores,
+Al escribir o revisar un CRUD en .NET. **El vocabulario de capas depende del repositorio**: `api-crud-standard` fija API / CORE / SERVICE / DATA para `portaltools-api` y `etruckssecurity-api`, donde `SERVICE` es la capa de negocio; DOMAIN / DATA / BUSINESS / API es la de `hgproveedorextranet-api`. Verificá cuál usa la solución antes de crear proyectos.
 repositorios EF Core, servicios de negocio o integraciones con servicios externos.
 
 Cada regla de aquí nació de un defecto real que llegó a un ambiente. No son preferencias.
@@ -36,6 +36,17 @@ El punto 2 sorprende a quien llega nuevo: consumir la API asumiendo "200 = sali�
 
 El identificador vive en el claim `sub`; el nombre en `unique_name`. Los dos llegan gratis en el
 mismo token al momento de escribir.
+
+**Las cuatro reglas de arriba son para escrituras hechas por una persona.** Un ETL o un job no
+tiene sesión ni token, y exigirle uno lo lleva a responder 401 por algo que no puede tener. Un
+actor no humano MUST identificarse con una constante propia y explícita —`cat.Proveedor` usa
+`ETL_ProveedorSync`— y en ese esquema la columna es texto, no `uniqueidentifier`. Antes de aplicar
+estas reglas a una tabla, verificá quién escribe en ella.
+
+La columna de nombre tiene tres formas vivas y ninguna es la de HG: `CreadoPorNombre` existe en un
+solo proyecto, `portaltools-api` usa `usuarioCreadoPor`, y `api-crud-standard` da como canónica una
+navegación marcada `[JsonIgnore]` sobre la vista de usuarios. En un proyecto existente se sigue la
+que ya tiene.
 
 ## Fechas
 

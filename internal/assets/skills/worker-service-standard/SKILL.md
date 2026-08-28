@@ -16,7 +16,12 @@ Para un CRUD de API usá `backend-crud-standard`. Para cambios de esquema, `db-c
 
 ## El esqueleto
 
-Cuatro proyectos. Es la estructura que ya corre en producción, no una propuesta.
+Cuatro proyectos. **Es el objetivo, no un censo.** De los tres workers del workspace hoy: uno lo
+cumple (`sendmailkpi-winservice`), otro llama `Service` a su host y sigue en `net8.0`
+(`kpizametl-winservice`), y el más nuevo usa cinco proyectos bajo `src/`, con `Core` e
+`Infrastructure` en vez de `Domain` y `Data`, y `BackgroundService` en lugar de Quartz
+(`zametlordenescompra-winservice`). Un worker existente que no coincida NO es un defecto a
+corregir de paso.
 
 ```
 Hg.<Contexto>.Domain     entidades, DTOs, interfaces, helpers
@@ -25,11 +30,14 @@ Hg.<Contexto>.Business   lógica de negocio, AddBusinessLayer()
 Hg.<Contexto>.Worker     host, Jobs de Quartz, Program.cs, Configs/
 ```
 
-El host se llama **`Worker`**, no `Service`: `Service` se confunde con la capa de servicios de
-negocio, que vive en `Business`.
+El host se llama **`Worker`**, no `Service`, **en un worker nuevo**. Esa nomenclatura es de
+workers y no se traslada: para una API el vocabulario de capas lo fija `api-crud-standard` y es
+**API / CORE / SERVICE / DATA**, donde `SERVICE` **es** la capa de negocio. Llevar `Domain` y
+`Business` a `portaltools-api` o a `etruckssecurity-api` contradice la convención vigente ahí.
 
-`net10.0` en todos los `.csproj`. Un proyecto nuevo MUST arrancar ahí; no se elige una versión
-más vieja por alinearse con proyectos legacy.
+`net10.0` en todos los `.csproj` de un proyecto nuevo. No se elige una versión más vieja por
+alinearse con proyectos legacy — pero tampoco se sube un worker existente como limpieza
+incidental: eso es una migración y tiene su propio orden más abajo.
 
 ## Registro de dependencias
 
@@ -44,9 +52,12 @@ builder.Services
     .AddScoped<INotificaEmail, NotificaEmail>();
 ```
 
-El default de lifetime es `AddScoped`. Un `AddSingleton` MUST llevar un comentario que explique
-por qué ese tipo es seguro compartido — sin estado, sin conexión abierta como campo, sin
-credenciales locales. Si no se puede escribir esa frase, el registro va `AddScoped`.
+El default de lifetime es `AddScoped`. Un `AddSingleton` SHOULD llevar un comentario que explique
+por qué ese tipo es seguro compartido: sin estado, sin conexión abierta como campo, sin
+credenciales locales. Es SHOULD y no MUST por decisión explícita — una revisión adversaria previa
+(`service-architecture`, Rev. 3) lo bajó al comprobar que los propios proyectos de referencia no
+lo cumplían, y una regla que el código modelo incumple entrena a ignorarla. Si no se puede
+escribir esa frase, el registro va `AddScoped`.
 
 ## Scheduler
 
@@ -59,15 +70,24 @@ va a correr dos veces sobre los mismos datos.
 
 ## Librería de correo
 
-`hgt_development/smtpemailclient-library`, consumida como **submódulo git**. Nunca copiada
-dentro del repositorio.
+`hgt_development/smtpemailclient-library`. Hay dos formas de consumirla y la elección no es
+libre: submódulo git, salvo que exista una razón que lo impida y quede escrita.
 
-Se monta en `libs/smtpemailclient-library`, con ese nombre. Montarla con otro nombre rompe
-cualquier automatización que asuma la ruta, y ya pasó: dos proyectos la tienen en rutas
-distintas.
+Estado medido: cinco montajes en el workspace, con dos nombres de ruta distintos y dos proyectos
+que la vendorizan como copia rastreada. La ruta mayoritaria hoy es `libs/Hg.SMTP.LIB`;
+`libs/smtpemailclient-library` la usa uno solo. Un proyecto nuevo MUST montarla en
+`libs/smtpemailclient-library`. Los existentes NO se renombran de paso: mover la ruta rompe lo
+que ya compila, y merece su propia tarea.
 
-El `README` MUST decir que el clon necesita `git submodule update --init --recursive`. Sin eso
-el proyecto no compila y quien llega nuevo no sabe por qué.
+Vendorizar es legítimo cuando el submódulo no sirve, y hoy hay dos razones reales y verificadas:
+no existe un NuGet consumible porque el feed privado devuelve 401, y el submódulo está en
+`net8.0` mientras esta skill exige `net10.0`. Cuando se vendoriza, la razón MUST quedar escrita
+en el `.csproj` de la copia, con la historia que lo decidió. Una copia sin esa justificación sí
+es un defecto.
+
+Si se usa submódulo, el `README` MUST decir que el clon necesita
+`git submodule update --init --recursive`. Sin eso el proyecto no compila y quien llega nuevo no
+sabe por qué.
 
 ## EF Core o Dapper
 
@@ -103,7 +123,7 @@ Lo que sí vale la pena documentar es el porqué:
 .AddSingleton<ISmtpClientService, SmtpClientService>()
 ```
 
-MUST documentarse: todo registro de DI que no sea `AddScoped`, todo Job de Quartz, y toda
+MUST documentarse todo Job de Quartz y toda
 consulta cruda —Dapper o `SqlConnection`— explicando por qué no se usó el camino por defecto.
 
 ## Reintentos
