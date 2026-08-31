@@ -32,7 +32,7 @@
 
 ### Behavioral Requirements
 
-- After `gentle-ai install` or `gentle-ai sync` on any `~/.claude/` directory, none of the 11 SDD SKILL.md entries MUST appear as user-invocable items in the Claude Code `/` picker.
+- After `hgtran-ai install` or `hgtran-ai sync` on any `~/.claude/` directory, none of the 11 SDD SKILL.md entries MUST appear as user-invocable items in the Claude Code `/` picker.
 - The `~/.claude/commands/sdd-*.md` entries MUST still appear in the `/` picker — they are the single canonical user-facing entry point for each phase.
 - Each of `sdd-apply`, `sdd-archive`, `sdd-design`, `sdd-explore`, `sdd-init`, `sdd-onboard`, `sdd-propose`, `sdd-spec`, `sdd-tasks`, `sdd-verify` MUST appear AT MOST ONCE in the `/` picker after install.
 - `~/.claude/agents/sdd-*.md` sub-agents MUST continue to function; orchestrator delegation MUST NOT be affected by the frontmatter flags.
@@ -81,8 +81,8 @@
 
 #### Scenario E — Install writes new frontmatter to disk
 
-- GIVEN a fresh `~/.claude/skills/` directory with no prior gentle-ai install
-- WHEN `gentle-ai install` runs with the Claude adapter selected
+- GIVEN a fresh `~/.claude/skills/` directory with no prior hgtran-ai install
+- WHEN `hgtran-ai install` runs with the Claude adapter selected
 - THEN `~/.claude/skills/sdd-apply/SKILL.md` (and each of the other 10 skill files) contains `user-invocable: false` at the top level of its YAML frontmatter
 - AND contains `disable-model-invocation: true` at the top level
 
@@ -90,7 +90,7 @@
 
 #### Scenario F — Picker shows no duplicate SDD entries (manual verification)
 
-- GIVEN a Claude Code v2.1.131+ session with the new SKILL.md files installed via `gentle-ai sync`
+- GIVEN a Claude Code v2.1.131+ session with the new SKILL.md files installed via `hgtran-ai sync`
 - WHEN the user opens the `/` skill picker
 - THEN each of `sdd-apply`, `sdd-archive`, `sdd-design`, `sdd-explore`, `sdd-init`, `sdd-onboard`, `sdd-propose`, `sdd-spec`, `sdd-tasks`, `sdd-verify` appears AT MOST ONCE
 - AND every visible entry originates from `~/.claude/commands/sdd-*.md`, not from `~/.claude/skills/sdd-*/SKILL.md`
@@ -123,7 +123,7 @@
 ### Behavioral Requirements
 
 - Token cost on activation MUST drop approximately 85% for the 5 refactored skills (from ~18–25k tokens to ~3–5k tokens).
-- After `gentle-ai install`, each refactored skill directory on disk MUST contain both `SKILL.md` and its `references/` subdirectory.
+- After `hgtran-ai install`, each refactored skill directory on disk MUST contain both `SKILL.md` and its `references/` subdirectory.
 - Existing skill consumers (orchestrator, sub-agents reading SKILL.md via `Read`) MUST continue to work because `SKILL.md` retains the full operational contract.
 - Reference files MUST install alongside their parent skill on every supported adapter that installs skills.
 
@@ -132,7 +132,7 @@
 #### Scenario H — Refactored skills install with their `references/` subdirs
 
 - GIVEN `internal/components/skills/inject.go` has been updated to copy recursively
-- WHEN `gentle-ai install` runs for the Claude adapter
+- WHEN `hgtran-ai install` runs for the Claude adapter
 - THEN `~/.claude/skills/chained-pr/references/chaining-details.md` exists on disk
 - AND `~/.claude/skills/go-testing/references/examples.md` exists on disk
 - AND each of the other 3 refactored skills has its companion `references/*.md` present
@@ -142,7 +142,7 @@
 #### Scenario I — `sdd-init` and `sdd-verify` ship with their `references/*.md` correctly
 
 - GIVEN `internal/components/sdd/inject.go` has been updated to copy recursively
-- WHEN `gentle-ai install` runs
+- WHEN `hgtran-ai install` runs
 - THEN `~/.claude/skills/sdd-init/references/init-details.md` exists on disk
 - AND `~/.claude/skills/sdd-verify/references/report-format.md` exists on disk
 - AND both files are non-empty
@@ -179,7 +179,7 @@
 ## Out of Scope
 
 - Path relocation to `~/.claude/sdd-lib/` (Option C) — rejected in proposal.
-- Migration logic — existing installs pick up new content automatically on next `gentle-ai sync`.
+- Migration logic — existing installs pick up new content automatically on next `hgtran-ai sync`.
 - Changes to `~/.claude/commands/sdd-*.md` or `~/.claude/agents/sdd-*.md` reference paths.
 - Cross-adapter changes for Cursor, Kiro, OpenCode, Windsurf for the frontmatter flags — no duplication in those adapters.
 - Frontmatter changes to non-SDD skills (`judgment-day`, `branch-pr`, `chained-pr`, `cognitive-doc-design`, etc.) — those remain user-invocable.

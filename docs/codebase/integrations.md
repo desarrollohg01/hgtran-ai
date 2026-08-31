@@ -2,7 +2,7 @@
 
 [Back to Codebase Guide](../CODEBASE-GUIDE.md)
 
-Gentle-AI integration code should stay thin: adapters describe where and how an agent accepts configuration; components decide what managed content to inject.
+hgtran-ai integration code should stay thin: adapters describe where and how an agent accepts configuration; components decide what managed content to inject.
 
 ## Agent integration map
 
@@ -16,7 +16,7 @@ Gentle-AI integration code should stay thin: adapters describe where and how an 
 | Skills | `internal/components/skills/`, `internal/assets/skills/` | Copy curated skill files. |
 | Skill registry | `internal/skillregistry/`, `internal/app/` | Refresh or list `.atl/skill-registry.md` entries. |
 | Community tools | `internal/components/communitytool/` | Orchestrate community tool installation plus managed guidance/config/MCP reconciliation; do not own external runtime implementation. |
-| OpenCode plugins | `internal/components/opencodeplugin/` | Register external OpenCode plugin package names; Gentle Logo also writes a managed local TUI plugin file and registers its path. |
+| OpenCode plugins | `internal/components/opencodeplugin/` | Register external OpenCode plugin package names; Hgtran Logo also writes a managed local TUI plugin file and registers its path. |
 
 ## Setup boundaries
 
@@ -33,14 +33,14 @@ Gentle-AI integration code should stay thin: adapters describe where and how an 
 
 Community tools and OpenCode plugins are different integration paths:
 
-| Path | Gentle-AI owns | Runtime owner |
+| Path | hgtran-ai owns | Runtime owner |
 |---|---|---|
 | `internal/components/communitytool/` | Installation orchestration plus managed guidance/config/MCP reconciliation, such as CodeGraph setup and guidance. | The external tool runtime. |
-| `internal/components/opencodeplugin/` | External plugin package-name registration; Gentle Logo also writes/registers a managed local TUI plugin file. | OpenCode and the plugin package or managed local plugin file. |
+| `internal/components/opencodeplugin/` | External plugin package-name registration; Hgtran Logo also writes/registers a managed local TUI plugin file. | OpenCode and the plugin package or managed local plugin file. |
 
 ## Thin plugin principle
 
-OpenCode community plugins are optional integrations. For external plugins, Gentle-AI ensures `~/.config/opencode/tui.json` exists and contains the plugin package name. For Gentle Logo, Gentle-AI writes the managed local TUI plugin file under `~/.config/opencode/tui-plugins/` and registers that path. OpenCode owns runtime loading.
+OpenCode community plugins are optional integrations. For external plugins, hgtran-ai ensures `~/.config/opencode/tui.json` exists and contains the plugin package name. For Hgtran Logo, hgtran-ai writes the managed local TUI plugin file under `~/.config/opencode/tui-plugins/` and registers that path. OpenCode owns runtime loading.
 
 ```text
 TUI selection

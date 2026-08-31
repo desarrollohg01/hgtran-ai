@@ -1,6 +1,6 @@
 {
-  "schema": "gentle-ai.review-integration.status/v2",
-  "contract": "gentle-ai.review-integration/v1",
+  "schema": "hgtran-ai.review-integration.status/v2",
+  "contract": "hgtran-ai.review-integration/v1",
   "operation": "review.status",
   "applicability": "current_target",
   "authority": {
@@ -24,7 +24,7 @@
   "target_identity": "sha256:e6faad1cb9ceb2db170e0ec9ea5394b44c3991dff6cbd02fb6787539715968f6",
   "authority_target_identity": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
   "projection": {
-    "schema": "gentle-ai.review-integration.projection/v1",
+    "schema": "hgtran-ai.review-integration.projection/v1",
     "kind": "current-changes",
     "projection": "workspace",
     "base_tree": "3e21a205dd9b55021aeae87965092623807e455f",
@@ -40,7 +40,7 @@
     "current_snapshot_identity": "sha256:e6faad1cb9ceb2db170e0ec9ea5394b44c3991dff6cbd02fb6787539715968f6"
   },
   "repair": {
-    "schema": "gentle-ai.review-authority-repair-assessment/v1",
+    "schema": "hgtran-ai.review-authority-repair-assessment/v1",
     "status": "unsupported",
     "counts": {
       "lineages": 0,
@@ -56,7 +56,7 @@
       "review/complete-fix",
       "review/validate-fix"
     ],
-    "authorization_schema": "gentle-ai.review-repair-authorization/v1"
+    "authorization_schema": "hgtran-ai.review-repair-authorization/v1"
   },
   "candidates": [],
   "eligibility": {
@@ -135,7 +135,7 @@
       "inputs": [
         {
           "name": "final_verification_retry_authorization",
-          "schema": "gentle-ai.review-final-verification-retry-authorization/v1",
+          "schema": "hgtran-ai.review-final-verification-retry-authorization/v1",
           "capture_operation": "external.authorize_final_verification_retry",
           "arguments": [
             {
@@ -168,7 +168,7 @@
             },
             {
               "name": "incident-schema",
-              "value": "gentle-ai.review-final-verification-incident/v1"
+              "value": "hgtran-ai.review-final-verification-incident/v1"
             },
             {
               "name": "incident-class",
@@ -181,7 +181,7 @@
   },
   "action_disposition": "final_verification_retry",
   "final_verification_retry": {
-    "incident_schema": "gentle-ai.review-final-verification-incident/v1",
+    "incident_schema": "hgtran-ai.review-final-verification-incident/v1",
     "incident_class": "procedural_tooling_failure",
     "validating_revision": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
     "target_identity": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",

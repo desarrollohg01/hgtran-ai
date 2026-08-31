@@ -46,12 +46,12 @@ const reviewStartTargetRequiresContractReason = "review start --target requires 
 // strictly negotiated-form surface: the typed question exists for callers
 // that relay envelopes, and the unnegotiated form keeps today's console
 // behavior byte for byte. The refusal names the exact runnable rerun.
-const reviewStartConsentRequiresContractReason = "review start --consent requires the negotiated form; rerun as gentle-ai review start --contract " +
+const reviewStartConsentRequiresContractReason = "review start --consent requires the negotiated form; rerun as hgtran-ai review start --contract " +
 	ReviewIntegrationContractV1 + " with the bound --target and --projection"
 
 // reviewStartConsentValueReason names the exact allowed-answer domain for the
 // consent declaration, mirroring the choice tokens the typed question emits.
-const reviewStartConsentValueReason = "review start --consent accepts exactly relay, granted, or declined; rerun gentle-ai review start with one of those values"
+const reviewStartConsentValueReason = "review start --consent accepts exactly relay, granted, or declined; rerun hgtran-ai review start with one of those values"
 
 // reviewFacadeReceiptNotAvailableReason is the single wording source for the
 // refusal when a compact (or legacy) facade lineage was discovered but has
@@ -61,7 +61,7 @@ const reviewStartConsentValueReason = "review start --consent accepts exactly re
 // (the validate gate path and both terminal-discovery helpers) share it so
 // they cannot drift.
 func reviewFacadeReceiptNotAvailableReason(lineageID string) string {
-	return fmt.Sprintf("facade review receipt is not available; run gentle-ai review finalize --lineage %s to produce one", lineageID)
+	return fmt.Sprintf("facade review receipt is not available; run hgtran-ai review finalize --lineage %s to produce one", lineageID)
 }
 
 // reviewCompactFacadeLineageNotDiscoverableReason is the single wording
@@ -71,9 +71,9 @@ func reviewFacadeReceiptNotAvailableReason(lineageID string) string {
 // count as discoverable either), so the message must stay honest for both a
 // lineage that was never started here and one started under a different
 // --cwd; it never claims nothing was ever attempted.
-const reviewCompactFacadeLineageNotDiscoverableReason = "no discoverable compact facade review lineage found; run gentle-ai review start to begin one, or pass --cwd if it was started from a different repository path"
+const reviewCompactFacadeLineageNotDiscoverableReason = "no discoverable compact facade review lineage found; run hgtran-ai review start to begin one, or pass --cwd if it was started from a different repository path"
 
-const facadeReviewPolicy = `Gentle AI native bounded review policy.
+const facadeReviewPolicy = `Hgtran AI native bounded review policy.
 
 Only candidate-caused BLOCKER or CRITICAL findings may require correction. Pre-existing and base-only findings are follow-ups. One correction is bounded by the frozen original scope, and delivery gates validate the terminal receipt against live Git evidence.
 `
@@ -125,7 +125,7 @@ const reviewStartEmptyCandidateHint = "the candidate has no pending changes; alr
 // reviewStartNegotiateContractHint makes the negotiated contract path
 // discoverable from the plain START response.
 func reviewStartNegotiateContractHint(snapshot reviewtransaction.Snapshot) string {
-	command := fmt.Sprintf("gentle-ai review start --contract %s --agent %s --target %s --projection %s",
+	command := fmt.Sprintf("hgtran-ai review start --contract %s --agent %s --target %s --projection %s",
 		ReviewIntegrationContractV2, model.AgentClaudeCode, snapshot.Identity, facadeProjection(snapshot.Projection))
 	switch snapshot.Kind {
 	case reviewtransaction.TargetBaseDiff:
@@ -262,7 +262,7 @@ func (err *ReviewReceiptDiscoveryError) Error() string {
 			// required.
 			message = "no terminal review receipt governs this candidate"
 			if len(err.Candidates) > 0 {
-				message += "; review it directly with gentle-ai review start, or optionally recover a prior lineage instead: " + strings.Join(err.Candidates, ", ")
+				message += "; review it directly with hgtran-ai review start, or optionally recover a prior lineage instead: " + strings.Join(err.Candidates, ", ")
 			}
 		} else {
 			// More than one receipt genuinely governs, so the gate must not
@@ -274,7 +274,7 @@ func (err *ReviewReceiptDiscoveryError) Error() string {
 			// error already carries.
 			message = "multiple terminal review receipts require explicit target selection"
 			if len(err.Candidates) > 0 {
-				message += "; select one with gentle-ai review validate --lineage <id>, from: " + strings.Join(err.Candidates, ", ")
+				message += "; select one with hgtran-ai review validate --lineage <id>, from: " + strings.Join(err.Candidates, ", ")
 			}
 		}
 	case ReviewAuthorityCorrupted:
@@ -294,7 +294,7 @@ func (err *ReviewReceiptDiscoveryError) Error() string {
 // candidate"): this is the untyped twin of the community-reported
 // plural-stale-receipt blocker (3c.1-3c.5 above) -- it too fails
 // unconditionally, in every mode, hitting the same upgrader cohort (anyone
-// who reviewed with gentle-ai before compact v2 shipped and has since
+// who reviewed with hgtran-ai before compact v2 shipped and has since
 // reviewed the same target again post-upgrade).
 //
 // It is typed here (so a caller can match it with errors.Is) and stays OUTSIDE
@@ -575,8 +575,8 @@ func (err *reviewStartContextError) Unwrap() error { return err.Cause }
 
 func RunReview(args []string, stdout io.Writer) error {
 	if len(args) == 0 || args[0] == "help" || args[0] == "-h" || args[0] == "--help" {
-		_, _ = fmt.Fprintln(stdout, "Usage: gentle-ai review <capabilities|start|finalize|validate|status|repair|invalidate|abandon|recover|retry-final-verification|reclaim|inspect-authority|inspect-candidate|reconcile-authority|reconcile-authority-batch|dispose-result|reopen-results|quarantine-legacy|quarantine-legacy-fix-scope|repair-legacy-alias|schema|bind-sdd> [flags]\n\nOrdinary review facade; repository scope, authority, canonical artifacts, and lifecycle transitions are derived by Go. Use review retry-final-verification only for a provider-proven completed failed final-verification tooling incident. Generic review recover remains unchanged. Use review repair --preflight for provider-owned classified authority repair; repair-legacy-alias is compatibility-only.")
-		_, _ = fmt.Fprintln(stdout, "Additive headless capabilities: gentle-ai review capture-result (with --preflight), gentle-ai review inspect-candidate, and gentle-ai review preserve-result.")
+		_, _ = fmt.Fprintln(stdout, "Usage: hgtran-ai review <capabilities|start|finalize|validate|status|repair|invalidate|abandon|recover|retry-final-verification|reclaim|inspect-authority|inspect-candidate|reconcile-authority|reconcile-authority-batch|dispose-result|reopen-results|quarantine-legacy|quarantine-legacy-fix-scope|repair-legacy-alias|schema|bind-sdd> [flags]\n\nOrdinary review facade; repository scope, authority, canonical artifacts, and lifecycle transitions are derived by Go. Use review retry-final-verification only for a provider-proven completed failed final-verification tooling incident. Generic review recover remains unchanged. Use review repair --preflight for provider-owned classified authority repair; repair-legacy-alias is compatibility-only.")
+		_, _ = fmt.Fprintln(stdout, "Additive headless capabilities: hgtran-ai review capture-result (with --preflight), hgtran-ai review inspect-candidate, and hgtran-ai review preserve-result.")
 		return nil
 	}
 	operation, negotiated, preflightFailure := reviewIntegrationFailureRoute(args)
@@ -829,7 +829,7 @@ func runReviewStatus(ctx context.Context, args []string, stdout io.Writer) error
 			return fmt.Errorf("assess negotiated review target: %w", err)
 		}
 		// Wave 1 shadow observation (rdd-shadow-evaluation): outcome-neutral,
-		// advisory-only, and a true no-op unless GENTLE_AI_RDD_SHADOW is set —
+		// advisory-only, and a true no-op unless HGTRAN_AI_RDD_SHADOW is set —
 		// see internal/reviewtransaction/shadow_observer.go. status has no
 		// authoritative receipt to freeze against yet, so both frozen tree
 		// arguments are honestly empty rather than fabricated.
@@ -1009,7 +1009,7 @@ func RunReviewRecover(args []string, stdout io.Writer) error {
 	reason := flags.String("reason", "", "recovery reason")
 	actor := flags.String("actor", "", "recovery actor")
 	projectionFlag := flags.String("projection", "", "successor projection: workspace or staged (default: predecessor projection)")
-	authorization := flags.String("maintainer-authorization", "", "exact LF-only gentle-ai.review-recovery-authorization/v1 binding: predecessor_lineage, predecessor_revision, target_identity, optional native successor_lineage, actor, reason")
+	authorization := flags.String("maintainer-authorization", "", "exact LF-only hgtran-ai.review-recovery-authorization/v1 binding: predecessor_lineage, predecessor_revision, target_identity, optional native successor_lineage, actor, reason")
 	policySource := flags.String("policy", "", "optional review policy file")
 	focus := flags.String("focus", "reliability", "dominant standard-risk focus; large pure documentation always uses readability")
 	baseRef := flags.String("base-ref", "", "optional base revision for immutable base-to-HEAD review")
@@ -1204,7 +1204,7 @@ func reviewUnchangedRecoveryRefusal(cause error, cwd, predecessor, expected, suc
 		cause, reviewRecoverCommand(cwd, predecessor, expected, successor, disposition))
 }
 
-// reviewRecoverCommand renders one literal `gentle-ai review recover`
+// reviewRecoverCommand renders one literal `hgtran-ai review recover`
 // invocation. Every value is one the caller already holds, so nothing here is
 // ever a guess printed at the operator.
 func reviewRecoverCommand(cwd, predecessor, expected, successor, disposition string) string {
@@ -1528,8 +1528,8 @@ func runReviewFacadeStart(ctx context.Context, args []string, stdout io.Writer) 
 		// who wants a base-diff review needs the committed-only escape. Name
 		// both verbatim so the refusal is actionable either way.
 		return fmt.Errorf("review start with --projection staged and --base-ref is refused because intent is ambiguous: for a staged-index review rerun with %q; for a base-diff review rerun with %q",
-			"gentle-ai review start --projection staged",
-			fmt.Sprintf("gentle-ai review start --base-ref %s --committed-only", strings.TrimSpace(*baseRef)))
+			"hgtran-ai review start --projection staged",
+			fmt.Sprintf("hgtran-ai review start --base-ref %s --committed-only", strings.TrimSpace(*baseRef)))
 	}
 	if strings.TrimSpace(*baseRef) != "" && !*workspaceOverlay {
 		dirtyTracked, dirtyErr := (reviewtransaction.SnapshotBuilder{Repo: root}).HasDirtyTrackedChanges(ctx)
@@ -1571,7 +1571,7 @@ func runReviewFacadeStart(ctx context.Context, args []string, stdout io.Writer) 
 		return fmt.Errorf("build facade review target: %w", err)
 	}
 	// Wave 1 shadow observation (rdd-shadow-evaluation): outcome-neutral,
-	// advisory-only, and a true no-op unless GENTLE_AI_RDD_SHADOW is set —
+	// advisory-only, and a true no-op unless HGTRAN_AI_RDD_SHADOW is set —
 	// see internal/reviewtransaction/shadow_observer.go. start has no prior
 	// authoritative receipt to freeze against, so both frozen tree
 	// arguments are honestly empty rather than fabricated.
@@ -1630,7 +1630,7 @@ func runReviewFacadeStart(ctx context.Context, args []string, stdout io.Writer) 
 	// call needs — snapshot, risk assessment, tier, lenses, and the fact that
 	// authorizeReviewStart already returned nil (consent granted, or tier 0's
 	// carve-out) — was already computed by the exact same reused code the
-	// legacy branch below still uses unchanged. GENTLE_AI_RDD_NEW_LINEAGE
+	// legacy branch below still uses unchanged. HGTRAN_AI_RDD_NEW_LINEAGE
 	// unset or empty (the default) never reaches this branch at all, so the
 	// legacy start path stays byte-identical.
 	if reviewtransaction.NewLineageActivationEnabled() {
@@ -1968,7 +1968,7 @@ func reviewConsentFollowUpBase(
 	locale string,
 ) string {
 	parts := []string{
-		"gentle-ai review start",
+		"hgtran-ai review start",
 		"--contract " + contract,
 		"--cwd " + cwd,
 		"--target " + target,
@@ -2063,7 +2063,7 @@ func reviewFacadeStartResultFor(action reviewtransaction.CompactStartAction, len
 var reviewUnadmittedResultRefusal = "review finalize no longer accepts --result: a reviewer result supplied this way carries no provider-owned admission, " +
 	"so it cannot prove the lens inspected the frozen candidate. " +
 	"Capture each selected lens with `" + reviewCaptureResultCommandName() + "` (see `" + reviewNextTransitionRefreshCommand + "` for the exact lineage/target/lens/order bindings), " +
-	"then run `gentle-ai review finalize --captured-results=true`"
+	"then run `hgtran-ai review finalize --captured-results=true`"
 
 func RunReviewFacadeFinalize(args []string, stdout io.Writer) error {
 	return runReviewFacadeFinalize(context.Background(), args, stdout)
@@ -2140,10 +2140,10 @@ func runReviewFacadeFinalize(ctx context.Context, args []string, stdout io.Write
 		reviewFinalizeFlagProvided(args, "request-hash") || reviewFinalizeFlagProvided(args, "repository-context")
 	if submissionBindingProvided && (!negotiated || *contract != ReviewIntegrationContractV2 || strings.TrimSpace(*expectedSubmissionRevision) == "" ||
 		strings.TrimSpace(*targetIdentity) == "" || strings.TrimSpace(*requestHash) == "" || strings.TrimSpace(*repositoryContext) == "") {
-		return reviewPreflightError(errors.New("review finalize submission descriptors require the complete v2 revision, target, request hash, and repository context binding; refresh with gentle-ai review status --next-transition"))
+		return reviewPreflightError(errors.New("review finalize submission descriptors require the complete v2 revision, target, request hash, and repository context binding; refresh with hgtran-ai review status --next-transition"))
 	}
 	if reviewFinalizeFlagProvided(args, "repository-context") && reviewFinalizeFlagProvided(args, "cwd") {
-		return reviewPreflightError(errors.New("review finalize submission descriptors cannot combine --repository-context with --cwd; refresh with gentle-ai review status --next-transition"))
+		return reviewPreflightError(errors.New("review finalize submission descriptors cannot combine --repository-context with --cwd; refresh with hgtran-ai review status --next-transition"))
 	}
 	stdinPaths := append(append([]string{}, resultPaths...), resultArtifactFiles...)
 	if countFacadeStdin(stdinPaths, *validationPath, *refuterPath, *evidencePath) > 1 {
@@ -2202,7 +2202,7 @@ func runReviewFacadeFinalize(ctx context.Context, args []string, stdout io.Write
 			// silently ignore a caller's reviewer-result flags for a new-lineage authority.
 			for _, unsupported := range []string{"result", "result-artifact", "result-artifact-file", "captured-results", "captured-evidence", "validation", "refuter", "evidence"} {
 				if reviewFinalizeFlagProvided(args, unsupported) {
-					return reviewPreflightError(fmt.Errorf("new-lineage finalize does not yet support --%s; retry with `gentle-ai review finalize --lineage %s` and, if needed, --failed or --admission-findings", unsupported, *lineage))
+					return reviewPreflightError(fmt.Errorf("new-lineage finalize does not yet support --%s; retry with `hgtran-ai review finalize --lineage %s` and, if needed, --failed or --admission-findings", unsupported, *lineage))
 				}
 			}
 			var findings []reviewtransaction.FindingEvidence
@@ -2398,7 +2398,7 @@ func runReviewFacadeFinalize(ctx context.Context, args []string, stdout io.Write
 		if err := reviewFacadeSyncDirectory(filepath.Dir(store.FinalizeAttemptJournalPath())); err != nil {
 			return fmt.Errorf("sync completed finalize journal directory: %w", err)
 		}
-		return encodeCompactFacadeFinalize(stdout, negotiated, *contract, *actionEligibility, *nextTransition, state, record.Revision, store, "validate delivery with gentle-ai review validate --gate <gate>", reviewFinalizeOutputContext{Context: ctx, Repo: root})
+		return encodeCompactFacadeFinalize(stdout, negotiated, *contract, *actionEligibility, *nextTransition, state, record.Revision, store, "validate delivery with hgtran-ai review validate --gate <gate>", reviewFinalizeOutputContext{Context: ctx, Repo: root})
 	}
 	var attempt reviewtransaction.FinalizeAttempt
 	attemptLoaded := false
@@ -2528,7 +2528,7 @@ func runReviewFacadeFinalize(ctx context.Context, args []string, stdout io.Write
 		return encodeCompactFacadeFinalize(stdout, negotiated, *contract, *actionEligibility, *nextTransition, state, record.Revision, store, "continue the current review state", reviewFinalizeOutputContext{Context: ctx, Repo: root})
 	}
 	if terminalAtEntry && terminalReceiptExists {
-		return encodeCompactFacadeFinalize(stdout, negotiated, *contract, *actionEligibility, *nextTransition, state, record.Revision, store, "validate delivery with gentle-ai review validate --gate <gate>", reviewFinalizeOutputContext{Context: ctx, Repo: root})
+		return encodeCompactFacadeFinalize(stdout, negotiated, *contract, *actionEligibility, *nextTransition, state, record.Revision, store, "validate delivery with hgtran-ai review validate --gate <gate>", reviewFinalizeOutputContext{Context: ctx, Repo: root})
 	}
 	receipt := terminalReceipt
 	if !terminalAtEntry {
@@ -2550,7 +2550,7 @@ func runReviewFacadeFinalize(ctx context.Context, args []string, stdout io.Write
 	if err := store.MarkFinalizeAttemptReceiptPublished(requestDigest); err != nil {
 		return err
 	}
-	return encodeCompactFacadeFinalize(stdout, negotiated, *contract, *actionEligibility, *nextTransition, state, record.Revision, store, "validate delivery with gentle-ai review validate --gate <gate>", reviewFinalizeOutputContext{Context: ctx, Repo: root})
+	return encodeCompactFacadeFinalize(stdout, negotiated, *contract, *actionEligibility, *nextTransition, state, record.Revision, store, "validate delivery with hgtran-ai review validate --gate <gate>", reviewFinalizeOutputContext{Context: ctx, Repo: root})
 }
 
 func facadeFinalizeTransitionIndex(attempt *reviewtransaction.FinalizeAttempt, revision string) int {
@@ -2570,11 +2570,11 @@ func validateReviewFinalizeSubmission(ctx context.Context, repo string, state re
 		return nil
 	}
 	if expectedRevision != revision {
-		return errors.New("review finalize submission expected revision is stale; refresh with gentle-ai review status --next-transition")
+		return errors.New("review finalize submission expected revision is stale; refresh with hgtran-ai review status --next-transition")
 	}
 	hasValidation := strings.TrimSpace(validationPath) != ""
 	if correctionLinesProvided == hasValidation {
-		return errors.New("review finalize submission requires exactly one descriptor value; refresh with gentle-ai review status --next-transition")
+		return errors.New("review finalize submission requires exactly one descriptor value; refresh with hgtran-ai review status --next-transition")
 	}
 	binding := ReviewTransitionBinding{LineageID: state.LineageID, Revision: revision, TargetIdentity: targetIdentity, RepositoryContext: repositoryContext}
 	var submission *ReviewTransitionSubmission
@@ -2585,20 +2585,20 @@ func validateReviewFinalizeSubmission(ctx context.Context, repo string, state re
 			return err
 		}
 		if correctionLines < 1 || correctionLines > request.CorrectionBudget || targetIdentity != request.TargetIdentity || requestHash != request.RequestHash {
-			return errors.New("review finalize submission does not match the provider-owned correction request; refresh with gentle-ai review status --next-transition")
+			return errors.New("review finalize submission does not match the provider-owned correction request; refresh with hgtran-ai review status --next-transition")
 		}
 		submission = reviewCorrectionPlanSubmission(ReviewIntegrationContractV2, binding, request)
 		value = fmt.Sprint(correctionLines)
 	} else {
 		if !capturedEvidence {
-			return errors.New("review finalize validation submission requires captured evidence; refresh with gentle-ai review status --next-transition")
+			return errors.New("review finalize validation submission requires captured evidence; refresh with hgtran-ai review status --next-transition")
 		}
 		request, err := reviewtransaction.BuildTargetedValidationRequest(ctx, repo, state, revision)
 		if err != nil {
 			return err
 		}
 		if targetIdentity != request.CorrectionTargetIdentity || requestHash != request.RequestHash {
-			return errors.New("review finalize submission does not match the provider-owned targeted validation request; refresh with gentle-ai review status --next-transition")
+			return errors.New("review finalize submission does not match the provider-owned targeted validation request; refresh with hgtran-ai review status --next-transition")
 		}
 		binding.TargetIdentity = request.CorrectionTargetIdentity
 		submission = reviewTargetedValidationSubmission(ReviewIntegrationContractV2, binding, request)
@@ -2611,7 +2611,7 @@ func validateReviewFinalizeSubmission(ctx context.Context, repo string, state re
 	slot := submission.Value.SubstitutionLocation
 	expected[slot] = strings.Replace(expected[slot], reviewSubmissionValuePlaceholder, value, 1)
 	if !reflect.DeepEqual(args, expected) {
-		return errors.New("review finalize submission differs from the provider-issued descriptor; refresh with gentle-ai review status --next-transition")
+		return errors.New("review finalize submission differs from the provider-issued descriptor; refresh with hgtran-ai review status --next-transition")
 	}
 	return nil
 }
@@ -2774,7 +2774,7 @@ type ErrReviewFinalizeNoTransition struct {
 
 func (err *ErrReviewFinalizeNoTransition) Error() string {
 	return fmt.Sprintf(
-		"finalize for lineage %q had no verification evidence to consume and made no transition; capture it first with `gentle-ai review capture-evidence`, then run `gentle-ai review finalize --lineage %s --captured-evidence`",
+		"finalize for lineage %q had no verification evidence to consume and made no transition; capture it first with `hgtran-ai review capture-evidence`, then run `hgtran-ai review finalize --lineage %s --captured-evidence`",
 		err.LineageID, err.LineageID,
 	)
 }
@@ -2873,7 +2873,7 @@ func facadeFinalizeReplayRequestDigest(lineage, revision string, receipt reviewt
 		StoreRevision string                           `json:"store_revision"`
 		Receipt       reviewtransaction.CompactReceipt `json:"receipt"`
 	}{
-		Schema: "gentle-ai.review-finalize-replay-request/v1", Operation: "review/finalize",
+		Schema: "hgtran-ai.review-finalize-replay-request/v1", Operation: "review/finalize",
 		LineageID: lineage, StoreRevision: revision, Receipt: receipt,
 	})
 }
@@ -4243,7 +4243,7 @@ func countFacadeStdin(resultPaths []string, paths ...string) int {
 
 func facadeValueHash(domain string, value any) string {
 	payload, _ := json.Marshal(value)
-	sum := sha256.Sum256(append([]byte("gentle-ai.facade-"+domain+"/v1\x00"), payload...))
+	sum := sha256.Sum256(append([]byte("hgtran-ai.facade-"+domain+"/v1\x00"), payload...))
 	return "sha256:" + hex.EncodeToString(sum[:])
 }
 

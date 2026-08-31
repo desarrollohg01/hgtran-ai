@@ -374,7 +374,7 @@ func TestNegotiatedFinalizeReturnsProviderOwnedTargetedValidationRequest(t *test
 	if err := changedEnvelope.Validate(); err == nil {
 		t.Fatal("FINALIZE accepted a transition request without the provider-owned top-level request")
 	}
-	if bytes.Contains(output.Bytes(), []byte(filepath.Join(repo, ".git", "gentle-ai"))) || bytes.Contains(output.Bytes(), []byte(repo)) {
+	if bytes.Contains(output.Bytes(), []byte(filepath.Join(repo, ".git", "hgtran-ai"))) || bytes.Contains(output.Bytes(), []byte(repo)) {
 		t.Fatalf("validation request leaked provider internals: %s", output.String())
 	}
 }

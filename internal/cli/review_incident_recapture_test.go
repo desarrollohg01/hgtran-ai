@@ -255,7 +255,7 @@ func TestReviewAbandonAfterRejectedAdmissionIncidentArtifact(t *testing.T) {
 	failEnvelopelessCapture(t, repo, started, record)
 	incident := preserveEnvelopelessIncident(t, repo, started, record)
 
-	binding := "gentle-ai.review-abandon-authorization/v1\nlineage=" + started.LineageID +
+	binding := "hgtran-ai.review-abandon-authorization/v1\nlineage=" + started.LineageID +
 		"\nrevision=" + record.Revision +
 		"\nsnapshot_identity=" + record.State.InitialSnapshot.Identity +
 		"\nactor=maintainer@example.com\nreason=abandon after rejected reviewer admission"

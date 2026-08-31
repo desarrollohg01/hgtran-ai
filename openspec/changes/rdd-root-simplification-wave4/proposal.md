@@ -4,7 +4,7 @@
 
 Wave 3 built the new-lineage facade; nothing outside RDD consumes it. Two consumer-side defects remain, and they generate the 21 `absorbed-into-wave-4` rows:
 
-1. **SDD holds a second copy of review truth.** `review_binding.go` persists a `gentle-ai.sdd-review-binding/v1` mirror (CON-07) and `review_gate.go` re-derives gate meaning from receipts (CON-06), so every review change needs a matching SDD fix.
+1. **SDD holds a second copy of review truth.** `review_binding.go` persists a `hgtran-ai.sdd-review-binding/v1` mirror (CON-07) and `review_gate.go` re-derives gate meaning from receipts (CON-06), so every review change needs a matching SDD fix.
 2. **RDD supervises the SDD cycle from before apply.** `applyPreVerifyReviewRouting` blocks verify until a review transaction exists, so a review problem stops implementation — and with the kill switch OFF the archive gate still runs a disabled/unmanaged ceremony that can fail.
 
 The maintainer directive (2026-08-02, Engram decision 10123) reorders this: **apply → verify → offer RDD → archive**. RDD becomes a service SDD invokes at one point, never a supervisor. With the kill switch OFF, RDD must not exist for SDD at all — no offer, no status consultation, no ceremony that can block.
@@ -98,7 +98,7 @@ No authority is rewritten; no receipt is invalidated by rollback.
 
 ## Success Criteria
 
-- [ ] SDD persists no review state beyond a `ReceiptRef`; `gentle-ai.sdd-review-binding/v1` is never written, proven by store inspection.
+- [ ] SDD persists no review state beyond a `ReceiptRef`; `hgtran-ai.sdd-review-binding/v1` is never written, proven by store inspection.
 - [ ] No review-gate result is re-derived inside `internal/sddstatus`; every answer comes from one native validation entry point.
 - [ ] End-to-end: apply → verify → offer → (bounded correction → targeted re-verify) → archive, for accept and decline.
 - [ ] Kill switch OFF ⇒ **zero** review code executes on any SDD path (status, continue, verify, archive) and no review field appears in output; proven by call absence, not by a passing disabled path.

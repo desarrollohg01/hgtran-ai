@@ -55,7 +55,7 @@ func approveTwoExactlyGoverningReceipts(t *testing.T, repo string) []string {
 // genuine damage to the review authority store rather than a stale receipt.
 func corruptReviewAuthorityInventory(t *testing.T, repo string) {
 	t.Helper()
-	broken := filepath.Join(repo, ".git", "gentle-ai", "review-transactions", "v2", "corrupt-reach")
+	broken := filepath.Join(repo, ".git", "hgtran-ai", "review-transactions", "v2", "corrupt-reach")
 	if err := os.MkdirAll(broken, 0o755); err != nil {
 		t.Fatal(err)
 	}
@@ -440,7 +440,7 @@ func recoverFacadeReview(t *testing.T, repo, predecessor, successorLineage strin
 	if err != nil {
 		t.Fatal(err)
 	}
-	authorization := "gentle-ai.review-recovery-authorization/v1\npredecessor_lineage=" + predecessor +
+	authorization := "hgtran-ai.review-recovery-authorization/v1\npredecessor_lineage=" + predecessor +
 		"\npredecessor_revision=" + record.Revision + "\ntarget_identity=" + target.Identity +
 		"\nactor=maintainer\nreason=candidate changed while reviews were off"
 	var output bytes.Buffer
@@ -553,7 +553,7 @@ func TestDisabledGateNeverEmitsAllowOrCreatesReceipt(t *testing.T) {
 // mutated no state.
 func reviewAuthorityFingerprint(t *testing.T, repo string) string {
 	t.Helper()
-	root := filepath.Join(repo, ".git", "gentle-ai", "review-transactions")
+	root := filepath.Join(repo, ".git", "hgtran-ai", "review-transactions")
 	var entries []string
 	err := filepath.Walk(root, func(path string, info os.FileInfo, walkErr error) error {
 		if walkErr != nil {

@@ -73,7 +73,7 @@ The resolver MUST return a typed failure with evidence, or a complete ambiguity 
 
 ### Requirement: Wave 1 Selector Scope (Assumption, pending maintainer confirmation)
 
-Wave 1's resolver MUST cover gentle-ai staged, workspace, committed-range, and workspace-overlay selectors only. gentle-pi protocol-1.1 overlay selectors (absorbed backlog items pi#194, pi#197, pi#204) are out of scope for Wave 1 and are covered by the same algebra at the consumer wave.
+Wave 1's resolver MUST cover hgtran-ai staged, workspace, committed-range, and workspace-overlay selectors only. gentle-pi protocol-1.1 overlay selectors (absorbed backlog items pi#194, pi#197, pi#204) are out of scope for Wave 1 and are covered by the same algebra at the consumer wave.
 
 #### Scenario: Pi overlay selector is explicitly out of scope
 

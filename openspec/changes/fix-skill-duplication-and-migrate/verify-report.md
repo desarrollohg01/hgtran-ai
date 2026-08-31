@@ -30,14 +30,14 @@ PR #458 ships 50 files changed, +2,362 / −6,739 lines (~9,100 changed lines to
 ### Targeted linter
 ```
 go test -run TestSkillFrontmatterIsLintClean ./internal/assets/...
-ok  github.com/gentleman-programming/gentle-ai/internal/assets  0.006s
+ok  github.com/gentleman-programming/hgtran-ai/internal/assets  0.006s
 ```
 PASS.
 
 ### Full assets package
 ```
 go test ./internal/assets/...
-ok  github.com/gentleman-programming/gentle-ai/internal/assets  (cached)
+ok  github.com/gentleman-programming/hgtran-ai/internal/assets  (cached)
 ```
 PASS — includes `assets_test.go` readability assertions for embedded `references/*.md` files.
 
@@ -147,7 +147,7 @@ testdata/golden/skills-windsurf-go-testing.golden
 
 ### Scenario E — Install writes new frontmatter to disk: **PASS (static evidence)**
 
-Static evidence: the embedded asset content is what `installSkill` writes to `~/.claude/skills/{phase}/SKILL.md`. Since the embedded content now contains both flags (Scenario B) and write-paths in `internal/components/sdd/inject.go` now copy recursively (Part 1 scope, verified in Scenario H), a fresh `gentle-ai install` will produce both the new frontmatter and the `references/` subdirectories on disk. Phase 5 manual verification will confirm runtime.
+Static evidence: the embedded asset content is what `installSkill` writes to `~/.claude/skills/{phase}/SKILL.md`. Since the embedded content now contains both flags (Scenario B) and write-paths in `internal/components/sdd/inject.go` now copy recursively (Part 1 scope, verified in Scenario H), a fresh `hgtran-ai install` will produce both the new frontmatter and the `references/` subdirectories on disk. Phase 5 manual verification will confirm runtime.
 
 ---
 
@@ -238,9 +238,9 @@ Reviewer must run these against a real Claude Code v2.1.131+ environment after t
 
 ### Part 2 — Scenario F: Picker dedup
 
-- [ ] Build the binary: `go build -o /tmp/gentle-ai .`
+- [ ] Build the binary: `go build -o /tmp/hgtran-ai .`
 - [ ] (Optional, for clean-room confidence) move `~/.claude/skills/` aside or use a fresh test home directory.
-- [ ] Run `gentle-ai install` (or `gentle-ai sync`) against `~/.claude/`.
+- [ ] Run `hgtran-ai install` (or `hgtran-ai sync`) against `~/.claude/`.
 - [ ] Confirm `~/.claude/skills/sdd-apply/SKILL.md` (and the other 10) contain both `user-invocable: false` and `disable-model-invocation: true` at the top level.
 - [ ] Open Claude Code v2.1.131+ and open the `/` picker.
 - [ ] Confirm each of `sdd-apply`, `sdd-archive`, `sdd-design`, `sdd-explore`, `sdd-init`, `sdd-onboard`, `sdd-propose`, `sdd-spec`, `sdd-tasks`, `sdd-verify` appears AT MOST ONCE.

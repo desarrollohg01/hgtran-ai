@@ -20,7 +20,7 @@ import (
 // delegation seam (shadowDeriveBaseAdvance, shadow_relation.go) must pay
 // zero derivation cost — no merge-base, no changedPaths, no patchIdentity,
 // no `merge-tree --write-tree` — on the live pre-PR gate path when
-// GENTLE_AI_RDD_SHADOW is unset. It reuses the exact fixture and
+// HGTRAN_AI_RDD_SHADOW is unset. It reuses the exact fixture and
 // attested-compatible-base-advance scenario from
 // TestNativePrePRGateAllowsOnlyCryptographicallyAttestedCompatibleBaseAdvance,
 // where the live path itself derives the compatibility proof once
@@ -37,7 +37,7 @@ func TestNativePrePRGateWithShadowDisabledDerivesBaseAdvanceZeroTimes(t *testing
 		t.Fatalf("compatible base advance = %#v", evaluation)
 	}
 	if got := shadowDeriveBaseAdvanceCallCountForTest(); got != 0 {
-		t.Fatalf("shadowDeriveBaseAdvanceCallCount = %d, want 0 with GENTLE_AI_RDD_SHADOW unset", got)
+		t.Fatalf("shadowDeriveBaseAdvanceCallCount = %d, want 0 with HGTRAN_AI_RDD_SHADOW unset", got)
 	}
 }
 
@@ -312,7 +312,7 @@ func TestExplicitPrePRRequestWithoutRemoteFailsClosed(t *testing.T) {
 	ledgerPath := filepath.Join(dir, "ledger.json")
 	evidencePath := filepath.Join(dir, "evidence.md")
 	for path, content := range map[string]string{
-		policyPath: "bounded policy\n", ledgerPath: "{\"schema\":\"gentle-ai.review-ledger/v1\",\"findings\":[]}", evidencePath: "verified\n",
+		policyPath: "bounded policy\n", ledgerPath: "{\"schema\":\"hgtran-ai.review-ledger/v1\",\"findings\":[]}", evidencePath: "verified\n",
 	} {
 		if err := os.WriteFile(path, []byte(content), 0o644); err != nil {
 			t.Fatal(err)
@@ -1027,7 +1027,7 @@ func newCompatiblePrePRFixtureMode(t *testing.T, deliveryPath, basePath string, 
 	evidencePath := filepath.Join(dir, "evidence.md")
 	policyPayload := []byte("# Bounded review policy\n\npre_pr_ci_issuer: trusted-ci\npre_pr_ci_ed25519_public_key: " + base64.StdEncoding.EncodeToString(publicKey) + "\n")
 	for path, payload := range map[string][]byte{
-		policyPath: policyPayload, ledgerPath: []byte("{\"schema\":\"gentle-ai.review-ledger/v1\",\"findings\":[]}"), evidencePath: []byte("verified\n"),
+		policyPath: policyPayload, ledgerPath: []byte("{\"schema\":\"hgtran-ai.review-ledger/v1\",\"findings\":[]}"), evidencePath: []byte("verified\n"),
 	} {
 		if err := os.WriteFile(path, payload, 0o644); err != nil {
 			t.Fatal(err)
@@ -1447,7 +1447,7 @@ func TestNativeGateUsesRetainedArtifactContentAndRejectsMismatch(t *testing.T) {
 	if got := EvaluateNativeGate(context.Background(), repo, receipt, request); got.Result != GateAllow {
 		t.Fatalf("retained content gate = %#v", got)
 	}
-	request.LedgerContent = `{"schema":"gentle-ai.review-ledger/v1","findings":[{"id":"mismatch"}]}`
+	request.LedgerContent = `{"schema":"hgtran-ai.review-ledger/v1","findings":[{"id":"mismatch"}]}`
 	if got := EvaluateNativeGate(context.Background(), repo, receipt, request); got.Result == GateAllow {
 		t.Fatal("mismatched retained ledger content was accepted")
 	}
@@ -1773,7 +1773,7 @@ func appendApprovedStoreChain(t *testing.T, store Store, approved Transaction) s
 func repositoryLineageStoreDir(t *testing.T, repo, lineage string) string {
 	t.Helper()
 	commonDir := trimGit(gitSnapshot(t, repo, "rev-parse", "--path-format=absolute", "--git-common-dir"))
-	return filepath.Join(commonDir, "gentle-ai", "review-transactions", "v1", lineage)
+	return filepath.Join(commonDir, "hgtran-ai", "review-transactions", "v1", lineage)
 }
 
 // TestDiscoverCompactFacadeGateReviewClassification is the ladder table for

@@ -833,7 +833,7 @@ func TestGenerateProfileOverlay_OrchestratorPromptSuffixed(t *testing.T) {
 	}
 
 	for _, wanted := range []string{
-		"Gentle AI",
+		"Hgtran AI",
 		"| orchestrator | anthropic/claude-haiku-3-5 |",
 	} {
 		if !strings.Contains(prompt, wanted) {

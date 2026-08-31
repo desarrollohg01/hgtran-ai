@@ -14,7 +14,7 @@ import (
 )
 
 // TestValidateBindsScopeChangedRecoveryChainAtPublicationGates covers
-// gentle-ai issue #1422 end to end: an approved review is delivered as one
+// hgtran-ai issue #1422 end to end: an approved review is delivered as one
 // commit, its scope_changed recovery successor is created from the live
 // repository (a pristine, degenerate snapshot), and `review validate` must
 // still bind and allow pre-push and pre-pr through the composed recovery

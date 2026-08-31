@@ -21,9 +21,9 @@ import (
 // English prose" checker is not tractable. This file covers three precise,
 // mechanically-extracted, enumerable subsets instead:
 //
-//  1. Every gentle-ai.*/vN schema identifier literal docs/review-integration.md
+//  1. Every hgtran-ai.*/vN schema identifier literal docs/review-integration.md
 //     quotes in backticks (Guard A).
-//  2. Every `gentle-ai review <verb>` command docs/review-integration.md names
+//  2. Every `hgtran-ai review <verb>` command docs/review-integration.md names
 //     as required (Guard B).
 //  3. The mode-completeness rule: every command that branches on negotiated
 //     --contract (found via the reviewIntegrationNegotiation call sites, not
@@ -32,18 +32,18 @@ import (
 //
 // What this deliberately does NOT cover: free-form prose promises (e.g. "the
 // provider validates X"), field names inside Markdown tables that are not
-// also backtick-quoted schema identifiers or gentle-ai commands, and doc
+// also backtick-quoted schema identifiers or hgtran-ai commands, and doc
 // sections outside docs/review-integration.md. A narrow guard that genuinely
 // fails closed beats a broad one that silently passes.
 
 // reviewIntegrationDocSchemaIDRegexp extracts every backtick-quoted
-// gentle-ai.*/vN (or /vN.M) schema identity literal from the doc's prose.
-var reviewIntegrationDocSchemaIDRegexp = regexp.MustCompile("`(gentle-ai\\.[a-z0-9.\\-]+/v[0-9]+(?:\\.[0-9]+)?)`")
+// hgtran-ai.*/vN (or /vN.M) schema identity literal from the doc's prose.
+var reviewIntegrationDocSchemaIDRegexp = regexp.MustCompile("`(hgtran-ai\\.[a-z0-9.\\-]+/v[0-9]+(?:\\.[0-9]+)?)`")
 
-// reviewIntegrationDocCommandVerbRegexp extracts every `gentle-ai review
+// reviewIntegrationDocCommandVerbRegexp extracts every `hgtran-ai review
 // <verb>` command name the doc names, from both fenced code blocks and
 // inline code spans (both use the same literal token sequence).
-var reviewIntegrationDocCommandVerbRegexp = regexp.MustCompile(`gentle-ai review ([a-z][a-z-]*)`)
+var reviewIntegrationDocCommandVerbRegexp = regexp.MustCompile(`hgtran-ai review ([a-z][a-z-]*)`)
 
 func readReviewIntegrationDoc(t *testing.T) string {
 	t.Helper()
@@ -63,7 +63,7 @@ func TestEveryDocumentedSchemaIdentityIsImplemented(t *testing.T) {
 	docs := readReviewIntegrationDoc(t)
 	matches := reviewIntegrationDocSchemaIDRegexp.FindAllStringSubmatch(docs, -1)
 	if len(matches) == 0 {
-		t.Fatal("found no gentle-ai.*/vN schema identifiers in docs/review-integration.md; the extraction regexp is stale")
+		t.Fatal("found no hgtran-ai.*/vN schema identifiers in docs/review-integration.md; the extraction regexp is stale")
 	}
 	ids := map[string]bool{}
 	for _, match := range matches {
@@ -86,14 +86,14 @@ func TestEveryDocumentedSchemaIdentityIsImplemented(t *testing.T) {
 }
 
 // TestEveryDocumentedReviewCommandIsReal is Guard B. It fails closed when the
-// doc names a `gentle-ai review <verb>` invocation that is not one of the
+// doc names a `hgtran-ai review <verb>` invocation that is not one of the
 // verbs runReviewCommandContext/runReviewCommand actually dispatch --
 // extracted mechanically from their case labels, not hand-maintained.
 func TestEveryDocumentedReviewCommandIsReal(t *testing.T) {
 	docs := readReviewIntegrationDoc(t)
 	matches := reviewIntegrationDocCommandVerbRegexp.FindAllStringSubmatch(docs, -1)
 	if len(matches) == 0 {
-		t.Fatal("found no `gentle-ai review <verb>` commands in docs/review-integration.md; the extraction regexp is stale")
+		t.Fatal("found no `hgtran-ai review <verb>` commands in docs/review-integration.md; the extraction regexp is stale")
 	}
 	documented := map[string]bool{}
 	for _, match := range matches {
@@ -109,7 +109,7 @@ func TestEveryDocumentedReviewCommandIsReal(t *testing.T) {
 	dispatched := reviewDispatchableReviewVerbs(t)
 	for verb := range documented {
 		if !dispatched[verb] {
-			t.Errorf("docs/review-integration.md requires `gentle-ai review %s`, but no dispatch reaches it from the facade switches or the app pre-dispatch", verb)
+			t.Errorf("docs/review-integration.md requires `hgtran-ai review %s`, but no dispatch reaches it from the facade switches or the app pre-dispatch", verb)
 		}
 	}
 }
@@ -227,7 +227,7 @@ var reviewCommandDispatchCaseRegexp = regexp.MustCompile(`^\s*case "([a-z][a-z-]
 
 // reviewCommandDispatchVerbs mechanically extracts every case label inside
 // runReviewCommandContext and runReviewCommand in review_facade.go -- the two
-// switches RunReview ultimately dispatches every `gentle-ai review <verb>`
+// switches RunReview ultimately dispatches every `hgtran-ai review <verb>`
 // invocation through. It deliberately does NOT scan the whole file: other
 // switches in the same file (severity, lens name) also have quoted string
 // case labels that would otherwise false-positive.

@@ -298,8 +298,8 @@ func TestBetaGoInstallMainUpgradeWarnsWhenDestinationDiffers(t *testing.T) {
 	stubDetectOS(t, "linux")
 	gobin := t.TempDir()
 	stale := t.TempDir()
-	installed := writeFakeBinary(t, gobin, "gentle-ai")
-	shadowing := writeFakeBinary(t, stale, "gentle-ai")
+	installed := writeFakeBinary(t, gobin, "hgtran-ai")
+	shadowing := writeFakeBinary(t, stale, "hgtran-ai")
 
 	stubGoEnv(t, map[string]string{"GOBIN": gobin})
 	origLookPath := lookPathFn
@@ -308,7 +308,7 @@ func TestBetaGoInstallMainUpgradeWarnsWhenDestinationDiffers(t *testing.T) {
 
 	r := update.UpdateResult{
 		Tool: update.ToolInfo{
-			Name:          "gentle-ai",
+			Name:          "hgtran-ai",
 			Owner:         "desarrollohg01",
 			Repo:          "hgtran-ai",
 			InstallMethod: update.InstallBinary,
@@ -347,27 +347,27 @@ func TestGoInstallDestinationNoticeOnWindowsMatchesExeAgainstCaseDifferentPath(t
 	// ...\runner~1\..., and the test failed on a difference it never meant to
 	// introduce. Starting from the resolved form makes that expansion a no-op.
 	gobin := resolvedTempDir(t)
-	writeFakeBinary(t, gobin, "gentle-ai.exe")
+	writeFakeBinary(t, gobin, "hgtran-ai.exe")
 
 	origLookPath := lookPathFn
 	t.Cleanup(func() { lookPathFn = origLookPath })
-	lookPathFn = func(string) (string, error) { return filepath.Join(strings.ToUpper(gobin), "GENTLE-AI"), nil }
+	lookPathFn = func(string) (string, error) { return filepath.Join(strings.ToUpper(gobin), "hgtran-ai"), nil }
 
-	if notice := goInstallDestinationNotice("gentle-ai", "windows", gobin, nil); notice != "" {
+	if notice := goInstallDestinationNotice("hgtran-ai", "windows", gobin, nil); notice != "" {
 		t.Fatalf("windows destination must match despite case and .exe suffix; notice = %q", notice)
 	}
 
-	lookPathFn = func(string) (string, error) { return filepath.Join(t.TempDir(), "gentle-ai.exe"), nil }
-	notice := goInstallDestinationNotice("gentle-ai", "windows", gobin, nil)
-	if !strings.Contains(notice, filepath.Join(gobin, "gentle-ai.exe")) {
+	lookPathFn = func(string) (string, error) { return filepath.Join(t.TempDir(), "hgtran-ai.exe"), nil }
+	notice := goInstallDestinationNotice("hgtran-ai", "windows", gobin, nil)
+	if !strings.Contains(notice, filepath.Join(gobin, "hgtran-ai.exe")) {
 		t.Fatalf("windows mismatch must name the .exe destination; notice = %q", notice)
 	}
 }
 
 func TestSameBinaryPathForOSHandlesWindowsCaseAndExeSuffix(t *testing.T) {
 	base := t.TempDir()
-	installed := filepath.Join(base, "gentle-ai.exe")
-	effective := filepath.Join(strings.ToUpper(base), "GENTLE-AI")
+	installed := filepath.Join(base, "hgtran-ai.exe")
+	effective := filepath.Join(strings.ToUpper(base), "hgtran-ai")
 
 	if !sameBinaryPathForOS(installed, effective, "windows") {
 		t.Errorf("windows comparison must ignore case and the .exe suffix: %q vs %q", installed, effective)
@@ -375,7 +375,7 @@ func TestSameBinaryPathForOSHandlesWindowsCaseAndExeSuffix(t *testing.T) {
 	if sameBinaryPathForOS(installed, effective, "linux") {
 		t.Errorf("non-windows comparison must stay case-sensitive: %q vs %q", installed, effective)
 	}
-	if sameBinaryPathForOS(filepath.Join(base, "a", "gentle-ai.exe"), filepath.Join(base, "b", "gentle-ai.exe"), "windows") {
+	if sameBinaryPathForOS(filepath.Join(base, "a", "hgtran-ai.exe"), filepath.Join(base, "b", "hgtran-ai.exe"), "windows") {
 		t.Error("different windows directories must not compare equal")
 	}
 	if sameBinaryPathForOS("", installed, "windows") || sameBinaryPathForOS(installed, "", "windows") {

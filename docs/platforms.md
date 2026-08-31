@@ -21,17 +21,17 @@ Release archives are currently produced for macOS and Linux only. Windows source
 ## Windows Notes
 
 - **Install from source** with Go 1.25.10+:
-  `go install github.com/gentleman-programming/gentle-ai/v2/cmd/gentle-ai@latest`.
-- **`gentle-ai upgrade` updates itself automatically when Go 1.25.10+ is on `PATH`.** It runs `go install …/cmd/gentle-ai@vX.Y.Z` pinned to the exact release tag. The module is verified against the Go checksum database (`sum.golang.org`) — a different trust anchor than the minisign signature used for the Linux/macOS release binaries, not a missing one.
-  Because `go install` writes to `GOBIN` (or `GOPATH\bin`), which is not necessarily the directory your shell resolves, the upgrade checks the destination afterwards and warns — naming both full paths — if a different `gentle-ai.exe` earlier on `PATH` would keep running.
+  `go install github.com/gentleman-programming/hgtran-ai/v2/cmd/hgtran-ai@latest`.
+- **`hgtran-ai upgrade` updates itself automatically when Go 1.25.10+ is on `PATH`.** It runs `go install …/cmd/hgtran-ai@vX.Y.Z` pinned to the exact release tag. The module is verified against the Go checksum database (`sum.golang.org`) — a different trust anchor than the minisign signature used for the Linux/macOS release binaries, not a missing one.
+  Because `go install` writes to `GOBIN` (or `GOPATH\bin`), which is not necessarily the directory your shell resolves, the upgrade checks the destination afterwards and warns — naming both full paths — if a different `hgtran-ai.exe` earlier on `PATH` would keep running.
 - **Without Go on `PATH`, the upgrader fails closed.** It downloads and executes nothing, and prints the runnable `go install` command instead.
 - **Scoop and official Windows binaries are still temporarily unavailable.** No unsigned artifact is ever downloaded and no remote update script is ever executed.
 - **npm global installs** do not require `sudo` on Windows (user-writable by default).
 - **curl** is pre-installed on Windows 10+ and does not require separate installation.
 - **PowerShell** is the default shell when `$SHELL` is not set.
-- **GGA on Windows** works from both Git Bash and PowerShell. gentle-ai installs a `gga.ps1` shim that automatically delegates to Git Bash, so no manual shell switching is required.
+- **hga on Windows** works from both Git Bash and PowerShell. hgtran-ai installs a `hga.ps1` shim that automatically delegates to Git Bash, so no manual shell switching is required.
 - **PowerShell source-installer output** is forced to UTF-8 and installs through Go's configured `GOBIN`/`GOPATH`.
-- **Fresh install detection** falls back to known Engram/GGA install locations when the running process has a stale `PATH`.
+- **Fresh install detection** falls back to known Engram/HGA install locations when the running process has a stale `PATH`.
 
 ---
 
@@ -51,5 +51,5 @@ Release archives are currently produced for macOS and Linux only. Windows source
 | Kiro IDE | `%USERPROFILE%\.kiro\steering\` (prompts) + `%USERPROFILE%\.kiro\skills\` (skills) + `%USERPROFILE%\.kiro\agents\` (SDD agents) + `%APPDATA%\kiro\User\settings.json` (settings) + `%USERPROFILE%\.kiro\settings\mcp.json` (MCP) |
 | OpenClaw | `%USERPROFILE%\.openclaw\openclaw.json` (global MCP/settings) + active workspace from `agents.defaults.workspace` for `AGENTS.md` / `SOUL.md` / workspace-scoped SDD skills |
 | Trae | `%USERPROFILE%\.trae\` (skills) + `%APPDATA%\Trae\User\user_rules.md` (rules) + `%APPDATA%\Trae\User\mcp.json` (MCP) |
-| Pi | `%USERPROFILE%\.pi\` (Pi config, project agents/chains, Gentle AI support assets) |
+| Pi | `%USERPROFILE%\.pi\` (Pi config, project agents/chains, Hgtran AI support assets) |
 | Hermes | `%USERPROFILE%\.hermes\` (config.yaml, SOUL.md, skills/) |

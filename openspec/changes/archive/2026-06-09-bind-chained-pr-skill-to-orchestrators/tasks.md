@@ -32,13 +32,13 @@ Hand-written diff is ~100–140 lines: 2 test files (≈40–60 lines combined) 
 
 ## Phase 1: Test-First — RED (extend static assertions before templates are changed)
 
-- [x] 1.1 **Extend `internal/assets/assets_test.go` — `TestClaudeSDDOrchestratorChainStrategy`**: add the binding substring `treat \`chained-pr\` (registry skill \`gentle-ai-chained-pr\`) as a required skill match` to the `required` slice. Verify: `go test ./internal/assets/ -run TestClaudeSDDOrchestratorChainStrategy` → FAIL (template not yet edited).
+- [x] 1.1 **Extend `internal/assets/assets_test.go` — `TestClaudeSDDOrchestratorChainStrategy`**: add the binding substring `treat \`chained-pr\` (registry skill \`hgtran-ai-chained-pr\`) as a required skill match` to the `required` slice. Verify: `go test ./internal/assets/ -run TestClaudeSDDOrchestratorChainStrategy` → FAIL (template not yet edited).
 
 - [x] 1.2 **Extend `internal/assets/assets_test.go` — `TestNonClaudeSDDOrchestratorChainStrategyParity` parity `required` slice**: add the binding substring to the inner `required` list so it is checked for all 8 existing parity rows. Verify: `go test ./internal/assets/ -run TestNonClaudeSDDOrchestratorChainStrategyParity` → FAIL.
 
 - [x] 1.3 **Extend `internal/assets/assets_test.go` — add `cursor` and `opencode` rows to `TestNonClaudeSDDOrchestratorChainStrategyParity`**: insert `{path: "cursor/sdd-orchestrator.md", propagationScope: "prompt"}` and `{path: "opencode/sdd-orchestrator.md", propagationScope: "prompt"}` (opencode's forwarding line at line 271 already reads "Pass it as `chain_strategy` to `sdd-tasks` and `sdd-apply` prompts alongside `delivery_strategy`" — `prompt` substring confirmed present). Verify: same run → FAIL (cursor missing section, both missing binding).
 
-- [x] 1.4 **Extend `internal/components/sdd/inject_test.go` — `TestInjectKimiKiroWindsurfAntigravityPreserveNativeChainStrategyWording`**: add binding substring `treat \`chained-pr\` (registry skill \`gentle-ai-chained-pr\`) as a required skill match` to the `required` list of each of the four host entries (kimi, kiro, windsurf, antigravity). Verify: `go test ./internal/components/sdd/ -run TestInjectKimiKiroWindsurfAntigravityPreserveNativeChainStrategyWording` → FAIL.
+- [x] 1.4 **Extend `internal/components/sdd/inject_test.go` — `TestInjectKimiKiroWindsurfAntigravityPreserveNativeChainStrategyWording`**: add binding substring `treat \`chained-pr\` (registry skill \`hgtran-ai-chained-pr\`) as a required skill match` to the `required` list of each of the four host entries (kimi, kiro, windsurf, antigravity). Verify: `go test ./internal/components/sdd/ -run TestInjectKimiKiroWindsurfAntigravityPreserveNativeChainStrategyWording` → FAIL.
 
 ---
 
@@ -47,7 +47,7 @@ Hand-written diff is ~100–140 lines: 2 test files (≈40–60 lines combined) 
 - [x] 2.1 **Edit 10 templates that already have `### Chain Strategy`** — files: `internal/assets/{antigravity,claude,codex,gemini,generic,kimi,kiro,opencode,qwen,windsurf}/sdd-orchestrator.md`. For each, locate the `chain_strategy` forwarding line (the line containing `Pass it as \`chain_strategy\` to \`sdd-tasks\` and \`sdd-apply\` prompts`) and insert the canonical binding sentence immediately after it as a new paragraph:
 
   ```
-  When delivery planning yields chained PRs, treat `chained-pr` (registry skill `gentle-ai-chained-pr`) as a required skill match: resolve it by registry name through this template's existing Sub-Agent Launch Pattern and inject the resolved `SKILL.md` path into the `sdd-tasks` and `sdd-apply` phase prompts under `## Skills to load before work`, instructing those phases to read and follow it BEFORE planning or creating any PR. Do not hardcode the skill path; defer resolution to the launch pattern.
+  When delivery planning yields chained PRs, treat `chained-pr` (registry skill `hgtran-ai-chained-pr`) as a required skill match: resolve it by registry name through this template's existing Sub-Agent Launch Pattern and inject the resolved `SKILL.md` path into the `sdd-tasks` and `sdd-apply` phase prompts under `## Skills to load before work`, instructing those phases to read and follow it BEFORE planning or creating any PR. Do not hardcode the skill path; defer resolution to the launch pattern.
   ```
 
   Verify per-template: binding substring present, no forbidden persistence wording introduced. Verify all: `go test ./internal/assets/ -run TestClaudeSDDOrchestratorChainStrategy` → PASS; `go test ./internal/assets/ -run TestNonClaudeSDDOrchestratorChainStrategyParity` (for the 8 original rows + opencode) → PASS.

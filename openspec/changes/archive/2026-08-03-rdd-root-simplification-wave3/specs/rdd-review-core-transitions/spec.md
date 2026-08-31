@@ -19,7 +19,7 @@ Define `ReviewCore` as the sole transition owner for new-lineage reviews: `start
 
 ### Requirement: Consent-Gated Freeze With Immutable Tier, Lenses, and Budget
 
-`start` MUST freeze candidate identity, tier (0|1|4, reusing existing threshold logic — adopted default), lens set, and correction budget only after consent is granted via the reused `gentle-ai.review-integration.consent/v2` envelope (adopted default) for tier 1|4; tier 0 proceeds without a consent question. Once frozen, tier, lenses, and budget MUST NOT be recomputed later in the same lineage.
+`start` MUST freeze candidate identity, tier (0|1|4, reusing existing threshold logic — adopted default), lens set, and correction budget only after consent is granted via the reused `hgtran-ai.review-integration.consent/v2` envelope (adopted default) for tier 1|4; tier 0 proceeds without a consent question. Once frozen, tier, lenses, and budget MUST NOT be recomputed later in the same lineage.
 
 #### Scenario: Tier 1 candidate freezes only after consent
 

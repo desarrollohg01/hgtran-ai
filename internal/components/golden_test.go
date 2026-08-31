@@ -199,8 +199,8 @@ func TestGoldenSDD_Cursor(t *testing.T) {
 		t.Fatalf("sdd.Inject(cursor) changed = false")
 	}
 
-	// Cursor writes SDD orchestrator to ~/.cursor/rules/gentle-ai.mdc.
-	rulesFile := readTestFile(t, filepath.Join(home, ".cursor", "rules", "gentle-ai.mdc"))
+	// Cursor writes SDD orchestrator to ~/.cursor/rules/hgtran-ai.mdc.
+	rulesFile := readTestFile(t, filepath.Join(home, ".cursor", "rules", "hgtran-ai.mdc"))
 	assertGolden(t, "sdd-cursor-rules.golden", rulesFile)
 
 	// Golden-check a representative SDD skill file.
@@ -423,7 +423,7 @@ func TestGoldenSDD_Kiro(t *testing.T) {
 		t.Fatalf("sdd.Inject(kiro) changed = false")
 	}
 
-	// Kiro writes SDD orchestrator to ~/.kiro/steering/gentle-ai.md
+	// Kiro writes SDD orchestrator to ~/.kiro/steering/hgtran-ai.md
 	// (StrategySteeringFile). Use the adapter to resolve the platform-specific path.
 	promptPath := adapter.SystemPromptFile(home)
 	instructionsFile := readTestFile(t, promptPath)

@@ -25,9 +25,9 @@ var retiredWorkRunCeremonyTokens = []string{
 	"authorizedTransition",
 	"Capability stop rule",
 	"connectorSessionRef",
-	"GENTLE_AI_PRODUCTIVE_RUNTIME",
-	"{{GENTLE_AI_RUNTIME_AGENT_ID}}",
-	"--contract gentle-ai.work-",
+	"HGTRAN_AI_PRODUCTIVE_RUNTIME",
+	"{{HGTRAN_AI_RUNTIME_AGENT_ID}}",
+	"--contract hgtran-ai.work-",
 }
 
 func TestSDDOrchestratorsCarryNoRetiredWorkRunCeremony(t *testing.T) {
@@ -77,7 +77,7 @@ func TestOrchestratorsProjectOrganicRouting(t *testing.T) {
 		}
 		for _, retired := range []string{
 			"#### Review Lens Selection", "run exactly ONE lens", "run the full 4R set",
-			"review/start(target)", "gentle-ai.review-integration/v1 --next-transition",
+			"review/start(target)", "hgtran-ai.review-integration/v1 --next-transition",
 		} {
 			if strings.Contains(content, retired) {
 				t.Fatalf("%s retained prompt-owned review ceremony %q", path, retired)
@@ -472,7 +472,7 @@ func TestReviewResultArtifactsPluginContract(t *testing.T) {
 		t.Fatalf("Read(review-result-artifacts.ts) error = %v", err)
 	}
 	for _, want := range []string{
-		`spawn("gentle-ai"`,
+		`spawn("hgtran-ai"`,
 		`"review", "capture-result"`,
 		`"review", "preserve-result"`,
 		`"--repository-context", binding.repository_context`,
@@ -482,7 +482,7 @@ func TestReviewResultArtifactsPluginContract(t *testing.T) {
 		`typeof subject.subject_hash !== "string"`,
 		`subject.subject_hash !== binding.subject_hash`,
 		`artifact_subject`,
-		`GENTLE_AI_REVIEW_CONTEXT`,
+		`HGTRAN_AI_REVIEW_CONTEXT`,
 		`validManifest(manifest)`,
 		`REVIEW_OUTCOME.UNSUPPORTED_CAPABILITY`,
 		`"--lineage", binding.lineage`,
@@ -491,7 +491,7 @@ func TestReviewResultArtifactsPluginContract(t *testing.T) {
 		`"--order", String(binding.order)`,
 		`"--input", "-"`,
 		`"--preflight"`,
-		`GENTLE_AI_REVIEW_CWD`,
+		`HGTRAN_AI_REVIEW_CWD`,
 		`"tool.execute.before"`,
 		`output.args.background === true`,
 		`!BINDING.test(input.args.prompt)`,
@@ -539,7 +539,7 @@ func TestReviewResultArtifactsPluginContract(t *testing.T) {
 	if strings.Contains(source, `.slice("review-".length)`) {
 		t.Fatal("review-result-artifacts.ts must preserve the exact full selected lens; found review- prefix stripping")
 	}
-	for _, forbidden := range []string{"GENTLE_AI_FROZEN_CANDIDATE_CONTEXT", "candidate_diff"} {
+	for _, forbidden := range []string{"HGTRAN_AI_FROZEN_CANDIDATE_CONTEXT", "candidate_diff"} {
 		if strings.Contains(source, forbidden) {
 			t.Fatalf("review-result-artifacts.ts still transports obsolete candidate context %q", forbidden)
 		}
@@ -1077,7 +1077,7 @@ func TestClaudeSDDOrchestratorChainStrategy(t *testing.T) {
 		"When launching `sdd-apply`, always include the resolved `delivery_strategy`, `chain_strategy`, and any chosen PR boundary/exception in the prompt.",
 		"Claude Code's native Agent/Task mechanism",
 		"results are not persisted by OpenCode's background-agent plugin",
-		"treat `chained-pr` (registry skill `gentle-ai-chained-pr`) as a required skill match",
+		"treat `chained-pr` (registry skill `hgtran-ai-chained-pr`) as a required skill match",
 	} {
 		if !strings.Contains(content, required) {
 			t.Fatalf("claude/sdd-orchestrator.md missing required SDD chain/delegation wording %q", required)
@@ -1126,7 +1126,7 @@ func TestNonClaudeSDDOrchestratorChainStrategyParity(t *testing.T) {
 				"sdd-tasks",
 				"sdd-apply",
 				tc.propagationScope,
-				"treat `chained-pr` (registry skill `gentle-ai-chained-pr`) as a required skill match",
+				"treat `chained-pr` (registry skill `hgtran-ai-chained-pr`) as a required skill match",
 			} {
 				if !strings.Contains(content, required) {
 					t.Fatalf("%s missing required chain strategy wording %q", tc.path, required)
@@ -1662,7 +1662,7 @@ func TestSDDStatusContractPreservesFrozenExternalV1Projection(t *testing.T) {
 
 	for _, want := range []string{
 		"exact frozen external `StatusV1Projection`",
-		"schemaName: gentle-ai.sdd-status",
+		"schemaName: hgtran-ai.sdd-status",
 		"schemaVersion: 1",
 		"changeName: <change-name-or-null>",
 		"artifactStore: openspec | engram | none",
@@ -1704,7 +1704,7 @@ func TestSDDStatusContractPreservesFrozenExternalV1Projection(t *testing.T) {
 		"fixBatch: 0",
 		"reviewGate:",
 		"result: allow | scope-changed | invalidated | escalated",
-		"reviewTransaction: <optional exact gentle-ai.review-transaction/v1 object>",
+		"reviewTransaction: <optional exact hgtran-ai.review-transaction/v1 object>",
 		"phaseInstructions:",
 		"apply: [<instruction strings>]",
 		"verify: [<instruction strings>]",
@@ -1712,7 +1712,7 @@ func TestSDDStatusContractPreservesFrozenExternalV1Projection(t *testing.T) {
 		"archive: [<instruction strings>]",
 		"nextRecommended: propose | spec | design | tasks | apply | review | verify | remediate | archive | sdd-new | select-change | resolve-blockers | resolve-review",
 		"blockedReasons: []",
-		"Manual fallback status MUST stay shape-compatible with native `gentle-ai.sdd-status` JSON",
+		"Manual fallback status MUST stay shape-compatible with native `hgtran-ai.sdd-status` JSON",
 	} {
 		if !strings.Contains(content, want) {
 			t.Fatalf("sdd-status-contract missing frozen SDD v1 field or token %q", want)
@@ -1729,8 +1729,8 @@ func TestSDDStatusContractPreservesFrozenExternalV1Projection(t *testing.T) {
 		"verification:",
 		"deliveryIntentRef:",
 		"authorizedTransition:",
-		"gentle-ai.work-status/v1",
-		"gentle-ai.work-transition/v1",
+		"hgtran-ai.work-status/v1",
+		"hgtran-ai.work-transition/v1",
 		"schemaName: spec-driven",
 		"root: <project-or-openspec-root>",
 		"changesDir: <openspec/changes or engram topic prefix>",
@@ -1984,8 +1984,8 @@ func TestSDDOrchestratorsUseNativeRuntimeAttemptAuthority(t *testing.T) {
 	}
 	required := []string{
 		"Native Runtime Attempt Authority",
-		"gentle-ai sdd-attempt acquire",
-		"gentle-ai sdd-attempt settle",
+		"hgtran-ai sdd-attempt acquire",
+		"hgtran-ai sdd-attempt settle",
 		"state: proceed",
 		"opaque `token`",
 		"successor-lineage",
@@ -2006,13 +2006,13 @@ func TestSDDOrchestratorsUseNativeRuntimeAttemptAuthority(t *testing.T) {
 			}
 		}
 		for _, forbidden := range []string{
-			"gentle-ai.sdd-attempt-ledger/v1",
+			"hgtran-ai.sdd-attempt-ledger/v1",
 			"attempt-ledger-{work-unit}.json",
 			"sdd/{change-name}/attempt-ledger",
-			"gentle-ai sdd-attempt status",
-			"gentle-ai sdd-attempt begin",
-			"gentle-ai sdd-attempt finish",
-			"gentle-ai sdd-attempt reset",
+			"hgtran-ai sdd-attempt status",
+			"hgtran-ai sdd-attempt begin",
+			"hgtran-ai sdd-attempt finish",
+			"hgtran-ai sdd-attempt reset",
 		} {
 			if strings.Contains(section, forbidden) {
 				t.Fatalf("%s still delegates native authority to mutable artifact %q", path, forbidden)

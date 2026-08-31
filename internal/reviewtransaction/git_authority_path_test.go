@@ -93,7 +93,7 @@ func TestReviewAuthorityRootRejectsLegacyOptionEchoWithoutMutation(t *testing.T)
 	requireSnapshotGit(t)
 	repo := initSnapshotRepo(t)
 	original := gitCommandContext
-	t.Setenv("GENTLE_AI_TEST_GIT_PATH_OUTPUT", base64.StdEncoding.EncodeToString([]byte("--path-format=absolute\n.git\n")))
+	t.Setenv("HGTRAN_AI_TEST_GIT_PATH_OUTPUT", base64.StdEncoding.EncodeToString([]byte("--path-format=absolute\n.git\n")))
 	gitCommandContext = func(ctx context.Context, name string, args ...string) *exec.Cmd {
 		if slicesContain(args, "--git-common-dir") {
 			return exec.CommandContext(ctx, os.Args[0], "-test.run=^TestGitAuthorityPathHelperProcess$")
@@ -109,7 +109,7 @@ func TestReviewAuthorityRootRejectsLegacyOptionEchoWithoutMutation(t *testing.T)
 	if _, err := os.Lstat(malformedPath); err == nil {
 		t.Fatalf("malformed Git output created %q", malformedPath)
 	}
-	path := filepath.Join(repo, "gentle-ai")
+	path := filepath.Join(repo, "hgtran-ai")
 	if _, err := os.Lstat(path); !os.IsNotExist(err) {
 		t.Fatalf("malformed Git output created authority storage %q", path)
 	}
@@ -120,7 +120,7 @@ func TestResolveRepositoryRootRejectsUnrelatedAbsoluteOutput(t *testing.T) {
 	repo := initSnapshotRepo(t)
 	outside := t.TempDir()
 	original := gitCommandContext
-	t.Setenv("GENTLE_AI_TEST_GIT_PATH_OUTPUT", base64.StdEncoding.EncodeToString([]byte(outside+"\n")))
+	t.Setenv("HGTRAN_AI_TEST_GIT_PATH_OUTPUT", base64.StdEncoding.EncodeToString([]byte(outside+"\n")))
 	gitCommandContext = func(ctx context.Context, name string, args ...string) *exec.Cmd {
 		if slicesContain(args, "--show-toplevel") {
 			return exec.CommandContext(ctx, os.Args[0], "-test.run=^TestGitAuthorityPathHelperProcess$")
@@ -149,7 +149,7 @@ func TestReviewAuthorityRootPreservesSymlinkedGitDirectory(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := filepath.Join(externalGitDir, "gentle-ai", "review-transactions")
+	want := filepath.Join(externalGitDir, "hgtran-ai", "review-transactions")
 	if root != want || resolvedRepo != repo {
 		t.Fatalf("reviewAuthorityRoot() = %q, %q; want %q, %q", root, resolvedRepo, want, repo)
 	}
@@ -205,7 +205,7 @@ func TestReviewRepositoryIdentityPreservesGitCommandError(t *testing.T) {
 	repo := initSnapshotRepo(t)
 	original := gitCommandContext
 	showTopLevelCalls := 0
-	t.Setenv("GENTLE_AI_TEST_GIT_PATH_FAIL", "1")
+	t.Setenv("HGTRAN_AI_TEST_GIT_PATH_FAIL", "1")
 	gitCommandContext = func(ctx context.Context, name string, args ...string) *exec.Cmd {
 		if slicesContain(args, "--show-toplevel") {
 			showTopLevelCalls++
@@ -273,7 +273,7 @@ func TestGitCommonDirectoryMismatchFailsBeforeAuthorityMutation(t *testing.T) {
 			if err := operation.run(ctx, repo); err == nil {
 				t.Error("operation accepted an unrelated Git common directory")
 			}
-			for _, path := range []string{filepath.Join(unrelated, "gentle-ai"), filepath.Join(home, ".hgtran-ai")} {
+			for _, path := range []string{filepath.Join(unrelated, "hgtran-ai"), filepath.Join(home, ".hgtran-ai")} {
 				if _, err := os.Lstat(path); !os.IsNotExist(err) {
 					t.Errorf("rejected common directory mutated %q: %v", path, err)
 				}
@@ -335,7 +335,7 @@ func TestReviewAuthorityRootRejectsMidQueryGitControlReplacement(t *testing.T) {
 	if _, _, err := reviewAuthorityRoot(context.Background(), repo); err == nil {
 		t.Fatal("mid-query Git control replacement derived an authority root")
 	}
-	if _, err := os.Lstat(filepath.Join(repo, ".git", "gentle-ai")); !os.IsNotExist(err) {
+	if _, err := os.Lstat(filepath.Join(repo, ".git", "hgtran-ai")); !os.IsNotExist(err) {
 		t.Fatalf("rejected replacement mutated authority: %v", err)
 	}
 }
@@ -386,10 +386,10 @@ func overrideGitDirectoryOutputs(t *testing.T, repo, commonDir, gitDir string, b
 }
 
 func TestGitAuthorityPathHelperProcess(t *testing.T) {
-	if os.Getenv("GENTLE_AI_TEST_GIT_PATH_FAIL") == "1" {
+	if os.Getenv("HGTRAN_AI_TEST_GIT_PATH_FAIL") == "1" {
 		os.Exit(23)
 	}
-	encoded := os.Getenv("GENTLE_AI_TEST_GIT_PATH_OUTPUT")
+	encoded := os.Getenv("HGTRAN_AI_TEST_GIT_PATH_OUTPUT")
 	if encoded == "" && len(os.Args) > 2 && os.Args[len(os.Args)-2] == "--" {
 		encoded = os.Args[len(os.Args)-1]
 	}

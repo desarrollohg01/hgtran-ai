@@ -43,7 +43,7 @@ func reviewAbandonInputsRefusal(cwd string, incompleteInspection bool) error {
 	if incompleteInspection {
 		return fmt.Errorf(`review abandon --incomplete-inspection requires --lineage, --expected-revision, --reason, --actor, and --maintainer-authorization.
 Read every value you cannot invent from the persisted authority, in the entries[] row for the lineage you are abandoning, with:
-gentle-ai review status --cwd %s
+hgtran-ai review status --cwd %s
 --lineage = entries[].lineage_id
 --expected-revision = entries[].revision
 snapshot_identity = entries[].snapshot_identity
@@ -56,7 +56,7 @@ You choose --actor and --reason; the binding uses them with surrounding whitespa
 	}
 	return fmt.Errorf(`review abandon requires --lineage, --expected-revision, --reason, --actor, and --maintainer-authorization.
 Read every value you cannot invent from the persisted authority, in the entries[] row for the lineage you are abandoning, with:
-gentle-ai review status --cwd %s
+hgtran-ai review status --cwd %s
 --lineage = entries[].lineage_id
 --expected-revision = entries[].revision
 snapshot_identity = entries[].snapshot_identity

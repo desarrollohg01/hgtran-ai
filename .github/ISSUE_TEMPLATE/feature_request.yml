@@ -1,5 +1,5 @@
 name: Feature Request
-description: Suggest a new feature or enhancement for Gentle AI
+description: Suggest a new feature or enhancement for Hgtran AI
 labels: ["enhancement", "status:needs-review"]
 
 body:
@@ -28,7 +28,7 @@ body:
     id: area
     attributes:
       label: 🔍 Affected Area
-      description: Which area of Gentle AI would this feature affect?
+      description: Which area of Hgtran AI would this feature affect?
       options:
         - CLI (commands, flags)
         - TUI (terminal UI)

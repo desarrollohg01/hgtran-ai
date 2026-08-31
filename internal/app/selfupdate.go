@@ -25,18 +25,18 @@ var selfUpdateNowFn = func() time.Time { return time.Now() }
 var selfUpdateHomeDirFn = os.UserHomeDir
 
 // Environment variable names for self-update control.
-// NOTE: GENTLE_AI_CONFIRM_UPDATE removed in slice 5 — prompt is now unconditional.
+// NOTE: HGTRAN_AI_CONFIRM_UPDATE removed in slice 5 — prompt is now unconditional.
 const (
-	envNoSelfUpdate   = "GENTLE_AI_NO_SELF_UPDATE"
-	envSelfUpdateDone = "GENTLE_AI_SELF_UPDATE_DONE"
-	envYesUpdate      = "GENTLE_AI_YES"
+	envNoSelfUpdate   = "HGTRAN_AI_NO_SELF_UPDATE"
+	envSelfUpdateDone = "HGTRAN_AI_SELF_UPDATE_DONE"
+	envYesUpdate      = "HGTRAN_AI_YES"
 )
 
 // isattyFn is a package-level var for TTY detection, injectable for tests.
 var isattyFn = func(fd uintptr) bool { return isatty.IsTerminal(fd) }
 
 // selfUpdateYesFn returns true when the caller wants the upgrade to proceed
-// without an interactive prompt. Set GENTLE_AI_YES=1 for scripted upgrades.
+// without an interactive prompt. Set HGTRAN_AI_YES=1 for scripted upgrades.
 // Injectable for tests.
 var selfUpdateYesFn = func() bool {
 	return os.Getenv(envYesUpdate) == "1"
@@ -69,12 +69,12 @@ func defaultPromptForUpdate(stdout io.Writer, stdin io.Reader, currentVersion, l
 // selfUpdateTimeout is the maximum time allowed for the update check + upgrade.
 const selfUpdateTimeout = 7 * time.Second
 
-// selfUpdate checks for and applies a gentle-ai update before normal dispatch.
+// selfUpdate checks for and applies a hgtran-ai update before normal dispatch.
 // Returns nil on success or skip; errors are non-fatal (caller logs and continues).
 //
 // Guard evaluation order (per spec):
-//  1. GENTLE_AI_SELF_UPDATE_DONE=1 → skip (loop guard)
-//  2. GENTLE_AI_NO_SELF_UPDATE=1 → skip (opt-out)
+//  1. HGTRAN_AI_SELF_UPDATE_DONE=1 → skip (loop guard)
+//  2. HGTRAN_AI_NO_SELF_UPDATE=1 → skip (opt-out)
 //  3. version == "dev" → skip (dev build)
 //  4. Proceed with update check
 func selfUpdate(ctx context.Context, version string, profile system.PlatformProfile, stdout io.Writer) error {
@@ -103,21 +103,21 @@ func selfUpdate(ctx context.Context, version string, profile system.PlatformProf
 		homeDir = "" // fall back to always-check on home dir failure
 	}
 
-	// Check for updates (only gentle-ai), gated by the 6h cooldown.
+	// Check for updates (only hgtran-ai), gated by the 6h cooldown.
 	// When the cache is fresh (elapsed < UpdateCheckTTL), this returns nil
 	// and no network request is made. The underlying check is always
 	// updateCheckFiltered, kept as a package-level var for other tests.
 	results := update.CheckAllWithCooldown(ctx, version, profile, homeDir, update.UpdateCheckTTL,
 		selfUpdateNowFn,
 		func(c context.Context, ver string, prof system.PlatformProfile) []update.UpdateResult {
-			return updateCheckFiltered(c, ver, prof, []string{"gentle-ai"})
+			return updateCheckFiltered(c, ver, prof, []string{"hgtran-ai"})
 		},
 	)
 
-	// Find the gentle-ai result.
+	// Find the hgtran-ai result.
 	var target *update.UpdateResult
 	for i := range results {
-		if results[i].Tool.Name == "gentle-ai" {
+		if results[i].Tool.Name == "hgtran-ai" {
 			target = &results[i]
 			break
 		}
@@ -128,8 +128,8 @@ func selfUpdate(ctx context.Context, version string, profile system.PlatformProf
 		return nil
 	}
 
-	// Prompt the user before applying — unconditional (GENTLE_AI_CONFIRM_UPDATE removed).
-	// When --yes / GENTLE_AI_YES=1, substitute an auto-accept stub so scripted
+	// Prompt the user before applying — unconditional (HGTRAN_AI_CONFIRM_UPDATE removed).
+	// When --yes / HGTRAN_AI_YES=1, substitute an auto-accept stub so scripted
 	// upgrades work without a TTY. When stdin is not a TTY, defaultPromptForUpdate
 	// auto-declines, making non-interactive runs (CI, pipes) safe by default.
 	activePrmptFn := promptFn
@@ -155,7 +155,7 @@ func selfUpdate(ctx context.Context, version string, profile system.PlatformProf
 	// Check if upgrade succeeded.
 	var succeeded bool
 	for _, r := range report.Results {
-		if r.ToolName == "gentle-ai" && r.Status == upgrade.UpgradeSucceeded {
+		if r.ToolName == "hgtran-ai" && r.Status == upgrade.UpgradeSucceeded {
 			succeeded = true
 			break
 		}
@@ -191,7 +191,7 @@ func selfUpdate(ctx context.Context, version string, profile system.PlatformProf
 
 func gentleAIUpgradeSucceeded(report upgrade.UpgradeReport) (string, bool) {
 	for _, r := range report.Results {
-		if r.ToolName == "gentle-ai" && r.Status == upgrade.UpgradeSucceeded {
+		if r.ToolName == "hgtran-ai" && r.Status == upgrade.UpgradeSucceeded {
 			return strings.TrimPrefix(r.NewVersion, "v"), true
 		}
 	}
@@ -205,6 +205,6 @@ func restartAfterGentleAIUpgrade(latestVersion string, stdout io.Writer) error {
 	// PendingSync=true and completing the deferred sync. This sidesteps the
 	// Windows binary-lock issue and gives a consistent single path across all OSes.
 	// Tradeoff: Unix loses seamless re-exec restart; mitigated by clear copy below.
-	_, _ = fmt.Fprintf(stdout, "Updated to v%s — restart gentle-ai to continue.\n", latestVersion)
+	_, _ = fmt.Fprintf(stdout, "Updated to v%s — restart hgtran-ai to continue.\n", latestVersion)
 	return nil
 }

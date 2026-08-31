@@ -2,7 +2,7 @@
 
 [Back to Codebase Guide](../CODEBASE-GUIDE.md)
 
-Gentle-AI wires Engram into agents; Engram owns the memory store. This page explains the boundary so maintainers do not confuse installer code with memory database code.
+hgtran-ai wires Engram into agents; Engram owns the memory store. This page explains the boundary so maintainers do not confuse installer code with memory database code.
 
 ## Store responsibilities
 
@@ -16,7 +16,7 @@ Gentle-AI wires Engram into agents; Engram owns the memory store. This page expl
 
 ## Memory entities
 
-Gentle-AI docs and prompt assets refer to these Engram concepts, but their schema is not defined in this repo.
+hgtran-ai docs and prompt assets refer to these Engram concepts, but their schema is not defined in this repo.
 
 | Concept | Maintainer meaning |
 |---|---|
@@ -34,7 +34,7 @@ For command and MCP tool descriptions, link to [Engram Commands](../engram.md) i
 AI agent receives prompt
   |
   v
-Gentle-AI-installed prompt tells agent to use Engram MCP tools
+hgtran-ai-installed prompt tells agent to use Engram MCP tools
   |
   v
 Agent calls `engram mcp --tools=agent` via configured MCP entry
@@ -43,7 +43,7 @@ Agent calls `engram mcp --tools=agent` via configured MCP entry
   +--> retrieve: mem_context / mem_search / mem_get_observation
   |
   v
-Engram runtime stores and searches memory outside gentle-ai source
+Engram runtime stores and searches memory outside hgtran-ai source
 ```
 
 ## Memory invariants
@@ -55,7 +55,7 @@ Engram runtime stores and searches memory outside gentle-ai source
 
 ## Contributor checklist
 
-- [ ] Decide whether the change belongs to Gentle-AI wiring or Engram itself.
+- [ ] Decide whether the change belongs to hgtran-ai wiring or Engram itself.
 - [ ] Update MCP injection tests when changing config shape.
 - [ ] Keep `docs/engram.md` as the user-facing command reference.
 - [ ] Do not read or modify local `.engram/engram.db` as part of codebase docs or tests.

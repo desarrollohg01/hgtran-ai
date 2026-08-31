@@ -54,7 +54,7 @@ func ValidateGPT56Runtime() error {
 // stream. codexOutputRE is anchored with ^...$ and Go does not enable multiline
 // mode by default, so matching the whole output at once found nothing whenever
 // any extra line was present — even when the version was the first line — and
-// gentle-ai then told users with a satisfying version to downgrade (#1794).
+// hgtran-ai then told users with a satisfying version to downgrade (#1794).
 //
 // Each line is matched on its own instead, and the whole line must be exactly
 // `codex[-cli] [v]<version>`. That keeps the parser closed against a

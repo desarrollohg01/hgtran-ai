@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://gentle-ai.dev/contracts/review-integration/v2/schemas/capabilities-v2.2.schema.json",
-  "title": "Gentle AI review integration capabilities protocol 2.2",
+  "$id": "https://hgtran-ai.dev/contracts/review-integration/v2/schemas/capabilities-v2.2.schema.json",
+  "title": "Hgtran AI review integration capabilities protocol 2.2",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -9,8 +9,8 @@
     "projections", "schemas", "features", "compatibility"
   ],
   "properties": {
-    "schema": {"const": "gentle-ai.review-integration.capabilities/v2.2"},
-    "contract": {"const": "gentle-ai.review-integration/v2"},
+    "schema": {"const": "hgtran-ai.review-integration.capabilities/v2.2"},
+    "contract": {"const": "hgtran-ai.review-integration/v2"},
     "protocol": {
       "type": "object", "additionalProperties": false, "required": ["major", "minor"],
       "properties": {"major": {"const": 2}, "minor": {"const": 2}}
@@ -25,28 +25,28 @@
       "type": "array", "minItems": 22, "maxItems": 22, "uniqueItems": true,
       "items": {
         "enum": [
-          "gentle-ai.review-admitted-result/v2",
-          "gentle-ai.review-artifact-subject/v2",
-          "gentle-ai.review-authority-repair-assessment/v1",
-          "gentle-ai.review-authority-status/v1",
-          "gentle-ai.review-gate-request/v1",
-          "gentle-ai.review-integration.capabilities/v2.2",
-          "gentle-ai.review-integration.consent/v3",
-          "gentle-ai.review-integration.failure/v2",
-          "gentle-ai.review-final-verification-incident/v1",
-          "gentle-ai.review-integration.operation/v2",
-          "gentle-ai.review-integration.projection/v1",
-          "gentle-ai.review-integration.repair/v2",
-          "gentle-ai.review-integration.start/v3",
-          "gentle-ai.review-integration.status/v4",
-          "gentle-ai.review-receipt/v1",
-          "gentle-ai.review-receipt/v2",
-          "gentle-ai.review-result-artifact/v2",
-          "gentle-ai.review-targeted-validation-request/v1",
-          "gentle-ai.review-verification-evidence/v2",
-          "https://gentle-ai.dev/schema/review/refuter/v1",
-          "https://gentle-ai.dev/schema/review/reviewer/v1",
-          "https://gentle-ai.dev/schema/review/validator/v1"
+          "hgtran-ai.review-admitted-result/v2",
+          "hgtran-ai.review-artifact-subject/v2",
+          "hgtran-ai.review-authority-repair-assessment/v1",
+          "hgtran-ai.review-authority-status/v1",
+          "hgtran-ai.review-gate-request/v1",
+          "hgtran-ai.review-integration.capabilities/v2.2",
+          "hgtran-ai.review-integration.consent/v3",
+          "hgtran-ai.review-integration.failure/v2",
+          "hgtran-ai.review-final-verification-incident/v1",
+          "hgtran-ai.review-integration.operation/v2",
+          "hgtran-ai.review-integration.projection/v1",
+          "hgtran-ai.review-integration.repair/v2",
+          "hgtran-ai.review-integration.start/v3",
+          "hgtran-ai.review-integration.status/v4",
+          "hgtran-ai.review-receipt/v1",
+          "hgtran-ai.review-receipt/v2",
+          "hgtran-ai.review-result-artifact/v2",
+          "hgtran-ai.review-targeted-validation-request/v1",
+          "hgtran-ai.review-verification-evidence/v2",
+          "https://hgtran-ai.dev/schema/review/refuter/v1",
+          "https://hgtran-ai.dev/schema/review/reviewer/v1",
+          "https://hgtran-ai.dev/schema/review/validator/v1"
         ]
       }
     },
@@ -100,7 +100,7 @@
       "type": "object", "additionalProperties": false,
       "required": ["command", "target_selector_variants", "required_feature", "unsupported_outcome", "parent_only"],
       "properties": {
-        "command": {"const": "gentle-ai review status --cwd <repo> --contract gentle-ai.review-integration/v2 --agent claude-code --next-transition"},
+        "command": {"const": "hgtran-ai review status --cwd <repo> --contract hgtran-ai.review-integration/v2 --agent claude-code --next-transition"},
         "target_selector_variants": {"$ref": "../../v1/schemas/capabilities-v1.4.schema.json#/$defs/bootstrap/properties/target_selector_variants"},
         "required_feature": {"const": "native_next_transition"},
         "unsupported_outcome": {"const": "unsupported-capability"},

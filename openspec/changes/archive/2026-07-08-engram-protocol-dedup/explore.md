@@ -2,15 +2,15 @@
 
 ## Current State
 
-gentle-ai wires the external `engram` binary into 16 AgentID targets. `internal/components/engram/inject.go:285` (`injectWithOptions`) is the single entry point handling both MCP config and system-prompt protocol injection.
+hgtran-ai wires the external `engram` binary into 16 AgentID targets. `internal/components/engram/inject.go:285` (`injectWithOptions`) is the single entry point handling both MCP config and system-prompt protocol injection.
 
 ## Channel Inventory
 
-1. **System-prompt section injection** (`internal/components/engram/inject.go:470-528`) — `StrategyMarkdownSections` (:472) and the `default` branch (:510) both call `filemerge.InjectMarkdownSection(existing, "engram-protocol", assets.MustRead("claude/engram-protocol.md"))`. Every adapter except Kimi and Pi lands here (Claude→CLAUDE.md, OpenCode/Codex/OpenClaw→AGENTS.md, Gemini/Antigravity→GEMINI.md, Qwen→QWEN.md, Cursor→.cursor/rules/gentle-ai.mdc, VSCode→instructions.md, Windsurf→global_rules.md, Kiro→gentle-ai.md, Trae→user_rules.md, Hermes→SOUL.md). Asset: `internal/assets/claude/engram-protocol.md` (102 lines). Kimi gets the same content via `StrategyJinjaModules` (:490) as an included module. **Pi is the sole exception** — `injectWithOptions` (:286-292) returns immediately after MCP provisioning for `piEngramProvisioner` adapters, so Pi gets zero protocol text (an existing "slim channel" precedent).
+1. **System-prompt section injection** (`internal/components/engram/inject.go:470-528`) — `StrategyMarkdownSections` (:472) and the `default` branch (:510) both call `filemerge.InjectMarkdownSection(existing, "engram-protocol", assets.MustRead("claude/engram-protocol.md"))`. Every adapter except Kimi and Pi lands here (Claude→CLAUDE.md, OpenCode/Codex/OpenClaw→AGENTS.md, Gemini/Antigravity→GEMINI.md, Qwen→QWEN.md, Cursor→.cursor/rules/hgtran-ai.mdc, VSCode→instructions.md, Windsurf→global_rules.md, Kiro→hgtran-ai.md, Trae→user_rules.md, Hermes→SOUL.md). Asset: `internal/assets/claude/engram-protocol.md` (102 lines). Kimi gets the same content via `StrategyJinjaModules` (:490) as an included module. **Pi is the sole exception** — `injectWithOptions` (:286-292) returns immediately after MCP provisioning for `piEngramProvisioner` adapters, so Pi gets zero protocol text (an existing "slim channel" precedent).
 
-2. **Codex `model_instructions_file`** (`inject.go:388-467`, files written at :574-596) — writes `~/.codex/engram-instructions.md` from `internal/assets/codex/engram-instructions.md` (105 lines, near-verbatim duplicate of the Claude asset plus an extra PASSIVE CAPTURE section) plus `experimental_compact_prompt_file` (`codex/engram-compact-prompt.md`, 15 lines). Codex's `model_instructions_file` replaces Codex's built-in base instructions but NOT AGENTS.md — both load in the same session. **Codex is the worst offender: 3 gentle-ai-owned copies of near-identical content reach one session.**
+2. **Codex `model_instructions_file`** (`inject.go:388-467`, files written at :574-596) — writes `~/.codex/engram-instructions.md` from `internal/assets/codex/engram-instructions.md` (105 lines, near-verbatim duplicate of the Claude asset plus an extra PASSIVE CAPTURE section) plus `experimental_compact_prompt_file` (`codex/engram-compact-prompt.md`, 15 lines). Codex's `model_instructions_file` replaces Codex's built-in base instructions but NOT AGENTS.md — both load in the same session. **Codex is the worst offender: 3 hgtran-ai-owned copies of near-identical content reach one session.**
 
-3. **MCP server instructions** — NOT gentle-ai-owned. `engramServerJSON`/`engramOverlayJSON` (:79-150) only emit command/args (`["mcp", "--tools=agent"]`; `["mcp"]` for Antigravity). The instructions text at MCP handshake is served by the engram binary. No flag exists to request a slim/full variant.
+3. **MCP server instructions** — NOT hgtran-ai-owned. `engramServerJSON`/`engramOverlayJSON` (:79-150) only emit command/args (`["mcp", "--tools=agent"]`; `["mcp"]` for Antigravity). The instructions text at MCP handshake is served by the engram binary. No flag exists to request a slim/full variant.
 
 4. **SessionStart hook** — external, installed by `engram setup <slug>` (`internal/components/engram/setup.go`). Invocation at `internal/cli/run.go:836-850` passes only the slug — no flags/env forwarded. `docs/codebase/memory-core.md:13,52` documents this as engram-CLI-owned.
 
@@ -20,11 +20,11 @@ gentle-ai wires the external `engram` binary into 16 AgentID targets. `internal/
 
 ## Model Capability Signal
 
-`internal/model/capability.go` (`ModelCapability`) returns `"small"`/`"capable"` and is a real, tested, reusable abstraction — but wired ONLY to per-phase SDD sub-agent assignments (`internal/components/sdd/inject.go:448-460` → `WriteSharedPromptFiles`/`extractModelSection` in `prompts.go:47` and `profiles.go:602`, via `<!-- section:model-capable/small -->` markers). `model.Selection` has NO field for "the model the user's primary interactive session uses" for most agents — gentle-ai has no visibility into that for Claude Code, Cursor, Windsurf, etc. Codex's profile model assignments are the closest per-agent "default model" concept.
+`internal/model/capability.go` (`ModelCapability`) returns `"small"`/`"capable"` and is a real, tested, reusable abstraction — but wired ONLY to per-phase SDD sub-agent assignments (`internal/components/sdd/inject.go:448-460` → `WriteSharedPromptFiles`/`extractModelSection` in `prompts.go:47` and `profiles.go:602`, via `<!-- section:model-capable/small -->` markers). `model.Selection` has NO field for "the model the user's primary interactive session uses" for most agents — hgtran-ai has no visibility into that for Claude Code, Cursor, Windsurf, etc. Codex's profile model assignments are the closest per-agent "default model" concept.
 
 ## Setup Gating / MCP Config
 
-`engram setup <slug>` receives only the slug (no flags/env) — gentle-ai can gate but not configure hook verbosity today. MCP instructions are served entirely by the external binary; gentle-ai's only levers are command/args.
+`engram setup <slug>` receives only the slug (no flags/env) — hgtran-ai can gate but not configure hook verbosity today. MCP instructions are served entirely by the external binary; hgtran-ai's only levers are command/args.
 
 ## Test Surface
 

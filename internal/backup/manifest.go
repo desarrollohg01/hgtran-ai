@@ -62,7 +62,7 @@ type Manifest struct {
 	// not counted. Optional: omitted when zero for backward-compatibility.
 	FileCount int `json:"file_count,omitempty"`
 
-	// CreatedByVersion is the gentle-ai version that created this backup.
+	// CreatedByVersion is the hgtran-ai version that created this backup.
 	// Optional: omitted when empty for backward-compatibility with old manifests.
 	CreatedByVersion string `json:"created_by_version,omitempty"`
 
@@ -150,7 +150,7 @@ func backupRoot() (string, error) {
 var BackupRootFn = backupRoot
 
 // isRootDirUnderBackupRoot validates that dir is a direct or indirect subdirectory
-// of the expected backup root (~/.gentle-ai/backups/). This prevents a tampered
+// of the expected backup root (~/.hgtran-ai/backups/). This prevents a tampered
 // manifest with root_dir set to "/" or another sensitive path from deleting arbitrary files.
 //
 // Symlink note: if the path already exists on disk, EvalSymlinks is used to

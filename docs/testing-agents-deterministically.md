@@ -1,6 +1,6 @@
 # Testing Agents Deterministically
 
-How Gentle AI proves that an agent did what it was asked — in CI, on every push, with no API keys and no token cost.
+How Hgtran AI proves that an agent did what it was asked — in CI, on every push, with no API keys and no token cost.
 
 ← [Back to README](../README.md)
 
@@ -8,7 +8,7 @@ How Gentle AI proves that an agent did what it was asked — in CI, on every pus
 
 ## The problem this solves
 
-Gentle AI is deterministic code that validates agent work. The ceremony that used to live in system prompts — freeze this candidate, hash it, verify the obligation, emit the receipt, revalidate the gate — moved into the CLI, because an agent performs that ceremony slowly and cannot be trusted to perform it honestly. A model asserting *"I verified it, it passes"* is prose, not proof.
+Hgtran AI is deterministic code that validates agent work. The ceremony that used to live in system prompts — freeze this candidate, hash it, verify the obligation, emit the receipt, revalidate the gate — moved into the CLI, because an agent performs that ceremony slowly and cannot be trusted to perform it honestly. A model asserting *"I verified it, it passes"* is prose, not proof.
 
 That design creates a testing problem. Unit tests prove the code is internally consistent. They cannot prove the product invariant:
 
@@ -53,7 +53,7 @@ Everything except the model's reasoning:
 | OpenCode binary | Yes | Pinned to `versions.OpenCode`; `requireExecutableVersion` fails the test on a mismatch |
 | OpenCode plugin | Yes | `@opencode-ai/plugin` installed with `npm install` at the pinned version |
 | Orchestrator prompt | Yes | Read from `internal/assets/opencode/sdd-orchestrator.md` — the same asset shipped to users |
-| `gentle-ai` binary | Yes | Compiled from the working tree, exposed as `GENTLE_AI_TEST_BINARY` |
+| `hgtran-ai` binary | Yes | Compiled from the working tree, exposed as `HGTRAN_AI_TEST_BINARY` |
 | Git repository | Yes | A real repository plus a bare remote; delivery ends in an `update-ref` CAS with exact tree and blob proof |
 | Filesystem effects | Yes | Real files, real commits, isolated `$HOME` with `--pure` and per-test `XDG_*` directories |
 | Model reasoning | **No** | A local HTTP server returning a scripted sequence |
@@ -180,14 +180,14 @@ A separate TLS server (`httptest.NewTLSServer`) stands in for the delivery desti
 ```
 Go test
  ├─ start httptest server                → http://127.0.0.1:<port>
- ├─ compile gentle-ai                    → GENTLE_AI_TEST_BINARY
+ ├─ compile hgtran-ai                    → HGTRAN_AI_TEST_BINARY
  ├─ create a real Git repo + bare remote + isolated $HOME
  ├─ write the OpenCode config pointing at that URL, with the shipped prompt
  └─ exec: opencode run --agent organic ...
        │
        │  POST /v1/chat/completions { messages, tools }
        ▼
-    [model fixture]  call #1 → "bash: gentle-ai work capabilities"
+    [model fixture]  call #1 → "bash: hgtran-ai work capabilities"
        │
        ▼
     OpenCode executes that bash for real → the real binary, the real repo
@@ -235,12 +235,12 @@ A test that costs money is a test somebody eventually turns off.
 
 ```bash
 # Prerequisites: node, npm, and OpenCode pinned to versions.OpenCode
-GENTLE_AI_REAL_AGENT_E2E=1 \
+HGTRAN_AI_REAL_AGENT_E2E=1 \
   go test -v ./e2e/organicruntime \
   -run TestRealOpenCodeOrganicRuntimeJourneys -count=1 -timeout=15m
 ```
 
-Without `GENTLE_AI_REAL_AGENT_E2E=1` the test skips, so ordinary `go test ./...` runs stay fast. A version mismatch on the `opencode` executable fails rather than silently testing a different runtime.
+Without `HGTRAN_AI_REAL_AGENT_E2E=1` the test skips, so ordinary `go test ./...` runs stay fast. A version mismatch on the `opencode` executable fails rather than silently testing a different runtime.
 
 In CI the `organic-runtime-e2e` job runs this across a matrix of `ubuntu-latest` and `windows-latest`, installing the pinned OpenCode runtime first.
 

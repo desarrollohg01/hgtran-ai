@@ -1,6 +1,6 @@
 # Organic RDD — architecture and change record
 
-> Technical reference for PR [#1801](https://github.com/Gentleman-Programming/gentle-ai/pull/1801). 154 commits, 340 files, +58,379 / −6,586. For the story behind it, see [the-organic-rdd-story.md](the-organic-rdd-story.md).
+> Technical reference for PR [#1801](https://github.com/Gentleman-Programming/hgtran-ai/pull/1801). 154 commits, 340 files, +58,379 / −6,586. For the story behind it, see [the-organic-rdd-story.md](the-organic-rdd-story.md).
 
 ## 1. What changed at the top
 
@@ -10,7 +10,7 @@ Receipt-Driven Development used to be a control plane. A change was routed into 
 
 **Tier is decided by evidence, never by size.** A thousand-line documentation change is tier 0 and gets no reviewer. Two lines touching authentication are tier 2 and get four. The classifier names its own reason, so the cost is never unexplained.
 
-**The switch is a switch.** `gentle-ai review mode disable` means RDD does not exist: nothing blocks, nothing gates, delivery falls to ordinary repository policy. Turning it back on re-validates from the current state rather than resuming stale obligations.
+**The switch is a switch.** `hgtran-ai review mode disable` means RDD does not exist: nothing blocks, nothing gates, delivery falls to ordinary repository policy. Turning it back on re-validates from the current state rather than resuming stale obligations.
 
 ## 2. The lifecycle
 
@@ -25,7 +25,7 @@ Every transition is bound to an immutable candidate identity. Authority never ad
 
 **`review start`** freezes the candidate, classifies risk, selects lenses, and creates the authority. It renders the frozen reviewer context *before* committing anything, so a candidate that cannot be expressed as reviewer work never becomes an authority.
 
-**`review capture-result`** admits one reviewer result per lens, bound to the frozen subject hash. `gentle-ai review schema reviewer` emits the schema with a working example.
+**`review capture-result`** admits one reviewer result per lens, bound to the frozen subject hash. `hgtran-ai review schema reviewer` emits the schema with a working example.
 
 **`review finalize`** consumes captured results, then verification evidence, then reaches a terminal receipt.
 
@@ -33,7 +33,7 @@ Every transition is bound to an immutable candidate identity. Authority never ad
 
 ## 3. The negotiated contract
 
-Two output modes, selected by the presence of `--contract gentle-ai.review-integration/v1`:
+Two output modes, selected by the presence of `--contract hgtran-ai.review-integration/v1`:
 
 | | human form | negotiated form |
 |---|---|---|
@@ -52,7 +52,7 @@ Two output modes, selected by the presence of `--contract gentle-ai.review-integ
   "kind": "execute",
   "execute": {
     "operation": "review.start",
-    "command": "gentle-ai review start --contract=... --target=sha256:... --projection=workspace",
+    "command": "hgtran-ai review start --contract=... --target=sha256:... --projection=workspace",
     "arguments": [
       { "name": "target", "value": "sha256:...", "token": "--target=sha256:..." }
     ]
@@ -78,7 +78,7 @@ One sub-case keeps the honest fallback on purpose: when committed content is byt
 
 **Preflight refusals** in the negotiated envelope collapsed into one opaque code with an empty `required_inputs`. The specific reason now travels in `cause`, set once at the collapse point rather than at eighty call sites. A stale snapshot gets its own code and `next_action: review.status`, because `correct_request` is actively wrong there: no edit to the request makes a stale snapshot fresh.
 
-**Git trust refusals** are typed rather than collapsed. gentle-ai never provisions `safe.directory` and never relaxes an ownership check; the fix is diagnostic only, and detection requires three independent signals from one failure so a miss degrades to the generic message and can never mislabel.
+**Git trust refusals** are typed rather than collapsed. hgtran-ai never provisions `safe.directory` and never relaxes an ownership check; the fix is diagnostic only, and detection requires three independent signals from one failure so a miss degrades to the generic message and can never mislabel.
 
 ## 5. The kill switch
 
@@ -96,7 +96,7 @@ Declining relayed consent creates no review lineage or receipt. Instead, it atom
 
 ## 6. Platform work
 
-**Windows self-upgrade.** It never worked: the routing short-circuited to a binary strategy before the Go check. With Go on PATH it now upgrades through a pinned `go install`, verified by the Go checksum database — a different trust anchor than our minisign key, not a missing one. Linux and macOS keep the authenticated binary download, enforced structurally rather than by ordering: gentle-ai routes through a helper whose only go-install exit is gated on Windows, so declaring `GoImportPath` cannot revive the previously-dead generic rule on every platform at once.
+**Windows self-upgrade.** It never worked: the routing short-circuited to a binary strategy before the Go check. With Go on PATH it now upgrades through a pinned `go install`, verified by the Go checksum database — a different trust anchor than our minisign key, not a missing one. Linux and macOS keep the authenticated binary download, enforced structurally rather than by ordering: hgtran-ai routes through a helper whose only go-install exit is gated on Windows, so declaring `GoImportPath` cannot revive the previously-dead generic rule on every platform at once.
 
 On every platform, an upgrade now verifies that `go install` wrote where the user actually executes from, and names both absolute paths on mismatch.
 
@@ -122,10 +122,10 @@ The ratchet is a ratchet on purpose. Demanding zero before it could exist would 
 
 ## 8. The friction benchmark
 
-`bench/` is a separate Go module that drives a real `gentle-ai` binary through 36 end-to-end journeys and reports where the operator gets stuck. It is the evidence behind every friction claim in this branch, and it ships so the claims are reproducible rather than asserted.
+`bench/` is a separate Go module that drives a real `hgtran-ai` binary through 36 end-to-end journeys and reports where the operator gets stuck. It is the evidence behind every friction claim in this branch, and it ships so the claims are reproducible rather than asserted.
 
 ```
-cd bench && go run . run --binary $(command -v gentle-ai)
+cd bench && go run . run --binary $(command -v hgtran-ai)
 ```
 
 It classifies every block into exactly one class, and the split is the measurement, not the total:

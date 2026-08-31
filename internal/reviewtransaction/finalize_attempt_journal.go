@@ -15,7 +15,7 @@ import (
 	"strings"
 )
 
-const finalizeAttemptJournalSchema = "gentle-ai.review-finalize-attempt-journal/v1"
+const finalizeAttemptJournalSchema = "hgtran-ai.review-finalize-attempt-journal/v1"
 
 var writeFinalizeAttemptAtomic = writeAtomic
 
@@ -63,7 +63,7 @@ func (err *FinalizeAttemptReplayMismatchError) Error() string {
 
 func FinalizeAttemptValueDigest(domain string, value any) string {
 	payload, _ := json.Marshal(value)
-	sum := sha256.Sum256(append([]byte("gentle-ai.finalize-input/"+domain+"\x00"), payload...))
+	sum := sha256.Sum256(append([]byte("hgtran-ai.finalize-input/"+domain+"\x00"), payload...))
 	return "sha256:" + hex.EncodeToString(sum[:])
 }
 

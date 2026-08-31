@@ -94,10 +94,10 @@ func TestReviewProviderArtifactSchemasAreStrictAndBound(t *testing.T) {
 		name string
 		id   string
 	}{
-		{name: "artifact-subject.schema.json", id: "https://gentle-ai.dev/contracts/review-integration/v1/schemas/artifact-subject.schema.json"},
-		{name: "admitted-result.schema.json", id: "https://gentle-ai.dev/contracts/review-integration/v1/schemas/admitted-result.schema.json"},
+		{name: "artifact-subject.schema.json", id: "https://hgtran-ai.dev/contracts/review-integration/v1/schemas/artifact-subject.schema.json"},
+		{name: "admitted-result.schema.json", id: "https://hgtran-ai.dev/contracts/review-integration/v1/schemas/admitted-result.schema.json"},
 		{name: "correction-plan-request.schema.json", id: reviewtransaction.CorrectionPlanRequestSchemaID},
-		{name: "result-artifact-v2.schema.json", id: "https://gentle-ai.dev/contracts/review-integration/v1/schemas/result-artifact-v2.schema.json"},
+		{name: "result-artifact-v2.schema.json", id: "https://hgtran-ai.dev/contracts/review-integration/v1/schemas/result-artifact-v2.schema.json"},
 		{name: "start-v2.schema.json", id: ReviewIntegrationStartSchemaIDV2},
 		{name: "status-v2.schema.json", id: ReviewIntegrationStatusSchemaIDV2},
 		{name: "authority-repair-assessment.schema.json", id: reviewtransaction.AuthorityRepairAssessmentSchemaID},
@@ -182,8 +182,8 @@ func TestReviewProviderArtifactSchemasAreStrictAndBound(t *testing.T) {
 		name string
 		id   string
 	}{
-		{name: "artifact-subject.schema.json", id: "https://gentle-ai.dev/contracts/review-integration/v2/schemas/artifact-subject.schema.json"},
-		{name: "admitted-result.schema.json", id: "https://gentle-ai.dev/contracts/review-integration/v2/schemas/admitted-result.schema.json"},
+		{name: "artifact-subject.schema.json", id: "https://hgtran-ai.dev/contracts/review-integration/v2/schemas/artifact-subject.schema.json"},
+		{name: "admitted-result.schema.json", id: "https://hgtran-ai.dev/contracts/review-integration/v2/schemas/admitted-result.schema.json"},
 		{name: "start.schema.json", id: ReviewIntegrationStartSchemaID},
 		{name: "status.schema.json", id: ReviewIntegrationStatusSchemaIDV3},
 		{name: "status-v4.schema.json", id: ReviewIntegrationStatusSchemaID},

@@ -40,13 +40,13 @@ func TestResolveUsesEngramArtifactsWhenOpenSpecIsAbsent(t *testing.T) {
 	root := t.TempDir()
 	mkdir(t, filepath.Join(root, ".engram"))
 	runRuntimeLedgerGit(t, root, "init", "-q")
-	runRuntimeLedgerGit(t, root, "remote", "add", "origin", "git@github.com:Gentleman-Programming/gentle-ai.git")
+	runRuntimeLedgerGit(t, root, "remote", "add", "origin", "git@github.com:Gentleman-Programming/hgtran-ai.git")
 
 	restore := stubEngramExport(t, []engramObservation{
-		{Title: "sdd/add-auth/proposal", Content: "## Proposal\nAdd auth", Project: "gentle-ai", Scope: "project"},
-		{Title: "sdd/add-auth/spec", Content: "## Requirements\n- SHALL work", Project: "gentle-ai", Scope: "project"},
-		{Title: "sdd/add-auth/design", Content: "## Design\nUse middleware", Project: "gentle-ai", Scope: "project"},
-		{Title: "sdd/add-auth/tasks", Content: "- [ ] 1.1 Wire routes\n", Project: "gentle-ai", Scope: "project"},
+		{Title: "sdd/add-auth/proposal", Content: "## Proposal\nAdd auth", Project: "hgtran-ai", Scope: "project"},
+		{Title: "sdd/add-auth/spec", Content: "## Requirements\n- SHALL work", Project: "hgtran-ai", Scope: "project"},
+		{Title: "sdd/add-auth/design", Content: "## Design\nUse middleware", Project: "hgtran-ai", Scope: "project"},
+		{Title: "sdd/add-auth/tasks", Content: "- [ ] 1.1 Wire routes\n", Project: "hgtran-ai", Scope: "project"},
 	})
 	defer restore()
 
@@ -160,7 +160,7 @@ func TestDispatcherMarkdownRendersSelectChangeInstructions(t *testing.T) {
 	// continuation, the blocked reason ("Change selection is ambiguous: ...")
 	// is the entire guidance and names no way out.
 	dispatcher := RenderDispatcherMarkdown(status)
-	for _, want := range []string{"### Next Selection Operation", "gentle-ai sdd-status --cwd", "gentle-ai sdd-continue --cwd", "<change-name>"} {
+	for _, want := range []string{"### Next Selection Operation", "hgtran-ai sdd-status --cwd", "hgtran-ai sdd-continue --cwd", "<change-name>"} {
 		if !strings.Contains(dispatcher, want) {
 			t.Fatalf("dispatcher missing %q for select-change:\n%s", want, dispatcher)
 		}
@@ -286,7 +286,7 @@ func TestResolvePlanningRoutesOmitExpectedBlockersForBothStores(t *testing.T) {
 				} else {
 					mkdir(t, filepath.Join(root, ".engram"))
 					runRuntimeLedgerGit(t, root, "init", "-q")
-					runRuntimeLedgerGit(t, root, "remote", "add", "origin", "git@github.com:Gentleman-Programming/gentle-ai.git")
+					runRuntimeLedgerGit(t, root, "remote", "add", "origin", "git@github.com:Gentleman-Programming/hgtran-ai.git")
 					restore := stubEngramExport(t, engramPlanningRoute("thin", tt.route))
 					t.Cleanup(restore)
 				}
@@ -352,9 +352,9 @@ func TestResolveEngramPlanningRouteRetainsGenuineBlocker(t *testing.T) {
 	root := t.TempDir()
 	mkdir(t, filepath.Join(root, ".engram"))
 	runRuntimeLedgerGit(t, root, "init", "-q")
-	runRuntimeLedgerGit(t, root, "remote", "add", "origin", "git@github.com:Gentleman-Programming/gentle-ai.git")
+	runRuntimeLedgerGit(t, root, "remote", "add", "origin", "git@github.com:Gentleman-Programming/hgtran-ai.git")
 	restore := stubEngramExport(t, []engramObservation{
-		{Title: "sdd/thin/tasks", Content: "not a checklist\n", Project: "gentle-ai", Scope: "project"},
+		{Title: "sdd/thin/tasks", Content: "not a checklist\n", Project: "hgtran-ai", Scope: "project"},
 	})
 	defer restore()
 
@@ -379,7 +379,7 @@ func TestResolveRuntimeOverrideRestoresExpectedPlanningBlockersForBothStores(t *
 				seedPlanningRoute(t, root, "thin", "propose")
 			} else {
 				mkdir(t, filepath.Join(root, ".engram"))
-				runRuntimeLedgerGit(t, root, "remote", "add", "origin", "git@github.com:Gentleman-Programming/gentle-ai.git")
+				runRuntimeLedgerGit(t, root, "remote", "add", "origin", "git@github.com:Gentleman-Programming/hgtran-ai.git")
 				restore := stubEngramExport(t, engramPlanningRoute("thin", "propose"))
 				t.Cleanup(restore)
 			}
@@ -921,7 +921,7 @@ func TestRenderMarkdownIncludesFencedJSON(t *testing.T) {
 		"## SDD Status: add-auth",
 		"next: apply",
 		"```json",
-		`"schemaName": "gentle-ai.sdd-status"`,
+		`"schemaName": "hgtran-ai.sdd-status"`,
 		"```",
 	} {
 		if !strings.Contains(markdown, want) {
@@ -947,7 +947,7 @@ func TestRenderDispatcherMarkdownIncludesRoutingContext(t *testing.T) {
 		"### Next Phase Instructions: apply",
 		"Read proposal, specs, design, and tasks before editing.",
 		"```json",
-		`"schemaName": "gentle-ai.sdd-status"`,
+		`"schemaName": "hgtran-ai.sdd-status"`,
 		"```",
 	} {
 		if !strings.Contains(markdown, want) {
@@ -998,7 +998,7 @@ func TestRenderNativePhasePromptIncludesAuthorityInstructionsJSONAndBlockedGuida
 		"dependency_state: blocked",
 		"Read proposal, specs, design, and tasks before editing.",
 		"```json",
-		`"schemaName": "gentle-ai.sdd-status"`,
+		`"schemaName": "hgtran-ai.sdd-status"`,
 		"```",
 	} {
 		if !strings.Contains(prompt, want) {
@@ -1101,16 +1101,16 @@ func seedPlanningRoute(t *testing.T, root string, name string, route string) {
 func engramPlanningRoute(name string, route string) []engramObservation {
 	observations := []engramObservation{}
 	if route != "propose" {
-		observations = append(observations, engramObservation{Title: "sdd/" + name + "/proposal", Content: "# Proposal\n", Project: "gentle-ai", Scope: "project"})
+		observations = append(observations, engramObservation{Title: "sdd/" + name + "/proposal", Content: "# Proposal\n", Project: "hgtran-ai", Scope: "project"})
 	}
 	if route == "design" || route == "tasks" {
-		observations = append(observations, engramObservation{Title: "sdd/" + name + "/spec", Content: "# Spec\n", Project: "gentle-ai", Scope: "project"})
+		observations = append(observations, engramObservation{Title: "sdd/" + name + "/spec", Content: "# Spec\n", Project: "hgtran-ai", Scope: "project"})
 	}
 	if route == "tasks" {
-		observations = append(observations, engramObservation{Title: "sdd/" + name + "/design", Content: "# Design\n", Project: "gentle-ai", Scope: "project"})
+		observations = append(observations, engramObservation{Title: "sdd/" + name + "/design", Content: "# Design\n", Project: "hgtran-ai", Scope: "project"})
 	}
 	if route == "propose" {
-		observations = append(observations, engramObservation{Title: "sdd/" + name + "/tasks", Content: "- [ ] 1.1 Work\n", Project: "gentle-ai", Scope: "project"})
+		observations = append(observations, engramObservation{Title: "sdd/" + name + "/tasks", Content: "- [ ] 1.1 Work\n", Project: "hgtran-ai", Scope: "project"})
 	}
 	return observations
 }

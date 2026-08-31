@@ -16,9 +16,9 @@ import (
 )
 
 const (
-	reviewCapturePreflightSchema     = "gentle-ai.review-capture-preflight/v1"
+	reviewCapturePreflightSchema     = "hgtran-ai.review-capture-preflight/v1"
 	reviewCapturePreflightCapability = "review.native_capture_preflight"
-	reviewIncidentArtifactSchema     = "gentle-ai.review-incident-artifact/v1"
+	reviewIncidentArtifactSchema     = "hgtran-ai.review-incident-artifact/v1"
 	reviewIncidentArtifactCapability = "review.native_incident_artifact"
 	reviewIncidentReferencePrefix    = "rinc1_"
 )
@@ -78,7 +78,7 @@ const (
 	// because a running process cannot change its own inherited Git trust
 	// configuration.
 	reviewGitTrustRefusalCode = "git_repository_untrusted"
-	// reviewGitTrustRefusalAction is the instruction for that code. gentle-ai
+	// reviewGitTrustRefusalAction is the instruction for that code. hgtran-ai
 	// never provisions safe.directory and never bypasses Git's ownership
 	// protection, so the only thing the caller can actually do is relaunch
 	// the host process under a Git context that already trusts the
@@ -86,7 +86,7 @@ const (
 	// or KEY=VALUE token, so reviewScrubDefectReportField leaves it byte
 	// identical: this string can never become a path leak.
 	reviewGitTrustRefusalAction = "Git declined to open the bound repository in this process because it is owned by a different account; " +
-		"gentle-ai never provisions a safe.directory exception and never bypasses that protection. " +
+		"hgtran-ai never provisions a safe.directory exception and never bypasses that protection. " +
 		"Restart the host process under a Git context that already trusts that repository, then retry the same exact binding"
 	// gitSafeDirectoryHint is the second half of Git's ownership refusal:
 	// every version that emits the refusal also emits this remediation hint

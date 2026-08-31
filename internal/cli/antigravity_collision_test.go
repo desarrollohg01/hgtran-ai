@@ -29,7 +29,7 @@ func TestAntigravityCollisionCheckIncludesGeminiCLI(t *testing.T) {
 	message := err.Error()
 	for _, want := range []string{
 		"Antigravity intentionally uses the Gemini-compatible global prompt surface",
-		"last synced SDD orchestrator owns the shared gentle-ai:sdd-orchestrator section",
+		"last synced SDD orchestrator owns the shared hgtran-ai:sdd-orchestrator section",
 		"Prefer Antigravity for new installs",
 	} {
 		if !strings.Contains(message, want) {

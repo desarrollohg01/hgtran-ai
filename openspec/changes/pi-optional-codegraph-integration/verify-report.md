@@ -1,5 +1,5 @@
 ```yaml
-schema: gentle-ai.verify-result/v1
+schema: hgtran-ai.verify-result/v1
 evidence_revision: sha256:e174e8b76f2fe8ab4b7d8189bb71dbcafb3027675d813d7858d18f29c6f5c08f
 verdict: pass
 blockers: 0
@@ -33,7 +33,7 @@ The current committed implementation plus the uncommitted R4-008 through R4-011 
 | Tasks complete | 16 |
 | Tasks incomplete | 0 |
 
-`gentle-ai sdd-status pi-optional-codegraph-integration --cwd /tmp/opencode/gentle-ai-pi-codegraph --json --instructions` reported `taskProgress.total=16`, `completed=16`, and `allComplete=true`. It also reported `reviewGate.result=invalidated`, `nextRecommended=resolve-review`, and `approved review receipt is missing`.
+`hgtran-ai sdd-status pi-optional-codegraph-integration --cwd /tmp/opencode/hgtran-ai-pi-codegraph --json --instructions` reported `taskProgress.total=16`, `completed=16`, and `allComplete=true`. It also reported `reviewGate.result=invalidated`, `nextRecommended=resolve-review`, and `approved review receipt is missing`.
 
 ### Build, Tests, and Quality Execution
 
@@ -190,7 +190,7 @@ All added/modified change-related test deltas were inspected. They call producti
 **WARNING**:
 
 1. Nine changed production Go files with executable statements are below the informational 80% statement-coverage threshold; only `internal/cli/sync.go` is above it.
-2. Native review approval is absent. `gentle-ai sdd-status` reports an invalidated review gate and routes to `resolve-review`; verification does not manufacture or substitute a receipt.
+2. Native review approval is absent. `hgtran-ai sdd-status` reports an invalidated review gate and routes to `resolve-review`; verification does not manufacture or substitute a receipt.
 
 **SUGGESTION**: Persist a native review transaction and approved receipt for the exact final candidate before archive.
 

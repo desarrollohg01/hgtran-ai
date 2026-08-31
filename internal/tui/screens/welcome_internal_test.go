@@ -22,12 +22,12 @@ func TestWrapWelcomeBanner_UsesDisplayWidthForWideAdvisory(t *testing.T) {
 
 func TestWrapWelcomeBanner_FormatsRecognizableAdvisoryAsList(t *testing.T) {
 	const width = 72
-	text := "Advisory: 🚀 Big gentle-ai update: SDD now self-validates every phase. Plus: engram survives brew upgrades, Windows install fixes land, and a revamped updater detects beta commits. Thanks for testing. See https://example.test/release"
+	text := "Advisory: 🚀 Big hgtran-ai update: SDD now self-validates every phase. Plus: engram survives brew upgrades, Windows install fixes land, and a revamped updater detects beta commits. Thanks for testing. See https://example.test/release"
 
 	wrapped := wrapWelcomeBanner(text, width)
 
 	for _, want := range []string{
-		"Advisory: 🚀 Big gentle-ai update:",
+		"Advisory: 🚀 Big hgtran-ai update:",
 		"• SDD now self-validates every phase.",
 		"• engram survives brew upgrades",
 		"• Windows install fixes land",

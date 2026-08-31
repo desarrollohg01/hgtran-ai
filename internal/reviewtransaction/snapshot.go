@@ -162,7 +162,7 @@ func (builder SnapshotBuilder) build(ctx context.Context, target Target, allowSt
 		}
 	case TargetExactRevision:
 		baseTree, candidateTree, err = builder.resolveExactRevision(ctx, target.Revision)
-		untrackedProof = hashCanonical("gentle-ai.intended-untracked/v1")
+		untrackedProof = hashCanonical("hgtran-ai.intended-untracked/v1")
 	case TargetFixDiff:
 		if strings.TrimSpace(target.BaseRef) == "" || len(ledgerIDs) == 0 {
 			return Snapshot{}, errors.New("fix-diff requires base_ref and ledger_ids")
@@ -225,7 +225,7 @@ func (builder SnapshotBuilder) buildHeadWithIntended(ctx context.Context, intend
 		}
 	}
 
-	temp, err := os.CreateTemp("", "gentle-ai-review-index-*")
+	temp, err := os.CreateTemp("", "hgtran-ai-review-index-*")
 	if err != nil {
 		return "", "", err
 	}
@@ -945,7 +945,7 @@ func (builder *SnapshotBuilder) buildCurrentChanges(ctx context.Context, intende
 			return "", "", "", fmt.Errorf("intended-untracked path %q must name a file or symlink, not a directory", logicalPath)
 		}
 	}
-	temp, err := os.CreateTemp("", "gentle-ai-review-index-*")
+	temp, err := os.CreateTemp("", "hgtran-ai-review-index-*")
 	if err != nil {
 		return "", "", "", err
 	}
@@ -1149,7 +1149,7 @@ func (builder SnapshotBuilder) rejectIgnoredIntended(ctx context.Context, intend
 
 func (builder SnapshotBuilder) untrackedProof(ctx context.Context, candidateTree string, intended []string) (string, error) {
 	hash := sha256.New()
-	hash.Write([]byte("gentle-ai.intended-untracked/v1\x00"))
+	hash.Write([]byte("hgtran-ai.intended-untracked/v1\x00"))
 	if len(intended) == 0 {
 		return "sha256:" + hex.EncodeToString(hash.Sum(nil)), nil
 	}
@@ -1312,7 +1312,7 @@ func canonicalStrings(values []string, label string) ([]string, error) {
 
 func digestPaths(paths []string) string {
 	hash := sha256.New()
-	hash.Write([]byte("gentle-ai.paths/v1\x00"))
+	hash.Write([]byte("hgtran-ai.paths/v1\x00"))
 	for _, logicalPath := range paths {
 		writeLengthPrefixed(hash, []byte(logicalPath))
 	}
@@ -1337,11 +1337,11 @@ func snapshotIdentity(kind TargetKind, baseTree, candidateTree, pathsDigest, pro
 func snapshotIdentityForProjection(kind TargetKind, projection Projection, baseTree, candidateTree, pathsDigest, proof string, intended, ledgerIDs []string) string {
 	hash := sha256.New()
 	if kind == TargetBaseWorkspaceOverlay {
-		hash.Write([]byte("gentle-ai.review-snapshot/base-workspace-overlay/v1\x00"))
+		hash.Write([]byte("hgtran-ai.review-snapshot/base-workspace-overlay/v1\x00"))
 	} else if projection == ProjectionStaged {
-		hash.Write([]byte("gentle-ai.review-snapshot/v2\x00"))
+		hash.Write([]byte("hgtran-ai.review-snapshot/v2\x00"))
 	} else {
-		hash.Write([]byte("gentle-ai.review-snapshot/v1\x00"))
+		hash.Write([]byte("hgtran-ai.review-snapshot/v1\x00"))
 	}
 	values := []string{string(kind), baseTree, candidateTree, pathsDigest, proof}
 	if projection == ProjectionStaged {

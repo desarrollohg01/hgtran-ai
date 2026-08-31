@@ -2,12 +2,12 @@
 
 ## Intent
 
-Deliver an optional Pi CodeGraph capability owned by Gentle AI. A parent `APPEND_SYSTEM.md` marker does not prove child tools, guidance, or index availability.
+Deliver an optional Pi CodeGraph capability owned by Hgtran AI. A parent `APPEND_SYSTEM.md` marker does not prove child tools, guidance, or index availability.
 
 ## Scope
 
 ### In Scope
-- Own optional selection, installation, and verified Pi extension/MCP configuration in Gentle AI.
+- Own optional selection, installation, and verified Pi extension/MCP configuration in Hgtran AI.
 - Discover Pi children, inject tools into compatible children, and inject lazy-init guidance into every child.
 - Auto-initialize CodeGraph at the project root when an index is missing.
 - Reconcile after gentle-pi sync, verify real capability per child, and cleanly uninstall only owned artifacts.
@@ -22,14 +22,14 @@ Deliver an optional Pi CodeGraph capability owned by Gentle AI. A parent `APPEND
 ## Capabilities
 
 ### New Capabilities
-- `pi-codegraph-integration`: Gentle-AI-owned optional Pi provisioning, child reconciliation, lazy initialization, verification, sync, and uninstall.
+- `pi-codegraph-integration`: hgtran-ai-owned optional Pi provisioning, child reconciliation, lazy initialization, verification, sync, and uninstall.
 
 ### Modified Capabilities
 None.
 
 ## Approach
 
-Capture evidence from installed Pi and CodeGraph before defining the schema and ownership contract. Add an idempotent gentle-ai provisioner/reconciler after gentle-pi install and sync. Use bounded edits or owned files, discover children from verified runtime locations, and classify them as compatible, guidance-only, unavailable, or misconfigured. Verify each child’s effective tools and guidance directly.
+Capture evidence from installed Pi and CodeGraph before defining the schema and ownership contract. Add an idempotent hgtran-ai provisioner/reconciler after gentle-pi install and sync. Use bounded edits or owned files, discover children from verified runtime locations, and classify them as compatible, guidance-only, unavailable, or misconfigured. Verify each child’s effective tools and guidance directly.
 
 ## Affected Areas
 
@@ -62,5 +62,5 @@ Disable reconciliation, remove owned artifacts, and restore backed-up managed co
 
 - [ ] Selected installs configure and verify every discovered child according to real capability.
 - [ ] Missing indexes initialize automatically; sync restores drift idempotently.
-- [ ] Unselected Pi remains unchanged, and uninstall removes only Gentle-AI-owned integration.
+- [ ] Unselected Pi remains unchanged, and uninstall removes only hgtran-ai-owned integration.
 - [ ] gentle-pi contains no CodeGraph-specific change.

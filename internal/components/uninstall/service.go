@@ -311,7 +311,7 @@ func (s *Service) CompleteUninstall() (Result, error) {
 		return result, err
 	}
 
-	result.ManualActions = append(result.ManualActions, "To completely remove gentle-ai from your system, delete the executable (e.g., rm -f $(which gentle-ai))")
+	result.ManualActions = append(result.ManualActions, "To completely remove hgtran-ai from your system, delete the executable (e.g., rm -f $(which hgtran-ai))")
 	return result, nil
 }
 
@@ -1012,7 +1012,7 @@ func removeSkillRegistryHook(raw []byte) ([]byte, bool, error) {
 			for _, hook := range hooks {
 				hookMap, ok := hook.(map[string]any)
 				cmd, _ := hookMap["command"].(string)
-				if ok && strings.Contains(cmd, "gentle-ai skill-registry refresh") {
+				if ok && strings.Contains(cmd, "hgtran-ai skill-registry refresh") {
 					changed = true
 					continue
 				}

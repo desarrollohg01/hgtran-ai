@@ -61,7 +61,7 @@ func TestReviewOfferBlockPresentWhenVerifiedAndEnabled(t *testing.T) {
 		t.Fatal("ReviewOffer = nil, want a present offer block once verify has passed with the switch on")
 	}
 	if status.ReviewOffer.Invocation == "" || !strings.Contains(status.ReviewOffer.Invocation, "review start") {
-		t.Fatalf("ReviewOffer.Invocation = %q, want an actionable `gentle-ai review start` command", status.ReviewOffer.Invocation)
+		t.Fatalf("ReviewOffer.Invocation = %q, want an actionable `hgtran-ai review start` command", status.ReviewOffer.Invocation)
 	}
 }
 

@@ -1,12 +1,12 @@
 # Receipt-Driven Development System Audit
 
 **Audit date:** 2026-07-21  
-**Primary baseline:** `gentle-ai` `main` / `v2.1.11` at `51a5d9e20706b05718b1f2b7fcafda45bab21802`  
+**Primary baseline:** `hgtran-ai` `main` / `v2.1.11` at `51a5d9e20706b05718b1f2b7fcafda45bab21802`  
 **Integration baseline:** `gentle-pi` `origin/main` / `v1.2.0` at `4d5214b410d352712be20917e81f9ce5974d039a`  
 **Mode:** Read-only architecture, correctness, recovery, usability, and overengineering audit  
 **Evidence cutoff:** Live public GitHub REST queries completed between `2026-07-20T23:52:31Z` and `2026-07-20T23:55:59Z`
 
-Path references prefixed **AI** are relative to `/home/gentleman/work/gentle-ai`. Path references prefixed **PI** are relative to `/home/gentleman/work/gentle-pi` and were verified against `origin/main` unless stated otherwise.
+Path references prefixed **AI** are relative to `/home/gentleman/work/hgtran-ai`. Path references prefixed **PI** are relative to `/home/gentleman/work/gentle-pi` and were verified against `origin/main` unless stated otherwise.
 
 ## Executive Verdict
 
@@ -14,11 +14,11 @@ Path references prefixed **AI** are relative to `/home/gentleman/work/gentle-ai`
 
 RDD's **core trust model is coherent and materially safer than an ordinary best-effort review script**, but the complete user-facing system is not yet coherent or reliably operable. The core correctly freezes candidate identity, stores authority in the Git common directory, publishes artifacts without clobbering, uses compare-and-swap revisions and locks, creates immutable terminal receipts, and re-derives live Git evidence at each lifecycle gate. Those controls protect real provenance, race, and stale-approval risks.
 
-The end-to-end product, however, has become **a distributed state machine whose correct recovery depends on knowledge that ordinary users and agents cannot reasonably possess**. That state is split across native compact authority, attempt journals, result and evidence artifacts, receipts, gate context, SDD progress, repository topology, remote Git state, and Gentle Pi's own routing and generated runtime mirrors. The provider now publishes a typed `native_next_transition`, but Gentle Pi discards it and continues to infer lifecycle actions from the older `action` field. Gentle Pi also bypasses the durable result-artifact handoff and cannot express the provider's combined workspace-overlay target. The fail-closed core prevents many unsafe transitions, but a system that only says “stop” when its consumer lacks enough data to recover is safe without being operable.
+The end-to-end product, however, has become **a distributed state machine whose correct recovery depends on knowledge that ordinary users and agents cannot reasonably possess**. That state is split across native compact authority, attempt journals, result and evidence artifacts, receipts, gate context, SDD progress, repository topology, remote Git state, and Hgtran Pi's own routing and generated runtime mirrors. The provider now publishes a typed `native_next_transition`, but Hgtran Pi discards it and continues to infer lifecycle actions from the older `action` field. Hgtran Pi also bypasses the durable result-artifact handoff and cannot express the provider's combined workspace-overlay target. The fail-closed core prevents many unsafe transitions, but a system that only says “stop” when its consumer lacks enough data to recover is safe without being operable.
 
 ### Five-point verdict
 
-- **Coherent:** Yes inside the compact authority and gate core; no across the provider–Gentle Pi orchestration boundary.
+- **Coherent:** Yes inside the compact authority and gate core; no across the provider–Hgtran Pi orchestration boundary.
 - **Safe:** Mostly fail-closed and provenance-oriented, but three confirmed integration defects weaken deterministic lifecycle routing, durable reviewer-result provenance, and complete candidate selection.
 - **Operable:** Not for recovery. Happy-path automation is understandable; interrupted, scope-changed, base-advanced, corrupted, and independent-clone journeys expose implementation mechanics.
 - **Overengineered:** Selectively. Immutable identity, CAS, locks, no-clobber publication, receipt binding, and gate re-derivation are essential. The 19-operation public surface, nine maintenance verbs, compatibility layers, split transition planners, and operation-specific repairs are accidental or user-leaking complexity.
@@ -33,7 +33,7 @@ The end-to-end product, however, has become **a distributed state machine whose 
 ### What must happen before more issue implementation
 
 1. Fix the published START-schema/runtime mismatch and add mechanical contract conformance.
-2. Make Gentle Pi consume and execute `native_next_transition`, adopt durable `capture-result`/`--result-artifact` transport, and represent workspace overlays.
+2. Make Hgtran Pi consume and execute `native_next_transition`, adopt durable `capture-result`/`--result-artifact` transport, and represent workspace overlays.
 3. Define one provider-owned projection/base/recovery transition function before implementing more base-advance or recovery variants.
 4. Persist SDD attempt and correction consumption in native CAS authority rather than session narrative.
 5. Group the recovery backlog by root cause; stop merging isolated fixes whose correctness depends on unresolved contract or base-rebinding decisions.
@@ -55,8 +55,8 @@ RDD is a content-bound approval protocol around Git:
 
 ```mermaid
 flowchart LR
-    U["User or orchestrator"] --> P["Gentle Pi orchestration"]
-    P --> B["Gentle AI native provider"]
+    U["User or orchestrator"] --> P["Hgtran Pi orchestration"]
+    P --> B["Hgtran AI native provider"]
     B --> G["Git candidate snapshot"]
     B --> A["Common-dir authority"]
     G --> I["Immutable target identity"]
@@ -73,13 +73,13 @@ flowchart LR
 
 | Boundary | Intended owner | Current condition |
 |---|---|---|
-| Git snapshot, target identity, risk, lens order, correction budget | Gentle AI binary | Strong and fail-closed. |
-| Authority revision, journals, result/evidence publication, receipt | Gentle AI binary | Strong core; public recovery diagnostics are incomplete. |
-| Exact next lifecycle transition | Gentle AI binary | Published in v2.1.11, but Gentle Pi does not consume it. |
-| Workspace selection and process invocation | Gentle Pi | Strong cwd/argument-array handling, but incomplete overlay selectors. |
-| Reviewer execution and candidate injection | Gentle Pi | Candidate view is immutable; result handoff remains legacy and non-durable. |
-| SDD continuation | Gentle Pi plus native SDD status | Completion is persisted, but cumulative attempt consumption is not. |
-| Clone/worktree user guidance | Gentle Pi | Linked worktrees work; independent-clone guidance is factually wrong. |
+| Git snapshot, target identity, risk, lens order, correction budget | Hgtran AI binary | Strong and fail-closed. |
+| Authority revision, journals, result/evidence publication, receipt | Hgtran AI binary | Strong core; public recovery diagnostics are incomplete. |
+| Exact next lifecycle transition | Hgtran AI binary | Published in v2.1.11, but Hgtran Pi does not consume it. |
+| Workspace selection and process invocation | Hgtran Pi | Strong cwd/argument-array handling, but incomplete overlay selectors. |
+| Reviewer execution and candidate injection | Hgtran Pi | Candidate view is immutable; result handoff remains legacy and non-durable. |
+| SDD continuation | Hgtran Pi plus native SDD status | Completion is persisted, but cumulative attempt consumption is not. |
+| Clone/worktree user guidance | Hgtran Pi | Linked worktrees work; independent-clone guidance is factually wrong. |
 
 The security boundary is therefore stronger than the operational boundary. Provider rejection prevents many unsafe actions, but Pi and users still need internal knowledge to discover the accepted action.
 
@@ -114,7 +114,7 @@ flowchart LR
 ### Numbered journey
 
 1. **Normalize before identity freeze.** Source-mutating formatters and generators run before START. After START, only check-only formatting, compilation, and tests may run. Any changed byte, path, or mode invalidates the reviewed identity.
-2. **Discover the repository and target.** The native provider resolves the repository and Git common directory, snapshots the staged projection, current workspace, committed range, or workspace overlay, and calculates target/tree/path identity. The normal user-visible entry point is `gentle-ai review start`.
+2. **Discover the repository and target.** The native provider resolves the repository and Git common directory, snapshots the staged projection, current workspace, committed range, or workspace overlay, and calculates target/tree/path identity. The normal user-visible entry point is `hgtran-ai review start`.
 3. **Freeze authority.** START creates or resumes a lineage under common-dir authority and returns the target, tier, selected lenses, order, and bounded correction budget. Risk classification is deterministic: zero lenses for truly trivial content, one dominant-risk lens for standard changes, and the 4R set for security/hot paths or large active changes.
 4. **Execute exactly the selected review.** Each reviewer should receive the immutable candidate diff/path context and the binding `{lineage,target,lens,order}`. The intended handoff is `capture-result`, producing a canonical immutable manifest.
 5. **Finalize once.** FINALIZE reads ordered result manifests, classifies candidate-causal severe findings, and either proceeds to validation, requests one forecasted correction, or escalates. Schema/proof rejection before authority mutation is retryable with the corrected same operation.
@@ -134,13 +134,13 @@ flowchart LR
 | Receipt | Validated authority and evidence | immutable terminal receipt | receipt hash, target binding, revision | failed evidence → escalated; publication interruption → exact replay | AI compact transaction tests (review test inventory) |
 | Gates | receipt plus live Git/remote/evidence | allow or invalidation authority | exact stage/range/base/release evidence | mismatch → invalidated, recovery, or stop | AI gate implementations and `docs/review-authority-threat-model.md` |
 
-### Current happy-path deviation in Gentle Pi
+### Current happy-path deviation in Hgtran Pi
 
-Gentle Pi correctly constructs an immutable candidate view (`PI lib/review-candidate-view.ts:855-908`) and invokes the provider with argument arrays and `shell:false` (`PI lib/native-review-cli.ts:407-417`). It then diverges from the intended v2.1.11 contract:
+Hgtran Pi correctly constructs an immutable candidate view (`PI lib/review-candidate-view.ts:855-908`) and invokes the provider with argument arrays and `shell:false` (`PI lib/native-review-cli.ts:407-417`). It then diverges from the intended v2.1.11 contract:
 
 - reviewer JSON is staged in a temporary file and passed with legacy `--result` (`PI lib/native-review-cli.ts:1366-1413`), not captured durably with lineage/target/lens/order;
 - status omits `--next-transition` (`PI lib/native-review-cli.ts:1458-1465`), so lifecycle routing remains consumer-owned;
-- base-ref START is forced to committed-only and cannot freeze the full branch-plus-dirty-workspace candidate (`PI extensions/gentle-ai.ts:4721-4769`).
+- base-ref START is forced to committed-only and cannot freeze the full branch-plus-dirty-workspace candidate (`PI extensions/hgtran-ai.ts:4721-4769`).
 
 The provider will still reject many inconsistent inputs, but that is a safety backstop, not a coherent orchestration contract.
 
@@ -204,7 +204,7 @@ stateDiagram-v2
 
 ### Transition ownership
 
-Native authority owns state transitions. Gentle Pi should own only:
+Native authority owns state transitions. Hgtran Pi should own only:
 
 - choosing the user-requested target selector;
 - invoking the exact negotiated operation with the correct repository context;
@@ -212,7 +212,7 @@ Native authority owns state transitions. Gentle Pi should own only:
 - returning captured artifact manifests;
 - presenting the native failure and next transition.
 
-Today Gentle Pi also interprets historical status actions, infers recovery routing, stages raw reviewer files, and maintains process-local rerun counters. That turns an adapter into a second transition planner.
+Today Hgtran Pi also interprets historical status actions, infers recovery routing, stages raw reviewer files, and maintains process-local rerun counters. That turns an adapter into a second transition planner.
 
 ## Recovery Model
 
@@ -344,7 +344,7 @@ The provider's compatible-base proof is an essential control: it ensures a base 
 - **Workspace root/cwd matters.** Candidate restoration, START, capture, FINALIZE, and gate commands must refer to the same repository/worktree identity. `capture-result` currently needs `--cwd` even though native next-transition arguments do not carry repository context.
 - **A branch name is not authority.** Target tree, path/mode manifest, projection, base relation, policy, lineage, and receipt revision provide identity.
 - **Remote state is live evidence, not persisted intent.** Pre-push/pre-PR/release recheck it.
-- **Normal Git replication does not transport `.git/gentle-ai/reviews`.** Pi's contrary message is a confirmed documentation/usability defect.
+- **Normal Git replication does not transport `.git/hgtran-ai/reviews`.** Pi's contrary message is a confirmed documentation/usability defect.
 
 ### Worktree and Repository Identity Flow
 
@@ -378,11 +378,11 @@ flowchart LR
 
 Local common-dir authority prevents a receipt copied from an unrelated clone from being accepted without explicit transport validation. That is essential. The simpler current product answer is **re-review in a new clone and say so clearly**. Designing export/import would add signing, replay, repository-identity, expiry, and revocation obligations; it should not be added merely to avoid correcting a message.
 
-## Gentle Pi Integration Boundary
+## Hgtran Pi Integration Boundary
 
 ### Ownership matrix
 
-| Flow | Gentle Pi owns | Gentle AI binary owns | Current boundary quality |
+| Flow | Hgtran Pi owns | Hgtran AI binary owns | Current boundary quality |
 |---|---|---|---|
 | Binary selection | Package-local executable, archive/binary digest check | Published executable and contract | Strong; package verification checks pins and generated bytes. |
 | Capability negotiation | Invocation, digest cache, JSON decode | Supported operations/features/schemas | Fail-closed, but Pi recognizes only 5 of 7 optional v1.1 features. |
@@ -398,26 +398,26 @@ Local common-dir authority prevents a receipt copied from an unrelated clone fro
 
 ### Capability negotiation defect
 
-The provider fixture advertises `native_next_transition` and `base_ref_workspace_overlay` (`AI contracts/review-integration/v1/fixtures/capabilities-v1.1.fixture.json:129-179`). Pi's recognized feature registry omits both (`PI lib/review-integration-v1.ts:107-130`), filters unknown optional features (`:534-568`), keeps `next_transition` only inside untyped `raw` (`:635-705`), and does not invoke status with `--next-transition` (`PI lib/native-review-cli.ts:1458-1465`). Its controller then routes from `status.action` (`PI extensions/gentle-ai.ts:4096-4164,4442-4480`).
+The provider fixture advertises `native_next_transition` and `base_ref_workspace_overlay` (`AI contracts/review-integration/v1/fixtures/capabilities-v1.1.fixture.json:129-179`). Pi's recognized feature registry omits both (`PI lib/review-integration-v1.ts:107-130`), filters unknown optional features (`:534-568`), keeps `next_transition` only inside untyped `raw` (`:635-705`), and does not invoke status with `--next-transition` (`PI lib/native-review-cli.ts:1458-1465`). Its controller then routes from `status.action` (`PI extensions/hgtran-ai.ts:4096-4164,4442-4480`).
 
 This is not a minor compatibility omission. It preserves the exact duplicated transition-planner architecture v2.1.11 was meant to remove.
 
 ### Reviewer artifact boundary defect
 
-Pi creates a correct immutable candidate view (`PI lib/review-candidate-view.ts:855-908`) and enforces its injection into the reviewer (`PI extensions/gentle-ai.ts:5617-5632`). Reviewer output is then converted directly (`:4920-4950`), staged as temporary JSON, and passed with raw `--result` (`PI lib/native-review-cli.ts:1366-1413`). The v2.1.11 contract requires durable `capture-result` and ordered `--result-artifact` manifests (`PI docs/review-integration.md:68,80-82`).
+Pi creates a correct immutable candidate view (`PI lib/review-candidate-view.ts:855-908`) and enforces its injection into the reviewer (`PI extensions/hgtran-ai.ts:5617-5632`). Reviewer output is then converted directly (`:4920-4950`), staged as temporary JSON, and passed with raw `--result` (`PI lib/native-review-cli.ts:1366-1413`). The v2.1.11 contract requires durable `capture-result` and ordered `--result-artifact` manifests (`PI docs/review-integration.md:68,80-82`).
 
 The result therefore loses restart-stable controller binding to lineage, target, lens, and order at the integration seam. Native schema/order checks reduce risk but do not provide the missing transport provenance.
 
 ### Source/runtime mirrors and compatibility
 
-Gentle Pi carries four generated source/runtime pairs:
+Hgtran Pi carries four generated source/runtime pairs:
 
-1. `gentle-ai-binary`;
+1. `hgtran-ai-binary`;
 2. `review-integration-v1`;
 3. `native-review-cli`;
 4. `git-commit-transaction`.
 
-The generator and package verifier are strong (`PI scripts/build-git-commit-transaction-runner.mjs:8-60`; `scripts/verify-package-files.mjs:78-125,141-157`), and CI/publish invoke verification. The adapter nevertheless has a command table for eight exact Gentle AI versions, `2.1.4` through `2.1.11` (`PI lib/native-review-cli.ts:353-361`). Compatibility therefore imposes a broad behavioral surface even when byte mirrors are correct.
+The generator and package verifier are strong (`PI scripts/build-git-commit-transaction-runner.mjs:8-60`; `scripts/verify-package-files.mjs:78-125,141-157`), and CI/publish invoke verification. The adapter nevertheless has a command table for eight exact Hgtran AI versions, `2.1.4` through `2.1.11` (`PI lib/native-review-cli.ts:353-361`). Compatibility therefore imposes a broad behavioral surface even when byte mirrors are correct.
 
 The right simplification is not to remove byte verification. It is to narrow supported behavioral contracts, consume provider-owned transitions, and generate or isolate the remaining compatibility adapter so that version support cannot silently preserve old routing semantics.
 
@@ -432,7 +432,7 @@ The right simplification is not to remove byte verification. It is to narrow sup
 | Review test files | 66 | More test files than production files; valuable coverage but evidence of a wide behavioral surface. |
 | Review test LOC | 31,077 | Tests exceed production LOC. |
 | Go test functions | 665 | Strong focused proof inventory, but no single end-to-end proof covers every integration path. |
-| User-visible `gentle-ai review` operations | 19 | `capture-result`, `capture-evidence`, `preserve-result`, `capabilities`, `start`, `finalize`, `validate`, `status`, `invalidate`, `abandon`, `recover`, `reclaim`, `reconcile-authority`, `dispose-result`, three legacy quarantine/repair operations, `schema`, and `bind-sdd`. |
+| User-visible `hgtran-ai review` operations | 19 | `capture-result`, `capture-evidence`, `preserve-result`, `capabilities`, `start`, `finalize`, `validate`, `status`, `invalidate`, `abandon`, `recover`, `reclaim`, `reconcile-authority`, `dispose-result`, three legacy quarantine/repair operations, `schema`, and `bind-sdd`. |
 | Recovery/maintenance verbs | 9 | `invalidate`, `abandon`, `recover`, `reclaim`, `reconcile-authority`, `dispose-result`, `quarantine-legacy`, `quarantine-legacy-fix-scope`, `repair-legacy-alias`. |
 | Compact persisted semantic states | 6 | `reviewing`, `correction_required`, `validating`, `approved`, `escalated`, `invalidated`. |
 | Native lifecycle gates | 5 | post-apply, pre-commit, pre-push, pre-pr, release. |
@@ -569,9 +569,9 @@ Native design wisely minimizes irreversible user actions: terminal receipts are 
 
 | ID | Severity | Category | Confirmed current defect |
 |---|---|---|---|
-| RDD-001 | CRITICAL | correctness / architecture | Gentle Pi drops `native_next_transition` and infers lifecycle routing. |
-| RDD-002 | CRITICAL | correctness / resilience | Gentle Pi bypasses durable result capture and passes raw temporary reviewer results. |
-| RDD-003 | CRITICAL | correctness / usability | Gentle Pi cannot express the provider's workspace-overlay target. |
+| RDD-001 | CRITICAL | correctness / architecture | Hgtran Pi drops `native_next_transition` and infers lifecycle routing. |
+| RDD-002 | CRITICAL | correctness / resilience | Hgtran Pi bypasses durable result capture and passes raw temporary reviewer results. |
+| RDD-003 | CRITICAL | correctness / usability | Hgtran Pi cannot express the provider's workspace-overlay target. |
 | RDD-004 | WARNING | correctness | Published START schema omits two runtime-emitted reason codes. |
 | RDD-005 | WARNING | resilience / architecture | SDD remediation/attempt consumption is not cumulative across continuations. |
 | RDD-006 | WARNING | usability / observability | Negotiated corrupted status is a non-diagnostic stop even for internally known repair classes. |
@@ -579,19 +579,19 @@ Native design wisely minimizes irreversible user actions: terminal receipts are 
 | RDD-008 | WARNING | correctness / resilience | Workspace-overlay recovery cannot renegotiate an advanced base. |
 | RDD-009 | WARNING | correctness / architecture | START does not expose a native frozen reviewer-context artifact required by orchestration. |
 | RDD-010 | WARNING | documentation / architecture | Three-attempt documentation/fields coexist with one-shot compact correction behavior. |
-| RDD-011 | WARNING | documentation / portability | Gentle Pi incorrectly says local review authority replicates through Git. |
+| RDD-011 | WARNING | documentation / portability | Hgtran Pi incorrectly says local review authority replicates through Git. |
 | RDD-012 | WARNING | portability | Windows installer assumes `C:\\Windows`. |
 | RDD-013 | SUGGESTION | observability | Escalated gate denial context is computed but not returned. |
 | RDD-014 | SUGGESTION | observability | Risk-reason deduplication collapses multiple path witnesses. |
 
 No issue's open state was treated as proof. Findings below were confirmed in current baselines through source/contract comparison. Unverified open reports remain in the issue matrix as design or reproduction work.
 
-### RDD-001 — Gentle Pi does not execute the provider's native next transition
+### RDD-001 — Hgtran Pi does not execute the provider's native next transition
 
 - **Severity / category:** CRITICAL — correctness, architecture.
 - **Flow affected:** STATUS → lifecycle or recovery routing.
 - **Affected personas:** Orchestrating agent, interrupted user, maintainer.
-- **Evidence:** AI capability fixture advertises `native_next_transition` (`contracts/review-integration/v1/fixtures/capabilities-v1.1.fixture.json:129-179`). PI feature registry omits it (`lib/review-integration-v1.ts:107-130`), filters unknown supported features (`:534-568`), keeps the field only in `raw` (`:635-705`), omits `--next-transition` from STATUS (`lib/native-review-cli.ts:1458-1465`), and routes from `status.action` (`extensions/gentle-ai.ts:4096-4164,4442-4480`).
+- **Evidence:** AI capability fixture advertises `native_next_transition` (`contracts/review-integration/v1/fixtures/capabilities-v1.1.fixture.json:129-179`). PI feature registry omits it (`lib/review-integration-v1.ts:107-130`), filters unknown supported features (`:534-568`), keeps the field only in `raw` (`:635-705`), omits `--next-transition` from STATUS (`lib/native-review-cli.ts:1458-1465`), and routes from `status.action` (`extensions/hgtran-ai.ts:4096-4164,4442-4480`).
 - **Status:** Confirmed on PI `origin/main` `4d5214b4`.
 - **Related issues:** PI #170, #194, #200, #201; AI #1452, #1541, #1582.
 - **User consequence:** Pi must know internal provider semantics and can choose a stale or incomplete operation. Native validation usually prevents unsafe mutation, but recovery becomes nondeterministic and stalls.
@@ -603,19 +603,19 @@ No issue's open state was treated as proof. Findings below were confirmed in cur
 - **Severity / category:** CRITICAL — correctness, resilience.
 - **Flow affected:** Reviewer execution → result handoff → FINALIZE → restart recovery.
 - **Affected personas:** Reviewer agent, orchestrator, interrupted user, Windows user.
-- **Evidence:** Immutable input view is strong (`PI lib/review-candidate-view.ts:855-908`; `extensions/gentle-ai.ts:5617-5632`), but output is converted directly (`extensions/gentle-ai.ts:4920-4950`), staged in a temporary file, and passed with legacy `--result` (`lib/native-review-cli.ts:1366-1413`). Contract requires `capture-result` and ordered `--result-artifact` (`docs/review-integration.md:68,80-82`). Runtime parity tests also use raw `--result` and may skip without the binary (`tests/native-review-parity-runtime.test.ts:20-31,156-165,205-215`).
+- **Evidence:** Immutable input view is strong (`PI lib/review-candidate-view.ts:855-908`; `extensions/hgtran-ai.ts:5617-5632`), but output is converted directly (`extensions/hgtran-ai.ts:4920-4950`), staged in a temporary file, and passed with legacy `--result` (`lib/native-review-cli.ts:1366-1413`). Contract requires `capture-result` and ordered `--result-artifact` (`docs/review-integration.md:68,80-82`). Runtime parity tests also use raw `--result` and may skip without the binary (`tests/native-review-parity-runtime.test.ts:20-31,156-165,205-215`).
 - **Status:** Confirmed.
 - **Related issues:** AI #1477, #1484, #1534, #1555, #1579; previously #1455/PR #1549 and open PR #1550.
 - **User consequence:** Reviewer output lacks restart-stable lineage/target/lens/order provenance at the consumer boundary. A temp-path or process interruption can make admissibility and recovery ambiguous.
 - **Smallest remediation:** Call native `capture-result` for each selected lens using exact binding and finalize only with ordered immutable manifests. Persist manifests in controller state.
 - **Tradeoff:** Adds artifact lifecycle and Windows-path handling, but those are essential provenance costs already supported by the provider.
 
-### RDD-003 — Gentle Pi cannot freeze a complete base-relative workspace overlay
+### RDD-003 — Hgtran Pi cannot freeze a complete base-relative workspace overlay
 
 - **Severity / category:** CRITICAL — correctness, usability.
 - **Flow affected:** START for branch commits plus dirty workspace; later pre-PR/base advance.
 - **Affected personas:** Contributor, linked-worktree user, base-advanced user.
-- **Evidence:** Provider advertises `base_ref_workspace_overlay` and documents overlay target modes. PI START accepts only `mode`, `baseRef`, `committedOnly`, and `policyPath` (`extensions/gentle-ai.ts:4721-4738`), forces explicit base to committed-only (`:4735-4769`), adapter supports only `--base-ref ... --committed-only` (`lib/native-review-cli.ts:1338-1348`), and STATUS lacks `--workspace-overlay`/`--base-tree` (`:1458-1465`).
+- **Evidence:** Provider advertises `base_ref_workspace_overlay` and documents overlay target modes. PI START accepts only `mode`, `baseRef`, `committedOnly`, and `policyPath` (`extensions/hgtran-ai.ts:4721-4738`), forces explicit base to committed-only (`:4735-4769`), adapter supports only `--base-ref ... --committed-only` (`lib/native-review-cli.ts:1338-1348`), and STATUS lacks `--workspace-overlay`/`--base-tree` (`:1458-1465`).
 - **Status:** Confirmed.
 - **Related issues:** AI #1453, #1523, #1563; PI #194, #204.
 - **User consequence:** A user must review either the committed range or dirty workspace, not the complete intended PR candidate. Pre-PR can later reject scope that the user believed was reviewed.
@@ -711,7 +711,7 @@ No issue's open state was treated as proof. Findings below were confirmed in cur
 - **Severity / category:** WARNING — documentation, portability.
 - **Flow affected:** Recovery or validation in a fresh clone/CI checkout.
 - **Affected personas:** Clone user, CI operator, release operator.
-- **Evidence:** Pi says `.git/gentle-ai/reviews` travels through normal Git replication (`PI extensions/gentle-ai.ts:4576-4589`), while authority is local to the Git common directory (`lib/review-repository.ts:246-267`) and foreign common dirs are rejected (`extensions/gentle-ai.ts:4517-4560`).
+- **Evidence:** Pi says `.git/hgtran-ai/reviews` travels through normal Git replication (`PI extensions/hgtran-ai.ts:4576-4589`), while authority is local to the Git common directory (`lib/review-repository.ts:246-267`) and foreign common dirs are rejected (`extensions/hgtran-ai.ts:4517-4560`).
 - **Status:** Confirmed.
 - **Related issues:** PI recovery/topology cluster #170, #204; AI transport/provenance questions.
 - **User consequence:** The prescribed recovery cannot work. A fresh clone lacks local receipt authority.
@@ -721,9 +721,9 @@ No issue's open state was treated as proof. Findings below were confirmed in cur
 ### RDD-012 — Windows installer assumes the system root
 
 - **Severity / category:** WARNING — portability.
-- **Flow affected:** Gentle Pi packaged runtime installation on non-default Windows layouts.
+- **Flow affected:** Hgtran Pi packaged runtime installation on non-default Windows layouts.
 - **Affected persona:** Windows user.
-- **Evidence:** Fixed extractor path in `PI scripts/gentle-ai-installer.mjs:116-125`; test intentionally ignores `SystemRoot` (`tests/gentle-ai-installer.test.ts:85-101`); architecture docs admit no native end-to-end Windows proof (`docs/native-authority-architecture.md:86-98`).
+- **Evidence:** Fixed extractor path in `PI scripts/hgtran-ai-installer.mjs:116-125`; test intentionally ignores `SystemRoot` (`tests/hgtran-ai-installer.test.ts:85-101`); architecture docs admit no native end-to-end Windows proof (`docs/native-authority-architecture.md:86-98`).
 - **Status:** Confirmed limited-environment defect.
 - **Related issues:** PI #203; AI #1246, #1477, #1534.
 - **User consequence:** Installation can fail when Windows is not rooted at `C:\\Windows`.
@@ -776,7 +776,7 @@ No issue's open state was treated as proof. Findings below were confirmed in cur
 ### OE-002 — Projection/base/recovery logic is operation-specific
 
 - **Classification:** Duplicated and self-created.
-- **Exact evidence:** Overlay base restrictions in `review_facade.go:518-540`, compatible-base proof in `prepr.go:19-251`, recovery binding in `compact_recovery_binding.go:146-272`, Pi's separate target selector in `extensions/gentle-ai.ts:4721-4769`, and issue cluster #1453/#1523/#1563/#1234/PI #194.
+- **Exact evidence:** Overlay base restrictions in `review_facade.go:518-540`, compatible-base proof in `prepr.go:19-251`, recovery binding in `compact_recovery_binding.go:146-272`, Pi's separate target selector in `extensions/hgtran-ai.ts:4721-4769`, and issue cluster #1453/#1523/#1563/#1234/PI #194.
 - **Original protected risk:** Never transfer approval to a changed patch or expanded scope after base movement.
 - **Operational cost:** Fixes apply to one gate/projection and recur under another. Pre-PR has at least four successful proof variants plus common denials.
 - **Simpler alternative:** A provider-owned target algebra that takes old identity, new live identity, projection, and base evidence and returns `same`, `compatible-advance`, `provable-contraction`, `changed-scope`, or `unsafe` plus the exact transition.
@@ -833,82 +833,82 @@ No issue's open state was treated as proof. Findings below were confirmed in cur
 
 | Issue | Current state | Actual defect | Root-cause cluster | Dependency | Existing PR | Still reproducible on main? | User impact | Recommendation |
 |---|---|---|---|---|---|---|---|---|
-| [#1384](https://github.com/Gentleman-Programming/gentle-ai/issues/1384) | Open; approved | Same-operation FINALIZE retry after preflight rejection | Retry/idempotence | Explicit regression proof | None identified | **Behavior appears fixed**; no mutation-before-rejection found | Historical dead end after correctable input | **Already fixed**; convert remaining scope to a regression test. |
-| [#1452](https://github.com/Gentleman-Programming/gentle-ai/issues/1452) | Open; approved | Reconcile multiple invalid recovery edges | Corruption enumeration/reconciliation | Explicitly blocked by #1582 | None | Current status/repair contract cannot safely enumerate all edges | Corrupt store remains blocked | **Ready after dependency.** |
-| [#1453](https://github.com/Gentleman-Programming/gentle-ai/issues/1453) | Open; approved decision | Workspace-overlay recovery cannot accept an advanced base | Projection/base/recovery algebra | Foundation for #1523/#1563 and PI #194 | None | **Confirmed** in `review_facade.go` and recovery binding | Base-advanced overlay cannot reach pre-PR | **Do first** after contract stabilization. |
-| [#1454](https://github.com/Gentleman-Programming/gentle-ai/issues/1454) | Open; approved | Reviewer needs native frozen candidate context | Candidate inspection/provenance | #1528 defines negotiated/privacy constraint | [PR #1517](https://github.com/Gentleman-Programming/gentle-ai/pull/1517) | **Confirmed contract gap** | Reviewer may inspect reconstructed rather than provider-bound view | **Needs redesign before implementation.** Do not merge PR #1517 yet. |
-| [#1476](https://github.com/Gentleman-Programming/gentle-ai/issues/1476) | Open; approved | Alleged changed-target recovery provenance bypass | Recovery provenance | Related to #1259/#1308 | None | **Unknown; not reproduced** in this audit | Potential approval transfer if real | **Close as not reproducible** unless a current trace is produced; otherwise add regression proof. |
-| [#1477](https://github.com/Gentleman-Programming/gentle-ai/issues/1477) | Open; approved | Windows-safe reviewer artifact manifest input | Durable result transport/Windows | Compose with #1484/#1534 | None | Core defect **not proven**; end-to-end proof absent | Windows adapter recovery risk | **Convert to documentation/UX work** plus portability contract test unless reproduction proves defect. |
-| [#1484](https://github.com/Gentleman-Programming/gentle-ai/issues/1484) | Open; approved | Explicit review cwd missing from bound lens capture | Repository identity/result transport | Compose with PI adoption of capture-result | None | **Confirmed** | Wrong worktree/cwd can misroute capture | **Do first** as part of the native transition handle. |
-| [#1523](https://github.com/Gentleman-Programming/gentle-ai/issues/1523) | Open; approved; “do not open PR yet” | Recovered receipts do not compose cleanly across compatible base advances | Projection/base/recovery algebra | #1453; requires attestation decision | None | **Confirmed design gap** | Valid recovered work can fail pre-PR | **Needs redesign before implementation.** |
-| [#1528](https://github.com/Gentleman-Programming/gentle-ai/issues/1528) | Open; approved | Candidate context must stay out of unnegotiated START | Contract/privacy and frozen context | Precedes #1454/PR #1517 | None | Constraint is current and valid | Prevents unsafe contract growth | **Do first** as the contract decision before #1454. |
-| [#1533](https://github.com/Gentleman-Programming/gentle-ai/issues/1533) | Open; approved | Cumulative SDD runtime attempt budget resets across continuations | SDD/native authority split | Consolidate #1358/#1569/#1581 | None | **Confirmed** | Bounded remediation can be spent repeatedly | **Needs redesign before implementation** as one CAS budget ledger. |
-| [#1563](https://github.com/Gentleman-Programming/gentle-ai/issues/1563) | Open; approved | Scope-changed recovery not composable at pre-PR | Projection/base/recovery algebra | #1453 and #1523 | None | **Confirmed dependent gap** | Recovered target can become permanently unmergeable | **Ready after dependency.** |
-| [#1582](https://github.com/Gentleman-Programming/gentle-ai/issues/1582) | Open; approved; first priority | Repair planning does not enumerate all invalid compact recovery edges in one pass | Corruption enumeration/reconciliation | Prerequisite for #1452 | None | Current reconciliation cannot safely assume first edge is the only edge | Repeated or unsafe partial repair | **Do first.** |
-| [#1455](https://github.com/Gentleman-Programming/gentle-ai/issues/1455) | Closed by merged PR #1549 | Durable raw result/incident classification was broader than merged slice | Result admission/recovery | Open PR #1550 attempts broader contract | PR #1549 merged; PR #1550 open | Administrative closure is **not proof of full resolution** | Incident recovery remains fragmented | Treat PR #1549 as historical partial fix; **needs redesign before PR #1550**. |
+| [#1384](https://github.com/Gentleman-Programming/hgtran-ai/issues/1384) | Open; approved | Same-operation FINALIZE retry after preflight rejection | Retry/idempotence | Explicit regression proof | None identified | **Behavior appears fixed**; no mutation-before-rejection found | Historical dead end after correctable input | **Already fixed**; convert remaining scope to a regression test. |
+| [#1452](https://github.com/Gentleman-Programming/hgtran-ai/issues/1452) | Open; approved | Reconcile multiple invalid recovery edges | Corruption enumeration/reconciliation | Explicitly blocked by #1582 | None | Current status/repair contract cannot safely enumerate all edges | Corrupt store remains blocked | **Ready after dependency.** |
+| [#1453](https://github.com/Gentleman-Programming/hgtran-ai/issues/1453) | Open; approved decision | Workspace-overlay recovery cannot accept an advanced base | Projection/base/recovery algebra | Foundation for #1523/#1563 and PI #194 | None | **Confirmed** in `review_facade.go` and recovery binding | Base-advanced overlay cannot reach pre-PR | **Do first** after contract stabilization. |
+| [#1454](https://github.com/Gentleman-Programming/hgtran-ai/issues/1454) | Open; approved | Reviewer needs native frozen candidate context | Candidate inspection/provenance | #1528 defines negotiated/privacy constraint | [PR #1517](https://github.com/Gentleman-Programming/hgtran-ai/pull/1517) | **Confirmed contract gap** | Reviewer may inspect reconstructed rather than provider-bound view | **Needs redesign before implementation.** Do not merge PR #1517 yet. |
+| [#1476](https://github.com/Gentleman-Programming/hgtran-ai/issues/1476) | Open; approved | Alleged changed-target recovery provenance bypass | Recovery provenance | Related to #1259/#1308 | None | **Unknown; not reproduced** in this audit | Potential approval transfer if real | **Close as not reproducible** unless a current trace is produced; otherwise add regression proof. |
+| [#1477](https://github.com/Gentleman-Programming/hgtran-ai/issues/1477) | Open; approved | Windows-safe reviewer artifact manifest input | Durable result transport/Windows | Compose with #1484/#1534 | None | Core defect **not proven**; end-to-end proof absent | Windows adapter recovery risk | **Convert to documentation/UX work** plus portability contract test unless reproduction proves defect. |
+| [#1484](https://github.com/Gentleman-Programming/hgtran-ai/issues/1484) | Open; approved | Explicit review cwd missing from bound lens capture | Repository identity/result transport | Compose with PI adoption of capture-result | None | **Confirmed** | Wrong worktree/cwd can misroute capture | **Do first** as part of the native transition handle. |
+| [#1523](https://github.com/Gentleman-Programming/hgtran-ai/issues/1523) | Open; approved; “do not open PR yet” | Recovered receipts do not compose cleanly across compatible base advances | Projection/base/recovery algebra | #1453; requires attestation decision | None | **Confirmed design gap** | Valid recovered work can fail pre-PR | **Needs redesign before implementation.** |
+| [#1528](https://github.com/Gentleman-Programming/hgtran-ai/issues/1528) | Open; approved | Candidate context must stay out of unnegotiated START | Contract/privacy and frozen context | Precedes #1454/PR #1517 | None | Constraint is current and valid | Prevents unsafe contract growth | **Do first** as the contract decision before #1454. |
+| [#1533](https://github.com/Gentleman-Programming/hgtran-ai/issues/1533) | Open; approved | Cumulative SDD runtime attempt budget resets across continuations | SDD/native authority split | Consolidate #1358/#1569/#1581 | None | **Confirmed** | Bounded remediation can be spent repeatedly | **Needs redesign before implementation** as one CAS budget ledger. |
+| [#1563](https://github.com/Gentleman-Programming/hgtran-ai/issues/1563) | Open; approved | Scope-changed recovery not composable at pre-PR | Projection/base/recovery algebra | #1453 and #1523 | None | **Confirmed dependent gap** | Recovered target can become permanently unmergeable | **Ready after dependency.** |
+| [#1582](https://github.com/Gentleman-Programming/hgtran-ai/issues/1582) | Open; approved; first priority | Repair planning does not enumerate all invalid compact recovery edges in one pass | Corruption enumeration/reconciliation | Prerequisite for #1452 | None | Current reconciliation cannot safely assume first edge is the only edge | Repeated or unsafe partial repair | **Do first.** |
+| [#1455](https://github.com/Gentleman-Programming/hgtran-ai/issues/1455) | Closed by merged PR #1549 | Durable raw result/incident classification was broader than merged slice | Result admission/recovery | Open PR #1550 attempts broader contract | PR #1549 merged; PR #1550 open | Administrative closure is **not proof of full resolution** | Incident recovery remains fragmented | Treat PR #1549 as historical partial fix; **needs redesign before PR #1550**. |
 
-### Additional open Gentle AI issue matrix
+### Additional open Hgtran AI issue matrix
 
 The following rows were re-queried through live public GitHub REST. “Unknown” means the issue remains open but the audit did not independently reproduce it on current main; the state is not used as proof.
 
 | Issue | Current state | Actual defect / root-cause cluster | Dependency / existing PR | Reproducible on main? | User impact | Recommendation |
 |---|---|---|---|---|---|---|
-| [#1585](https://github.com/Gentleman-Programming/gentle-ai/issues/1585) — signed release provenance | Open; needs-review | Release supply-chain provenance | Overlaps older provenance #1250 and release work | Design gap confirmed: v2.1.11 has digests but no signed provenance asset | Consumers cannot authenticate publisher provenance | **Needs redesign before implementation**; prioritize after lifecycle stabilization. |
-| [#1583](https://github.com/Gentleman-Programming/gentle-ai/issues/1583) — correction plan requested after forecast persistence | Open; untriaged | Correction-state UX; historical attempt semantics | Related to #1464/RDD-010 | Unknown; source contract divergence supports cluster | Agent requests an impossible/redundant plan | **Ready after dependency:** settle one-shot semantics first. |
-| [#1581](https://github.com/Gentleman-Programming/gentle-ai/issues/1581) — passing verify blocked by failed-evidence revision mismatch | Open; untriaged | SDD evidence revision binding | #1533/#1569/#1358 | Unknown direct reproduction; split authority confirmed | Passing verification can remain blocked | **Needs redesign before implementation** with the SDD ledger cluster. |
-| [#1579](https://github.com/Gentleman-Programming/gentle-ai/issues/1579) — reviewer prefixes prose before JSON | Open; untriaged | Reviewer-result extraction | Result admission cluster; PR #1550 context | Unknown | Valid reviewer output can be rejected/lost | **Ready after dependency:** durable capture first, then bounded extraction preserving raw bytes. |
-| [#1577](https://github.com/Gentleman-Programming/gentle-ai/issues/1577) — escalated recovery authorization never accepted | Open; untriaged | Recovery authorization binding | Recovery facade cluster | Unknown | Maintainer cannot execute documented recovery | **Do first** only after a current reproduction; otherwise **close as not reproducible**. |
-| [#1575](https://github.com/Gentleman-Programming/gentle-ai/issues/1575) — validating authority cannot recover admitted non-review results | Open; untriaged | Result admission/recovery state machine | #1454/#1555/result transport | Unknown | Authority dead end after admission | **Needs redesign before implementation** with result transport. |
-| [#1570](https://github.com/Gentleman-Programming/gentle-ai/issues/1570) — legacy HEAD unavailable for alias repair | Open; untriaged | Legacy repair evidence | #1462 and legacy compatibility | Open contract gap is credible; not separately reproduced | Authorized repair cannot be constructed | **Ready after dependency**; expose immutable evidence through classified repair. |
-| [#1569](https://github.com/Gentleman-Programming/gentle-ai/issues/1569) — compact authority not advanced after SDD remediation | Open; untriaged | SDD/native authority transition | #1533/#1358/#1581 | Cluster confirmed; exact issue trace unknown | Corrected implementation and authority diverge | **Duplicate** into a single SDD remediation transition design. |
-| [#1555](https://github.com/Gentleman-Programming/gentle-ai/issues/1555) — clean results lack proof of candidate inspection | Open; untriaged | Reviewer evidence integrity | #1454/#1528; result capture | Contract gap confirmed; exploit/false-clean trace not reproduced | Review can be formally clean without inspection proof | **Ready after dependency** on frozen context and durable capture. |
-| [#1554](https://github.com/Gentleman-Programming/gentle-ai/issues/1554) — unchanged-target recovery after procedural escalation | Open; untriaged | Procedural versus code escalation | Conflicts with soft-evidence/unchanged-target invariant | Design request, not proven defect | Tool failure can permanently escalate unchanged code | **Do not implement: complexity exceeds value** until one-shot/replay semantics are settled. |
-| [#1552](https://github.com/Gentleman-Programming/gentle-ai/issues/1552) — CAS replacement of approved SDD binding | Open; untriaged | SDD binding CAS | #1524/#1209/#1227 | Unknown | Stale binding blocks valid continuation | **Needs redesign before implementation** as one revision-safe binding operation. |
-| [#1551](https://github.com/Gentleman-Programming/gentle-ai/issues/1551) — missing pre-push base misclassified | Open; untriaged | Target-resolution diagnostics | Gate UX | Unknown; diagnostics gap consistent | User investigates review instead of missing Git base | **Convert to documentation/UX work** with structured error. |
-| [#1541](https://github.com/Gentleman-Programming/gentle-ai/issues/1541) — START authority immediately unrelated to STATUS | Open; untriaged | Lineage identity/discovery | Overlaps #1466 | Unknown; high-value reproduction needed | Newly started review cannot continue | **Do first** if reproduced; otherwise **close as not reproducible**. |
-| [#1534](https://github.com/Gentleman-Programming/gentle-ai/issues/1534) — Windows authority recovery/artifact handoff | Open; untriaged | Windows result/recovery contract | #1477/#1484/#1246 | Validation gap confirmed; exact defect unknown | Windows users cannot complete recovery | **Needs redesign before implementation** as one Windows-safe artifact contract. |
-| [#1532](https://github.com/Gentleman-Programming/gentle-ai/issues/1532) — negotiated pure contraction rejected | Open; untriaged | Scope algebra | #1453/#1563 family | Unknown | Removing scope can force unnecessary full review | **Ready after dependency:** centralized scope algebra; only provable subset contraction. |
-| [#1531](https://github.com/Gentleman-Programming/gentle-ai/issues/1531) — chained PR cost under content-bound receipts | Open; untriaged | Receipt/chained-PR ergonomics | #1530/#1250 | Product friction confirmed; exact remedy open | Review budget compliance becomes disproportionate | **Needs redesign before implementation**; model slice receipt reuse. |
-| [#1530](https://github.com/Gentleman-Programming/gentle-ai/issues/1530) — multi-worktree session fragmentation | Open; untriaged | Repository identity/cwd | #1484/#1531 | Hidden cwd confirmed; whole issue not reproduced | Full restarts and lost review context | **Ready after dependency** on repository handle/transition binding. |
-| [#1529](https://github.com/Gentleman-Programming/gentle-ai/issues/1529) — audited bulk cleanup | Open; untriaged | Authority-store hygiene | Corruption/legacy facade | Feature request | Stale lineages accumulate | **Do not implement: complexity exceeds value** until classified repair is consolidated. |
-| [#1524](https://github.com/Gentleman-Programming/gentle-ai/issues/1524) — classify bind-sdd CAS conflict before publication | Open; untriaged | SDD binding conflict | #1552 | Unknown | Publication can fail after avoidable work | **Ready after dependency** on one binding CAS contract. |
-| [#1521](https://github.com/Gentleman-Programming/gentle-ai/issues/1521) — recover persisted failed validator with unchanged candidate | Open; untriaged | Validator retry semantics | One-shot/procedural retry cluster | Unknown | Transient validator failure becomes terminal | **Needs redesign before implementation** with explicit no-code retry class. |
-| [#1519](https://github.com/Gentleman-Programming/gentle-ai/issues/1519) — FINALIZE permanent no-op after recovery | Open; untriaged | FINALIZE/recovery transition | Historical #1470 | Unknown | Recovery succeeds but progress cannot resume | **Do first** if current regression reproduces; otherwise close. |
-| [#1471](https://github.com/Gentleman-Programming/gentle-ai/issues/1471) — zero-diff tracker bootstrap | Open; needs-review | Empty-candidate lifecycle | Chained PR workflow | Design gap | Tracker branch cannot enter lifecycle safely | **Needs redesign before implementation**; avoid artificial receipt content. |
-| [#1466](https://github.com/Gentleman-Programming/gentle-ai/issues/1466) — START stays ambiguous with unrelated lineages | Open; untriaged | Lineage discovery | Overlaps #1541 | Unknown | User cannot start unrelated work | **Duplicate** with #1541 after reproduction. |
-| [#1464](https://github.com/Gentleman-Programming/gentle-ai/issues/1464) — zero-edit correction rejected | Open; untriaged | Correction terminal semantics | RDD-010/#1583 | Unknown | Converged candidate cannot finalize | **Ready after dependency:** settle one-shot correction state. |
-| [#1462](https://github.com/Gentleman-Programming/gentle-ai/issues/1462) — quarantine seven invalid legacy-v1 records | Open; approved; high priority | Legacy corruption migration | #1582 enumeration principles | Known legacy records, not current v2 behavior | Old stores block discovery | **Ready after dependency** on complete preview/enumeration; keep as migration. |
-| [#1443](https://github.com/Gentleman-Programming/gentle-ai/issues/1443) — v2.1.8 follow-ups | Open; bug | Catch-all historical debt | Multiple newer issues | Mixed/unknown | Backlog hides current ownership | **Superseded**; decompose links and close resolved rows. |
-| [#1405](https://github.com/Gentleman-Programming/gentle-ai/issues/1405) — auditable follow-ups from escalated reviews | Open; untriaged | Follow-up artifact model | Terminal receipt semantics | Feature request | Valid follow-up cannot attach without reopening review | **Do not implement: complexity exceeds value** until core lifecycle is consolidated. |
-| [#1385](https://github.com/Gentleman-Programming/gentle-ai/issues/1385) — supported Judgment Day lifecycle | Open; untriaged | Separate review mode lifecycle | #1204 | Design gap | Different retry/budget semantics confuse users | **Needs redesign before implementation** with unified budget accounting. |
-| [#1380](https://github.com/Gentleman-Programming/gentle-ai/issues/1380) — adaptive evidence-driven review | Open; approved; high priority | Adaptive orchestration | Depends on stable core contracts | Feature request | Could reduce or increase review cost | **Do not implement: complexity exceeds value** before stabilization. |
-| [#1379](https://github.com/Gentleman-Programming/gentle-ai/issues/1379) — cross-lineage stale sibling receipt trees | Open; untriaged | Lineage isolation/provenance | Recovery/store core | **Unknown; potentially severe; reproduce immediately** | Cross-lineage contamination if real | **Do first** as a bounded reproduction; implement only with proof. |
-| [#1358](https://github.com/Gentleman-Programming/gentle-ai/issues/1358) — aggregate receipt scope after compact correction | Open; untriaged | SDD remediation scope | #1533/#1569 | Unknown exact trace; cluster confirmed | Corrected aggregate can lose scope | **Duplicate** into unified SDD remediation design. |
-| [#1334](https://github.com/Gentleman-Programming/gentle-ai/issues/1334) — stale compact lock metadata reclaim | Open; untriaged | Lock recovery | Maintenance facade | Unknown | Stale lock blocks all operations | **Ready after dependency:** classified repair with ownership/CAS proof. |
-| [#1328](https://github.com/Gentleman-Programming/gentle-ai/issues/1328) — projects without review history | Open; needs-review | Empty-history compatibility | Clean-repository journey | Unknown | First-time users can fail before START | **Close as not reproducible** unless clean-repo test fails; otherwise fix with test. |
-| [#1308](https://github.com/Gentleman-Programming/gentle-ai/issues/1308) — candidate-bound evidence for distinct behavior | Open; untriaged | Evidence admission invariant | #1555/#1259 | Design requirement | Evidence may not prove changed behavior | **Needs redesign before implementation** as foundational evidence contract. |
-| [#1296](https://github.com/Gentleman-Programming/gentle-ai/issues/1296) — Engram SDD archive validation | Open; untriaged | SDD store/authority integration | #1247/#1209 | Unknown | Archive cannot prove approved implementation | **Ready after dependency** on unified SDD authority discovery. |
-| [#1277](https://github.com/Gentleman-Programming/gentle-ai/issues/1277) — subcommand help errors | Open; needs-review | CLI UX | Independent | Unknown; cheap reproduction | Users cannot discover lifecycle syntax | **Do first** only as a small verified UX fix. |
-| [#1265](https://github.com/Gentleman-Programming/gentle-ai/issues/1265) — cross-worktree OpenSpec authority paths | Open; untriaged | Worktree/SDD identity | #1484/#1530 | Unknown | SDD status rejects valid linked worktree | **Ready after dependency** on repository identity handle. |
-| [#1264](https://github.com/Gentleman-Programming/gentle-ai/issues/1264) — stale out-of-scope lens findings | Open; untriaged | Finding admission | #1308/#1555 | Unknown | Irrelevant finding can enter 4R freeze | **Ready after dependency** on unified admission validation. |
-| [#1262](https://github.com/Gentleman-Programming/gentle-ai/issues/1262) — resume recovered successor by lineage | Open; untriaged | Recovery routing | native next transition | Exact public routing gap confirmed | Recovered work cannot continue deterministically | **Ready after dependency** on Pi/native transition adoption. |
-| [#1261](https://github.com/Gentleman-Programming/gentle-ai/issues/1261) — Git path-format flag leaks into path | Open; untriaged | Git output parsing | Independent | Unknown; reported filesystem side effect is severe | Junk authority directory at repository root | **Do first** if reproduction succeeds; add no-mutation regression. |
-| [#1259](https://github.com/Gentleman-Programming/gentle-ai/issues/1259) — predecessor evidence in successor | Open; untriaged | Recovery provenance | #1308/#1379 | Unknown | Successor may lose proof chain | **Needs redesign before implementation** with lineage isolation. |
-| [#1250](https://github.com/Gentleman-Programming/gentle-ai/issues/1250) — exact staged/manifest candidates | Open; needs-design; high priority | Candidate identity | #1454/#1528/#1585 | Core has strong snapshot; broader ordinary-review design open | Review scope can be misunderstood | **Needs redesign before implementation**; avoid duplicating current compact identity. |
-| [#1248](https://github.com/Gentleman-Programming/gentle-ai/issues/1248) — expected receipt tree/path differences | Open; needs-review | Scope diagnostics | RDD-013; PI #122 | Missing structured diagnostics confirmed | User cannot see which files differ | **Convert to documentation/UX work** with bounded structured delta. |
-| [#1247](https://github.com/Gentleman-Programming/gentle-ai/issues/1247) — compact-v2/OpenSpec reconciliation | Open; needs-review | SDD/OpenSpec authority | #1296/#1227 | Unknown | Archive/status stores disagree | **Needs redesign before implementation** as one store-neutral binding. |
-| [#1246](https://github.com/Gentleman-Programming/gentle-ai/issues/1246) — Windows publication without hard links | Open; untriaged | Windows artifact publication | #1534/#1477 | Core focused Windows tests exist; current defect unknown | START may fail on Windows filesystems | **Ready after dependency** only with native Windows reproduction. |
-| [#1241](https://github.com/Gentleman-Programming/gentle-ai/issues/1241) — migrate legacy GGA hooks | Open; untriaged | Legacy integration migration | Lifecycle contract | Feature/migration | Old hooks bypass new validation | **Ready after dependency** on stable public facade. |
-| [#1234](https://github.com/Gentleman-Programming/gentle-ai/issues/1234) — revalidate compatible-base artifacts at final authorization | Open; untriaged | Base advance/gate race | #1453/#1523 | Current pre-PR proof exists; exact gap unknown | Base could move between proof and authorization if real | **Duplicate** into centralized base/gate-race design. |
-| [#1227](https://github.com/Gentleman-Programming/gentle-ai/issues/1227) — bridge Pi authority into native SDD | Open; approved | Pi/SDD authority boundary | #1209/#1247; PI integration | Split boundary confirmed | SDD cannot consume approved review cleanly | **Needs redesign before implementation** jointly across repos. |
-| [#1222](https://github.com/Gentleman-Programming/gentle-ai/issues/1222) — pre-commit remains escalated after correction | Open; approved | Correction state machine | PR #1504 open | Unknown; PR is unapproved and policy checks fail | Corrected work remains blocked | **Needs redesign before implementation**; do not merge two-line partial fix. |
-| [#1215](https://github.com/Gentleman-Programming/gentle-ai/issues/1215) — scoped validator delta binding | Open; untriaged | Evidence/correction identity | #1308 | Design gap consistent with invariant | Validator may prove wrong delta | **Ready after dependency** on evidence contract. |
-| [#1209](https://github.com/Gentleman-Programming/gentle-ai/issues/1209) — discover compact authority before verify | Open; approved | SDD authority discovery | Foundation for #1227/#1296 | Split discovery confirmed | Verify cannot find valid approval | **Do first** within SDD consolidation. |
-| [#1204](https://github.com/Gentleman-Programming/gentle-ai/issues/1204) — Judgment Day detached retry budget | Open; untriaged | Retry/budget accounting | #1385 | Unknown; same root as RDD-005 | Budget overflow through retries | **Duplicate** into unified budget ledger. |
-| [#1130](https://github.com/Gentleman-Programming/gentle-ai/issues/1130) — validator lacks required tools | Open; needs-review; high priority | Validator capability contract | Evidence validation | Unknown current reproduction | Validator cannot satisfy required proof | **Do first** if reproduced; grant minimum bounded tools. |
-| [#1013](https://github.com/Gentleman-Programming/gentle-ai/issues/1013) — fresh SDD apply after remediation | Open; needs-design | Post-review remediation | #1358/#1533/#1569 | Superseded by current architecture questions | Continuation behavior unclear | **Superseded** by unified SDD remediation design. |
+| [#1585](https://github.com/Gentleman-Programming/hgtran-ai/issues/1585) — signed release provenance | Open; needs-review | Release supply-chain provenance | Overlaps older provenance #1250 and release work | Design gap confirmed: v2.1.11 has digests but no signed provenance asset | Consumers cannot authenticate publisher provenance | **Needs redesign before implementation**; prioritize after lifecycle stabilization. |
+| [#1583](https://github.com/Gentleman-Programming/hgtran-ai/issues/1583) — correction plan requested after forecast persistence | Open; untriaged | Correction-state UX; historical attempt semantics | Related to #1464/RDD-010 | Unknown; source contract divergence supports cluster | Agent requests an impossible/redundant plan | **Ready after dependency:** settle one-shot semantics first. |
+| [#1581](https://github.com/Gentleman-Programming/hgtran-ai/issues/1581) — passing verify blocked by failed-evidence revision mismatch | Open; untriaged | SDD evidence revision binding | #1533/#1569/#1358 | Unknown direct reproduction; split authority confirmed | Passing verification can remain blocked | **Needs redesign before implementation** with the SDD ledger cluster. |
+| [#1579](https://github.com/Gentleman-Programming/hgtran-ai/issues/1579) — reviewer prefixes prose before JSON | Open; untriaged | Reviewer-result extraction | Result admission cluster; PR #1550 context | Unknown | Valid reviewer output can be rejected/lost | **Ready after dependency:** durable capture first, then bounded extraction preserving raw bytes. |
+| [#1577](https://github.com/Gentleman-Programming/hgtran-ai/issues/1577) — escalated recovery authorization never accepted | Open; untriaged | Recovery authorization binding | Recovery facade cluster | Unknown | Maintainer cannot execute documented recovery | **Do first** only after a current reproduction; otherwise **close as not reproducible**. |
+| [#1575](https://github.com/Gentleman-Programming/hgtran-ai/issues/1575) — validating authority cannot recover admitted non-review results | Open; untriaged | Result admission/recovery state machine | #1454/#1555/result transport | Unknown | Authority dead end after admission | **Needs redesign before implementation** with result transport. |
+| [#1570](https://github.com/Gentleman-Programming/hgtran-ai/issues/1570) — legacy HEAD unavailable for alias repair | Open; untriaged | Legacy repair evidence | #1462 and legacy compatibility | Open contract gap is credible; not separately reproduced | Authorized repair cannot be constructed | **Ready after dependency**; expose immutable evidence through classified repair. |
+| [#1569](https://github.com/Gentleman-Programming/hgtran-ai/issues/1569) — compact authority not advanced after SDD remediation | Open; untriaged | SDD/native authority transition | #1533/#1358/#1581 | Cluster confirmed; exact issue trace unknown | Corrected implementation and authority diverge | **Duplicate** into a single SDD remediation transition design. |
+| [#1555](https://github.com/Gentleman-Programming/hgtran-ai/issues/1555) — clean results lack proof of candidate inspection | Open; untriaged | Reviewer evidence integrity | #1454/#1528; result capture | Contract gap confirmed; exploit/false-clean trace not reproduced | Review can be formally clean without inspection proof | **Ready after dependency** on frozen context and durable capture. |
+| [#1554](https://github.com/Gentleman-Programming/hgtran-ai/issues/1554) — unchanged-target recovery after procedural escalation | Open; untriaged | Procedural versus code escalation | Conflicts with soft-evidence/unchanged-target invariant | Design request, not proven defect | Tool failure can permanently escalate unchanged code | **Do not implement: complexity exceeds value** until one-shot/replay semantics are settled. |
+| [#1552](https://github.com/Gentleman-Programming/hgtran-ai/issues/1552) — CAS replacement of approved SDD binding | Open; untriaged | SDD binding CAS | #1524/#1209/#1227 | Unknown | Stale binding blocks valid continuation | **Needs redesign before implementation** as one revision-safe binding operation. |
+| [#1551](https://github.com/Gentleman-Programming/hgtran-ai/issues/1551) — missing pre-push base misclassified | Open; untriaged | Target-resolution diagnostics | Gate UX | Unknown; diagnostics gap consistent | User investigates review instead of missing Git base | **Convert to documentation/UX work** with structured error. |
+| [#1541](https://github.com/Gentleman-Programming/hgtran-ai/issues/1541) — START authority immediately unrelated to STATUS | Open; untriaged | Lineage identity/discovery | Overlaps #1466 | Unknown; high-value reproduction needed | Newly started review cannot continue | **Do first** if reproduced; otherwise **close as not reproducible**. |
+| [#1534](https://github.com/Gentleman-Programming/hgtran-ai/issues/1534) — Windows authority recovery/artifact handoff | Open; untriaged | Windows result/recovery contract | #1477/#1484/#1246 | Validation gap confirmed; exact defect unknown | Windows users cannot complete recovery | **Needs redesign before implementation** as one Windows-safe artifact contract. |
+| [#1532](https://github.com/Gentleman-Programming/hgtran-ai/issues/1532) — negotiated pure contraction rejected | Open; untriaged | Scope algebra | #1453/#1563 family | Unknown | Removing scope can force unnecessary full review | **Ready after dependency:** centralized scope algebra; only provable subset contraction. |
+| [#1531](https://github.com/Gentleman-Programming/hgtran-ai/issues/1531) — chained PR cost under content-bound receipts | Open; untriaged | Receipt/chained-PR ergonomics | #1530/#1250 | Product friction confirmed; exact remedy open | Review budget compliance becomes disproportionate | **Needs redesign before implementation**; model slice receipt reuse. |
+| [#1530](https://github.com/Gentleman-Programming/hgtran-ai/issues/1530) — multi-worktree session fragmentation | Open; untriaged | Repository identity/cwd | #1484/#1531 | Hidden cwd confirmed; whole issue not reproduced | Full restarts and lost review context | **Ready after dependency** on repository handle/transition binding. |
+| [#1529](https://github.com/Gentleman-Programming/hgtran-ai/issues/1529) — audited bulk cleanup | Open; untriaged | Authority-store hygiene | Corruption/legacy facade | Feature request | Stale lineages accumulate | **Do not implement: complexity exceeds value** until classified repair is consolidated. |
+| [#1524](https://github.com/Gentleman-Programming/hgtran-ai/issues/1524) — classify bind-sdd CAS conflict before publication | Open; untriaged | SDD binding conflict | #1552 | Unknown | Publication can fail after avoidable work | **Ready after dependency** on one binding CAS contract. |
+| [#1521](https://github.com/Gentleman-Programming/hgtran-ai/issues/1521) — recover persisted failed validator with unchanged candidate | Open; untriaged | Validator retry semantics | One-shot/procedural retry cluster | Unknown | Transient validator failure becomes terminal | **Needs redesign before implementation** with explicit no-code retry class. |
+| [#1519](https://github.com/Gentleman-Programming/hgtran-ai/issues/1519) — FINALIZE permanent no-op after recovery | Open; untriaged | FINALIZE/recovery transition | Historical #1470 | Unknown | Recovery succeeds but progress cannot resume | **Do first** if current regression reproduces; otherwise close. |
+| [#1471](https://github.com/Gentleman-Programming/hgtran-ai/issues/1471) — zero-diff tracker bootstrap | Open; needs-review | Empty-candidate lifecycle | Chained PR workflow | Design gap | Tracker branch cannot enter lifecycle safely | **Needs redesign before implementation**; avoid artificial receipt content. |
+| [#1466](https://github.com/Gentleman-Programming/hgtran-ai/issues/1466) — START stays ambiguous with unrelated lineages | Open; untriaged | Lineage discovery | Overlaps #1541 | Unknown | User cannot start unrelated work | **Duplicate** with #1541 after reproduction. |
+| [#1464](https://github.com/Gentleman-Programming/hgtran-ai/issues/1464) — zero-edit correction rejected | Open; untriaged | Correction terminal semantics | RDD-010/#1583 | Unknown | Converged candidate cannot finalize | **Ready after dependency:** settle one-shot correction state. |
+| [#1462](https://github.com/Gentleman-Programming/hgtran-ai/issues/1462) — quarantine seven invalid legacy-v1 records | Open; approved; high priority | Legacy corruption migration | #1582 enumeration principles | Known legacy records, not current v2 behavior | Old stores block discovery | **Ready after dependency** on complete preview/enumeration; keep as migration. |
+| [#1443](https://github.com/Gentleman-Programming/hgtran-ai/issues/1443) — v2.1.8 follow-ups | Open; bug | Catch-all historical debt | Multiple newer issues | Mixed/unknown | Backlog hides current ownership | **Superseded**; decompose links and close resolved rows. |
+| [#1405](https://github.com/Gentleman-Programming/hgtran-ai/issues/1405) — auditable follow-ups from escalated reviews | Open; untriaged | Follow-up artifact model | Terminal receipt semantics | Feature request | Valid follow-up cannot attach without reopening review | **Do not implement: complexity exceeds value** until core lifecycle is consolidated. |
+| [#1385](https://github.com/Gentleman-Programming/hgtran-ai/issues/1385) — supported Judgment Day lifecycle | Open; untriaged | Separate review mode lifecycle | #1204 | Design gap | Different retry/budget semantics confuse users | **Needs redesign before implementation** with unified budget accounting. |
+| [#1380](https://github.com/Gentleman-Programming/hgtran-ai/issues/1380) — adaptive evidence-driven review | Open; approved; high priority | Adaptive orchestration | Depends on stable core contracts | Feature request | Could reduce or increase review cost | **Do not implement: complexity exceeds value** before stabilization. |
+| [#1379](https://github.com/Gentleman-Programming/hgtran-ai/issues/1379) — cross-lineage stale sibling receipt trees | Open; untriaged | Lineage isolation/provenance | Recovery/store core | **Unknown; potentially severe; reproduce immediately** | Cross-lineage contamination if real | **Do first** as a bounded reproduction; implement only with proof. |
+| [#1358](https://github.com/Gentleman-Programming/hgtran-ai/issues/1358) — aggregate receipt scope after compact correction | Open; untriaged | SDD remediation scope | #1533/#1569 | Unknown exact trace; cluster confirmed | Corrected aggregate can lose scope | **Duplicate** into unified SDD remediation design. |
+| [#1334](https://github.com/Gentleman-Programming/hgtran-ai/issues/1334) — stale compact lock metadata reclaim | Open; untriaged | Lock recovery | Maintenance facade | Unknown | Stale lock blocks all operations | **Ready after dependency:** classified repair with ownership/CAS proof. |
+| [#1328](https://github.com/Gentleman-Programming/hgtran-ai/issues/1328) — projects without review history | Open; needs-review | Empty-history compatibility | Clean-repository journey | Unknown | First-time users can fail before START | **Close as not reproducible** unless clean-repo test fails; otherwise fix with test. |
+| [#1308](https://github.com/Gentleman-Programming/hgtran-ai/issues/1308) — candidate-bound evidence for distinct behavior | Open; untriaged | Evidence admission invariant | #1555/#1259 | Design requirement | Evidence may not prove changed behavior | **Needs redesign before implementation** as foundational evidence contract. |
+| [#1296](https://github.com/Gentleman-Programming/hgtran-ai/issues/1296) — Engram SDD archive validation | Open; untriaged | SDD store/authority integration | #1247/#1209 | Unknown | Archive cannot prove approved implementation | **Ready after dependency** on unified SDD authority discovery. |
+| [#1277](https://github.com/Gentleman-Programming/hgtran-ai/issues/1277) — subcommand help errors | Open; needs-review | CLI UX | Independent | Unknown; cheap reproduction | Users cannot discover lifecycle syntax | **Do first** only as a small verified UX fix. |
+| [#1265](https://github.com/Gentleman-Programming/hgtran-ai/issues/1265) — cross-worktree OpenSpec authority paths | Open; untriaged | Worktree/SDD identity | #1484/#1530 | Unknown | SDD status rejects valid linked worktree | **Ready after dependency** on repository identity handle. |
+| [#1264](https://github.com/Gentleman-Programming/hgtran-ai/issues/1264) — stale out-of-scope lens findings | Open; untriaged | Finding admission | #1308/#1555 | Unknown | Irrelevant finding can enter 4R freeze | **Ready after dependency** on unified admission validation. |
+| [#1262](https://github.com/Gentleman-Programming/hgtran-ai/issues/1262) — resume recovered successor by lineage | Open; untriaged | Recovery routing | native next transition | Exact public routing gap confirmed | Recovered work cannot continue deterministically | **Ready after dependency** on Pi/native transition adoption. |
+| [#1261](https://github.com/Gentleman-Programming/hgtran-ai/issues/1261) — Git path-format flag leaks into path | Open; untriaged | Git output parsing | Independent | Unknown; reported filesystem side effect is severe | Junk authority directory at repository root | **Do first** if reproduction succeeds; add no-mutation regression. |
+| [#1259](https://github.com/Gentleman-Programming/hgtran-ai/issues/1259) — predecessor evidence in successor | Open; untriaged | Recovery provenance | #1308/#1379 | Unknown | Successor may lose proof chain | **Needs redesign before implementation** with lineage isolation. |
+| [#1250](https://github.com/Gentleman-Programming/hgtran-ai/issues/1250) — exact staged/manifest candidates | Open; needs-design; high priority | Candidate identity | #1454/#1528/#1585 | Core has strong snapshot; broader ordinary-review design open | Review scope can be misunderstood | **Needs redesign before implementation**; avoid duplicating current compact identity. |
+| [#1248](https://github.com/Gentleman-Programming/hgtran-ai/issues/1248) — expected receipt tree/path differences | Open; needs-review | Scope diagnostics | RDD-013; PI #122 | Missing structured diagnostics confirmed | User cannot see which files differ | **Convert to documentation/UX work** with bounded structured delta. |
+| [#1247](https://github.com/Gentleman-Programming/hgtran-ai/issues/1247) — compact-v2/OpenSpec reconciliation | Open; needs-review | SDD/OpenSpec authority | #1296/#1227 | Unknown | Archive/status stores disagree | **Needs redesign before implementation** as one store-neutral binding. |
+| [#1246](https://github.com/Gentleman-Programming/hgtran-ai/issues/1246) — Windows publication without hard links | Open; untriaged | Windows artifact publication | #1534/#1477 | Core focused Windows tests exist; current defect unknown | START may fail on Windows filesystems | **Ready after dependency** only with native Windows reproduction. |
+| [#1241](https://github.com/Gentleman-Programming/hgtran-ai/issues/1241) — migrate legacy GGA hooks | Open; untriaged | Legacy integration migration | Lifecycle contract | Feature/migration | Old hooks bypass new validation | **Ready after dependency** on stable public facade. |
+| [#1234](https://github.com/Gentleman-Programming/hgtran-ai/issues/1234) — revalidate compatible-base artifacts at final authorization | Open; untriaged | Base advance/gate race | #1453/#1523 | Current pre-PR proof exists; exact gap unknown | Base could move between proof and authorization if real | **Duplicate** into centralized base/gate-race design. |
+| [#1227](https://github.com/Gentleman-Programming/hgtran-ai/issues/1227) — bridge Pi authority into native SDD | Open; approved | Pi/SDD authority boundary | #1209/#1247; PI integration | Split boundary confirmed | SDD cannot consume approved review cleanly | **Needs redesign before implementation** jointly across repos. |
+| [#1222](https://github.com/Gentleman-Programming/hgtran-ai/issues/1222) — pre-commit remains escalated after correction | Open; approved | Correction state machine | PR #1504 open | Unknown; PR is unapproved and policy checks fail | Corrected work remains blocked | **Needs redesign before implementation**; do not merge two-line partial fix. |
+| [#1215](https://github.com/Gentleman-Programming/hgtran-ai/issues/1215) — scoped validator delta binding | Open; untriaged | Evidence/correction identity | #1308 | Design gap consistent with invariant | Validator may prove wrong delta | **Ready after dependency** on evidence contract. |
+| [#1209](https://github.com/Gentleman-Programming/hgtran-ai/issues/1209) — discover compact authority before verify | Open; approved | SDD authority discovery | Foundation for #1227/#1296 | Split discovery confirmed | Verify cannot find valid approval | **Do first** within SDD consolidation. |
+| [#1204](https://github.com/Gentleman-Programming/hgtran-ai/issues/1204) — Judgment Day detached retry budget | Open; untriaged | Retry/budget accounting | #1385 | Unknown; same root as RDD-005 | Budget overflow through retries | **Duplicate** into unified budget ledger. |
+| [#1130](https://github.com/Gentleman-Programming/hgtran-ai/issues/1130) — validator lacks required tools | Open; needs-review; high priority | Validator capability contract | Evidence validation | Unknown current reproduction | Validator cannot satisfy required proof | **Do first** if reproduced; grant minimum bounded tools. |
+| [#1013](https://github.com/Gentleman-Programming/hgtran-ai/issues/1013) — fresh SDD apply after remediation | Open; needs-design | Post-review remediation | #1358/#1533/#1569 | Superseded by current architecture questions | Continuation behavior unclear | **Superseded** by unified SDD remediation design. |
 
-### Gentle Pi issue matrix
+### Hgtran Pi issue matrix
 
 | Issue | Current state | Actual defect / root-cause cluster | Dependency / existing PR | Reproducible on `origin/main`? | User impact | Recommendation |
 |---|---|---|---|---|---|---|
@@ -932,10 +932,10 @@ The following rows were re-queried through live public GitHub REST. “Unknown�
 
 | PR | Live state at cutoff | Evidence | Disposition |
 |---|---|---|---|
-| [gentle-ai #1517](https://github.com/Gentleman-Programming/gentle-ai/pull/1517) | Open; mergeable but `unstable`; no approval; CodeRabbit commented | Failing type-label, unit, Go-format, three Linux E2E, and Windows runtime checks; unresolved reviewer-contract finding | **Do not merge.** Resolve #1528 contract first, repair CI, and re-review the resulting exact bytes. |
-| [gentle-ai #1504](https://github.com/Gentleman-Programming/gentle-ai/pull/1504) | Open; unlabeled; no approving review | Linked approved #1222 remains open; historical code tests do not override current failing policy checks | **Do not merge.** A two-line state patch needs state-machine proof. |
-| [gentle-ai #1550](https://github.com/Gentleman-Programming/gentle-ai/pull/1550) | Open; green checks reported, but `CHANGES_REQUESTED` | Broader durable incident/recovery attempt after partial PR #1549 | **Needs redesign before implementation/merge.** Align with durable capture and admission state machine. |
-| [gentle-ai #1549](https://github.com/Gentleman-Programming/gentle-ai/pull/1549) | Merged; closed #1455 | Narrow two-file early payload classification/validation slice | Historical partial fix only; do not claim full architecture is fixed. |
+| [hgtran-ai #1517](https://github.com/Gentleman-Programming/hgtran-ai/pull/1517) | Open; mergeable but `unstable`; no approval; CodeRabbit commented | Failing type-label, unit, Go-format, three Linux E2E, and Windows runtime checks; unresolved reviewer-contract finding | **Do not merge.** Resolve #1528 contract first, repair CI, and re-review the resulting exact bytes. |
+| [hgtran-ai #1504](https://github.com/Gentleman-Programming/hgtran-ai/pull/1504) | Open; unlabeled; no approving review | Linked approved #1222 remains open; historical code tests do not override current failing policy checks | **Do not merge.** A two-line state patch needs state-machine proof. |
+| [hgtran-ai #1550](https://github.com/Gentleman-Programming/hgtran-ai/pull/1550) | Open; green checks reported, but `CHANGES_REQUESTED` | Broader durable incident/recovery attempt after partial PR #1549 | **Needs redesign before implementation/merge.** Align with durable capture and admission state machine. |
+| [hgtran-ai #1549](https://github.com/Gentleman-Programming/hgtran-ai/pull/1549) | Merged; closed #1455 | Narrow two-file early payload classification/validation slice | Historical partial fix only; do not claim full architecture is fixed. |
 | [gentle-pi #202](https://github.com/Gentleman-Programming/gentle-pi/pull/202) | Open; mergeable but unstable; zero reviews and zero check-runs at cutoff | Diagnostic work for PI #201, not the downstream topology failure | Require CI and review; keep independent from protocol routing changes. |
 
 ### Issue Dependency Graph
@@ -1104,17 +1104,17 @@ If one consolidation cycle cannot eliminate duplicated routing and recurring pro
 
 | Repository | Audited ref | SHA | Published release | Live verification |
 |---|---|---|---|---|
-| `Gentleman-Programming/gentle-ai` | `main` and annotated `v2.1.11` | `51a5d9e20706b05718b1f2b7fcafda45bab21802` | `v2.1.11`, published `2026-07-20T22:15:59Z` | Local HEAD/main/origin/main/tag agree; public REST main and release agree. |
+| `Gentleman-Programming/hgtran-ai` | `main` and annotated `v2.1.11` | `51a5d9e20706b05718b1f2b7fcafda45bab21802` | `v2.1.11`, published `2026-07-20T22:15:59Z` | Local HEAD/main/origin/main/tag agree; public REST main and release agree. |
 | `Gentleman-Programming/gentle-pi` | `origin/main` and annotated `v1.2.0` | `4d5214b410d352712be20917e81f9ce5974d039a` | `v1.2.0`, published `2026-07-20T23:12:59Z` | Local origin/main/tag and public REST agree. Local checkout was three commits behind and was not changed. |
 
 Annotated tag objects:
 
-- gentle-ai `v2.1.11`: `62c9e96421cfdf00c61e485f9ed73cf72939879e`, peeling to the audited main SHA.
+- hgtran-ai `v2.1.11`: `62c9e96421cfdf00c61e485f9ed73cf72939879e`, peeling to the audited main SHA.
 - gentle-pi `v1.2.0`: `113906a34c1b527ba2d65806b7638bff32b8e916`, peeling to the audited origin/main SHA.
 
 ### CodeGraph baselines
 
-- gentle-ai index present and current: 573 files, 12,652 nodes, 45,379 edges.
+- hgtran-ai index present and current: 573 files, 12,652 nodes, 45,379 edges.
 - gentle-pi index present and current for local checkout `cf9718abe2d47c41cc5db59ed3807c4b974d65e8`: 112 files, 3,055 nodes, 14,514 edges. The three-commit `origin/main` overlay was inspected with exact `git show origin/main:<path>` and `git diff`, not by changing checkout.
 
 ### Key source references
@@ -1130,10 +1130,10 @@ Annotated tag objects:
 | SDD budget/evidence | AI `internal/sddstatus/review_gate.go:182-213`; `verification.go:233-335`; `skills/sdd-apply/SKILL.md:103-113,150-162,201-206,303-312` |
 | Pi capability decoder | PI `lib/review-integration-v1.ts:107-130,534-568,635-705` |
 | Pi native CLI adapter | PI `lib/native-review-cli.ts:353-361,407-417,1338-1413,1458-1465` |
-| Pi controller routing/START/result | PI `extensions/gentle-ai.ts:4096-4164,4442-4480,4721-4798,4920-4950,5617-5632` |
+| Pi controller routing/START/result | PI `extensions/hgtran-ai.ts:4096-4164,4442-4480,4721-4798,4920-4950,5617-5632` |
 | Pi candidate view/worktrees | PI `lib/review-candidate-view.ts:855-908`; `tests/review-controller-workspace-root.test.ts:161-211,290-310` |
 | Pi packaging/mirrors | PI `scripts/build-git-commit-transaction-runner.mjs:8-60`; `scripts/verify-package-files.mjs:78-125,141-157` |
-| Pi Windows installer | PI `scripts/gentle-ai-installer.mjs:116-125`; `tests/gentle-ai-installer.test.ts:85-101` |
+| Pi Windows installer | PI `scripts/hgtran-ai-installer.mjs:116-125`; `tests/hgtran-ai-installer.test.ts:85-101` |
 
 ### Read-only commands and evidence method
 
@@ -1151,7 +1151,7 @@ codegraph files
 codegraph query
 codegraph explore
 rg / sed / find / wc for targeted source inventories
-gentle-ai review status --cwd /home/gentleman/work/gentle-ai --contract gentle-ai.review-integration/v1 --next-transition
+hgtran-ai review status --cwd /home/gentleman/work/hgtran-ai --contract hgtran-ai.review-integration/v1 --next-transition
 ```
 
 The lifecycle status command was the mandatory single bootstrap and returned `corrupted_or_unverifiable_authority` with a `stop` transition. No follow-up lifecycle command was executed.
@@ -1160,9 +1160,9 @@ The requested GitHub CLI path was attempted, but the managed permission profile 
 
 ### Current GitHub references
 
-- [gentle-ai issues](https://github.com/Gentleman-Programming/gentle-ai/issues)
-- [gentle-ai pull requests](https://github.com/Gentleman-Programming/gentle-ai/pulls)
-- [gentle-ai v2.1.11](https://github.com/Gentleman-Programming/gentle-ai/releases/tag/v2.1.11)
+- [hgtran-ai issues](https://github.com/Gentleman-Programming/hgtran-ai/issues)
+- [hgtran-ai pull requests](https://github.com/Gentleman-Programming/hgtran-ai/pulls)
+- [hgtran-ai v2.1.11](https://github.com/Gentleman-Programming/hgtran-ai/releases/tag/v2.1.11)
 - [gentle-pi issues](https://github.com/Gentleman-Programming/gentle-pi/issues)
 - [gentle-pi pull requests](https://github.com/Gentleman-Programming/gentle-pi/pulls)
 - [gentle-pi v1.2.0](https://github.com/Gentleman-Programming/gentle-pi/releases/tag/v1.2.0)

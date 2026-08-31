@@ -1,5 +1,5 @@
 ```yaml
-schema: gentle-ai.verify-result/v1
+schema: hgtran-ai.verify-result/v1
 evidence_revision: sha256:a886af1cf5b7197c907adb30cd595f8223f1f9b0ef481eb5646726f89d8fa283
 verdict: fail
 blockers: 2
@@ -27,7 +27,7 @@ build_output_hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca49599
 | `go run ./internal/gofmtcheck` | 0 | *(empty)* |
 | `go vet ./...` | 0 | *(empty)* |
 | `go test ./... -count=1` | 0 | 64 packages `ok`, 0 `FAIL`. Key timings: `e2e/organicruntime` 80.504s, `internal/cli` 91.022s, `internal/reviewtransaction` 111.494s, `internal/sddstatus` 20.588s, `internal/components` 1.321s, `internal/assets` 0.030s |
-| `go test ./e2e/organicruntime -count=1 -timeout=15m` | 0 | `ok github.com/gentleman-programming/gentle-ai/e2e/organicruntime 79.228s` |
+| `go test ./e2e/organicruntime -count=1 -timeout=15m` | 0 | `ok github.com/gentleman-programming/hgtran-ai/e2e/organicruntime 79.228s` |
 
 Whole-repo run confirms task 7.6's golden-fixture fix holds: `internal/components` (the package whose `testdata/golden/*.golden` still pinned the pre-Phase-1 "default to **Interactive**" sentence) is green.
 
@@ -65,7 +65,7 @@ Residual note (SUGGESTION): negatives 2–4 assert `err != nil` without pinning 
 
 ### 2. `reviewAuditActor` newline rejection — PASS
 
-`internal/cli/review_audit_actor.go`. Rejection is real (`strings.ContainsAny(value, "\r\n")`) and applied to `user.name`, `user.email`, `GIT_AUTHOR_EMAIL`, and `GIT_COMMITTER_EMAIL`. **The fallback chain cannot fail**: `reviewGitConfigValue` swallows every error, and the terminal branch returns the fixed literal `gentle-ai-self-recovery@localhost` unconditionally — no error return exists on this path, so an unset git identity cannot create a new deadlock class.
+`internal/cli/review_audit_actor.go`. Rejection is real (`strings.ContainsAny(value, "\r\n")`) and applied to `user.name`, `user.email`, `GIT_AUTHOR_EMAIL`, and `GIT_COMMITTER_EMAIL`. **The fallback chain cannot fail**: `reviewGitConfigValue` swallows every error, and the terminal branch returns the fixed literal `hgtran-ai-self-recovery@localhost` unconditionally — no error return exists on this path, so an unset git identity cannot create a new deadlock class.
 
 `TestReviewAuditActorRejectsNewlineInjectedIdentity` is non-vacuous: it injects the newline through a raw `.git/config` double-quoted escape and carries an explicit **positive control** asserting the raw value genuinely contains `\n` before asserting the fallback fired. `TestReviewAuditActorFallbackChain` covers all five rungs including the literal terminal, plus absolute/nested/relative `--cwd` identity equality.
 
@@ -179,7 +179,7 @@ The spec scenarios say "any human-facing surface" / "the human surface renders a
 
 **S-2 — `reviewScrubDefectReportField` truncates on `\n` only, not `\r`.** A lone-CR-delimited multi-line payload survives truncation (path/email/env redaction still runs). Neither wired call site can produce one today; cheap to close with `strings.IndexAny(value, "\r\n")`.
 
-**S-3 — `targetResolution` counts as deterministically-stale.** In the *enabled*-mode framing extension, a composition containing only target-resolution failures now says "no terminal review receipt governs this candidate; review it directly with `gentle-ai review start`" — but a repository that could not resolve a publication boundary may not be able to start either. Blocking is unchanged, so this is framing, not safety.
+**S-3 — `targetResolution` counts as deterministically-stale.** In the *enabled*-mode framing extension, a composition containing only target-resolution failures now says "no terminal review receipt governs this candidate; review it directly with `hgtran-ai review start`" — but a repository that could not resolve a publication boundary may not be able to start either. Blocking is unchanged, so this is framing, not safety.
 
 **S-4 — Task 3b.11 non-reproduction independently confirmed.** I read the argument assembly directly: `reviewCaptureInput` (`review_next_transition.go:297`) builds `inputs[].arguments` from `reviewBindingArguments` (lineage, expected-revision, target) plus an optional `repository-context` plus lens and order. **No `cwd` argument is ever emitted** on this path, and `grep '"cwd"'` over `review_next_transition.go` returns nothing. The reported `--repository-context` + `--cwd` pair cannot originate here. Apply's decision to flag rather than fix was correct; the finding should be closed as not-reproducible against this code path (the reporter's argv likely came from a caller-side wrapper).
 

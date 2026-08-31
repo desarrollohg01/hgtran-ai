@@ -9,7 +9,7 @@ die() {
 : "${GITHUB_REPOSITORY:?GITHUB_REPOSITORY is required}"
 : "${GITHUB_REF_NAME:?GITHUB_REF_NAME is required}"
 : "${MINISIGN_PUBLIC_KEYS:?MINISIGN_PUBLIC_KEYS is required}"
-[[ "$GITHUB_REPOSITORY" == "Gentleman-Programming/gentle-ai" ]] || die "unexpected repository"
+[[ "$GITHUB_REPOSITORY" == "Gentleman-Programming/hgtran-ai" ]] || die "unexpected repository"
 
 if ! canonical_public_keys=$(./scripts/canonicalize-release-public-keys.sh); then
   die "MINISIGN_PUBLIC_KEYS is not canonical"
@@ -21,10 +21,10 @@ tag=$GITHUB_REF_NAME
 version=${tag#v}
 
 archives=(
-  "gentle-ai_${version}_darwin_amd64.tar.gz"
-  "gentle-ai_${version}_darwin_arm64.tar.gz"
-  "gentle-ai_${version}_linux_amd64.tar.gz"
-  "gentle-ai_${version}_linux_arm64.tar.gz"
+  "hgtran-ai_${version}_darwin_amd64.tar.gz"
+  "hgtran-ai_${version}_darwin_arm64.tar.gz"
+  "hgtran-ai_${version}_linux_amd64.tar.gz"
+  "hgtran-ai_${version}_linux_arm64.tar.gz"
 )
 expected_assets=("${archives[@]}" checksums.txt checksums.txt.minisig)
 

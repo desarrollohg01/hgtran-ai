@@ -1,6 +1,6 @@
 # Release signing and key rotation
 
-Gentle AI releases only when the protected `release` environment provides a real Minisign credential whose public key matches the trust anchors embedded in the binary. An unset, malformed, placeholder, or isolated test key stops both the updater and release workflow.
+Hgtran AI releases only when the protected `release` environment provides a real Minisign credential whose public key matches the trust anchors embedded in the binary. An unset, malformed, placeholder, or isolated test key stops both the updater and release workflow.
 
 ## User verification
 
@@ -11,9 +11,9 @@ Gentle AI releases only when the protected `release` environment provides a real
    ```bash
    minisign -VQm checksums.txt \
      -x checksums.txt.minisig \
-     -P "$GENTLE_AI_MINISIGN_PUBLIC_KEY"
+     -P "$HGTRAN_AI_MINISIGN_PUBLIC_KEY"
    # Must print exactly:
-   # repo=Gentleman-Programming/gentle-ai;tag=vMAJOR.MINOR.PATCH
+   # repo=desarrollohg01/hgtran-ai;tag=vMAJOR.MINOR.PATCH
 
    sha256sum --check --strict --ignore-missing checksums.txt
    ```
@@ -27,17 +27,17 @@ The public key is not secret, but its provenance is security-critical. A key fet
 1. Generate the production pair on a controlled maintainer system. The CI key must be unencrypted because the runner is non-interactive; GitHub's protected environment secret provides encryption at rest and access control.
 
    ```bash
-   minisign -G -W -p gentle-ai-release.pub -s gentle-ai-release.key
+   minisign -G -W -p hgtran-ai-release.pub -s hgtran-ai-release.key
    ```
 
-2. Extract the base64 payload from line 2 of `gentle-ai-release.pub`. Publish that payload and a separately computed fingerprint through the project website or another maintainer-authenticated channel **before** publishing the first signed release.
+2. Extract the base64 payload from line 2 of `hgtran-ai-release.pub`. Publish that payload and a separately computed fingerprint through the project website or another maintainer-authenticated channel **before** publishing the first signed release.
 3. Create or protect the GitHub Actions environment named `release`. Require appropriate reviewers and restrict it to protected stable-version tags.
 4. Configure the public trust anchor as a repository Actions variable so the read-only preflight job can validate it. Configure the private key only inside the protected `release` environment:
 
    | Name | Kind | Exact value |
    |---|---|---|
    | `MINISIGN_PUBLIC_KEYS` | Repository Actions variable | One canonical Minisign base64 public-key payload; during rotation, exactly two distinct payloads separated by one comma, with no whitespace or trailing separator |
-   | `MINISIGN_SECRET_KEY_BASE64` | Protected `release` environment secret | Base64 of the complete `gentle-ai-release.key` file |
+   | `MINISIGN_SECRET_KEY_BASE64` | Protected `release` environment secret | Base64 of the complete `hgtran-ai-release.key` file |
 
 5. Keep the existing `HOMEBREW_TAP_TOKEN` environment secret. Do not add the Minisign private key to repository variables, files, logs, artifacts, caches, or command-line arguments.
 6. Run no release until `scripts/release-signing-preflight.sh` proves that the private key derives one configured public key, rejects the isolated test key, and signs/verifies an exact repository/tag canary.
@@ -45,7 +45,7 @@ The public key is not secret, but its provenance is security-critical. A key fet
 The workflow validates the complete repository-variable value, exports a separate canonical value, and permits GoReleaser to inject only that validated output through this exact linker variable:
 
 ```text
-github.com/gentleman-programming/gentle-ai/v2/internal/update/upgrade.releaseMinisignPublicKeys
+github.com/desarrollohg01/hgtran-ai/v2/internal/update/upgrade.releaseMinisignPublicKeys
 ```
 
 Source/test builds retain `UNSET`; their binary self-updater refuses network replacement. There is no grace version and no unsigned fallback.
@@ -78,7 +78,7 @@ Because there is no signed Windows asset to download, Windows never downloads an
 unsigned executable and never executes a remote update script. Instead:
 
 - With Go 1.25.10+ on `PATH`, the built-in upgrader runs
-  `go install github.com/gentleman-programming/gentle-ai/v2/cmd/gentle-ai@vX.Y.Z`,
+  `go install github.com/desarrollohg01/hgtran-ai/v2/cmd/hgtran-ai@vX.Y.Z`,
   pinned to the exact release tag. This is verified — just against a different
   trust anchor: the module is checked against the Go checksum database
   (`sum.golang.org`) rather than our minisign release signature. The upgrader

@@ -24,7 +24,7 @@ func RunReviewReconcileAuthority(args []string, stdout io.Writer) error {
 	expectedSuccessor := flags.String("expected-successor-revision", "", "exact successor revision")
 	reason := flags.String("reason", "", "non-empty reconcile reason")
 	actor := flags.String("actor", "", "reconcile actor")
-	authorization := flags.String("maintainer-authorization", "", "exact LF-only binding: gentle-ai.review-reconcile-authorization/v1, predecessor_lineage, predecessor_revision, successor_lineage, successor_revision, actor, reason; combined repair appends anomalies=unchanged_target,malformed_recovery_authorization")
+	authorization := flags.String("maintainer-authorization", "", "exact LF-only binding: hgtran-ai.review-reconcile-authorization/v1, predecessor_lineage, predecessor_revision, successor_lineage, successor_revision, actor, reason; combined repair appends anomalies=unchanged_target,malformed_recovery_authorization")
 	if err := parseReviewFlags(flags, args); err != nil {
 		return err
 	}

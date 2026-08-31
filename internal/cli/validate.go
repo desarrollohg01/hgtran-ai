@@ -226,7 +226,7 @@ func defaultAgentsFromDetection(detection system.DetectionResult) []model.AgentI
 // by internal/app/app.go's default agent list -- so it can never drift from
 // a hand-written list (install/sync surface audit finding 3: an unknown
 // value like `cluade` previously converted silently and was later dropped
-// without any error, so `gentle-ai sync --agent cluade` reported success
+// without any error, so `hgtran-ai sync --agent cluade` reported success
 // having synced nothing).
 func asAgentIDs(values []string) ([]model.AgentID, error) {
 	supported := catalog.AllAgents()

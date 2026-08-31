@@ -10,7 +10,7 @@ import (
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/reviewtransaction"
 )
 
-const ReviewResultReopenSchema = "gentle-ai.review-result-reopen-result/v1"
+const ReviewResultReopenSchema = "hgtran-ai.review-result-reopen-result/v1"
 
 type ReviewResultReopenResult struct {
 	Schema    string                                       `json:"schema"`

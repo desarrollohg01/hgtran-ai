@@ -1,6 +1,6 @@
 # Organic RDD Recovery Plan
 
-> **Decision:** Gentle AI remains an ecosystem configurator for existing coding
+> **Decision:** Hgtran AI remains an ecosystem configurator for existing coding
 > agents. Normal implementation stays inside the configured agent. Receipt-Driven
 > Development begins only after the agent has produced a candidate it considers
 > complete.
@@ -9,7 +9,7 @@ This plan supersedes
 [`2026-07-23-organic-recovery-implementation-plan.md`](./2026-07-23-organic-recovery-implementation-plan.md).
 It removes the speculative productive-runtime/control-plane design and restores
 the product promise: users ask for outcomes, their chosen agent works
-organically, and Gentle AI supplies invisible best practices plus a small
+organically, and Hgtran AI supplies invisible best practices plus a small
 deterministic local receipt boundary.
 
 It does **not** supersede the systemic backlog analysis in
@@ -66,7 +66,7 @@ owning invariant, implementation location, regression proof and release status.
 
 ## 1. Product boundary
 
-Gentle AI configures the coding agent the user already chose with:
+Hgtran AI configures the coding agent the user already chose with:
 
 - persistent memory;
 - skills and MCP integrations;
@@ -77,7 +77,7 @@ Gentle AI configures the coding agent the user already chose with:
 - proportional RDD guidance;
 - local deterministic receipt and delivery gates.
 
-Gentle AI is **not**:
+Hgtran AI is **not**:
 
 - another coding agent;
 - a model host;
@@ -119,7 +119,7 @@ RDD classifies the completed candidate proportionally
 At most one scoped correction for confirmed candidate-caused blockers
         |
         v
-Gentle AI issues one content-bound local receipt
+Hgtran AI issues one content-bound local receipt
         |
         v
 Commit/push/PR/main/release validates that same receipt
@@ -155,7 +155,7 @@ Before identity freeze, the agent may run source-mutating operations:
 - snapshot updates;
 - safe automatic corrections.
 
-After normalization, Gentle AI freezes:
+After normalization, Hgtran AI freezes:
 
 - repository and Git common-dir identity;
 - target projection;
@@ -175,7 +175,7 @@ receipt never floats with a branch name or user intention.
 - No 4R.
 - No runtime verification ceremony when the observable change is already the
   document or metadata itself.
-- Gentle AI may perform cheap deterministic parsing, formatting or schema
+- Hgtran AI may perform cheap deterministic parsing, formatting or schema
   checks.
 - A local receipt may still bind the exact candidate for delivery without
   exposing ceremony to the user.
@@ -228,7 +228,7 @@ Documentation-only changes do not receive fake runtime verification.
 5. If needed, one scoped correction transaction is authorized.
 6. Only admitted finding paths and the bounded correction budget may change.
 7. Independent evidence verifies the correction and required behavior.
-8. Gentle AI issues an approved, escalated or invalidated terminal receipt.
+8. Hgtran AI issues an approved, escalated or invalidated terminal receipt.
 
 There is no loop-until-clean behavior and no silently renewed correction
 budget.
@@ -243,11 +243,11 @@ Delivery choice remains independent from implementation and review:
 - create a PR with an issue;
 - use an explicit emergency path.
 
-Gentle AI validates the same candidate receipt and repository policy before the
+Hgtran AI validates the same candidate receipt and repository policy before the
 effect. It does not force every contribution through one GitHub ceremony.
 
 External Git/GitHub authentication continues to come from the user's existing
-`git` or `gh` setup. Gentle AI does not invent another credential system.
+`git` or `gh` setup. Hgtran AI does not invent another credential system.
 
 ## 9. Remove from the current branch
 
@@ -385,7 +385,7 @@ Real OpenCode journeys must prove:
 - Publish the final 241-issue/92-PR disposition and regression ledger.
 - Run the exact-head gate matrix.
 - Run one final focused dual Judgment Day review.
-- Merge and publish Gentle AI before adapting Gentle Pi.
+- Merge and publish Hgtran AI before adapting Hgtran Pi.
 
 ## 12. Required traceability artifacts
 
@@ -528,15 +528,15 @@ exists. Closure happens only after the released exact SHA:
 4. contains no still-valid independent behavior from the original item.
 
 Items only partially covered remain open or receive a smaller replacement
-issue. Backlog cleanup happens once, after Gentle AI and its Gentle Pi
+issue. Backlog cleanup happens once, after Hgtran AI and its Hgtran Pi
 integration are released and audited.
 
 ## 15. Acceptance criteria
 
-- A user opens OpenCode and asks for a feature without configuring Gentle AI
+- A user opens OpenCode and asks for a feature without configuring Hgtran AI
   runtime variables.
 - The configured agent chooses direct, delegated or optional SDD organically.
-- No Gentle AI command runs merely to authenticate another runtime before
+- No Hgtran AI command runs merely to authenticate another runtime before
   implementation.
 - RDD begins only when a candidate exists.
 - Docs-only work creates no AI review or fake runtime verification.
@@ -588,7 +588,7 @@ public concepts than the current branch.
 9. Run full repository gates.
 10. Push the exact candidate once.
 11. Run one final focused dual Judgment Day review.
-12. Merge and release Gentle AI.
-13. Adapt Gentle Pi to the released local receipt contract.
+12. Merge and release Hgtran AI.
+13. Adapt Hgtran Pi to the released local receipt contract.
 14. Audit the released behavior against the ledger.
 15. Perform one final backlog cleanup after both releases.

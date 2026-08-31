@@ -16,7 +16,7 @@ import (
 )
 
 const (
-	legacyFixScopeQuarantineAuthorizationSchema = "gentle-ai.review-legacy-fix-scope-quarantine-authorization/v2"
+	legacyFixScopeQuarantineAuthorizationSchema = "hgtran-ai.review-legacy-fix-scope-quarantine-authorization/v2"
 	LegacyFixScopeQuarantineDisposition         = "quarantine-historical-complete-fix-scope-expansion"
 	legacyFixScopeScopeOnlyAnomalySet           = "complete_fix_scope_expansion"
 	legacyFixScopeCombinedAnomalySet            = "complete_fix_scope_expansion,validate_fix_alias"

@@ -11,10 +11,10 @@ import (
 )
 
 // TestCheckOneTool_GentleAINamesTheInvokedExecutable closes fisidj finding 5
-// (organic-dx Phase 3f task 3f.5): an RC tester who invokes gentle-ai by an
-// absolute path may have a DIFFERENT gentle-ai on PATH -- doctor previously
+// (organic-dx Phase 3f task 3f.5): an RC tester who invokes hgtran-ai by an
+// absolute path may have a DIFFERENT hgtran-ai on PATH -- doctor previously
 // reported only the PATH-resolved copy as healthy, so a report could describe
-// a build the tester never actually ran. The gentle-ai tool check must also
+// a build the tester never actually ran. The hgtran-ai tool check must also
 // name the invoked executable's own path (and version) so RC reports are
 // unambiguous about which build was under test.
 func TestCheckOneTool_GentleAINamesTheInvokedExecutable(t *testing.T) {
@@ -22,13 +22,13 @@ func TestCheckOneTool_GentleAINamesTheInvokedExecutable(t *testing.T) {
 	origExec := osExecutableDoctor
 	defer func() { lookPathFn = origLook; osExecutableDoctor = origExec }()
 
-	pathCopy := filepath.Join(t.TempDir(), "gentle-ai")
-	invokedCopy := filepath.Join(t.TempDir(), "gentle-ai")
+	pathCopy := filepath.Join(t.TempDir(), "hgtran-ai")
+	invokedCopy := filepath.Join(t.TempDir(), "hgtran-ai")
 
 	lookPathFn = func(string) (string, error) { return pathCopy, nil }
 	osExecutableDoctor = func() (string, error) { return invokedCopy, nil }
 
-	got := checkOneTool("gentle-ai", nil)
+	got := checkOneTool("hgtran-ai", nil)
 
 	if got.Status != CheckStatusPass {
 		t.Fatalf("expected pass, got %s: %s", got.Status, got.Detail)
@@ -51,13 +51,13 @@ func TestCheckOneTool_GentleAIFlagsWhenInvokedDiffersFromPath(t *testing.T) {
 	defer func() { lookPathFn = origLook; osExecutableDoctor = origExec }()
 
 	dir := t.TempDir()
-	pathCopy := filepath.Join(dir, "system-install", "gentle-ai")
-	invokedCopy := filepath.Join(dir, "rc-build", "gentle-ai")
+	pathCopy := filepath.Join(dir, "system-install", "hgtran-ai")
+	invokedCopy := filepath.Join(dir, "rc-build", "hgtran-ai")
 
 	lookPathFn = func(string) (string, error) { return pathCopy, nil }
 	osExecutableDoctor = func() (string, error) { return invokedCopy, nil }
 
-	got := checkOneTool("gentle-ai", nil)
+	got := checkOneTool("hgtran-ai", nil)
 
 	if !strings.Contains(got.Detail, "differs") {
 		t.Fatalf("Detail does not flag that the invoked build differs from the PATH copy: %q", got.Detail)
@@ -72,11 +72,11 @@ func TestCheckOneTool_GentleAISameExecutableAsPathIsNotFlagged(t *testing.T) {
 	origExec := osExecutableDoctor
 	defer func() { lookPathFn = origLook; osExecutableDoctor = origExec }()
 
-	same := filepath.Join(t.TempDir(), "gentle-ai")
+	same := filepath.Join(t.TempDir(), "hgtran-ai")
 	lookPathFn = func(string) (string, error) { return same, nil }
 	osExecutableDoctor = func() (string, error) { return same, nil }
 
-	got := checkOneTool("gentle-ai", nil)
+	got := checkOneTool("hgtran-ai", nil)
 
 	if strings.Contains(got.Detail, "differs") {
 		t.Fatalf("Detail spuriously flags a mismatch when invoked == PATH-resolved: %q", got.Detail)
@@ -84,7 +84,7 @@ func TestCheckOneTool_GentleAISameExecutableAsPathIsNotFlagged(t *testing.T) {
 }
 
 // TestCheckOneTool_OtherToolsUnaffected proves the new clause is scoped to
-// the gentle-ai tool only -- every other tool's Detail is unchanged.
+// the hgtran-ai tool only -- every other tool's Detail is unchanged.
 func TestCheckOneTool_OtherToolsUnaffected(t *testing.T) {
 	origLook := lookPathFn
 	origExec := osExecutableDoctor
@@ -105,12 +105,12 @@ func TestCheckOneTool_OtherToolsUnaffected(t *testing.T) {
 		t.Fatalf("Detail = %q, want %q", got.Detail, want)
 	}
 	if called {
-		t.Fatal("osExecutableDoctor was called for a non-gentle-ai tool")
+		t.Fatal("osExecutableDoctor was called for a non-hgtran-ai tool")
 	}
 }
 
 // TestCheckOneTool_GentleAIDuplicatesStillNameInvokedExecutable reproduces
-// the reported regression: when 2+ copies of gentle-ai are found in PATH the
+// the reported regression: when 2+ copies of hgtran-ai are found in PATH the
 // check moves to the Warn/duplicate branch, which never called
 // doctorInvokedGentleAIClause, so the one piece of information that
 // disambiguates which build is actually running disappeared exactly when
@@ -131,17 +131,17 @@ func TestCheckOneTool_GentleAIDuplicatesStillNameInvokedExecutable(t *testing.T)
 	dir1 := t.TempDir()
 	dir2 := t.TempDir()
 	for _, dir := range []string{dir1, dir2} {
-		p := filepath.Join(dir, "gentle-ai")
+		p := filepath.Join(dir, "hgtran-ai")
 		if err := os.WriteFile(p, []byte("fake"), 0o755); err != nil {
 			t.Fatal(err)
 		}
 	}
 
-	invokedCopy := filepath.Join(t.TempDir(), "gentle-ai")
-	lookPathFn = func(string) (string, error) { return filepath.Join(dir1, "gentle-ai"), nil }
+	invokedCopy := filepath.Join(t.TempDir(), "hgtran-ai")
+	lookPathFn = func(string) (string, error) { return filepath.Join(dir1, "hgtran-ai"), nil }
 	osExecutableDoctor = func() (string, error) { return invokedCopy, nil }
 
-	got := checkOneTool("gentle-ai", []string{dir1, dir2})
+	got := checkOneTool("hgtran-ai", []string{dir1, dir2})
 
 	if got.Status != CheckStatusWarn {
 		t.Fatalf("expected warn for duplicate copies, got %s: %s", got.Status, got.Detail)
@@ -158,7 +158,7 @@ func TestCheckOneTool_GentleAIDuplicatesStillNameInvokedExecutable(t *testing.T)
 }
 
 // TestCheckOneTool_GentleAINotFoundNamesInvokedExecutableWithoutComparison
-// covers the Fail branch: when gentle-ai cannot be resolved via PATH at all,
+// covers the Fail branch: when hgtran-ai cannot be resolved via PATH at all,
 // there is no PATH-resolved copy to compare against, but the executable
 // currently running THIS doctor check is still independently derivable via
 // osExecutableDoctor. The clause must name it honestly, without fabricating
@@ -169,11 +169,11 @@ func TestCheckOneTool_GentleAINotFoundNamesInvokedExecutableWithoutComparison(t 
 	origExec := osExecutableDoctor
 	defer func() { lookPathFn = origLook; osExecutableDoctor = origExec }()
 
-	invokedCopy := filepath.Join(t.TempDir(), "gentle-ai")
+	invokedCopy := filepath.Join(t.TempDir(), "hgtran-ai")
 	lookPathFn = func(string) (string, error) { return "", errors.New("not found") }
 	osExecutableDoctor = func() (string, error) { return invokedCopy, nil }
 
-	got := checkOneTool("gentle-ai", nil)
+	got := checkOneTool("hgtran-ai", nil)
 
 	if got.Status != CheckStatusFail {
 		t.Fatalf("expected fail, got %s: %s", got.Status, got.Detail)
@@ -208,16 +208,16 @@ func TestCheckOneTool_GentleAIExecutableUnresolvable(t *testing.T) {
 	dir1 := t.TempDir()
 	dir2 := t.TempDir()
 	for _, dir := range []string{dir1, dir2} {
-		p := filepath.Join(dir, "gentle-ai")
+		p := filepath.Join(dir, "hgtran-ai")
 		if err := os.WriteFile(p, []byte("fake"), 0o755); err != nil {
 			t.Fatal(err)
 		}
 	}
 
-	lookPathFn = func(string) (string, error) { return filepath.Join(dir1, "gentle-ai"), nil }
+	lookPathFn = func(string) (string, error) { return filepath.Join(dir1, "hgtran-ai"), nil }
 	osExecutableDoctor = func() (string, error) { return "", errors.New("cannot resolve") }
 
-	got := checkOneTool("gentle-ai", []string{dir1, dir2})
+	got := checkOneTool("hgtran-ai", []string{dir1, dir2})
 
 	if strings.Contains(got.Detail, "invoked executable") {
 		t.Fatalf("Detail fabricated an invoked-executable clause despite resolution failure: %q", got.Detail)

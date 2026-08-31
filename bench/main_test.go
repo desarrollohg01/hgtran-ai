@@ -146,7 +146,7 @@ func benchmarkTestBinary(t *testing.T) (string, string) {
 	dir := t.TempDir()
 	invocations := filepath.Join(dir, "invocations.log")
 	source := filepath.Join(dir, "main.go")
-	binary := filepath.Join(dir, "gentle-ai-test.exe")
+	binary := filepath.Join(dir, "hgtran-ai-test.exe")
 	program := `package main
 import (
 	"fmt"

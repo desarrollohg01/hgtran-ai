@@ -8,7 +8,7 @@ Archived successfully on 2026-06-09. Change is implemented, verified (PASS), and
 
 | Domain | Action | Details |
 |--------|--------|---------|
-| `sdd-orchestrator-assets` | Updated | Added chained-pr skill binding requirement and scenarios: binding must reference skill by registry name (`chained-pr`, frontmatter `gentle-ai-chained-pr`); binding must be present in all 11 SDD orchestrator templates; binding must inject the skill path into sdd-tasks and sdd-apply prompts under `## Skills to load before work`; inline summary of `stacked-to-main` and `feature-branch-chain` must be retained; cursor template gains a full `### Chain Strategy` section at parity with other 10 templates; platform-accurate binding wording for solo-inline and platform-native hosts (windsurf, antigravity, kimi, kiro) must not reintroduce OpenCode persistence claims; static assertions and goldens must verify binding presence without unrelated churn. |
+| `sdd-orchestrator-assets` | Updated | Added chained-pr skill binding requirement and scenarios: binding must reference skill by registry name (`chained-pr`, frontmatter `hgtran-ai-chained-pr`); binding must be present in all 11 SDD orchestrator templates; binding must inject the skill path into sdd-tasks and sdd-apply prompts under `## Skills to load before work`; inline summary of `stacked-to-main` and `feature-branch-chain` must be retained; cursor template gains a full `### Chain Strategy` section at parity with other 10 templates; platform-accurate binding wording for solo-inline and platform-native hosts (windsurf, antigravity, kimi, kiro) must not reintroduce OpenCode persistence claims; static assertions and goldens must verify binding presence without unrelated churn. |
 
 ## Archive Contents
 
@@ -26,14 +26,14 @@ Archived successfully on 2026-06-09. Change is implemented, verified (PASS), and
 
 ## Implementation Summary
 
-**What was built**: The chained-pr skill (registry name `chained-pr`, frontmatter `gentle-ai-chained-pr`) is now bound into all 11 SDD orchestrator templates (antigravity, claude, codex, cursor, gemini, generic, kimi, kiro, opencode, qwen, windsurf). When delivery planning yields chained PRs, the orchestrator resolves the skill by registry name through its existing Sub-Agent Launch Pattern and injects it into sdd-tasks and sdd-apply prompts under `## Skills to load before work`. The cursor template, which was missing a Chain Strategy section, now includes a full section at parity with other templates, with the canonical binding sentence placed immediately after the chain_strategy forwarding line.
+**What was built**: The chained-pr skill (registry name `chained-pr`, frontmatter `hgtran-ai-chained-pr`) is now bound into all 11 SDD orchestrator templates (antigravity, claude, codex, cursor, gemini, generic, kimi, kiro, opencode, qwen, windsurf). When delivery planning yields chained PRs, the orchestrator resolves the skill by registry name through its existing Sub-Agent Launch Pattern and injects it into sdd-tasks and sdd-apply prompts under `## Skills to load before work`. The cursor template, which was missing a Chain Strategy section, now includes a full section at parity with other templates, with the canonical binding sentence placed immediately after the chain_strategy forwarding line.
 
 **What shipped**:
 - 11 modified orchestrator templates (10 existing + 1 cursor gaining the section)
 - 2 test files extended with binding assertions (assets_test.go, inject_test.go)
 - 13 regenerated golden fixtures (12 existing + 1 new sdd-cursor-rules.golden)
-- Canonical binding sentence (byte-identical across all 11 templates): "When delivery planning yields chained PRs, treat `chained-pr` (registry skill `gentle-ai-chained-pr`) as a required skill match: resolve it by registry name through this template's existing Sub-Agent Launch Pattern and inject the resolved `SKILL.md` path into the `sdd-tasks` and `sdd-apply` phase prompts under `## Skills to load before work`, instructing those phases to read and follow it BEFORE planning or creating any PR. Do not hardcode the skill path; defer resolution to the launch pattern."
-- Static assertion substring (common to all 11 + goldens): "treat `chained-pr` (registry skill `gentle-ai-chained-pr`) as a required skill match"
+- Canonical binding sentence (byte-identical across all 11 templates): "When delivery planning yields chained PRs, treat `chained-pr` (registry skill `hgtran-ai-chained-pr`) as a required skill match: resolve it by registry name through this template's existing Sub-Agent Launch Pattern and inject the resolved `SKILL.md` path into the `sdd-tasks` and `sdd-apply` phase prompts under `## Skills to load before work`, instructing those phases to read and follow it BEFORE planning or creating any PR. Do not hardcode the skill path; defer resolution to the launch pattern."
+- Static assertion substring (common to all 11 + goldens): "treat `chained-pr` (registry skill `hgtran-ai-chained-pr`) as a required skill match"
 
 ## Verification Results
 

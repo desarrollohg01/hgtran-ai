@@ -2,7 +2,7 @@
 
 ## Intent
 
-The Engram protocol reaches a single model session up to 3x. Codex is the worst offender: three gentle-ai-owned near-identical copies load together (AGENTS.md section + `model_instructions_file` + compact prompt). Claude Code duplicates the system-prompt section against the MCP handshake instructions and the SessionStart hook. This inflates every-session footprint (~13.6K tokens audited) with redundant text that costs tokens on every turn without adding signal. Pi already ships zero protocol text as a working slim-channel precedent.
+The Engram protocol reaches a single model session up to 3x. Codex is the worst offender: three hgtran-ai-owned near-identical copies load together (AGENTS.md section + `model_instructions_file` + compact prompt). Claude Code duplicates the system-prompt section against the MCP handshake instructions and the SessionStart hook. This inflates every-session footprint (~13.6K tokens audited) with redundant text that costs tokens on every turn without adding signal. Pi already ships zero protocol text as a working slim-channel precedent.
 
 ## Scope
 
@@ -62,7 +62,7 @@ The Engram protocol reaches a single model session up to 3x. Codex is the worst 
 4. File-level only; no data migration. Re-run `go test ./...` and `go vet ./...` to confirm baseline.
 
 ## Dependencies
-- Upstream sibling change in gentle-engram (`/home/gentleman/work/engram`): `engram setup --protocol=slim|full`. gentle-ai forwards the flag only when the installed binary supports it, so this change ships independently and activates slimming once the upstream flag exists. The exact contract the upstream change MUST satisfy (probe discoverability, non-blocking `--help` on detached stdin, safest-wins per-slug forwarding) is documented in `upstream-protocol-flag-contract.md`.
+- Upstream sibling change in gentle-engram (`/home/gentleman/work/engram`): `engram setup --protocol=slim|full`. hgtran-ai forwards the flag only when the installed binary supports it, so this change ships independently and activates slimming once the upstream flag exists. The exact contract the upstream change MUST satisfy (probe discoverability, non-blocking `--help` on detached stdin, safest-wins per-slug forwarding) is documented in `upstream-protocol-flag-contract.md`.
 
 ## Success Criteria
 - [ ] Codex renders its three surfaces from a single maintained source (down from 3 near-duplicate source files); PASSIVE CAPTURE content retained. This is source-of-truth consolidation, not a runtime-surface or token reduction for Codex — the rendered `model_instructions_file` grows slightly since Codex adopts the fuller canonical Claude text (see design.md Decision 3/4).

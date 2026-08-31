@@ -9,7 +9,7 @@ import (
 
 func init() {
 	afterCompactPreVerifyAuthorityInitialRead = func() error {
-		path := os.Getenv("GENTLE_AI_BENCH_MUTATE_RECEIPT")
+		path := os.Getenv("HGTRAN_AI_BENCH_MUTATE_RECEIPT")
 		if path == "" {
 			return nil
 		}

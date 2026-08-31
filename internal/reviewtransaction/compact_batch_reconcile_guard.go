@@ -13,9 +13,9 @@ import (
 	"strings"
 )
 
-const CompactBatchReconcilePreparationSchema = "gentle-ai.review-batch-reconcile-preparation/v1"
-const CompactBatchReconcileRequestSchema = "gentle-ai.review-batch-reconcile-request/v1"
-const compactBatchReconcileAuthorizationSchema = "gentle-ai.review-batch-reconcile-authorization/v1"
+const CompactBatchReconcilePreparationSchema = "hgtran-ai.review-batch-reconcile-preparation/v1"
+const CompactBatchReconcileRequestSchema = "hgtran-ai.review-batch-reconcile-request/v1"
+const compactBatchReconcileAuthorizationSchema = "hgtran-ai.review-batch-reconcile-authorization/v1"
 
 // CompactBatchReconcilePreparation is the immutable authorization template
 // produced from one exclusively locked authority snapshot.
@@ -318,6 +318,6 @@ func compactBatchReconcileDigest(domain string, value any) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("marshal compact batch %s digest: %w", domain, err)
 	}
-	sum := sha256.Sum256(append([]byte("gentle-ai.review-batch-reconcile-"+domain+"/v1\x00"), payload...))
+	sum := sha256.Sum256(append([]byte("hgtran-ai.review-batch-reconcile-"+domain+"/v1\x00"), payload...))
 	return "sha256:" + hex.EncodeToString(sum[:]), nil
 }

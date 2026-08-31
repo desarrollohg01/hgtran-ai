@@ -21,19 +21,19 @@ import (
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/sddstatus"
 )
 
-// dispatchNamedReviewStart runs a `gentle-ai review start ...` invocation read
+// dispatchNamedReviewStart runs a `hgtran-ai review start ...` invocation read
 // out of a product message through the real review router. extra carries only
 // the operator-supplied value a message placeholder explicitly asks for.
 func dispatchNamedReviewStart(t *testing.T, repo string, tokens []string, extra ...string) ReviewFacadeStartResult {
 	t.Helper()
 	if len(tokens) < 2 || tokens[0] != "review" || tokens[1] != "start" {
-		t.Fatalf("named continuation is %v, want gentle-ai review start", tokens)
+		t.Fatalf("named continuation is %v, want hgtran-ai review start", tokens)
 	}
 	args := append(append([]string{}, tokens[1:]...), extra...)
 	args = append(args, "--cwd", repo)
 	var output bytes.Buffer
 	if err := RunReview(args, &output); err != nil {
-		t.Fatalf("the named continuation exits non-zero: gentle-ai review %v: %v\n%s", args, err, output.String())
+		t.Fatalf("the named continuation exits non-zero: hgtran-ai review %v: %v\n%s", args, err, output.String())
 	}
 	var started ReviewFacadeStartResult
 	decodeStrictReviewJSON(t, output.Bytes(), &started)
@@ -195,7 +195,7 @@ func TestSDDStatusArchiveNeverTreatsAnEmptyCandidateReviewAsCoverage(t *testing.
 // Unmanaged Ordinary Archive"): a change at its archive decision with no
 // review authority anywhere is decline-by-absence-of-action, not a stop --
 // the offer is an invitation, never a gate. Superseded (documented, not
-// silently dropped): this test previously required naming `gentle-ai review
+// silently dropped): this test previously required naming `hgtran-ai review
 // start` as a runnable exit from a blocked state; there is no blocked state
 // to exit from anymore for this exact fixture.
 func TestSDDStatusEnabledMissingReceiptIsDeclineNotAStop(t *testing.T) {

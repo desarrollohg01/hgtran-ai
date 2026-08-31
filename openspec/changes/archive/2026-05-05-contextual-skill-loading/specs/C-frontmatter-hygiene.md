@@ -12,7 +12,7 @@
 
 Two SKILL.md files had frontmatter anomalies:
 
-1. **`chained-pr/SKILL.md`** had `name: gentle-ai-chained-pr` but the directory slug is `chained-pr`. Fixed in commit 1b2b374. The `name:` field now equals `chained-pr`.
+1. **`chained-pr/SKILL.md`** had `name: hgtran-ai-chained-pr` but the directory slug is `chained-pr`. Fixed in commit 1b2b374. The `name:` field now equals `chained-pr`.
 
 2. **`skill-creator/SKILL.md`** had `allowed-tools:` as a top-level frontmatter key outside the documented schema. Fixed in commit 45dc833 — the key is removed.
 

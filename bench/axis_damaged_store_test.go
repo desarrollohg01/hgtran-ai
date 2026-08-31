@@ -27,7 +27,7 @@ import (
 // key order is what the revision binds.
 func TestOrderedJSONReproducesTheProductsCanonicalBytes(t *testing.T) {
 	source := `{
-  "schema": "gentle-ai.review-state-record/v2",
+  "schema": "hgtran-ai.review-state-record/v2",
   "revision": "sha256:abc",
   "state": {
     "lineage_id": "review-successor-one",

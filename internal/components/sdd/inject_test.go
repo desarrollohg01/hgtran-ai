@@ -107,11 +107,11 @@ func TestInjectHermesWritesSDDOrchestratorToSOULMD(t *testing.T) {
 	}
 	text := string(content)
 
-	if !strings.Contains(text, "<!-- gentle-ai:sdd-orchestrator -->") {
-		t.Fatal("SOUL.md missing <!-- gentle-ai:sdd-orchestrator --> open marker")
+	if !strings.Contains(text, "<!-- hgtran-ai:sdd-orchestrator -->") {
+		t.Fatal("SOUL.md missing <!-- hgtran-ai:sdd-orchestrator --> open marker")
 	}
-	if !strings.Contains(text, "<!-- /gentle-ai:sdd-orchestrator -->") {
-		t.Fatal("SOUL.md missing <!-- /gentle-ai:sdd-orchestrator --> close marker")
+	if !strings.Contains(text, "<!-- /hgtran-ai:sdd-orchestrator -->") {
+		t.Fatal("SOUL.md missing <!-- /hgtran-ai:sdd-orchestrator --> close marker")
 	}
 	// Verify the Hermes-specific content is present (references ~/.hermes/skills/).
 	if !strings.Contains(text, "~/.hermes/skills/") {
@@ -224,10 +224,10 @@ func TestInjectClaudeWritesSectionMarkers(t *testing.T) {
 
 	text := string(content)
 
-	if !strings.Contains(text, "<!-- gentle-ai:sdd-orchestrator -->") {
+	if !strings.Contains(text, "<!-- hgtran-ai:sdd-orchestrator -->") {
 		t.Fatal("CLAUDE.md missing open marker for sdd-orchestrator")
 	}
-	if !strings.Contains(text, "<!-- /gentle-ai:sdd-orchestrator -->") {
+	if !strings.Contains(text, "<!-- /hgtran-ai:sdd-orchestrator -->") {
 		t.Fatal("CLAUDE.md missing close marker for sdd-orchestrator")
 	}
 	if !strings.Contains(text, "sub-agent") {
@@ -316,7 +316,7 @@ func TestInjectClaudePreservesExistingSections(t *testing.T) {
 	if !strings.Contains(text, "Some user content.") {
 		t.Fatal("Existing user content was clobbered")
 	}
-	if !strings.Contains(text, "<!-- gentle-ai:sdd-orchestrator -->") {
+	if !strings.Contains(text, "<!-- hgtran-ai:sdd-orchestrator -->") {
 		t.Fatal("SDD section was not injected")
 	}
 }
@@ -414,17 +414,17 @@ func TestInjectClaudeCustomModelAssignments(t *testing.T) {
 		"| sdd-design | sonnet | default | Architecture decisions |",
 		"| sdd-propose | fable | default | Architectural decisions |",
 		"| default | haiku | default | SDD/JD phase fallback |",
-		"Gentle AI does not configure the main orchestrator model",
+		"Hgtran AI does not configure the main orchestrator model",
 	} {
 		if !strings.Contains(text, want) {
 			t.Fatalf("lazy workflow missing custom table row %q", want)
 		}
 	}
 
-	if !strings.Contains(text, "<!-- gentle-ai:sdd-model-assignments -->") {
+	if !strings.Contains(text, "<!-- hgtran-ai:sdd-model-assignments -->") {
 		t.Fatal("lazy workflow missing model assignment open marker")
 	}
-	if !strings.Contains(text, "<!-- /gentle-ai:sdd-model-assignments -->") {
+	if !strings.Contains(text, "<!-- /hgtran-ai:sdd-model-assignments -->") {
 		t.Fatal("lazy workflow missing model assignment close marker")
 	}
 	for _, want := range []string{
@@ -596,7 +596,7 @@ func TestInjectOpenCodeUsesOpenCodeSpecificOrchestratorPrompt(t *testing.T) {
 			}
 
 			for _, wanted := range []string{
-				"Gentle AI",
+				"Hgtran AI",
 				"Read the configured models from `opencode.json`",
 				"Use the `question` tool for SDD Session Preflight only when it is available in the current interactive runtime and all four groups are exactly representable",
 				"present the proceed/adjust/stop options through the lossless blocking-prompt route",
@@ -665,8 +665,8 @@ func TestInjectOpenCodePreservesExistingOrchestratorPromptWhenRequested(t *testi
 		"explicit request or accepted proposal",
 		"Per-action rule",
 		"Authority rule",
-		"gentle-ai review status",
-		"gentle-ai review validate --gate",
+		"hgtran-ai review status",
+		"hgtran-ai review validate --gate",
 	} {
 		if !strings.Contains(text, wanted) {
 			t.Fatalf("opencode.json missing migrated preserved prompt hard gate %q", wanted)
@@ -699,7 +699,7 @@ func TestInjectOpenCodeMigratesPreservedLegacyOrchestratorPromptReferences(t *te
 		t.Fatalf("MkdirAll(settings dir) error = %v", err)
 	}
 
-	const stalePrompt = "# Gentle AI — SDD Orchestrator Instructions\n\nBind this to the dedicated `sdd-orchestrator` agent only.\n\n- Treat `agent.sdd-orchestrator.model` as authoritative when it is set.\n\n### Mandatory Delegation Triggers (Non-Skippable)\n\n3. **PR rule**: before commit, push, or PR after code changes, run a fresh-context review unless the diff is trivial docs/text.\n4. **Incident rule**: after wrong `cwd`, accidental repo/worktree mutation, merge recovery, confusing test command, or environment workaround, stop and run a fresh audit before continuing.\n6. **Fresh review rule**: use fresh context for adversarial review of diffs, conflicts, PR readiness, and incidents; use continuity/forked context only for implementation work that needs inherited state.\n"
+	const stalePrompt = "# Hgtran AI — SDD Orchestrator Instructions\n\nBind this to the dedicated `sdd-orchestrator` agent only.\n\n- Treat `agent.sdd-orchestrator.model` as authoritative when it is set.\n\n### Mandatory Delegation Triggers (Non-Skippable)\n\n3. **PR rule**: before commit, push, or PR after code changes, run a fresh-context review unless the diff is trivial docs/text.\n4. **Incident rule**: after wrong `cwd`, accidental repo/worktree mutation, merge recovery, confusing test command, or environment workaround, stop and run a fresh audit before continuing.\n6. **Fresh review rule**: use fresh context for adversarial review of diffs, conflicts, PR readiness, and incidents; use continuity/forked context only for implementation work that needs inherited state.\n"
 	seed := `{
   "agent": {
     "gentle-orchestrator": {
@@ -780,8 +780,8 @@ func TestInjectOpenCodeMigratesPreservedLegacyOrchestratorPromptReferences(t *te
 		"Authority rule",
 		"Semantic guard",
 		"execution, not delegation",
-		"gentle-ai review status",
-		"gentle-ai review validate --gate",
+		"hgtran-ai review status",
+		"hgtran-ai review validate --gate",
 	} {
 		if !strings.Contains(text, wanted) {
 			t.Fatalf("opencode.json missing migrated preserved prompt reference %q", wanted)
@@ -802,7 +802,7 @@ func TestInjectOpenCodeUpgradesPromptOwnedLensRouter(t *testing.T) {
 
 	const userContent = "CUSTOM_PROMPT_HEAD\nUser-authored wording must remain " + legacyMandatoryWording + "."
 	const v1Block = userContent + "\n\n" +
-		"<!-- gentle-ai:delegation-hard-gates-migration -->\n" +
+		"<!-- hgtran-ai:delegation-hard-gates-migration -->\n" +
 		"### Mandatory Delegation Triggers (Non-Skippable)\n\n" +
 		"These gates are non-skippable hard gates, not recommendations. They are " + legacyMandatoryWording + ": do not skip them.\n\n" +
 		"Semantic guard: delegate means using OpenCode's native Task tool. Running local scripts is execution, not delegation.\n\n" +
@@ -822,7 +822,7 @@ func TestInjectOpenCodeUpgradesPromptOwnedLensRouter(t *testing.T) {
 		"| Security, permissions, data exposure/loss, architecture, or dependencies | `review-risk` |\n" +
 		"| Large PR, hot path, or >400 changed lines | full 4R: `review-risk`, `review-resilience`, `review-readability`, `review-reliability` |\n\n" +
 		"If multiple rows match, run the narrow set that covers the risk.\n" +
-		"<!-- /gentle-ai:delegation-hard-gates-migration -->\n"
+		"<!-- /hgtran-ai:delegation-hard-gates-migration -->\n"
 	seed := `{
   "agent": {
     "gentle-orchestrator": {
@@ -870,8 +870,8 @@ func TestInjectOpenCodeUpgradesPromptOwnedLensRouter(t *testing.T) {
 		"Optional SDD rule",
 		"explicit request or accepted proposal",
 		"Authority rule",
-		"gentle-ai review status",
-		"gentle-ai review validate --gate",
+		"hgtran-ai review status",
+		"hgtran-ai review validate --gate",
 	} {
 		if !strings.Contains(text, wanted) {
 			t.Fatalf("opencode.json missing native routing fragment %q after migration", wanted)
@@ -891,8 +891,8 @@ func TestInjectOpenCodeUpgradesPromptOwnedLensRouter(t *testing.T) {
 			t.Fatalf("opencode.json retained stale v1 lens-selection text %q", stale)
 		}
 	}
-	managedStart := strings.Index(prompt, "<!-- gentle-ai:delegation-hard-gates-migration -->")
-	managedEnd := strings.Index(prompt, "<!-- /gentle-ai:delegation-hard-gates-migration -->")
+	managedStart := strings.Index(prompt, "<!-- hgtran-ai:delegation-hard-gates-migration -->")
+	managedEnd := strings.Index(prompt, "<!-- /hgtran-ai:delegation-hard-gates-migration -->")
 	if managedStart < 0 || managedEnd < managedStart {
 		t.Fatal("opencode.json missing delegation hard-gates migration block")
 	}
@@ -912,7 +912,7 @@ func TestEnsurePreservedOpenCodeDelegationHardGatesMigratesToNativeTransition(t 
 	legacy := "### Mandatory Delegation Triggers (Non-Skippable)\n\n" +
 		"before commit, push, or PR after code changes, run the concrete review lens(es) selected by Review Lens Selection unless the diff is trivial (tier 1)"
 	got := ensurePreservedOpenCodeDelegationHardGates(legacy)
-	for _, want := range []string{"`gentle-ai review status`", "`gentle-ai review validate --gate <gate>`", "exact owner-issued receipt"} {
+	for _, want := range []string{"`hgtran-ai review status`", "`hgtran-ai review validate --gate <gate>`", "exact owner-issued receipt"} {
 		if !strings.Contains(got, want) {
 			t.Fatalf("migrated delegation gates missing native review authority clause %q:\n%s", want, got)
 		}
@@ -935,7 +935,7 @@ The words TOTALMENTE obligatorio here belong to the user.`
 	if !strings.Contains(got, userTail) {
 		t.Fatalf("unmarked legacy migration changed or deleted user-owned tail:\n%s", got)
 	}
-	if strings.Count(got, "<!-- gentle-ai:delegation-hard-gates-migration -->") != 1 {
+	if strings.Count(got, "<!-- hgtran-ai:delegation-hard-gates-migration -->") != 1 {
 		t.Fatalf("unmarked legacy migration must append exactly one managed block:\n%s", got)
 	}
 	if second := ensurePreservedOpenCodeDelegationHardGates(got); second != got {
@@ -961,20 +961,20 @@ var retiredWorkRoutingTokens = []string{
 
 // The exact rule 7 a previous install wrote into every preserved OpenCode and
 // Kilocode orchestrator prompt.
-const retiredWorkRoutingAuthorityRule = "7. **Authority rule**: when a WorkRun exists, request `gentle-ai.work-status/v1`" +
-	" and apply only its exact provider-issued `gentle-ai.work-transition/v1` authorization." +
+const retiredWorkRoutingAuthorityRule = "7. **Authority rule**: when a WorkRun exists, request `hgtran-ai.work-status/v1`" +
+	" and apply only its exact provider-issued `hgtran-ai.work-transition/v1` authorization." +
 	" Never select lenses, synthesize transitions, or infer PASS from prose."
 
 // The replacement rule 7, keyed on authority surfaces that still exist.
-const nativeReviewAuthorityRuleText = "7. **Authority rule**: read native review state with `gentle-ai review status`" +
-	" and let `gentle-ai review validate --gate <gate>` check the exact owner-issued receipt at every lifecycle gate." +
+const nativeReviewAuthorityRuleText = "7. **Authority rule**: read native review state with `hgtran-ai review status`" +
+	" and let `hgtran-ai review validate --gate <gate>` check the exact owner-issued receipt at every lifecycle gate." +
 	" Never select lenses, synthesize transitions, or infer PASS from prose."
 
 // previouslyInstalledDelegationHardGates reproduces, byte for byte, the managed
 // block that shipped before this migration, including the retired rule 7.
 func previouslyInstalledDelegationHardGates(userHead string) string {
 	return userHead + "\n\n" +
-		"<!-- gentle-ai:delegation-hard-gates-migration -->\n" +
+		"<!-- hgtran-ai:delegation-hard-gates-migration -->\n" +
 		"### Mandatory Delegation Triggers (Non-Skippable)\n\n" +
 		"These routing boundaries are fully mandatory. They protect context quality without making SDD the universal implementation workflow.\n\n" +
 		"Semantic guard: **delegate** means using OpenCode's native Task tool to invoke a configured sub-agent. Running local scripts, Python, or Bash inline is execution, not delegation.\n\n" +
@@ -986,7 +986,7 @@ func previouslyInstalledDelegationHardGates(userHead string) string {
 		"5. **Optional SDD rule**: propose SDD only when durable proposal/spec/design/tasks materially reduce substantial ambiguity. Select it only after explicit request or accepted proposal.\n" +
 		"6. **Per-action rule**: tests, builds, installs, and native review actors may use fresh workers without changing the implementation route or creating SDD state.\n" +
 		retiredWorkRoutingAuthorityRule + "\n" +
-		"<!-- /gentle-ai:delegation-hard-gates-migration -->\n"
+		"<!-- /hgtran-ai:delegation-hard-gates-migration -->\n"
 }
 
 func TestEnsurePreservedOpenCodeDelegationHardGatesRewritesRetiredWorkRoutingAuthorityRule(t *testing.T) {
@@ -1006,7 +1006,7 @@ func TestEnsurePreservedOpenCodeDelegationHardGatesRewritesRetiredWorkRoutingAut
 	if !strings.HasPrefix(got, userHead+"\n\n") {
 		t.Fatalf("migration disturbed user-authored content outside the managed block:\n%s", got)
 	}
-	if count := strings.Count(got, "<!-- gentle-ai:delegation-hard-gates-migration -->"); count != 1 {
+	if count := strings.Count(got, "<!-- hgtran-ai:delegation-hard-gates-migration -->"); count != 1 {
 		t.Fatalf("managed block occurrences = %d, want 1:\n%s", count, got)
 	}
 	if second := ensurePreservedOpenCodeDelegationHardGates(got); second != got {
@@ -1137,7 +1137,7 @@ PRESERVE_THIS_UNRELATED_SECTION exactly as authored.
 	if got := strings.Count(prompt, "#### Review Execution Contract"); got != 1 {
 		t.Fatalf("migrated prompt has %d Review Execution Contract headings, want 1", got)
 	}
-	if got := strings.Count(prompt, "<!-- gentle-ai:review-execution-contract-migration -->"); got != 1 {
+	if got := strings.Count(prompt, "<!-- hgtran-ai:review-execution-contract-migration -->"); got != 1 {
 		t.Fatalf("migrated prompt has %d review-contract migration markers, want 1", got)
 	}
 
@@ -1280,7 +1280,7 @@ func TestInjectOpenCodeReplacesFullyFormedStalePreflightPrompt(t *testing.T) {
 
 	stalePrompt := `# Custom prompt
 
-<!-- gentle-ai:sdd-session-preflight-migration -->
+<!-- hgtran-ai:sdd-session-preflight-migration -->
 ### SDD Session Preflight (HARD GATE)
 
 Before executing ANY SDD command or natural-language SDD request, ensure this session has an explicit preflight.
@@ -1295,7 +1295,7 @@ Hard gate rules:
 - openspec/config.yaml does NOT satisfy session preflight.
 - Never launch ` + "`sdd-apply`" + ` just because the user asked to implement a feature.
 - In interactive mode, pause after each delegated phase returns and ask: "¿Querés ajustar algo o continuamos?".
-<!-- /gentle-ai:sdd-session-preflight-migration -->
+<!-- /hgtran-ai:sdd-session-preflight-migration -->
 `
 	seed := `{
   "agent": {
@@ -1664,7 +1664,7 @@ func TestInjectCursorWritesSDDOrchestratorAndSkills(t *testing.T) {
 	}
 
 	// Verify SDD orchestrator was injected into the system prompt file.
-	promptPath := filepath.Join(home, ".cursor", "rules", "gentle-ai.mdc")
+	promptPath := filepath.Join(home, ".cursor", "rules", "hgtran-ai.mdc")
 	content, readErr := os.ReadFile(promptPath)
 	if readErr != nil {
 		t.Fatalf("ReadFile(%q) error = %v", promptPath, readErr)
@@ -1792,7 +1792,7 @@ func TestInjectKimiKiroWindsurfAntigravityPreserveNativeChainStrategyWording(t *
 			promptPath: func(home string, _ agents.Adapter) string {
 				return filepath.Join(home, ".kimi", "sdd-orchestrator.md")
 			},
-			required:  []string{"### Chain Strategy", "`stacked-to-main`", "`feature-branch-chain`", "delivery_strategy", "chain_strategy", "/skill:sdd-*", "multiagent:Task", "custom-agent prompt", "treat `chained-pr` (registry skill `gentle-ai-chained-pr`) as a required skill match"},
+			required:  []string{"### Chain Strategy", "`stacked-to-main`", "`feature-branch-chain`", "delivery_strategy", "chain_strategy", "/skill:sdd-*", "multiagent:Task", "custom-agent prompt", "treat `chained-pr` (registry skill `hgtran-ai-chained-pr`) as a required skill match"},
 			forbidden: []string{"OpenCode's background-agent plugin", "plugin-backed persisted background delegation"},
 		},
 		{
@@ -1801,7 +1801,7 @@ func TestInjectKimiKiroWindsurfAntigravityPreserveNativeChainStrategyWording(t *
 			promptPath: func(home string, adapter agents.Adapter) string {
 				return adapter.SystemPromptFile(home)
 			},
-			required:  []string{"### Chain Strategy", "`stacked-to-main`", "`feature-branch-chain`", "delivery_strategy", "chain_strategy", "Kiro phase context", "native Kiro subagent context", "treat `chained-pr` (registry skill `gentle-ai-chained-pr`) as a required skill match"},
+			required:  []string{"### Chain Strategy", "`stacked-to-main`", "`feature-branch-chain`", "delivery_strategy", "chain_strategy", "Kiro phase context", "native Kiro subagent context", "treat `chained-pr` (registry skill `hgtran-ai-chained-pr`) as a required skill match"},
 			forbidden: []string{"OpenCode's background-agent plugin", "plugin-backed persisted background delegation"},
 		},
 		{
@@ -1810,7 +1810,7 @@ func TestInjectKimiKiroWindsurfAntigravityPreserveNativeChainStrategyWording(t *
 			promptPath: func(home string, adapter agents.Adapter) string {
 				return adapter.SystemPromptFile(home)
 			},
-			required:  []string{"### Chain Strategy", "`stacked-to-main`", "`feature-branch-chain`", "delivery_strategy", "chain_strategy", "inline phase context", "There are no sub-agents", "treat `chained-pr` (registry skill `gentle-ai-chained-pr`) as a required skill match"},
+			required:  []string{"### Chain Strategy", "`stacked-to-main`", "`feature-branch-chain`", "delivery_strategy", "chain_strategy", "inline phase context", "There are no sub-agents", "treat `chained-pr` (registry skill `hgtran-ai-chained-pr`) as a required skill match"},
 			forbidden: []string{"OpenCode's background-agent plugin", "plugin-backed persisted background delegation", "custom sub-agent prompts"},
 		},
 		{
@@ -1819,7 +1819,7 @@ func TestInjectKimiKiroWindsurfAntigravityPreserveNativeChainStrategyWording(t *
 			promptPath: func(home string, adapter agents.Adapter) string {
 				return adapter.SystemPromptFile(home)
 			},
-			required:  []string{"### Chain Strategy", "`stacked-to-main`", "`feature-branch-chain`", "delivery_strategy", "chain_strategy", "dynamic subagent context", "define_subagent", "invoke_subagent", "treat `chained-pr` (registry skill `gentle-ai-chained-pr`) as a required skill match"},
+			required:  []string{"### Chain Strategy", "`stacked-to-main`", "`feature-branch-chain`", "delivery_strategy", "chain_strategy", "dynamic subagent context", "define_subagent", "invoke_subagent", "treat `chained-pr` (registry skill `hgtran-ai-chained-pr`) as a required skill match"},
 			forbidden: []string{"OpenCode's background-agent plugin", "plugin-backed persisted background delegation", "inline phase context"},
 		},
 	}
@@ -2005,10 +2005,10 @@ func TestInjectFileAppendMigratesLegacyHeading(t *testing.T) {
 	if strings.Contains(text, "Already present.") {
 		t.Fatal("legacy SDD orchestrator content survived after migration")
 	}
-	if !strings.Contains(text, "<!-- gentle-ai:sdd-orchestrator -->") {
+	if !strings.Contains(text, "<!-- hgtran-ai:sdd-orchestrator -->") {
 		t.Fatal("missing open marker after migration")
 	}
-	if !strings.Contains(text, "<!-- /gentle-ai:sdd-orchestrator -->") {
+	if !strings.Contains(text, "<!-- /hgtran-ai:sdd-orchestrator -->") {
 		t.Fatal("missing close marker after migration")
 	}
 	if strings.Count(text, "## Agent Teams Orchestrator") != 1 {
@@ -2038,9 +2038,9 @@ func TestInjectFileAppendMigratesFullLegacyOrchestratorBlock(t *testing.T) {
 		"Each phase returns: `status`, `executive_summary`, `artifacts`, `next_recommended`, `risks`.\n\n" +
 		"### Sub-Agent Launch Pattern\n\n" +
 		"SKILL: Load `{skill-path}` before starting.\n\n" +
-		"<!-- gentle-ai:engram-protocol -->\n" +
+		"<!-- hgtran-ai:engram-protocol -->\n" +
 		"## Engram Persistent Memory - Protocol\n" +
-		"<!-- /gentle-ai:engram-protocol -->\n"
+		"<!-- /hgtran-ai:engram-protocol -->\n"
 
 	if err := os.WriteFile(promptPath, []byte(existing), 0o644); err != nil {
 		t.Fatalf("WriteFile() error = %v", err)
@@ -2072,7 +2072,7 @@ func TestInjectFileAppendMigratesFullLegacyOrchestratorBlock(t *testing.T) {
 	if !strings.Contains(text, "## Skills to load before work") {
 		t.Fatal("current skill-path launch pattern missing after migration")
 	}
-	if strings.Count(text, "<!-- gentle-ai:engram-protocol -->") != 1 {
+	if strings.Count(text, "<!-- hgtran-ai:engram-protocol -->") != 1 {
 		t.Fatal("engram protocol marker should be preserved exactly once")
 	}
 }
@@ -2092,7 +2092,7 @@ func TestInjectFileAppendRemovesLegacyBlockWhenMarkedSectionAlreadyExists(t *tes
 
 	canonical := assets.MustRead("generic/sdd-orchestrator.md")
 	existing := "## Agent Teams Orchestrator\n\nLegacy duplicate block.\n\n" +
-		"<!-- gentle-ai:sdd-orchestrator -->\n" + canonical + "\n<!-- /gentle-ai:sdd-orchestrator -->\n"
+		"<!-- hgtran-ai:sdd-orchestrator -->\n" + canonical + "\n<!-- /hgtran-ai:sdd-orchestrator -->\n"
 
 	if err := os.WriteFile(promptPath, []byte(existing), 0o644); err != nil {
 		t.Fatalf("WriteFile() error = %v", err)
@@ -2138,7 +2138,7 @@ You are a COORDINATOR, not an executor.
 | No inline work | Reading/writing code → delegate to sub-agent |
 <!-- END:agent-teams-lite -->`
 
-	sddSection := "<!-- gentle-ai:sdd-orchestrator -->\nYou are a COORDINATOR.\n<!-- /gentle-ai:sdd-orchestrator -->\n"
+	sddSection := "<!-- hgtran-ai:sdd-orchestrator -->\nYou are a COORDINATOR.\n<!-- /hgtran-ai:sdd-orchestrator -->\n"
 	existing := legacyATLBlock + "\n\n" + sddSection
 
 	if err := os.WriteFile(promptPath, []byte(existing), 0o644); err != nil {
@@ -2163,10 +2163,10 @@ You are a COORDINATOR, not an executor.
 	if strings.Contains(text, "<!-- END:agent-teams-lite -->") {
 		t.Fatal("ATL close marker should have been stripped during inject")
 	}
-	if !strings.Contains(text, "<!-- gentle-ai:sdd-orchestrator -->") {
+	if !strings.Contains(text, "<!-- hgtran-ai:sdd-orchestrator -->") {
 		t.Fatal("sdd-orchestrator section must be present after ATL strip")
 	}
-	if !strings.Contains(text, "<!-- /gentle-ai:sdd-orchestrator -->") {
+	if !strings.Contains(text, "<!-- /hgtran-ai:sdd-orchestrator -->") {
 		t.Fatal("sdd-orchestrator close marker must be present after ATL strip")
 	}
 }
@@ -2817,10 +2817,10 @@ func TestInjectClaudeDeduplicatesBareOrchestratorSection(t *testing.T) {
 	}
 
 	// The injected marked version must be present.
-	if !strings.Contains(text, "<!-- gentle-ai:sdd-orchestrator -->") {
+	if !strings.Contains(text, "<!-- hgtran-ai:sdd-orchestrator -->") {
 		t.Fatal("missing open marker after injection")
 	}
-	if !strings.Contains(text, "<!-- /gentle-ai:sdd-orchestrator -->") {
+	if !strings.Contains(text, "<!-- /hgtran-ai:sdd-orchestrator -->") {
 		t.Fatal("missing close marker after injection")
 	}
 
@@ -2869,7 +2869,7 @@ func TestInjectClaudeDeduplicatesBareOrchestratorAtEndOfFile(t *testing.T) {
 	if count := strings.Count(text, "## Agent Teams Orchestrator"); count != 1 {
 		t.Fatalf("expected 1 Agent Teams Orchestrator heading, got %d\n\ncontent:\n%s", count, text)
 	}
-	if !strings.Contains(text, "<!-- gentle-ai:sdd-orchestrator -->") {
+	if !strings.Contains(text, "<!-- hgtran-ai:sdd-orchestrator -->") {
 		t.Fatal("missing open marker after injection")
 	}
 	if !strings.Contains(text, "Be excellent.") {
@@ -2900,9 +2900,9 @@ func TestInjectOpenClawWritesWorkspaceAgentsProtocolSectionsAndNoToolsProtocol(t
 	}
 	text := string(content)
 	for _, want := range []string{
-		"<!-- gentle-ai:sdd-orchestrator -->",
-		"<!-- /gentle-ai:sdd-orchestrator -->",
-		"<!-- gentle-ai:strict-tdd-mode -->",
+		"<!-- hgtran-ai:sdd-orchestrator -->",
+		"<!-- /hgtran-ai:sdd-orchestrator -->",
+		"<!-- hgtran-ai:strict-tdd-mode -->",
 		"Strict TDD Mode: enabled",
 		"Spec-Driven Development",
 	} {
@@ -2919,7 +2919,7 @@ func TestInjectOpenClawWritesWorkspaceAgentsProtocolSectionsAndNoToolsProtocol(t
 		t.Fatalf("ReadFile(TOOLS.md) error = %v", err)
 	}
 	toolsText := string(toolsContent)
-	if strings.Contains(toolsText, "gentle-ai:sdd-orchestrator") || strings.Contains(toolsText, "Strict TDD Mode") {
+	if strings.Contains(toolsText, "hgtran-ai:sdd-orchestrator") || strings.Contains(toolsText, "Strict TDD Mode") {
 		t.Fatalf("TOOLS.md must not receive OpenClaw protocol sections; got:\n%s", toolsText)
 	}
 	if !strings.Contains(toolsText, "Keep this.") {
@@ -2937,7 +2937,7 @@ func TestInjectOpenClawWritesWorkspaceAgentsProtocolSectionsAndNoToolsProtocol(t
 	if err != nil {
 		t.Fatalf("ReadFile(AGENTS.md) second error = %v", err)
 	}
-	if count := strings.Count(string(updated), "<!-- gentle-ai:sdd-orchestrator -->"); count != 1 {
+	if count := strings.Count(string(updated), "<!-- hgtran-ai:sdd-orchestrator -->"); count != 1 {
 		t.Fatalf("AGENTS.md has %d SDD markers, want exactly 1", count)
 	}
 }
@@ -2960,7 +2960,7 @@ func TestInjectOpenClawPreservesWorkspaceAgentsUserContent(t *testing.T) {
 	if !strings.Contains(text, "Do not delete workspace instructions.") {
 		t.Fatalf("OpenClaw workspace AGENTS.md user content was lost; got:\n%s", text)
 	}
-	if !strings.Contains(text, "<!-- gentle-ai:sdd-orchestrator -->") {
+	if !strings.Contains(text, "<!-- hgtran-ai:sdd-orchestrator -->") {
 		t.Fatalf("OpenClaw workspace AGENTS.md missing managed SDD section; got:\n%s", text)
 	}
 }
@@ -3654,7 +3654,7 @@ func TestStripBareOrchestratorSection_NoOpWhenNoSection(t *testing.T) {
 // stripBareOrchestratorSection (the markers are handled by InjectMarkdownSection).
 // This ensures the migration guard in injectMarkdownSections() is correct.
 func TestStripBareOrchestratorSection_DoesNotStripIfMarkersPresent(t *testing.T) {
-	input := "# My Rules\n\n<!-- gentle-ai:sdd-orchestrator -->\n## Agent Teams Orchestrator\n\nYou are a COORDINATOR.\n<!-- /gentle-ai:sdd-orchestrator -->\n"
+	input := "# My Rules\n\n<!-- hgtran-ai:sdd-orchestrator -->\n## Agent Teams Orchestrator\n\nYou are a COORDINATOR.\n<!-- /hgtran-ai:sdd-orchestrator -->\n"
 
 	// The function sees "## Agent Teams Orchestrator" and would normally strip it.
 	// But the caller (injectMarkdownSections) is supposed to check for markers
@@ -3665,7 +3665,7 @@ func TestStripBareOrchestratorSection_DoesNotStripIfMarkersPresent(t *testing.T)
 
 	// Because stripBareOrchestratorSection does not check for markers itself,
 	// calling it on marked content would damage the file. The real protection is
-	// the `!strings.Contains(existing, "<!-- gentle-ai:sdd-orchestrator -->")` guard
+	// the `!strings.Contains(existing, "<!-- hgtran-ai:sdd-orchestrator -->")` guard
 	// in injectMarkdownSections(). This test confirms that guard works end-to-end.
 	_ = result
 }
@@ -3676,7 +3676,7 @@ func TestStripBareOrchestratorSection_DoesNotStripIfMarkersPresent(t *testing.T)
 
 // TestInjectStrictTDDEnabledInjectsMarkerIntoClaude verifies that when
 // InjectOptions.StrictTDD = true, the injected content in CLAUDE.md contains
-// the <!-- gentle-ai:strict-tdd-mode --> marker with its content.
+// the <!-- hgtran-ai:strict-tdd-mode --> marker with its content.
 func TestInjectStrictTDDEnabledInjectsMarkerIntoClaude(t *testing.T) {
 	home := t.TempDir()
 
@@ -3695,11 +3695,11 @@ func TestInjectStrictTDDEnabledInjectsMarkerIntoClaude(t *testing.T) {
 	}
 
 	text := string(content)
-	if !strings.Contains(text, "<!-- gentle-ai:strict-tdd-mode -->") {
-		t.Fatal("CLAUDE.md missing <!-- gentle-ai:strict-tdd-mode --> open marker")
+	if !strings.Contains(text, "<!-- hgtran-ai:strict-tdd-mode -->") {
+		t.Fatal("CLAUDE.md missing <!-- hgtran-ai:strict-tdd-mode --> open marker")
 	}
-	if !strings.Contains(text, "<!-- /gentle-ai:strict-tdd-mode -->") {
-		t.Fatal("CLAUDE.md missing <!-- /gentle-ai:strict-tdd-mode --> close marker")
+	if !strings.Contains(text, "<!-- /hgtran-ai:strict-tdd-mode -->") {
+		t.Fatal("CLAUDE.md missing <!-- /hgtran-ai:strict-tdd-mode --> close marker")
 	}
 	if !strings.Contains(text, "Strict TDD Mode: enabled") {
 		t.Fatal("CLAUDE.md missing 'Strict TDD Mode: enabled' content")
@@ -3723,7 +3723,7 @@ func TestInjectStrictTDDDisabledDoesNotInjectMarker(t *testing.T) {
 	}
 
 	text := string(content)
-	if strings.Contains(text, "<!-- gentle-ai:strict-tdd-mode -->") {
+	if strings.Contains(text, "<!-- hgtran-ai:strict-tdd-mode -->") {
 		t.Fatal("CLAUDE.md should NOT contain strict-tdd-mode marker when StrictTDD=false")
 	}
 }
@@ -3896,7 +3896,7 @@ func TestInjectClaudeDeduplicatesBareOrchestratorAtBeginning(t *testing.T) {
 	if count := strings.Count(text, "## Agent Teams Orchestrator"); count != 1 {
 		t.Fatalf("expected 1 Agent Teams Orchestrator heading, got %d\n\ncontent:\n%s", count, text)
 	}
-	if !strings.Contains(text, "<!-- gentle-ai:sdd-orchestrator -->") {
+	if !strings.Contains(text, "<!-- hgtran-ai:sdd-orchestrator -->") {
 		t.Fatal("missing open marker after injection")
 	}
 	if !strings.Contains(text, "## Other Rules") {
@@ -3940,10 +3940,10 @@ func TestInjectClaudeDeduplicatesFileWithOnlyBareOrchestrator(t *testing.T) {
 		t.Fatalf("expected 1 Agent Teams Orchestrator heading, got %d\n\ncontent:\n%s", count, text)
 	}
 	// Must have markers.
-	if !strings.Contains(text, "<!-- gentle-ai:sdd-orchestrator -->") {
+	if !strings.Contains(text, "<!-- hgtran-ai:sdd-orchestrator -->") {
 		t.Fatal("missing open marker")
 	}
-	if !strings.Contains(text, "<!-- /gentle-ai:sdd-orchestrator -->") {
+	if !strings.Contains(text, "<!-- /hgtran-ai:sdd-orchestrator -->") {
 		t.Fatal("missing close marker")
 	}
 	// The unique legacy phrase must be gone — the bare section was stripped.
@@ -4014,7 +4014,7 @@ func TestInjectClaudeDoesNotStripMarkedSection(t *testing.T) {
 	if err != nil {
 		t.Fatalf("ReadFile() error = %v", err)
 	}
-	if !strings.Contains(string(after1), "<!-- gentle-ai:sdd-orchestrator -->") {
+	if !strings.Contains(string(after1), "<!-- hgtran-ai:sdd-orchestrator -->") {
 		t.Fatal("markers not present after first inject — test precondition failed")
 	}
 
@@ -4539,7 +4539,7 @@ func TestInjectWindsurf_WorkflowsFoundFromSubdirectory(t *testing.T) {
 		t.Fatalf("write go.mod: %v", err)
 	}
 
-	// Simulate running gentle-ai from a subdirectory inside that project.
+	// Simulate running hgtran-ai from a subdirectory inside that project.
 	subDir := filepath.Join(projectRoot, "internal", "foo")
 	if err := os.MkdirAll(subDir, 0o755); err != nil {
 		t.Fatalf("mkdir subDir: %v", err)
@@ -5705,7 +5705,7 @@ func TestInjectOpenCodePostCheckDiskFallback(t *testing.T) {
 	existingConfig := `{
   "agent": {
     "gentle-orchestrator": {
-      "description": "Gentle AI SDD Orchestrator",
+      "description": "Hgtran AI SDD Orchestrator",
       "mode": "primary"
     }
   }
@@ -6296,7 +6296,7 @@ func TestEnsureClaudeSkillRegistryHookAppendsIdempotently(t *testing.T) {
 		t.Fatal(err)
 	}
 	text := string(data)
-	if strings.Count(text, "gentle-ai skill-registry refresh") != 1 {
+	if strings.Count(text, "hgtran-ai skill-registry refresh") != 1 {
 		t.Fatalf("hook command count mismatch:\n%s", text)
 	}
 	if !strings.Contains(text, "echo keep") || !strings.Contains(text, "echo existing") {
@@ -6398,7 +6398,7 @@ func TestEnsureCodexSkillRegistryHookWritesSessionStartHookIdempotently(t *testi
 		t.Fatal(err)
 	}
 	text := string(data)
-	if strings.Count(text, "gentle-ai skill-registry refresh") != 1 {
+	if strings.Count(text, "hgtran-ai skill-registry refresh") != 1 {
 		t.Fatalf("hook command count mismatch:\n%s", text)
 	}
 	if !strings.Contains(text, `"SessionStart"`) {
@@ -6539,7 +6539,7 @@ func TestInject_CodexInstallsSkillRegistryHook(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(string(data), "gentle-ai skill-registry refresh") {
+	if !strings.Contains(string(data), "hgtran-ai skill-registry refresh") {
 		t.Fatalf("Codex hooks.json missing skill-registry refresh:\n%s", data)
 	}
 }

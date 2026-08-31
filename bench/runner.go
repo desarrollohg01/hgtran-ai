@@ -24,7 +24,7 @@ type Sandbox struct {
 	BenchReceiptMutationPath string
 
 	// NewLineageActivation opts this sandbox's whole isolated process
-	// environment into GENTLE_AI_RDD_NEW_LINEAGE (Wave 3 Slice 5, task 6.7).
+	// environment into HGTRAN_AI_RDD_NEW_LINEAGE (Wave 3 Slice 5, task 6.7).
 	// It is off by default, matching the product's own default-off
 	// activation switch (design decision 5): every wave1/wave2/edge/sdd
 	// journey that never sets this stays on the legacy `review start` path,
@@ -80,10 +80,10 @@ func (s *Sandbox) env() []string {
 		"LANG=C",
 	}
 	if s.BenchReceiptMutationPath != "" {
-		env = append(env, "GENTLE_AI_BENCH_MUTATE_RECEIPT="+s.BenchReceiptMutationPath)
+		env = append(env, "HGTRAN_AI_BENCH_MUTATE_RECEIPT="+s.BenchReceiptMutationPath)
 	}
 	if s.NewLineageActivation {
-		env = append(env, "GENTLE_AI_RDD_NEW_LINEAGE=1")
+		env = append(env, "HGTRAN_AI_RDD_NEW_LINEAGE=1")
 	}
 	return env
 }
@@ -338,7 +338,7 @@ type Step struct {
 	// README.
 	DeadEnd bool
 	// ByDesign declares the opposite: a block here is a CORRECT refusal that
-	// already told the operator what to do, in words no `gentle-ai` command
+	// already told the operator what to do, in words no `hgtran-ai` command
 	// could express. It is the second author-declared input, and the more
 	// expensive one — a shape from a closed vocabulary plus a quote of the
 	// product's own next-action text, verified against the emitted bytes.
@@ -438,7 +438,7 @@ func (r *journeyRun) runAt(dir string, args []string, modelRun bool) Observation
 func runJourney(binary string, journey Journey) JourneyResult {
 	result := JourneyResult{ID: journey.ID, Title: journey.Title, Source: journey.Source, Status: StatusCompleted}
 
-	root, err := os.MkdirTemp("", "gentle-ai-bench-"+journey.ID+"-")
+	root, err := os.MkdirTemp("", "hgtran-ai-bench-"+journey.ID+"-")
 	if err != nil {
 		result.Status = StatusFailed
 		result.FailureReason = err.Error()

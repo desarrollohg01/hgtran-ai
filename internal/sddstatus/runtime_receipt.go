@@ -128,7 +128,7 @@ func (store RuntimeStore) recordPreparedReceipt(
 	if err != nil {
 		return RuntimeStatus{}, err
 	}
-	requestDigest := runtimeValueHash("gentle-ai.sdd-runtime-receipt-request/v1", request)
+	requestDigest := runtimeValueHash("hgtran-ai.sdd-runtime-receipt-request/v1", request)
 	if err := ctx.Err(); err != nil {
 		return RuntimeStatus{}, err
 	}

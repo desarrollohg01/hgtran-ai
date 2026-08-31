@@ -325,8 +325,8 @@ func validateArtifacts(root string, payload []byte, markerTime time.Time) error 
 		if !ok || item.Target != target {
 			return fmt.Errorf("resolved binary matrix changed at %s", platform)
 		}
-		expectedPath := fmt.Sprintf("dist/gentle-ai_%s/gentle-ai", target)
-		if item.Name != "gentle-ai" || item.Path != expectedPath || extraString(item.Extra, "Binary") != "gentle-ai" || extraString(item.Extra, "ID") != "gentle-ai" {
+		expectedPath := fmt.Sprintf("dist/hgtran-ai_%s/hgtran-ai", target)
+		if item.Name != "hgtran-ai" || item.Path != expectedPath || extraString(item.Extra, "Binary") != "hgtran-ai" || extraString(item.Extra, "ID") != "hgtran-ai" {
 			return fmt.Errorf("resolved binary identity changed at %s", platform)
 		}
 		if _, exists := seenBinaries[platform]; exists {
@@ -347,8 +347,8 @@ func validateArtifacts(root string, payload []byte, markerTime time.Time) error 
 			return fmt.Errorf("resolved archive matrix changed at %s", platform)
 		}
 		suffix := fmt.Sprintf("_%s_%s.tar.gz", item.GOOS, item.GOARCH)
-		version := strings.TrimSuffix(strings.TrimPrefix(item.Name, "gentle-ai_"), suffix)
-		if !strings.HasPrefix(item.Name, "gentle-ai_") || !strings.HasSuffix(item.Name, suffix) || !validSnapshotVersion(version) {
+		version := strings.TrimSuffix(strings.TrimPrefix(item.Name, "hgtran-ai_"), suffix)
+		if !strings.HasPrefix(item.Name, "hgtran-ai_") || !strings.HasSuffix(item.Name, suffix) || !validSnapshotVersion(version) {
 			return fmt.Errorf("resolved archive name changed at %s", platform)
 		}
 		if snapshotVersion == "" {
@@ -356,7 +356,7 @@ func validateArtifacts(root string, payload []byte, markerTime time.Time) error 
 		} else if version != snapshotVersion {
 			return errors.New("resolved archives do not share one snapshot version")
 		}
-		if item.Path != "dist/"+item.Name || extraString(item.Extra, "Format") != "tar.gz" || extraString(item.Extra, "ID") != "default" || !reflect.DeepEqual(extraStrings(item.Extra, "Binaries"), []string{"gentle-ai"}) {
+		if item.Path != "dist/"+item.Name || extraString(item.Extra, "Format") != "tar.gz" || extraString(item.Extra, "ID") != "default" || !reflect.DeepEqual(extraStrings(item.Extra, "Binaries"), []string{"hgtran-ai"}) {
 			return fmt.Errorf("resolved archive identity changed at %s", platform)
 		}
 		if _, exists := seenArchives[platform]; exists {
@@ -375,13 +375,13 @@ func validateArtifacts(root string, payload []byte, markerTime time.Time) error 
 		return errors.New("resolved metadata output changed")
 	}
 	formula := byType["Homebrew Formula"][0]
-	if formula.Name != "gentle-ai.rb" || formula.Path != "dist/homebrew/Formula/gentle-ai.rb" {
+	if formula.Name != "hgtran-ai.rb" || formula.Path != "dist/homebrew/Formula/hgtran-ai.rb" {
 		return errors.New("resolved Homebrew formula output changed")
 	}
 	brewConfig := extraMap(formula.Extra, "BrewConfig")
 	repository := extraMap(brewConfig, "repository")
-	if extraString(brewConfig, "name") != "gentle-ai" || extraString(brewConfig, "directory") != "Formula" ||
-		extraString(repository, "owner") != "Gentleman-Programming" || extraString(repository, "name") != "homebrew-tap" || extraString(repository, "token") != "{{ .Env.HOMEBREW_TAP_TOKEN }}" {
+	if extraString(brewConfig, "name") != "hgtran-ai" || extraString(brewConfig, "directory") != "Formula" ||
+		extraString(repository, "owner") != "desarrollohg01" || extraString(repository, "name") != "homebrew-tap" || extraString(repository, "token") != "{{ .Env.HOMEBREW_TAP_TOKEN }}" {
 		return errors.New("resolved Homebrew publisher changed")
 	}
 
@@ -494,10 +494,10 @@ func validateSnapshotFile(root, artifactPath string, markerTime time.Time) error
 }
 
 const expectedGoReleaserYAML = `version: 2
-project_name: gentle-ai
+project_name: hgtran-ai
 builds:
-  - main: ./cmd/gentle-ai
-    binary: gentle-ai
+  - main: ./cmd/hgtran-ai
+    binary: hgtran-ai
     env:
       - CGO_ENABLED=0
     goos:
@@ -539,9 +539,9 @@ signs:
       - "-x"
       - "${signature}"
       - "-c"
-      - "signature from gentle-ai release"
+      - "signature from hgtran-ai release"
       - "-t"
-      - "repo=Gentleman-Programming/gentle-ai;tag={{ .Tag }}"
+      - "repo=desarrollohg01/hgtran-ai;tag={{ .Tag }}"
     output: true
 changelog:
   sort: asc
@@ -552,15 +552,15 @@ changelog:
       - "^ci:"
 brews:
   - repository:
-      owner: Gentleman-Programming
+      owner: desarrollohg01
       name: homebrew-tap
       token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
     directory: Formula
-    name: gentle-ai
-    homepage: "https://github.com/Gentleman-Programming/gentle-ai"
-    description: "Gentle-AI — Ecosystem, Frameworks, Workflows for AI coding agents."
+    name: hgtran-ai
+    homepage: "https://github.com/desarrollohg01/hgtran-ai"
+    description: "Hgtran-AI — Ecosystem, Frameworks, Workflows for AI coding agents."
     license: "MIT"
-    commit_msg_template: "chore: update gentle-ai formula to {{ .Tag }}"
+    commit_msg_template: "chore: update hgtran-ai formula to {{ .Tag }}"
 `
 
 const expectedReleaseWorkflowYAML = `name: Release
@@ -602,7 +602,7 @@ jobs:
         run: |
           set -euo pipefail
           run_id="${GITHUB_RUN_ID}:${GITHUB_RUN_ATTEMPT}:${GITHUB_JOB}"
-          marker="$RUNNER_TEMP/gentle-ai-release-policy-snapshot-start"
+          marker="$RUNNER_TEMP/hgtran-ai-release-policy-snapshot-start"
           rm -f -- "$marker"
           umask 077
           printf '%s\n' "$run_id" >"$marker"
@@ -657,8 +657,8 @@ jobs:
           printf 'canonical=%s\n' "$canonical" >>"$GITHUB_OUTPUT"
       - name: Configure ephemeral signing paths
         run: |
-          printf 'MINISIGN_SECRET_KEY_FILE=%s/gentle-ai-release.key\n' "$RUNNER_TEMP" >>"$GITHUB_ENV"
-          printf 'MINISIGN_SIGNING_PUBLIC_KEY_FILE=%s/gentle-ai-release-signing.pub\n' "$RUNNER_TEMP" >>"$GITHUB_ENV"
+          printf 'MINISIGN_SECRET_KEY_FILE=%s/hgtran-ai-release.key\n' "$RUNNER_TEMP" >>"$GITHUB_ENV"
+          printf 'MINISIGN_SIGNING_PUBLIC_KEY_FILE=%s/hgtran-ai-release-signing.pub\n' "$RUNNER_TEMP" >>"$GITHUB_ENV"
       - name: Install Minisign
         run: |
           sudo apt-get update

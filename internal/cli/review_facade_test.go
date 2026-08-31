@@ -65,8 +65,8 @@ func TestReviewFacadeStartStagedProjectionFreezesOnlyIndex(t *testing.T) {
 	// 1812: combining --projection staged with --base-ref is now refused as
 	// ambiguous intent instead of continuing the staged authority as a
 	// base-diff. The escape is one of the two named commands, not this combo.
-	wantStagedEscape := "gentle-ai review start --projection staged"
-	wantBaseDiffEscape := fmt.Sprintf("gentle-ai review start --base-ref %s --committed-only", base)
+	wantStagedEscape := "hgtran-ai review start --projection staged"
+	wantBaseDiffEscape := fmt.Sprintf("hgtran-ai review start --base-ref %s --committed-only", base)
 	if err := RunReviewFacadeStart([]string{"--cwd", repo, "--projection", "staged", "--base-ref", base, "--committed-only"}, io.Discard); err == nil ||
 		!strings.Contains(err.Error(), wantStagedEscape) || !strings.Contains(err.Error(), wantBaseDiffEscape) {
 		t.Fatalf("staged projection + base-ref start error = %v, want typed refusal naming both %q and %q (1812)", err, wantStagedEscape, wantBaseDiffEscape)
@@ -108,8 +108,8 @@ func TestReviewFacadeStagedProjectionBaseRefRefusal(t *testing.T) {
 		t.Fatal(err)
 	}
 	callErr := RunReviewFacadeStart([]string{"--cwd", repo, "--projection", "staged", "--base-ref", base, "--committed-only"}, io.Discard)
-	wantStagedEscape := "gentle-ai review start --projection staged"
-	wantBaseDiffEscape := fmt.Sprintf("gentle-ai review start --base-ref %s --committed-only", base)
+	wantStagedEscape := "hgtran-ai review start --projection staged"
+	wantBaseDiffEscape := fmt.Sprintf("hgtran-ai review start --base-ref %s --committed-only", base)
 	if callErr == nil || !strings.Contains(callErr.Error(), wantStagedEscape) || !strings.Contains(callErr.Error(), wantBaseDiffEscape) {
 		t.Fatalf("staged projection + base-ref start error = %v, want it to name both %q and %q verbatim", callErr, wantStagedEscape, wantBaseDiffEscape)
 	}
@@ -188,8 +188,8 @@ func TestReviewFacadeStartStagedProjectionBaseRefContinuationRefused(t *testing.
 		t.Fatal(err)
 	}
 
-	wantStagedEscape := "gentle-ai review start --projection staged"
-	wantBaseDiffEscape := fmt.Sprintf("gentle-ai review start --base-ref %s --committed-only", base)
+	wantStagedEscape := "hgtran-ai review start --projection staged"
+	wantBaseDiffEscape := fmt.Sprintf("hgtran-ai review start --base-ref %s --committed-only", base)
 	if err := RunReviewFacadeStart([]string{"--cwd", repo, "--projection", "staged", "--base-ref", base, "--committed-only", "--lineage", "staged-base-request"}, io.Discard); err == nil ||
 		!strings.Contains(err.Error(), wantStagedEscape) || !strings.Contains(err.Error(), wantBaseDiffEscape) {
 		t.Fatalf("staged projection + base-ref continuation error = %v, want typed refusal naming both %q and %q (1812)", err, wantStagedEscape, wantBaseDiffEscape)
@@ -1495,7 +1495,7 @@ func TestReviewStatusReportsActiveAuthorityWithoutChangingAuthorityFiles(t *test
 func TestReviewFacadeHelpAndFlatCompatibilityPathsRemainAvailable(t *testing.T) {
 	for _, subcommand := range []string{"start", "finalize", "validate", "status", "recover"} {
 		var output bytes.Buffer
-		if err := RunReview([]string{subcommand, "--help"}, &output); err != nil || !strings.Contains(output.String(), "Usage: gentle-ai review "+subcommand) {
+		if err := RunReview([]string{subcommand, "--help"}, &output); err != nil || !strings.Contains(output.String(), "Usage: hgtran-ai review "+subcommand) {
 			t.Fatalf("facade %s help: %v\n%s", subcommand, err, output.String())
 		}
 	}
@@ -1507,9 +1507,9 @@ func TestReviewFacadeHelpAndFlatCompatibilityPathsRemainAvailable(t *testing.T) 
 		run  func([]string, io.Writer) error
 		want string
 	}{
-		{RunReviewStart, "Usage: gentle-ai review-start"}, {RunReviewStep, "Usage: gentle-ai review-step"},
-		{RunReviewResume, "Usage: gentle-ai review-resume"}, {RunReviewValidate, "Usage: gentle-ai review-validate"},
-		{RunReviewBundleExport, "Usage: gentle-ai review-bundle-export"}, {RunReviewBundleImport, "Usage: gentle-ai review-bundle-import"},
+		{RunReviewStart, "Usage: hgtran-ai review-start"}, {RunReviewStep, "Usage: hgtran-ai review-step"},
+		{RunReviewResume, "Usage: hgtran-ai review-resume"}, {RunReviewValidate, "Usage: hgtran-ai review-validate"},
+		{RunReviewBundleExport, "Usage: hgtran-ai review-bundle-export"}, {RunReviewBundleImport, "Usage: hgtran-ai review-bundle-import"},
 	} {
 		var output bytes.Buffer
 		if err := test.run([]string{"--help"}, &output); err != nil || !strings.Contains(output.String(), test.want) {
@@ -1747,7 +1747,7 @@ func TestReviewRecoverCreatesSuccessorAndDiscoveryRejectsHistoricalAuthority(t *
 	builder := reviewtransaction.SnapshotBuilder{Repo: repo}
 	intended, _ := builder.DiscoverIntendedUntracked(context.Background())
 	target, _ := builder.Build(context.Background(), reviewtransaction.Target{Kind: reviewtransaction.TargetCurrentChanges, IntendedUntracked: intended})
-	authorization := "gentle-ai.review-recovery-authorization/v1\npredecessor_lineage=" + started.LineageID +
+	authorization := "hgtran-ai.review-recovery-authorization/v1\npredecessor_lineage=" + started.LineageID +
 		"\npredecessor_revision=" + predecessor.Revision + "\ntarget_identity=" + target.Identity + "\nactor=maintainer\nreason=candidate changed"
 	var output bytes.Buffer
 	if err := RunReview([]string{"recover", "--cwd", repo, "--predecessor-lineage", started.LineageID,
@@ -1921,7 +1921,7 @@ func TestReviewBindSDDFeedsSelectedSDDStatusRuntime(t *testing.T) {
 	if err := RunReview([]string{"bind-sdd", "--cwd", repo, "--change", "thin", "--lineage", started.LineageID, "--expected-binding-revision", ""}, &output); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(output.String(), "gentle-ai.sdd-review-binding/v1") {
+	if !strings.Contains(output.String(), "hgtran-ai.sdd-review-binding/v1") {
 		t.Fatalf("binding output = %s", output.String())
 	}
 	output.Reset()
@@ -2510,7 +2510,7 @@ func TestReviewFacadeFinalizeStateValidating(t *testing.T) {
 		if !errors.As(err, &noTransition) {
 			t.Fatalf("no-evidence finalize error = %T %v, want *ErrReviewFinalizeNoTransition", err, err)
 		}
-		for _, want := range []string{"gentle-ai review capture-evidence", "gentle-ai review finalize --lineage " + started.LineageID + " --captured-evidence"} {
+		for _, want := range []string{"hgtran-ai review capture-evidence", "hgtran-ai review finalize --lineage " + started.LineageID + " --captured-evidence"} {
 			if !strings.Contains(err.Error(), want) {
 				t.Fatalf("no-transition error = %q, want it to name %q verbatim", err.Error(), want)
 			}

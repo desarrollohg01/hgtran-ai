@@ -112,7 +112,7 @@ func TestReconcileRefusesUnreadableSuccessorWithDiagnosis(t *testing.T) {
 	for _, want := range []string{
 		"malformed_compact_state",
 		"maintainer policy decision",
-		"gentle-ai review inspect-authority",
+		"hgtran-ai review inspect-authority",
 	} {
 		if !strings.Contains(refusal, want) {
 			t.Fatalf("reconcile refusal does not carry %q:\n%s", want, refusal)
@@ -166,7 +166,7 @@ func TestReclaimRefusalNamesTheOperationThatAdmitsTheShape(t *testing.T) {
 		predecessor, _, successor, _ := preContractRecoveryFixture(t, repo, preContractFixtureAuthorization, nil)
 		refusal := reclaim(t, repo, successor.State.LineageID)
 		for _, want := range []string{
-			"gentle-ai review reconcile-authority",
+			"hgtran-ai review reconcile-authority",
 			"--predecessor-lineage \"" + predecessor.State.LineageID + "\"",
 			"--expected-predecessor-revision \"" + predecessor.Revision + "\"",
 			"--successor-lineage \"" + successor.State.LineageID + "\"",
@@ -189,7 +189,7 @@ func TestReclaimRefusalNamesTheOperationThatAdmitsTheShape(t *testing.T) {
 		_, successor, _ := forgedRecoveryPair(t, repo, "reclaim", "forged reclaim target\n")
 		refusal := reclaim(t, repo, successor.State.LineageID)
 		for _, want := range []string{
-			"gentle-ai review abandon",
+			"hgtran-ai review abandon",
 			"--lineage \"" + successor.State.LineageID + "\"",
 			"--expected-revision \"" + successor.Revision + "\"",
 			CompactAbandonAuthorizationSchema,
@@ -198,7 +198,7 @@ func TestReclaimRefusalNamesTheOperationThatAdmitsTheShape(t *testing.T) {
 				t.Fatalf("reclaim refusal does not name %q:\n%s", want, refusal)
 			}
 		}
-		if strings.Contains(refusal, "gentle-ai review reconcile-authority") {
+		if strings.Contains(refusal, "hgtran-ai review reconcile-authority") {
 			t.Fatalf("reclaim names reconcile for an edge reconcile refuses (named dead end):\n%s", refusal)
 		}
 		abandonPerEligibility(t, repo, successor.State.LineageID, "clear the damaged entry")
@@ -221,13 +221,13 @@ func TestReclaimRefusalNamesTheOperationThatAdmitsTheShape(t *testing.T) {
 		refusal := reclaim(t, repo, successor.State.LineageID)
 		for _, want := range []string{
 			"never discarded",
-			"gentle-ai review inspect-authority",
+			"hgtran-ai review inspect-authority",
 		} {
 			if !strings.Contains(refusal, want) {
 				t.Fatalf("reclaim refusal does not carry %q:\n%s", want, refusal)
 			}
 		}
-		for _, deadEnd := range []string{"gentle-ai review abandon", "gentle-ai review reconcile-authority"} {
+		for _, deadEnd := range []string{"hgtran-ai review abandon", "hgtran-ai review reconcile-authority"} {
 			if strings.Contains(refusal, deadEnd) {
 				t.Fatalf("reclaim names %q for a shape it does not clear (named dead end):\n%s", deadEnd, refusal)
 			}
@@ -241,13 +241,13 @@ func TestReclaimRefusalNamesTheOperationThatAdmitsTheShape(t *testing.T) {
 		refusal := reclaim(t, repo, successor.State.LineageID)
 		for _, want := range []string{
 			"malformed_compact_state",
-			"gentle-ai review inspect-authority",
+			"hgtran-ai review inspect-authority",
 		} {
 			if !strings.Contains(refusal, want) {
 				t.Fatalf("reclaim refusal does not carry %q:\n%s", want, refusal)
 			}
 		}
-		for _, deadEnd := range []string{"gentle-ai review abandon", "gentle-ai review reconcile-authority"} {
+		for _, deadEnd := range []string{"hgtran-ai review abandon", "hgtran-ai review reconcile-authority"} {
 			if strings.Contains(refusal, deadEnd) {
 				t.Fatalf("reclaim names %q for a record neither can load (named dead end):\n%s", deadEnd, refusal)
 			}
@@ -283,11 +283,11 @@ func TestStartOverInvalidGraphRefusalNamesSanctionedExit(t *testing.T) {
 		refusal := err.Error()
 		for _, want := range []string{
 			"dangling predecessor",
-			"gentle-ai review abandon",
+			"hgtran-ai review abandon",
 			"--lineage \"" + successor.State.LineageID + "\"",
 			"--expected-revision \"" + successor.Revision + "\"",
 			CompactAbandonAuthorizationSchema,
-			"gentle-ai review inspect-authority",
+			"hgtran-ai review inspect-authority",
 		} {
 			if !strings.Contains(refusal, want) {
 				t.Fatalf("start refusal does not name %q:\n%s", want, refusal)
@@ -309,7 +309,7 @@ func TestStartOverInvalidGraphRefusalNamesSanctionedExit(t *testing.T) {
 		refusal := err.Error()
 		for _, want := range []string{
 			"exact maintainer authorization binding",
-			"gentle-ai review reconcile-authority",
+			"hgtran-ai review reconcile-authority",
 			"--expected-predecessor-revision \"" + predecessor.Revision + "\"",
 			"--expected-successor-revision \"" + successor.Revision + "\"",
 			compactReconcileAuthorizationSchema,
@@ -335,7 +335,7 @@ func TestStartOverInvalidGraphRefusalNamesSanctionedExit(t *testing.T) {
 		}
 		refusal := err.Error()
 		for _, want := range []string{
-			"gentle-ai review abandon",
+			"hgtran-ai review abandon",
 			"--expected-revision \"" + successor.Revision + "\"",
 			CompactAbandonAuthorizationSchema,
 		} {
@@ -379,7 +379,7 @@ func TestStartOverInvalidGraphRefusalNamesSanctionedExit(t *testing.T) {
 		}
 		refusal := err.Error()
 		for _, want := range []string{
-			"gentle-ai review repair",
+			"hgtran-ai review repair",
 			"--plan-digest",
 			"--inventory-revision",
 			authorityDispositionAuthorizationSchema,
@@ -388,7 +388,7 @@ func TestStartOverInvalidGraphRefusalNamesSanctionedExit(t *testing.T) {
 				t.Fatalf("start refusal does not name %q:\n%s", want, refusal)
 			}
 		}
-		if strings.Contains(refusal, "gentle-ai review abandon") {
+		if strings.Contains(refusal, "hgtran-ai review abandon") {
 			t.Fatalf("start names an abandonment the gate rejects for captured review data:\n%s", refusal)
 		}
 

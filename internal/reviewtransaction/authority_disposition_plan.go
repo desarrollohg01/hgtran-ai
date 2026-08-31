@@ -10,7 +10,7 @@ import (
 )
 
 // AuthorityDispositionPlanSchema identifies AuthorityDispositionPlan's shape.
-const AuthorityDispositionPlanSchema = "gentle-ai.review-authority-disposition-plan/v1"
+const AuthorityDispositionPlanSchema = "hgtran-ai.review-authority-disposition-plan/v1"
 
 // AuthorityDispositionPlan is the generic, deterministically-derived
 // disposition plan for a closed-classified authority graph anomaly
@@ -52,7 +52,7 @@ type AuthorityDispositionPlan struct {
 // compactContentMismatchedRecoveryAuthorizationClass is the one closed
 // anomaly class Wave 2 derives a plan for: a recovery successor whose
 // persisted maintainer authorization carries the exact
-// gentle-ai.review-recovery-authorization/v1 schema prefix but binds
+// hgtran-ai.review-recovery-authorization/v1 schema prefix but binds
 // different content than the successor's own recorded fields — corruption
 // rather than a pre-contract legacy authorization
 // (classifyCompactRecoveryEdgeAnomalies, compact_reconcile.go). It is
@@ -198,7 +198,7 @@ func authorityInventoryRevision(records map[string]CompactRecord) (string, error
 	for lineage, record := range records {
 		revisions[lineage] = record.Revision
 	}
-	return classifiedAuthorityRepairDigest("gentle-ai.review-authority-inventory-revision/v1", revisions)
+	return classifiedAuthorityRepairDigest("hgtran-ai.review-authority-inventory-revision/v1", revisions)
 }
 
 // authorityDispositionPlanDigest computes plan_digest over the seven derived
@@ -229,15 +229,15 @@ func authorityDispositionPlanDigest(plan AuthorityDispositionPlan) (string, erro
 		AuthorityInventoryRevision: plan.AuthorityInventoryRevision, AnomalyClass: plan.AnomalyClass,
 		SeedSet: plan.SeedSet, Closure: plan.Closure, ExpectedRevisions: plan.ExpectedRevisions,
 	}
-	return classifiedAuthorityRepairDigest("gentle-ai.review-disposition-plan-digest/v1", canonical)
+	return classifiedAuthorityRepairDigest("hgtran-ai.review-disposition-plan-digest/v1", canonical)
 }
 
 // authorityDispositionAuthorizationSchema is the first line of the exact
-// seven-line gentle-ai.review-disposition-authorization/v1 binding a
+// seven-line hgtran-ai.review-disposition-authorization/v1 binding a
 // maintainer must supply verbatim (rdd-authority-disposition-plan /
 // "Authorization Binds to Digest and Revision, No Wall-Clock Expiry",
 // pending-confirmation assumption 1).
-const authorityDispositionAuthorizationSchema = "gentle-ai.review-disposition-authorization/v1"
+const authorityDispositionAuthorizationSchema = "hgtran-ai.review-disposition-authorization/v1"
 
 // authorityDispositionAuthorizationBinding renders the exact authorization
 // text a maintainer must supply for plan to be admitted at execution time,
@@ -290,8 +290,8 @@ func validateAuthorityDispositionAuthorization(plan AuthorityDispositionPlan, cu
 func compactRepairCommandText(repo string, plan AuthorityDispositionPlan) string {
 	template := plan
 	template.Actor, template.Reason = "<actor>", "<why-it-is-repaired>"
-	return fmt.Sprintf("`gentle-ai review repair --cwd %q --plan-digest %q --inventory-revision %q --actor \"<actor>\" --reason \"<why-it-is-repaired>\" --authorization \"<maintainer-authorization>\"`"+
-		" (`gentle-ai review repair --preflight --cwd %q` re-confirms these are still current);"+
+	return fmt.Sprintf("`hgtran-ai review repair --cwd %q --plan-digest %q --inventory-revision %q --actor \"<actor>\" --reason \"<why-it-is-repaired>\" --authorization \"<maintainer-authorization>\"`"+
+		" (`hgtran-ai review repair --preflight --cwd %q` re-confirms these are still current);"+
 		" the repair quarantines the entry whole and rewrites nothing, so the recorded authorization bytes survive exactly as persisted."+
 		" --authorization is exactly these seven lines, joined by LF, with no trailing newline, using the same --actor and --reason with surrounding whitespace trimmed:\n%s",
 		repo, plan.PlanDigest, plan.AuthorityInventoryRevision, repo, authorityDispositionAuthorizationBinding(template))

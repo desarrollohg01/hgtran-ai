@@ -215,7 +215,7 @@ func TestNegotiatedReviewBindSDDRejectsHistoricalLegacyThroughTypedFailureEnvelo
 	fixture := newLegacyCLIFixture(t, "historical-bind-sdd")
 	writeNegotiatedOperationChange(t, fixture.repo, "thin")
 	commonDir := strings.TrimSpace(runReviewCLIGit(t, fixture.repo, "rev-parse", "--path-format=absolute", "--git-common-dir"))
-	authorityRoot := filepath.Join(commonDir, "gentle-ai")
+	authorityRoot := filepath.Join(commonDir, "hgtran-ai")
 	before := readLegacyAuthorityTree(t, authorityRoot)
 
 	var output bytes.Buffer
@@ -249,7 +249,7 @@ func TestNegotiatedReviewBindSDDRejectsHistoricalLegacyThroughTypedFailureEnvelo
 }
 
 func TestNegotiatedReviewOperationsRejectInvalidContractsBeforeMutation(t *testing.T) {
-	for _, contract := range []string{"", "gentle-ai.review-integration/v3"} {
+	for _, contract := range []string{"", "hgtran-ai.review-integration/v3"} {
 		t.Run("finalize_"+contract, func(t *testing.T) {
 			repo := initReviewCLIRepo(t)
 			writeNegotiatedOperationChange(t, repo, "thin")
@@ -473,5 +473,5 @@ func readReviewOperationRuntimeBinding(t *testing.T, repo, change string) sddsta
 
 func reviewOperationBindingPath(store reviewtransaction.CompactStore, change string) string {
 	common := filepath.Dir(filepath.Dir(filepath.Dir(filepath.Dir(store.Dir))))
-	return filepath.Join(common, "gentle-ai", "sdd-runtime", "v1", change, "HEAD")
+	return filepath.Join(common, "hgtran-ai", "sdd-runtime", "v1", change, "HEAD")
 }

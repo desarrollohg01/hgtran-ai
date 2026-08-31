@@ -216,12 +216,12 @@ func TestKilocodeReviewInspectionIsNativeAndWindowsPortable(t *testing.T) {
 		}
 	}
 	for _, operation := range []string{"name-status", "numstat", "stat", "patch", "object"} {
-		if !strings.Contains(prompt, "gentle-ai review inspect-candidate") || !strings.Contains(prompt, "--operation "+operation) {
+		if !strings.Contains(prompt, "hgtran-ai review inspect-candidate") || !strings.Contains(prompt, "--operation "+operation) {
 			t.Errorf("review prompt omits native %s inspection recipe", operation)
 		}
 	}
 	bash := permission["bash"].(map[string]any)
-	if bash["*"] != "deny" || bash["gentle-ai review inspect-candidate *"] == "allow" {
+	if bash["*"] != "deny" || bash["hgtran-ai review inspect-candidate *"] == "allow" {
 		t.Fatalf("reviewer permission is not deny-by-default and exact: %#v", bash)
 	}
 }
@@ -277,7 +277,7 @@ func TestOpenCodeRenderedReviewProtocolCost(t *testing.T) {
 		maxCharacters int
 	}{
 		// wantChars grew by 110 (7,085 -> 7,195 / 14,078 -> 14,188) when the
-		// review-ledger-contract.md GENTLE_AI_REVIEW_BINDING sentence was
+		// review-ledger-contract.md HGTRAN_AI_REVIEW_BINDING sentence was
 		// corrected: it previously claimed START emits that field verbatim,
 		// which no emitter does; it now says how to assemble it from START's
 		// own lineage_id/target_identity/lens_bindings fields (issue: docs vs
@@ -290,7 +290,7 @@ func TestOpenCodeRenderedReviewProtocolCost(t *testing.T) {
 		// subject_hash and no inspection, and one reported inspection.status
 		// "access_failure" after trying to inspect the candidate and
 		// verify its SHA-256 itself, which its declared read-only tools never
-		// permitted. The prompt now names GENTLE_AI_REVIEW_BINDING as the only
+		// permitted. The prompt now names HGTRAN_AI_REVIEW_BINDING as the only
 		// source of subject_hash, forbids inventing it, says the diff and
 		// manifest arrive in the prompt, and states that there are no
 		// execution tools. This is a deliberate contract change, not drift.

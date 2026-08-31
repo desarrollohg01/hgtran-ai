@@ -1,6 +1,6 @@
 # OpenSpec Config for SDD
 
-`openspec/config.yaml` is a documented project-level convention for SDD in `gentle-ai` when working in `openspec` or `hybrid` persistence modes.
+`openspec/config.yaml` is a documented project-level convention for SDD in `hgtran-ai` when working in `openspec` or `hybrid` persistence modes.
 
 It is useful, and parts of the SDD prompt/skill stack look for it today, but this should not be read as a formally versioned runtime schema enforced by Go code.
 

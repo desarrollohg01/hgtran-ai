@@ -15,8 +15,8 @@ func TestRDDDisabledErrorNamesTheCommandThatTurnsItBackOn(t *testing.T) {
 		source RDDModeSource
 		want   string
 	}{
-		{name: "global", source: RDDModeSourceGlobal, want: "gentle-ai review mode enable --scope=global"},
-		{name: "clone local", source: RDDModeSourceCloneLocal, want: "gentle-ai review mode enable --scope=clone"},
+		{name: "global", source: RDDModeSourceGlobal, want: "hgtran-ai review mode enable --scope=global"},
+		{name: "clone local", source: RDDModeSourceCloneLocal, want: "hgtran-ai review mode enable --scope=clone"},
 	} {
 		t.Run(testCase.name, func(t *testing.T) {
 			err := &RDDDisabledError{Operation: RDDOperationStart, Source: testCase.source}
@@ -54,8 +54,8 @@ func TestRDDDisabledMutationSaysTheReviewIsFrozenAndWhatReEnablingResumes(t *tes
 		source RDDModeSource
 		want   string
 	}{
-		{name: "global", source: RDDModeSourceGlobal, want: "gentle-ai review mode enable --scope=global"},
-		{name: "clone local", source: RDDModeSourceCloneLocal, want: "gentle-ai review mode enable --scope=clone"},
+		{name: "global", source: RDDModeSourceGlobal, want: "hgtran-ai review mode enable --scope=global"},
+		{name: "clone local", source: RDDModeSourceCloneLocal, want: "hgtran-ai review mode enable --scope=clone"},
 	} {
 		t.Run(testCase.name, func(t *testing.T) {
 			got := (&RDDDisabledError{Operation: RDDOperationMutate, Source: testCase.source}).Error()

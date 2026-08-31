@@ -14,7 +14,7 @@ import (
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/reviewtransaction"
 )
 
-const SchemaName = "gentle-ai.sdd-status"
+const SchemaName = "hgtran-ai.sdd-status"
 const SchemaVersion = 1
 
 type ArtifactStore string
@@ -185,7 +185,7 @@ type ReviewGateState struct {
 	// ever set while disabled, so ReviewGate is nil (structural absence)
 	// rather than a populated disabled/unmanaged disposition. Delivery is
 	// therefore never non-empty in production today. The field itself is
-	// kept, unpopulated, for legacy Gentle Pi wire-shape stability
+	// kept, unpopulated, for legacy Hgtran Pi wire-shape stability
 	// (rdd-sdd-receipt-consumption's "Legacy reviewGate v1 Field
 	// Compatibility" assumption 5); its removal is deferred to Wave 7 along
 	// with the rest of that requirement's legacy-field retirement.
@@ -265,7 +265,7 @@ func applyReviewOfferRouting(ctx context.Context, status *Status, workspaceRoot,
 	status.ReviewOffer = &ReviewOfferBlock{
 		Available:  offer.Available,
 		LineageID:  offer.LineageID,
-		Invocation: fmt.Sprintf("gentle-ai review start --cwd %q", workspaceRoot),
+		Invocation: fmt.Sprintf("hgtran-ai review start --cwd %q", workspaceRoot),
 	}
 }
 
@@ -480,7 +480,7 @@ func Resolve(options ResolveOptions) (Status, error) {
 	// consulted once here, mirroring applyReviewGate's own fix. Without this,
 	// a stale-verify-totals fixture reached resolveReviewAuthority's
 	// discovery walk and appended "... run the fresh full review ... with
-	// gentle-ai review start" as a blocked reason while the switch was OFF —
+	// hgtran-ai review start" as a blocked reason while the switch was OFF —
 	// a command the switch itself refuses to run, and archive blocking on
 	// review grounds while OFF at all, both violations of the ratified
 	// "archive consults no reviewGate structured status ... archive cannot
@@ -680,7 +680,7 @@ func applyNativeRuntimeErrorRouting(status *Status, runtimeErr error) {
 		change = *status.ChangeName
 	}
 	reason := fmt.Sprintf(
-		"native SDD runtime authority is unreadable and execution is blocked: %v; do not launch another actor or edit the Git-common-dir authority manually; the compact attempt path reports blocked(corrupt_authority), and full `gentle-ai sdd-attempt status --cwd %q --change %q` is a maintainer diagnostic only",
+		"native SDD runtime authority is unreadable and execution is blocked: %v; do not launch another actor or edit the Git-common-dir authority manually; the compact attempt path reports blocked(corrupt_authority), and full `hgtran-ai sdd-attempt status --cwd %q --change %q` is a maintainer diagnostic only",
 		runtimeErr, status.ActionContext.WorkspaceRoot, change,
 	)
 	status.Dependencies.Apply = DependencyBlocked
@@ -940,7 +940,7 @@ func blockedEngramStatus(workspaceRoot string, changeName *string, next string, 
 // apply -> verify -> offer -> archive sequence.
 
 func shouldTryEngram(workspaceRoot string) bool {
-	if os.Getenv("GENTLE_AI_SDD_STATUS_ENGRAM") != "" {
+	if os.Getenv("HGTRAN_AI_SDD_STATUS_ENGRAM") != "" {
 		return true
 	}
 	if _, err := os.Stat(filepath.Join(workspaceRoot, ".engram")); err == nil {
@@ -966,7 +966,7 @@ func configMentionsEngram(content string) bool {
 }
 
 func exportEngramObservations(workspaceRoot string) ([]engramObservation, error) {
-	tmp, err := os.CreateTemp("", "gentle-ai-sdd-engram-*.json")
+	tmp, err := os.CreateTemp("", "hgtran-ai-sdd-engram-*.json")
 	if err != nil {
 		return nil, err
 	}
@@ -1743,9 +1743,9 @@ func renderPhaseInstructions(status Status) PhaseInstructions {
 func nativeRuntimeInstructions(status Status, change string) []string {
 	workspace := status.ActionContext.WorkspaceRoot
 	return []string{
-		fmt.Sprintf("Before any runtime-bearing apply, verify, or remediation launch, run `gentle-ai sdd-attempt acquire --cwd %q --change %q --request-id \"<unique-request-id>\" --work-unit \"<label>\" --evidence-goal \"<stable-goal>\" --max-attempts <count> --max-changed-lines <count>`.", workspace, change),
+		fmt.Sprintf("Before any runtime-bearing apply, verify, or remediation launch, run `hgtran-ai sdd-attempt acquire --cwd %q --change %q --request-id \"<unique-request-id>\" --work-unit \"<label>\" --evidence-goal \"<stable-goal>\" --max-attempts <count> --max-changed-lines <count>`.", workspace, change),
 		"Launch only for state proceed and retain its opaque token. State blocked or complete stops the launch; full runtime status is a diagnostic escape hatch, not normal model context.",
-		fmt.Sprintf("After the external run, call `gentle-ai sdd-attempt settle --cwd %q --change %q --token \"<acquire-token>\" --request-id \"<unique-request-id>\" --outcome <passed|failed|interrupted> --evidence-revision <sha256> --diagnosis \"<proven-diagnosis>\" --harness-disposition <reused|invalidated> --cleanup-evidence \"<evidence>\" --process-evidence \"<evidence>\"`; add --successor-lineage only for a distinct approved remediation successor.", workspace, change),
+		fmt.Sprintf("After the external run, call `hgtran-ai sdd-attempt settle --cwd %q --change %q --token \"<acquire-token>\" --request-id \"<unique-request-id>\" --outcome <passed|failed|interrupted> --evidence-revision <sha256> --diagnosis \"<proven-diagnosis>\" --harness-disposition <reused|invalidated> --cleanup-evidence \"<evidence>\" --process-evidence \"<evidence>\"`; add --successor-lineage only for a distinct approved remediation successor.", workspace, change),
 		"Treat settle state proceed as permission for another bounded acquire, blocked as a hard stop, and complete as terminal. Reset is exceptional, requires an explicit maintainer scope decision, and is never automatic.",
 	}
 }
@@ -1763,15 +1763,15 @@ func nonPhaseRoutingInstructions(status Status) ([]string, bool) {
 		return []string{
 			"",
 			"### Next Review Operation",
-			fmt.Sprintf("- Run `gentle-ai review start --cwd %q`; the facade derives intended untracked scope, lineage, tier, lenses, and correction budget from live Git.", status.ActionContext.WorkspaceRoot),
-			"- Pass reviewer result and verification evidence to `gentle-ai review finalize`; do not hand-author lifecycle operation JSON.",
-			"- Continue discovered authority instead of starting another budget, and reconcile existing terminal mirrors only after `gentle-ai review validate --gate post-apply` allows.",
+			fmt.Sprintf("- Run `hgtran-ai review start --cwd %q`; the facade derives intended untracked scope, lineage, tier, lenses, and correction budget from live Git.", status.ActionContext.WorkspaceRoot),
+			"- Pass reviewer result and verification evidence to `hgtran-ai review finalize`; do not hand-author lifecycle operation JSON.",
+			"- Continue discovered authority instead of starting another budget, and reconcile existing terminal mirrors only after `hgtran-ai review validate --gate post-apply` allows.",
 		}, true
 	case "select-change":
 		return []string{
 			"",
 			"### Next Selection Operation",
-			fmt.Sprintf("- Rerun with an explicit change name from Blocked Reasons above: `gentle-ai sdd-status --cwd %q <change-name>` or `gentle-ai sdd-continue --cwd %q <change-name>`.", status.ActionContext.WorkspaceRoot, status.ActionContext.WorkspaceRoot),
+			fmt.Sprintf("- Rerun with an explicit change name from Blocked Reasons above: `hgtran-ai sdd-status --cwd %q <change-name>` or `hgtran-ai sdd-continue --cwd %q <change-name>`.", status.ActionContext.WorkspaceRoot, status.ActionContext.WorkspaceRoot),
 		}, true
 	default:
 		return nil, false

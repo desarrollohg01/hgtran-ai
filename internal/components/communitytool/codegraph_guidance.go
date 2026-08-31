@@ -44,7 +44,7 @@ func CodeGraphGuidanceMarkdown() string {
 		"",
 		"- Prefer the `codegraph_explore` MCP tool when it is available; it returns relevant source, call paths, and blast-radius context in one call.",
 		"- If the MCP tool is unavailable, invoke the upstream CLI directly. Agents may use its read-only intelligence commands: `codegraph status`, `codegraph query`, `codegraph explore`, `codegraph node`, `codegraph files`, `codegraph callers`, `codegraph callees`, `codegraph impact`, and `codegraph affected`.",
-		"- Do not use `gentle-ai codegraph` as a general proxy. Its `init` command exists only to validate the project root before initialization; intelligence queries belong to the upstream CLI.",
+		"- Do not use `hgtran-ai codegraph` as a general proxy. Its `init` command exists only to validate the project root before initialization; intelligence queries belong to the upstream CLI.",
 		"- Never run or recommend destructive or administrative lifecycle commands: `codegraph uninit`, `codegraph install`, `codegraph uninstall`, or `codegraph upgrade`. Reserve `codegraph index` for explicit index-corruption recovery, never routine use.",
 		"",
 		"Required order for structural/codebase questions:",
@@ -52,7 +52,7 @@ func CodeGraphGuidanceMarkdown() string {
 		"1. Resolve the project root with `git rev-parse --show-toplevel || pwd`.",
 		"2. Confirm the root is a real project/workspace. Do not ask the user before initializing CodeGraph in a real project. Do not initialize CodeGraph in `$HOME`, temporary directories, or non-project folders.",
 		"3. Check for `<project-root>/.codegraph/` before any broad Read/Glob/Grep filesystem exploration.",
-		"4. If `.codegraph/` is missing and CodeGraph is enabled/available, immediately run `gentle-ai codegraph init --cwd <project-root>` once.",
+		"4. If `.codegraph/` is missing and CodeGraph is enabled/available, immediately run `hgtran-ai codegraph init --cwd <project-root>` once.",
 		"5. Missing .codegraph/ is the trigger to initialize, not a reason to skip CodeGraph. Do not fall back just because `.codegraph/` is missing; a missing index is the trigger to lazy-initialize, not a reason to skip CodeGraph.",
 		"6. Use `codegraph_explore` after initialization, or the read-only upstream CLI commands when MCP tools are absent.",
 		"7. After edits, rely on watcher auto-sync by default. Run `codegraph sync` only when the watcher is disabled or CodeGraph reports stale files that do not refresh normally.",
@@ -128,7 +128,7 @@ func HasManagedCodeGraphGuidance(homeDir string) bool {
 		if err != nil {
 			continue
 		}
-		if strings.Contains(string(data), "<!-- gentle-ai:"+codeGraphGuidanceSectionID+" -->") {
+		if strings.Contains(string(data), "<!-- hgtran-ai:"+codeGraphGuidanceSectionID+" -->") {
 			return true
 		}
 	}
@@ -555,8 +555,8 @@ func hasCodeGraphGuidance(path string) bool {
 		return false
 	}
 	content := strings.ToLower(string(data))
-	return strings.Contains(content, "gentle-ai:"+codeGraphGuidanceSectionID) ||
-		(strings.Contains(content, "codegraph") && strings.Contains(content, "gentle-ai codegraph init --cwd <project-root>"))
+	return strings.Contains(content, "hgtran-ai:"+codeGraphGuidanceSectionID) ||
+		(strings.Contains(content, "codegraph") && strings.Contains(content, "hgtran-ai codegraph init --cwd <project-root>"))
 }
 
 func codeGraphGuidancePath(homeDir string, adapter agents.Adapter) string {

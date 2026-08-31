@@ -20,7 +20,7 @@ func renderUpgradeReportForTest(results []upgrade.ToolUpgradeResult, dryRun bool
 
 // --- TestRunArgs_UpgradeDryRunFlag ---
 
-// TestRunArgs_UpgradeDryRun verifies that `gentle-ai upgrade --dry-run` runs without
+// TestRunArgs_UpgradeDryRun verifies that `hgtran-ai upgrade --dry-run` runs without
 // error, outputs relevant messaging, and does NOT attempt any real installation.
 // The environment has no tools installed, so no upgrades are available.
 func TestRunArgs_UpgradeDryRun(t *testing.T) {
@@ -52,7 +52,7 @@ func TestRunArgs_UpgradeDryRun(t *testing.T) {
 	}
 }
 
-// TestRunArgs_UpgradeNoArgs runs `gentle-ai upgrade` without flags.
+// TestRunArgs_UpgradeNoArgs runs `hgtran-ai upgrade` without flags.
 // With no updates available in the test environment, it should exit cleanly.
 func TestRunArgs_UpgradeNoArgs(t *testing.T) {
 	var buf bytes.Buffer
@@ -69,7 +69,7 @@ func TestRunArgs_UpgradeNoArgs(t *testing.T) {
 	}
 }
 
-// TestRunArgs_UpgradeToolFilter verifies that `gentle-ai upgrade engram` filters
+// TestRunArgs_UpgradeToolFilter verifies that `hgtran-ai upgrade engram` filters
 // to only check/upgrade engram.
 func TestRunArgs_UpgradeToolFilter(t *testing.T) {
 	var buf bytes.Buffer
@@ -83,10 +83,10 @@ func TestRunArgs_UpgradeToolFilter(t *testing.T) {
 	}
 
 	out := buf.String()
-	// Output should only mention engram or no-upgrades, not gentle-ai or gga.
+	// Output should only mention engram or no-upgrades, not hgtran-ai or gga.
 	// This is a soft check since the tool may not be installed.
-	if strings.Contains(out, "gentle-ai") && !strings.Contains(out, "engram") {
-		t.Errorf("filtering to engram should not show gentle-ai in output; got: %s", out)
+	if strings.Contains(out, "hgtran-ai") && !strings.Contains(out, "engram") {
+		t.Errorf("filtering to engram should not show hgtran-ai in output; got: %s", out)
 	}
 }
 
@@ -169,28 +169,28 @@ func TestRenderUpgradeReport_PerToolSemantics_Deterministic(t *testing.T) {
 			name: "dev-build skipped shows skipped status not failure",
 			results: []upgrade.ToolUpgradeResult{
 				{
-					ToolName:   "gentle-ai",
+					ToolName:   "hgtran-ai",
 					OldVersion: "dev",
 					NewVersion: "1.0.0",
 					Status:     upgrade.UpgradeSkipped,
 					ManualHint: "source build — upgrade manually or install a release binary",
 				},
 			},
-			wantContains:   []string{"gentle-ai", "[--]", "source build"},
+			wantContains:   []string{"hgtran-ai", "[--]", "source build"},
 			wantNotContain: []string{"[!!]", "FAILED"},
 		},
 		{
 			name: "manual fallback shows hint not failure",
 			results: []upgrade.ToolUpgradeResult{
 				{
-					ToolName:   "gentle-ai",
+					ToolName:   "hgtran-ai",
 					OldVersion: "1.0.0",
 					NewVersion: "1.5.0",
 					Status:     upgrade.UpgradeSkipped,
-					ManualHint: "Download from https://github.com/Gentleman-Programming/gentle-ai/releases",
+					ManualHint: "Download from https://github.com/Gentleman-Programming/hgtran-ai/releases",
 				},
 			},
-			wantContains:   []string{"gentle-ai", "manual update required", "github.com", "[--]"},
+			wantContains:   []string{"hgtran-ai", "manual update required", "github.com", "[--]"},
 			wantNotContain: []string{"[!!]", "FAILED"},
 		},
 		{
@@ -231,7 +231,7 @@ func TestRenderUpgradeReport_PerToolSemantics_Deterministic(t *testing.T) {
 					Status:     upgrade.UpgradeSucceeded,
 				},
 				{
-					ToolName:   "gentle-ai",
+					ToolName:   "hgtran-ai",
 					OldVersion: "dev",
 					NewVersion: "1.5.0",
 					Status:     upgrade.UpgradeSkipped,
@@ -245,7 +245,7 @@ func TestRenderUpgradeReport_PerToolSemantics_Deterministic(t *testing.T) {
 					ManualHint: "Download from https://github.com/Gentleman-Programming/gga/releases",
 				},
 			},
-			wantContains:   []string{"engram", "[ok]", "gentle-ai", "[--]", "hga", "1 succeeded", "2 skipped"},
+			wantContains:   []string{"engram", "[ok]", "hgtran-ai", "[--]", "hga", "1 succeeded", "2 skipped"},
 			wantNotContain: []string{"FAILED", "[!!]"},
 		},
 	}

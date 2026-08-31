@@ -2,27 +2,27 @@
 
 ## Technical Approach
 
-Layer the change onto existing modules without new packages. State store (`internal/state`) gains two additive fields backing cooldown + deferred sync. The update check (`internal/update`) gains a TTL gate and an async advisory fetch. The TUI (`internal/tui/model.go`) gains one pre-Welcome screen state. The CLI self-update (`internal/app/selfupdate.go`) makes the existing TTY-aware prompt the default and converges on close-and-reopen. The upgrade executor (`internal/update/upgrade`, `internal/components/engram/download.go`) starts honoring `GENTLE_AI_CHANNEL`. All artifacts are informational-only — no version gate anywhere.
+Layer the change onto existing modules without new packages. State store (`internal/state`) gains two additive fields backing cooldown + deferred sync. The update check (`internal/update`) gains a TTL gate and an async advisory fetch. The TUI (`internal/tui/model.go`) gains one pre-Welcome screen state. The CLI self-update (`internal/app/selfupdate.go`) makes the existing TTY-aware prompt the default and converges on close-and-reopen. The upgrade executor (`internal/update/upgrade`, `internal/components/engram/download.go`) starts honoring `HGTRAN_AI_CHANNEL`. All artifacts are informational-only — no version gate anywhere.
 
 ## Architecture Decisions
 
 ### Decision: TUI pre-Welcome prompt as a new Screen state
 
-**Choice**: Add `ScreenUpdatePrompt`. `Init` (model.go:602) keeps firing `update.CheckAll`; when `UpdateCheckResultMsg` arrives with `HasUpdates`, set `Screen = ScreenUpdatePrompt` BEFORE Welcome. Render lists current→latest, three key actions: `u`=update (run `UpgradeFn` for gentle-ai then `tea.Quit`), `c`/Enter=keep (transition to `ScreenWelcome`), `v`=view changes (open `UpdateResults[i].ReleaseURL`, types.go:68, via an `openURLFn` command). If no update, go straight to Welcome (current behavior, model.go:851). The banner at model.go:852 stays as a fallback for the keep path.
+**Choice**: Add `ScreenUpdatePrompt`. `Init` (model.go:602) keeps firing `update.CheckAll`; when `UpdateCheckResultMsg` arrives with `HasUpdates`, set `Screen = ScreenUpdatePrompt` BEFORE Welcome. Render lists current→latest, three key actions: `u`=update (run `UpgradeFn` for hgtran-ai then `tea.Quit`), `c`/Enter=keep (transition to `ScreenWelcome`), `v`=view changes (open `UpdateResults[i].ReleaseURL`, types.go:68, via an `openURLFn` command). If no update, go straight to Welcome (current behavior, model.go:851). The banner at model.go:852 stays as a fallback for the keep path.
 
 **Alternatives considered**: Overlay/modal on Welcome; a bubbletea sub-model.
 **Rationale**: The codebase models every screen as a `Screen` enum with a `View()` switch (model.go:848). A new enum value is the idiomatic, lowest-risk fit. Bubbletea note: the screen renders only after the async check resolves, so a brief Welcome-less spinner frame may show; reuse the existing `UpdateCheckDone` guard to render a "checking…" state until results land.
 
 ### Decision: Converge both OSes on close-and-reopen
 
-**Choice**: After a successful gentle-ai self-upgrade, ALWAYS print "Updated to vX — restart gentle-ai to use the new version." and return (no re-exec) on BOTH Unix and Windows. Drop the Unix `reExec` branch in `restartAfterGentleAIUpgrade` (selfupdate.go:153-184). TUI "update" path runs the upgrade then `tea.Quit`.
+**Choice**: After a successful hgtran-ai self-upgrade, ALWAYS print "Updated to vX — restart hgtran-ai to use the new version." and return (no re-exec) on BOTH Unix and Windows. Drop the Unix `reExec` branch in `restartAfterGentleAIUpgrade` (selfupdate.go:153-184). TUI "update" path runs the upgrade then `tea.Quit`.
 
 **Alternatives considered**: Keep Unix re-exec (status quo); OS-conditional behavior.
 **Rationale**: Locked decision. Re-exec is invisible on Unix but impossible on Windows (binary lock) — divergent UX and divergent test surface. One close-and-reopen path is consistent, sidesteps the Windows lock, and the copy makes the exit non-surprising. Tradeoff: Unix users lose seamless restart; mitigated by one clear line of copy.
 
 ### Decision: CLI prompt is default, gated by TTY not env
 
-**Choice**: Remove the `envConfirmUpdate` gate (selfupdate.go:29, 110-116). Always call `promptFn` before applying. `defaultPromptForUpdate` already declines when stdin is not a TTY (selfupdate.go:40-41) — that becomes the CI/non-interactive fallback (no update applied, no prompt). Add a `--yes` flag and honor existing `GENTLE_AI_NO_SELF_UPDATE=1` opt-out; keep `GENTLE_AI_SELF_UPDATE_DONE` loop guard.
+**Choice**: Remove the `envConfirmUpdate` gate (selfupdate.go:29, 110-116). Always call `promptFn` before applying. `defaultPromptForUpdate` already declines when stdin is not a TTY (selfupdate.go:40-41) — that becomes the CI/non-interactive fallback (no update applied, no prompt). Add a `--yes` flag and honor existing `HGTRAN_AI_NO_SELF_UPDATE=1` opt-out; keep `HGTRAN_AI_SELF_UPDATE_DONE` loop guard.
 
 **Alternatives considered**: Keep env gate but default it on; prompt always regardless of TTY.
 **Rationale**: TTY detection already exists and is the correct non-interactive signal. Prompting a pipe would hang CI. `--yes` covers scripted opt-in; env opt-out preserves existing escape hatch.
@@ -36,14 +36,14 @@ Layer the change onto existing modules without new packages. State store (`inter
 
 ### Decision: pending_sync flag drives deferred sync after self-upgrade
 
-**Choice**: Add `PendingSync bool` (`json:"pending_sync,omitempty"`). Set it true in the self-upgrade success path (selfupdate.go ~141, before printing restart copy) and in TUI "Upgrade + Sync" when a gentle-ai self-upgrade occurred. On next launch, early in `app.go` Run (after `state.Read`, app.go:127), if `PendingSync`, the NEW binary runs `cli.RunSync` then writes the flag false. Failure: log a warning, leave the flag set so it retries next launch (idempotent sync).
+**Choice**: Add `PendingSync bool` (`json:"pending_sync,omitempty"`). Set it true in the self-upgrade success path (selfupdate.go ~141, before printing restart copy) and in TUI "Upgrade + Sync" when a hgtran-ai self-upgrade occurred. On next launch, early in `app.go` Run (after `state.Read`, app.go:127), if `PendingSync`, the NEW binary runs `cli.RunSync` then writes the flag false. Failure: log a warning, leave the flag set so it retries next launch (idempotent sync).
 
 **Alternatives considered**: Re-exec then sync inline (status quo gap); a separate sentinel file.
 **Rationale**: state.json is already read at launch (app.go:127) — one extra bool, no new I/O surface. Leaving the flag on failure makes recovery automatic. Sync is idempotent (sync.go re-sync is a no-op when current), so retry is safe.
 
 ### Decision: Advisory manifest = single JSON release asset, async, fail-open
 
-**Choice**: Host `advisory.json` as a release asset on the gentle-ai repo's `latest` release (stable, owner-controlled, CDN-backed, no extra infra): `https://github.com/Gentleman-Programming/gentle-ai/releases/latest/download/advisory.json`. Schema: `{"message": string, "severity": "info"|"warn", "url": string}` — all optional, informational only. Fetch with a 2s timeout in a background goroutine kicked off alongside `CheckAll`; on any error, return empty (fail-open, no blocking). Display the message after the update prompt / on Welcome; never gate.
+**Choice**: Host `advisory.json` as a release asset on the hgtran-ai repo's `latest` release (stable, owner-controlled, CDN-backed, no extra infra): `https://github.com/Gentleman-Programming/hgtran-ai/releases/latest/download/advisory.json`. Schema: `{"message": string, "severity": "info"|"warn", "url": string}` — all optional, informational only. Fetch with a 2s timeout in a background goroutine kicked off alongside `CheckAll`; on any error, return empty (fail-open, no blocking). Display the message after the update prompt / on Welcome; never gate.
 
 **Alternatives considered**: GitHub Pages (extra setup, another moving part), raw repo file (tied to a branch ref, no CDN), gist (low discoverability, easy to lose).
 **Rationale**: A release asset is the most stable owner-controlled option for a solo maintainer — same trust boundary as releases, CDN latency, editable by re-uploading the asset without a code change. 2s timeout + fail-open guarantees zero added launch latency on a slow/absent endpoint.
@@ -121,5 +121,5 @@ All state fields are additive with `omitempty`; old binaries ignore unknown JSON
 
 ## Open Questions
 
-- [ ] Confirm `advisory.json` lives on gentle-ai `latest` release vs. a dedicated `advisory` tag (latency identical; tag avoids re-upload per release).
+- [ ] Confirm `advisory.json` lives on hgtran-ai `latest` release vs. a dedicated `advisory` tag (latency identical; tag avoids re-upload per release).
 - [ ] TUI "view changes": open in browser (`openURLFn`) vs. print URL and stay on prompt — confirm with maintainer UX preference.

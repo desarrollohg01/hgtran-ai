@@ -17,9 +17,9 @@ import (
 )
 
 const (
-	AuthorityRepairAssessmentSchema    = "gentle-ai.review-authority-repair-assessment/v1"
-	AuthorityRepairAssessmentSchemaID  = "https://gentle-ai.dev/contracts/review-integration/v1/schemas/authority-repair-assessment.schema.json"
-	AuthorityRepairAuthorizationSchema = "gentle-ai.review-repair-authorization/v1"
+	AuthorityRepairAssessmentSchema    = "hgtran-ai.review-authority-repair-assessment/v1"
+	AuthorityRepairAssessmentSchemaID  = "https://hgtran-ai.dev/contracts/review-integration/v1/schemas/authority-repair-assessment.schema.json"
+	AuthorityRepairAuthorizationSchema = "hgtran-ai.review-repair-authorization/v1"
 
 	AuthorityRepairClassLegacyV1HistoricalAlias               AuthorityRepairClass       = "legacy_v1_historical_alias"
 	AuthorityRepairCauseUnsupportedHistoricalV1OperationAlias AuthorityRepairCause       = "unsupported_historical_v1_operation_alias"
@@ -751,9 +751,9 @@ func authorityRepairRoot(root string) (string, string, error) {
 	if err != nil || !info.IsDir() {
 		return "", "", errors.New("repository common directory is invalid")
 	}
-	sum := sha256.Sum256([]byte("gentle-ai.review-repository-binding/v1\n" + common))
+	sum := sha256.Sum256([]byte("hgtran-ai.review-repository-binding/v1\n" + common))
 	binding := "sha256:" + hex.EncodeToString(sum[:])
-	return filepath.Join(common, "gentle-ai", "review-transactions"), binding, nil
+	return filepath.Join(common, "hgtran-ai", "review-transactions"), binding, nil
 }
 
 func (assessment AuthorityRepairAssessment) Validate() error {

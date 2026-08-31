@@ -1,5 +1,5 @@
 ```yaml
-schema: gentle-ai.verify-result/v1
+schema: hgtran-ai.verify-result/v1
 evidence_revision: sha256:4ef296a17accd02813430fcd56277c49a17f73d43af6ac2d5902cd9896ec7b79
 verdict: pass
 blockers: 0
@@ -19,7 +19,7 @@ build_output_hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca49599
 **Change**: rdd-root-simplification-wave1
 **Version**: Wave 1 (Shadow Algebra), 4 capability specs — 22 requirements / 28 scenarios
 **Mode**: Strict TDD
-**Candidate**: worktree `/home/gentleman/work/gentle-ai-worktrees/rdd-wave0`, branch `feat/rdd-wave1-shadow-observer-wiring`, chain tip `3480bcd0`, working tree clean (`git status --short` empty, `git diff HEAD` empty)
+**Candidate**: worktree `/home/gentleman/work/hgtran-ai-worktrees/rdd-wave0`, branch `feat/rdd-wave1-shadow-observer-wiring`, chain tip `3480bcd0`, working tree clean (`git status --short` empty, `git diff HEAD` empty)
 **Prior report**: FAIL at tip `7fbfece3` — 1 CRITICAL (CRITICAL-3), 7 WARNING, 4 SUGGESTION (preserved verbatim below)
 **Verified by**: independent re-execution. Every remediation claim in commit `3480bcd0` and in `apply-progress` was re-derived from source and runtime, including an independent RED reproduction; nothing was trusted.
 **Attempt authority (echoed, not settled)**: `sha256:afd75416724368c9cf8ed95c1be7ac4e36de2cd082f838107e7d2bb3280dc2ff`
@@ -95,7 +95,7 @@ Targeted verbose re-execution — 5/5 PASS, zero SKIP:
 | `TestNativePrePRGateShadowOnOffByteIdenticalForCompatibleBaseAdvance` | spot-check — pre-PR ON/OFF byte identity | PASS (0.41s) |
 | `TestShadowMatrixRealCorpusHasZeroUnexplainedDivergences` | spot-check — zero unexplained divergences | PASS (0.00s) |
 
-**Ratchets**: both clean. Deadcode ratchet exit 0 without `--update`. Refusal ratchet (`TestEveryProductionRefusalNamesResolutionOrDeclaresByDesign`) green inside the passing `internal/cli` package, `GENTLE_AI_REFUSAL_RATCHET_UPDATE` never set. Note the new test exercises the `shadow_identity.go:266` site that carries a `// refusal:by-design world-action:` annotation — the annotation now has runtime coverage behind it, not only static declaration.
+**Ratchets**: both clean. Deadcode ratchet exit 0 without `--update`. Refusal ratchet (`TestEveryProductionRefusalNamesResolutionOrDeclaresByDesign`) green inside the passing `internal/cli` package, `HGTRAN_AI_REFUSAL_RATCHET_UPDATE` never set. Note the new test exercises the `shadow_identity.go:266` site that carries a `// refusal:by-design world-action:` annotation — the annotation now has runtime coverage behind it, not only static declaration.
 
 **Golden determinism**: `TestShadowMatrixCoveringArrayGolden` ran inside the full suite without `-update`; `git status --short` empty afterwards.
 
@@ -134,11 +134,11 @@ Every other row was re-run inside the green full suite and still holds.
 | Spec requirements | 22 (4 + 5 + 6 + 7 across the four capability specs) |
 | Spec scenarios | 28 (5 + 7 + 9 + 7) |
 
-Task/code agreement re-checked: `tasks.md` 5.3, 5.5 and 5.7 now cite the tests that actually carry the claims, and 5.7's guard text matches `gate.go:361` verbatim. The prior mirror drift is gone — `/home/gentleman/work/gentle-ai/openspec/changes/rdd-root-simplification-wave1/tasks.md` and the worktree copy are byte-identical (`diff` clean), both 50 checked / 0 unchecked.
+Task/code agreement re-checked: `tasks.md` 5.3, 5.5 and 5.7 now cite the tests that actually carry the claims, and 5.7's guard text matches `gate.go:361` verbatim. The prior mirror drift is gone — `/home/gentleman/work/hgtran-ai/openspec/changes/rdd-root-simplification-wave1/tasks.md` and the worktree copy are byte-identical (`diff` clean), both 50 checked / 0 unchecked.
 
 ### Machine gate
 
-`gentle-ai sdd-verify-validate --input <candidate> --requirements 22 --scenarios 28` (v2.2.4+pr2151) — **ADMITTED**, exit 0:
+`hgtran-ai sdd-verify-validate --input <candidate> --requirements 22 --scenarios 28` (v2.2.4+pr2151) — **ADMITTED**, exit 0:
 
 ```json
 {
@@ -188,10 +188,10 @@ The counts passed to the validator are the authoritative ones re-counted from th
 
 ## Superseded — re-verification report (tip `7fbfece3`, FAIL)
 
-Preserved verbatim as history. Only its opening code-fence language is changed from `yaml` to `text`, so this file carries exactly one authoritative `gentle-ai.verify-result/v1` envelope; no other byte is altered.
+Preserved verbatim as history. Only its opening code-fence language is changed from `yaml` to `text`, so this file carries exactly one authoritative `hgtran-ai.verify-result/v1` envelope; no other byte is altered.
 
 ```text
-schema: gentle-ai.verify-result/v1
+schema: hgtran-ai.verify-result/v1
 evidence_revision: sha256:c5b74c854b7a2ff4f3c25ef0007cb3442a629f96d31b69e54ac8adceb9728ebe
 verdict: fail
 blockers: 1
@@ -211,7 +211,7 @@ build_output_hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca49599
 **Change**: rdd-root-simplification-wave1
 **Version**: Wave 1 (Shadow Algebra), 4 capability specs — 22 requirements / 28 scenarios
 **Mode**: Strict TDD
-**Candidate**: worktree `/home/gentleman/work/gentle-ai-worktrees/rdd-wave0`, branch `feat/rdd-wave1-shadow-observer-wiring`, chain tip `7fbfece3`, working tree clean
+**Candidate**: worktree `/home/gentleman/work/hgtran-ai-worktrees/rdd-wave0`, branch `feat/rdd-wave1-shadow-observer-wiring`, chain tip `7fbfece3`, working tree clean
 **Prior report**: FAIL at tip `933fb329` — 2 CRITICAL, 7 WARNING, 3 SUGGESTION (preserved verbatim below)
 **Verified by**: independent re-execution. Remediation claims in commit `7fbfece3` and in `apply-progress` were re-derived from source and runtime, not trusted.
 
@@ -245,7 +245,7 @@ Exhaustive call-site sweep of non-test production files (`rg` over `internal/**/
 | `review_facade.go:836` (status) | same | none — literals + already-built `liveSnapshot` |
 | `review_facade.go:1567` (start) | same | none — literals + already-built `snapshot` |
 
-No unguarded shadow call site remains. With `GENTLE_AI_RDD_SHADOW` unset the only shadow code that executes is the `ObserveShadowRelation` prologue (one mutex-protected test-hook counter increment plus one `os.Getenv`) before its early return — no resolver, no relation, no classifier, and no Git process, which is exactly what the scenario's operative `THEN` requires.
+No unguarded shadow call site remains. With `HGTRAN_AI_RDD_SHADOW` unset the only shadow code that executes is the `ObserveShadowRelation` prologue (one mutex-protected test-hook counter increment plus one `os.Getenv`) before its early return — no resolver, no relation, no classifier, and no Git process, which is exactly what the scenario's operative `THEN` requires.
 
 #### CRITICAL-2 ("Off by Default in Live Paths" untested and violated) — **CLOSED**
 
@@ -256,7 +256,7 @@ Hook authenticity checked as instructed, without mutating the tree. The counter 
 RED evidence without reverting the guard, established from three independent facts:
 
 1. Before `7fbfece3` the call was unconditional (`git show 7fbfece3 -- gate.go` shows the removed line `shadowAdvance := shadowDeriveBaseAdvance(...)` with no enclosing `if`).
-2. The fixture *does* reach the guard: in the ON/OFF test on the same `newCompatiblePrePRFixture`, the observer at `gate.go:364` emitted `gentle-ai.rdd-shadow/v1 gate=pre-pr live_result=allow has_relation=true shadow_relation=compatible_base_advance ...` on stderr. That line is one statement after the guard and reports a `compatible_base_advance` relation, which is only derivable from a non-nil `shadowAdvance` — so the guarded body executes when enabled, and the same fixture reaches the guard when disabled.
+2. The fixture *does* reach the guard: in the ON/OFF test on the same `newCompatiblePrePRFixture`, the observer at `gate.go:364` emitted `hgtran-ai.rdd-shadow/v1 gate=pre-pr live_result=allow has_relation=true shadow_relation=compatible_base_advance ...` on stderr. That line is one statement after the guard and reports a `compatible_base_advance` relation, which is only derivable from a non-nil `shadowAdvance` — so the guarded body executes when enabled, and the same fixture reaches the guard when disabled.
 3. The test additionally asserts `evaluation.Context.BaseAdvance != nil && .valid()`, proving the *live* seven-condition derivation (including `merge-tree --write-tree`) ran at `gate.go:296-299` in the same run. So the observed count of `0` isolates the shadow call specifically; it is not an artifact of the fixture failing to reach base-advance territory.
 
 Removing either guard conjunct makes this test fail with count `1`. The regression guard is real.
@@ -296,7 +296,7 @@ Targeted re-execution (`go test ./internal/reviewtransaction/ -count=1 -v -run �
 
 **Golden determinism**: `TestShadowMatrixCoveringArrayGolden` ran inside the full suite without `-update`; `git status --short` empty afterwards. Golden still deterministic and byte-stable.
 
-**Ratchets**: deadcode PASS; refusal ratchet PASS (`TestEveryProductionRefusalNamesResolutionOrDeclaresByDesign` inside the green `internal/cli` package, `GENTLE_AI_REFUSAL_RATCHET_UPDATE` never set).
+**Ratchets**: deadcode PASS; refusal ratchet PASS (`TestEveryProductionRefusalNamesResolutionOrDeclaresByDesign` inside the green `internal/cli` package, `HGTRAN_AI_REFUSAL_RATCHET_UPDATE` never set).
 
 **Coverage**: not measured — no coverage tool configured for this module. Not a failure.
 
@@ -318,11 +318,11 @@ Unchanged rows from the prior report were re-run in the full suite and still hol
 
 **CRITICAL**
 
-1. **CRITICAL-3 — `rdd-candidate-identity` → "Wave 1 Selector Scope" has no covering test.** Scenario *"Pi overlay selector is explicitly out of scope"* (`specs/rdd-candidate-identity/spec.md:70-75`) requires that when the resolver is invoked with a gentle-pi protocol-1.1 overlay selector it *"does not claim to resolve it as a supported Wave 1 selector"*. Exhaustive search finds no test that constructs an unsupported `shadowSelectorKind` and asserts the `unsupported shadow selector kind %q` refusal at `shadow_identity.go:266`. `shadowMatrixNoShadowDecisionCase(shadowSelectorWorkspaceOverlay, …)` covers gentle-ai's own `workspace-overlay` selector, which is a *supported* Wave 1 selector — a different thing.
+1. **CRITICAL-3 — `rdd-candidate-identity` → "Wave 1 Selector Scope" has no covering test.** Scenario *"Pi overlay selector is explicitly out of scope"* (`specs/rdd-candidate-identity/spec.md:70-75`) requires that when the resolver is invoked with a gentle-pi protocol-1.1 overlay selector it *"does not claim to resolve it as a supported Wave 1 selector"*. Exhaustive search finds no test that constructs an unsupported `shadowSelectorKind` and asserts the `unsupported shadow selector kind %q` refusal at `shadow_identity.go:266`. `shadowMatrixNoShadowDecisionCase(shadowSelectorWorkspaceOverlay, …)` covers hgtran-ai's own `workspace-overlay` selector, which is a *supported* Wave 1 selector — a different thing.
 
    This is not a new defect: the prior report listed the same gap, but classified it `PARTIAL` and demoted it to WARNING-7. Per `references/report-format.md`, `PARTIAL` means *"test passes but covers only part of the scenario"*; with no test at all the correct status is `UNTESTED`, and the skill's decision gate makes an uncovered scenario CRITICAL ("A spec scenario is compliant only when a covering test passed at runtime"). The classification is corrected here, so this report is internally consistent with its own envelope arithmetic — which is unchanged in method from the prior report (both count PARTIAL/UNTESTED as non-compliant: prior 28−5=23, now 28−1=27).
 
-   Corroboration from the machine gate: `gentle-ai sdd-verify-validate` (v2.2.4+pr2151) refuses a `pass` verdict at `scenarios: 27/28` with *"passing verdict contradicts failing or incomplete evidence"*. A pass is not admissible while any scenario lacks runtime coverage, independent of how the prose labels it.
+   Corroboration from the machine gate: `hgtran-ai sdd-verify-validate` (v2.2.4+pr2151) refuses a `pass` verdict at `scenarios: 27/28` with *"passing verdict contradicts failing or incomplete evidence"*. A pass is not admissible while any scenario lacks runtime coverage, independent of how the prose labels it.
 
    Remediation is small and well-defined: one negative test in `shadow_identity_test.go` asserting `shadowCandidateIdentity(ctx, shadowSelector{Kind: "pi-overlay-1.1", Repo: repo})` returns the `unsupported shadow selector kind` error rather than a resolved `Target`. Structural closure (the four-value closed enum) is a real design strength but is not runtime evidence.
 
@@ -335,7 +335,7 @@ Unchanged rows from the prior report were re-run in the full suite and still hol
    - 5.5 still generalises post-apply ON/OFF coverage to all five gate kinds without citing the new pre-PR test that actually closes the gap.
    - 5.7 still describes the `shadowDeriveBaseAdvance` call as unconditional ("additionally calls `shadowDeriveBaseAdvance` directly to exercise Amendment A's delegation seam from a live call site") with no mention of either guard conjunct.
    Artifact text contradicts the delivered code state. Documentation-only.
-4. **The main-checkout `tasks.md` mirror is one task behind the worktree.** `/home/gentleman/work/gentle-ai/openspec/changes/rdd-root-simplification-wave1/tasks.md` has 49 checked tasks; the worktree copy has 50. The mirror carries the 0.1-0.3 fix but is missing "Injected Task 1" and the post-PR6 rewording of task 6.4. Zero unchecked tasks in either copy.
+4. **The main-checkout `tasks.md` mirror is one task behind the worktree.** `/home/gentleman/work/hgtran-ai/openspec/changes/rdd-root-simplification-wave1/tasks.md` has 49 checked tasks; the worktree copy has 50. The mirror carries the 0.1-0.3 fix but is missing "Injected Task 1" and the post-PR6 rewording of task 6.4. Zero unchecked tasks in either copy.
 5. **Assertion-quality correction — one tautology exists and the prior report missed it.** `shadow_identity_test.go:302-304`:
 
    ```go
@@ -366,16 +366,16 @@ Unchanged rows from the prior report were re-run in the full suite and still hol
 
 ### Verdict
 
-**FAIL** — both prior CRITICAL findings are genuinely closed with independently re-executed runtime evidence: `gate.go` no longer performs any shadow Git derivation with the switch off, the zero-cost guard is machine-checked by a hook that instruments the exact function, and the pre-PR gate family now has real ON/OFF byte-identity coverage. One scenario, `rdd-candidate-identity` → "Pi overlay selector is explicitly out of scope", still has no covering test at runtime; that keeps the compliance count at 27/28, which `gentle-ai sdd-verify-validate` will not admit as a pass. Everything blocking archive is one small negative test away.
+**FAIL** — both prior CRITICAL findings are genuinely closed with independently re-executed runtime evidence: `gate.go` no longer performs any shadow Git derivation with the switch off, the zero-cost guard is machine-checked by a hook that instruments the exact function, and the pre-PR gate family now has real ON/OFF byte-identity coverage. One scenario, `rdd-candidate-identity` → "Pi overlay selector is explicitly out of scope", still has no covering test at runtime; that keeps the compliance count at 27/28, which `hgtran-ai sdd-verify-validate` will not admit as a pass. Everything blocking archive is one small negative test away.
 
 ---
 
 ## Superseded — original FAIL verification report (tip `933fb329`)
 
-Preserved verbatim as history. Only its opening code-fence language is changed from `yaml` to `text`, so this file carries exactly one authoritative `gentle-ai.verify-result/v1` envelope; no other byte is altered.
+Preserved verbatim as history. Only its opening code-fence language is changed from `yaml` to `text`, so this file carries exactly one authoritative `hgtran-ai.verify-result/v1` envelope; no other byte is altered.
 
 ```text
-schema: gentle-ai.verify-result/v1
+schema: hgtran-ai.verify-result/v1
 evidence_revision: sha256:7ebf4f11bef26f0ee4a33cf610e9197ce90fa3d68bedf34c306fc6d7329b3ed8
 verdict: fail
 blockers: 2
@@ -395,7 +395,7 @@ build_output_hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca49599
 **Change**: rdd-root-simplification-wave1
 **Version**: Wave 1 (Shadow Algebra), 4 capability specs
 **Mode**: Strict TDD
-**Candidate**: worktree `/home/gentleman/work/gentle-ai-worktrees/rdd-wave0`, chain tip `933fb329`, working tree clean
+**Candidate**: worktree `/home/gentleman/work/hgtran-ai-worktrees/rdd-wave0`, chain tip `933fb329`, working tree clean
 **Verified by**: independent re-execution (apply-progress claims were not trusted)
 
 ### Completeness
@@ -510,7 +510,7 @@ Amendment A verified statically as well: `shadowDeriveBaseAdvance` (`shadow_rela
 |---|---|---|
 | Exactly 3 exported shadow symbols | Implemented (with deviation) | `CandidateIdentity`, `ShadowRelation`, `ObserveShadowRelation` are the only exported top-level declarations; 7 exported `ShadowRelation*` constants also exist (SUGGESTION-1) |
 | AST readonly guard passes | Implemented | `TestShadowReadOnlyGuardHoldsForProductionFiles` PASS over all 4 production `shadow_*.go`; scanner self-tested against 6 synthetic sources |
-| Switch defaults OFF | Implemented | `shadowObservationEnabled()` = `strings.TrimSpace(os.Getenv("GENTLE_AI_RDD_SHADOW")) != ""` — unset/empty/whitespace all OFF |
+| Switch defaults OFF | Implemented | `shadowObservationEnabled()` = `strings.TrimSpace(os.Getenv("HGTRAN_AI_RDD_SHADOW")) != ""` — unset/empty/whitespace all OFF |
 | No persisted divergence artifact | Implemented | Sink is an unexported in-memory slice; only writer is `fmt.Fprintf(shadowObserverStderr, ...)`; chain diff adds no file under `.git`, `review-state.json`, or `review-receipt.json` |
 | CandidateTree binding fix present | Implemented | `shadow_relation.go:117` `input.Frozen.CandidateTree == input.Live.CandidateTree`; `TestShadowRelateBaseAdvanceProofBindsToCandidateTree` PASS |
 | Observer swallows all errors | Implemented | `ObserveShadowRelation` returns nothing, `defer func(){ _ = recover() }()`, every error becomes `row.Err` |
@@ -522,8 +522,8 @@ Amendment A verified statically as well: `shadowDeriveBaseAdvance` (`shadow_rela
 | Decision | Followed? | Notes |
 |---|---|---|
 | 1 — shadow inside `package reviewtransaction`, one exported function + two types | Mostly | 3 top-level exports as designed; 7 exported enum constants beyond the literal "and nothing else" (SUGGESTION-1) |
-| 2 — opt-in `GENTLE_AI_RDD_SHADOW`, no shadow Git work on the human's blocking path | **No** | `gate.go:350` calls `shadowDeriveBaseAdvance` unconditionally — CRITICAL-1/2 |
-| 3 — in-memory sink + stderr line + golden under `testdata/` | Yes | `gentle-ai.rdd-shadow/v1` stderr line; no sidecar journal |
+| 2 — opt-in `HGTRAN_AI_RDD_SHADOW`, no shadow Git work on the human's blocking path | **No** | `gate.go:350` calls `shadowDeriveBaseAdvance` unconditionally — CRITICAL-1/2 |
+| 3 — in-memory sink + stderr line + golden under `testdata/` | Yes | `hgtran-ai.rdd-shadow/v1` stderr line; no sidecar journal |
 | 4 — `CandidateIdentity` five-field tuple, `policy_hash` never fabricated | Yes | `TestShadowIdentityPolicyHashNeverFabricated` PASS |
 | 5 — ordered fail-closed relation + Amendment B no-input degradation | Yes | `shadowRelate` order verified by reading and by `TestShadowRelateOrderedFailClosedPrecedence` |
 | 6 — covering array ~40-60 rows, 4 verdict classes | Yes | 40 rows, 4 distinct verdicts, `no-shadow-decision` kept separate |
@@ -533,7 +533,7 @@ Amendment A verified statically as well: `shadowDeriveBaseAdvance` (`shadow_rela
 
 | Deliverable | Status | Evidence |
 |---|---|---|
-| `docs/architecture/rdd-shadow-evaluation.md` | Present (41 lines) | Documents `GENTLE_AI_RDD_SHADOW` default-off, never-blocks contract, exact `gentle-ai.rdd-shadow/v1` stderr line format, and the divergence-reporting path (`issues/new/choose`) |
+| `docs/architecture/rdd-shadow-evaluation.md` | Present (41 lines) | Documents `HGTRAN_AI_RDD_SHADOW` default-off, never-blocks contract, exact `hgtran-ai.rdd-shadow/v1` stderr line format, and the divergence-reporting path (`issues/new/choose`) |
 | Design doc Wave 1 exit-evidence pointer | Present | `docs/architecture/rdd-root-simplification-design.md:445` — golden path, 40-row breakdown (16/12/8/4/0), operator-doc pointer |
 | Amendment A paraphrase fix | Present | `openspec/specs/rdd-simplification-design/spec.md:55` — trust root inside condition 6, condition 7 (base/HEAD non-advance revalidation) restored |
 
@@ -570,7 +570,7 @@ No banned patterns found. Zero tautologies, zero assertions that never call prod
 **Linter/vet**: no errors (`go vet ./...` exit 0)
 **Formatter**: clean (`gofmt -l` empty)
 **Deadcode ratchet**: clean
-**Refusal ratchet**: clean (7 `shadow_identity.go` sites annotated `// refusal:by-design world-action:`, `GENTLE_AI_REFUSAL_RATCHET_UPDATE` never set)
+**Refusal ratchet**: clean (7 `shadow_identity.go` sites annotated `// refusal:by-design world-action:`, `HGTRAN_AI_REFUSAL_RATCHET_UPDATE` never set)
 
 ### Issues Found
 
@@ -582,7 +582,7 @@ No banned patterns found. Zero tautologies, zero assertions that never call prod
    shadowAdvance := shadowDeriveBaseAdvance(ctx, repo, receipt, request, snapshot, resolvedPrePR, preimages)
    ```
 
-   This call has no `shadowObservationEnabled()` guard and no gate-kind guard. It is on the straight-line path to `EvaluateNativeGate`'s final return, so it executes on every native gate evaluation regardless of `GENTLE_AI_RDD_SHADOW`.
+   This call has no `shadowObservationEnabled()` guard and no gate-kind guard. It is on the straight-line path to `EvaluateNativeGate`'s final return, so it executes on every native gate evaluation regardless of `HGTRAN_AI_RDD_SHADOW`.
 
    `shadowDeriveBaseAdvance` calls `deriveBaseAdvanceCompatibility` (`prepr.go:73`), which returns without Git only when `refs == nil`, `ExternalEvidence != None`, or no CI attestation artifact is present. `resolvedPrePR` is non-nil for `GatePrePush` and `GatePrePR` (`gate.go:367-408`). So for an attested pre-PR gate the full derivation runs — `merge-base`, `resolveTree`, up to three `changedPaths`, **two `patchIdentity` runs, and one `merge-tree --write-tree`** — with the switch unset.
 
@@ -590,7 +590,7 @@ No banned patterns found. Zero tautologies, zero assertions that never call prod
    - base unchanged: live derives nothing, shadow adds a complete derivation;
    - base advanced: live derives once, shadow derives a **second** identical time.
 
-   Runtime anchor: `TestNativePrePRGateAllowsOnlyCryptographicallyAttestedCompatibleBaseAdvance` (`gate_test.go:17`) passes with `GENTLE_AI_RDD_SHADOW` explicitly unset and asserts `evaluation.Context.BaseAdvance` is non-nil and `valid()` — proving the seven-condition derivation (including `merge-tree --write-tree`) completes at line 297 in that fixture. Line 350 is unconditional and receives identical arguments, so it repeats that exact sequence. External `GIT_TRACE2_EVENT` instrumentation cannot confirm invocation counts because `runGitCapturedRange` (`snapshot.go:1510`) replaces the child environment via `sanitizedGitEnvironmentForRun`.
+   Runtime anchor: `TestNativePrePRGateAllowsOnlyCryptographicallyAttestedCompatibleBaseAdvance` (`gate_test.go:17`) passes with `HGTRAN_AI_RDD_SHADOW` explicitly unset and asserts `evaluation.Context.BaseAdvance` is non-nil and `valid()` — proving the seven-condition derivation (including `merge-tree --write-tree`) completes at line 297 in that fixture. Line 350 is unconditional and receives identical arguments, so it repeats that exact sequence. External `GIT_TRACE2_EVENT` instrumentation cannot confirm invocation counts because `runGitCapturedRange` (`snapshot.go:1510`) replaces the child environment via `sanitizedGitEnvironmentForRun`.
 
    Violates:
    - `rdd-shadow-evaluation` → "Disable Switch Is the Rollback Boundary": *"When disabled, zero shadow code path executes"* and *"no resolver, relation, or classifier code runs"*. `shadowDeriveBaseAdvance` lives in `shadow_relation.go` and is the Amendment A delegation seam of the relation algebra.
@@ -627,7 +627,7 @@ No banned patterns found. Zero tautologies, zero assertions that never call prod
 | D2 | Threat-matrix commit-state narrowed to unborn HEAD / empty index rather than all four projections | Batch 4, task 3.5 | Accepted — matches design.md's own Threat Matrix response |
 | D3 | `unrelated` recorded as its own explained `divergence` row instead of `no-live-decision` | Batch 7, task 6.3, maintainer-confirmed | Accepted — stricter than the spec, which only mandates the marking for `ambiguous`/`unknown` |
 | D4 | Matrix corpus built at the pure-function level, not through real Git resolution | Batch 7, task 6.1 | Accepted — `shadowRelate` and `classifyCompactTargetRelation` are pure; selector normalization is proven separately by PR2 |
-| D5 | Injected Task 0 — 7 refusal-ratchet violations fixed by `// refusal:by-design` annotation | Batch 7 | Accepted — re-verified: ratchet PASS, `GENTLE_AI_REFUSAL_RATCHET_UPDATE` never set |
+| D5 | Injected Task 0 — 7 refusal-ratchet violations fixed by `// refusal:by-design` annotation | Batch 7 | Accepted — re-verified: ratchet PASS, `HGTRAN_AI_REFUSAL_RATCHET_UPDATE` never set |
 | D6 | Injected Task 1 — `CandidateTree` binding gap fixed pre-verify on the same branch | Batch 8 | Accepted — real algebra gap, RED/GREEN evidence re-verified, golden unchanged |
 | D7 | PR6 continued on PR5's branch instead of its own | Batch 7 | See WARNING-1 |
 | D8 | `shadowDeriveBaseAdvance` called unguarded from `gate.go` | Batch 6, task 5.7 | **Rejected** — see CRITICAL-1/2 |

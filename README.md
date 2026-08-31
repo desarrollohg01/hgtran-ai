@@ -76,17 +76,17 @@ Implementation routing does not decide review strength, and per-action test, bui
 ### Install (recommended)
 
 > [!NOTE]
-> `gentle-ai install` requires Node.js 18+ and npm on every platform (it warns if either is missing). See [Prerequisites](docs/quickstart.md#prerequisites) for your distro's install hint.
+> `hgtran-ai install` requires Node.js 18+ and npm on every platform (it warns if either is missing). See [Prerequisites](docs/quickstart.md#prerequisites) for your distro's install hint.
 
 **Every platform** — build from source. Requires Go 1.25.10+.
 
 ```bash
 git clone https://github.com/desarrollohg01/hgtran-ai.git
 cd hgtran-ai
-go build ./cmd/gentle-ai
+go build ./cmd/hgtran-ai
 ```
 
-Put the resulting binary somewhere on your `PATH`. On Windows the file is `gentle-ai.exe`.
+Put the resulting binary somewhere on your `PATH`. On Windows the file is `hgtran-ai.exe`.
 
 > [!WARNING]
 > Windows source builds and CI/runtime tests remain supported, but official Windows binary distribution and Scoop are temporarily unavailable. Windows installation and upgrades require Go 1.25.10+ and fail closed to source-install guidance; they never download an unsigned hgtran-ai executable or execute a remote update script.
@@ -98,11 +98,11 @@ Once your agents are configured, open your AI agent in a project and run these t
 | Command                            | What it does                                                                | When to re-run                                                                 |
 | ---------------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
 | `/sdd-init`                        | Detects stack, testing capabilities, activates Strict TDD Mode if available | When your project adds/removes test frameworks, or first time in a new project |
-| `gentle-ai skill-registry refresh` | Scans installed skills and project conventions, builds the registry         | After installing/removing skills, or first time in a new project               |
+| `hgtran-ai skill-registry refresh` | Scans installed skills and project conventions, builds the registry         | After installing/removing skills, or first time in a new project               |
 
 These are **not required** for basic usage. The SDD orchestrator runs `/sdd-init` automatically if it detects no context. Startup hooks normally keep the skill registry fresh for agents that support hooks, including Codex, Claude Code, OpenCode, and Pi through `gentle-pi`. If you start Pi with `pi -ns`, startup skill loading/hooks are skipped, so run the registry refresh manually when you need updated project rules.
 
-Run `gentle-ai doctor` at any time for a read-only health check of your ecosystem (tool binaries, `state.json`, Engram reachability, disk space).
+Run `hgtran-ai doctor` at any time for a read-only health check of your ecosystem (tool binaries, `state.json`, Engram reachability, disk space).
 
 <details>
 <summary><strong>Alternative install and scope options</strong></summary>
@@ -111,10 +111,10 @@ Run `gentle-ai doctor` at any time for a read-only health check of your ecosyste
 
 `go.mod` declares the module as `bitbucket.org/hgt_development/hgtran-ai/v2`, and Go resolves a module by that declared path — not by where a clone came from. Until the repository is published there, `go install` cannot reach this code from either host. HG publishes no Homebrew tap and no Scoop bucket of its own either. Build from source as shown above.
 
-By default, `gentle-ai install` writes agent-scoped files to each selected agent's global config directory. To keep the hgtran-ai stack isolated to one project, run:
+By default, `hgtran-ai install` writes agent-scoped files to each selected agent's global config directory. To keep the hgtran-ai stack isolated to one project, run:
 
 ```bash
-gentle-ai install --scope=workspace
+hgtran-ai install --scope=workspace
 ```
 
 Workspace scope applies to selected agents for agent-scoped files such as system prompts, skills, SDD agents, and persona files. Global-only integrations remain global by design.
@@ -129,7 +129,7 @@ Until the module is published, pinning a version means checking out its tag and 
 
 ```bash
 git checkout v2.2.0
-go build ./cmd/gentle-ai
+go build ./cmd/hgtran-ai
 ```
 
 Selecting `@latest` or `@main` returns once `go install` can resolve the module.
@@ -150,8 +150,8 @@ Selecting `@latest` or `@main` returns once `go install` can resolve the module.
 5. **Upgrade, then sync.** Refresh the binary and the managed agent assets together:
 
    ```bash
-   gentle-ai upgrade
-   gentle-ai sync
+   hgtran-ai upgrade
+   hgtran-ai sync
    ```
 
 ### The flow at a glance
@@ -239,9 +239,9 @@ Size, file count, or perceived risk never select SDD on their own — only an ex
 Review mode is user-owned and available independently of the review lifecycle:
 
 ```bash
-gentle-ai review mode status --cwd .
-gentle-ai review mode disable --cwd .
-gentle-ai review mode enable --cwd .
+hgtran-ai review mode status --cwd .
+hgtran-ai review mode disable --cwd .
+hgtran-ai review mode enable --cwd .
 ```
 
 `status` is read-only. Any global or clone-local disabled source wins; a clone can opt out with `--scope clone` but cannot force review on. Re-enabling applies only to future candidates, while declining a one-candidate review prompt does not change the mode. When review is disabled, existing exact governing receipts remain authoritative; otherwise native review gates report `disabled/unmanaged` and defer delivery to ordinary repository policy without fabricating approval.
@@ -250,13 +250,13 @@ SDD closes cleanly under a disabled switch as of `v2.2.2`: pre-verify no longer 
 
 ### Release verification
 
-Official macOS and Linux release archives require an authenticated `checksums.txt`. The built-in upgrader verifies its Minisign signature, its exact `Gentleman-Programming/gentle-ai` + release-tag binding, and the selected archive checksum **before** replacing the installed binary. Release archives are capped at **128 MiB**, including chunked or unknown-length responses. Missing, oversized, malformed, untrusted, or placeholder key material fails closed without changing the installed binary.
+Official macOS and Linux release archives require an authenticated `checksums.txt`. The built-in upgrader verifies its Minisign signature, its exact `desarrollohg01/hgtran-ai` + release-tag binding, and the selected archive checksum **before** replacing the installed binary. Release archives are capped at **128 MiB**, including chunked or unknown-length responses. Missing, oversized, malformed, untrusted, or placeholder key material fails closed without changing the installed binary.
 
 To verify a release manually, obtain the production public-key payload and fingerprint from a maintainer-controlled channel, then download `checksums.txt` and `checksums.txt.minisig` from the same release:
 
 ```bash
-minisign -VQm checksums.txt -x checksums.txt.minisig -P "$GENTLE_AI_MINISIGN_PUBLIC_KEY"
-# Expected output: repo=Gentleman-Programming/gentle-ai;tag=vX.Y.Z
+minisign -VQm checksums.txt -x checksums.txt.minisig -P "$HGTRAN_AI_MINISIGN_PUBLIC_KEY"
+# Expected output: repo=desarrollohg01/hgtran-ai;tag=vX.Y.Z
 sha256sum --check --strict --ignore-missing checksums.txt
 ```
 
@@ -271,7 +271,7 @@ For a monorepo or shared worktree, explicitly review exactly what is in the Git 
 ```bash
 git add apps/my-service
 git diff --cached
-gentle-ai review start --projection staged
+hgtran-ai review start --projection staged
 ```
 
 The staged projection freezes the **complete existing index**, including all previously staged paths. It starts review but does not itself issue an approved receipt; unstaged and untracked worktree content is excluded. The default `workspace` projection remains the complete workspace review, and an existing authority is never auto-converted between projections. See the [review authority threat model](docs/review-authority-threat-model.md) for delivery and base-ref details.
@@ -292,10 +292,10 @@ Assign different AI models to different SDD phases -- a powerful model for desig
 
 ```bash
 # Via CLI
-gentle-ai sync --profile cheap:openrouter/qwen/qwen3-30b-a3b:free
-gentle-ai sync --profile-phase cheap:sdd-design:anthropic/claude-sonnet-4-20250514
+hgtran-ai sync --profile cheap:openrouter/qwen/qwen3-30b-a3b:free
+hgtran-ai sync --profile-phase cheap:sdd-design:anthropic/claude-sonnet-4-20250514
 
-# Or via TUI: gentle-ai → "OpenCode SDD Profiles" → Create
+# Or via TUI: hgtran-ai → "OpenCode SDD Profiles" → Create
 ```
 
 After creating a profile, open OpenCode and press **Tab** to switch between `gentle-orchestrator` (default) and your custom profiles.
@@ -350,7 +350,7 @@ This project gets better when the community builds on top of it.
 - [sub-agent-statusline](https://github.com/Joaquinvesapa/sub-agent-statusline) — optional OpenCode TUI plugin that shows sub-agent activity, status, elapsed time, and token/context usage when OpenCode exposes it.
 - [sdd-engram-plugin](https://github.com/j0k3r-dev-rgl/sdd-engram-plugin) — optional OpenCode TUI plugin to manage SDD profiles and browse Engram memories directly from OpenCode, with runtime profile activation and no restart required.
 
-When you select OpenCode in the installer, hgtran-ai asks whether to register each community plugin and offers a browser shortcut to review the repository first. hgtran-ai only ensures `~/.config/opencode/tui.json` exists and adds the plugin package names to its `plugin` array; OpenCode installs/loads those packages the next time it starts. Once OpenCode has materialized a plugin under `~/.config/opencode/node_modules/`, `gentle-ai update` can compare its local `package.json` version with the plugin's GitHub releases.
+When you select OpenCode in the installer, hgtran-ai asks whether to register each community plugin and offers a browser shortcut to review the repository first. hgtran-ai only ensures `~/.config/opencode/tui.json` exists and adds the plugin package names to its `plugin` array; OpenCode installs/loads those packages the next time it starts. Once OpenCode has materialized a plugin under `~/.config/opencode/node_modules/`, `hgtran-ai update` can compare its local `package.json` version with the plugin's GitHub releases.
 
 ### Contributors
 
@@ -364,7 +364,7 @@ This is HG Transportaciones' internal fork. The code was written by the contribu
 
 ## Next Steps
 
-- **Just installed?** Read [Intended Usage](docs/intended-usage.md) for the mental model, then run `gentle-ai doctor` if anything looks wrong.
+- **Just installed?** Read [Intended Usage](docs/intended-usage.md) for the mental model, then run `hgtran-ai doctor` if anything looks wrong.
 - **Starting work?** Read [Organic Implementation Routing](docs/trigger-rules.md) to understand direct, delegated, and optional SDD behavior.
 - **Reviewing a focused change?** Start with the [Organic RDD architecture](docs/architecture/organic-rdd.md) and [review authority threat model](docs/review-authority-threat-model.md).
 - **Maintaining hgtran-ai?** Use the [Codebase Guide](docs/CODEBASE-GUIDE.md) to find package ownership and review boundaries.

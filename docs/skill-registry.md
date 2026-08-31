@@ -6,7 +6,7 @@ The skill registry is a project-local index that lets every supported agent find
 
 ## When To Use It
 
-Use `gentle-ai skill-registry refresh` after you add, remove, rename, or move skills. Normal installs wire this refresh into startup hooks where the agent supports them, including Codex, Claude Code, OpenCode, and Pi through `gentle-pi`.
+Use `hgtran-ai skill-registry refresh` after you add, remove, rename, or move skills. Normal installs wire this refresh into startup hooks where the agent supports them, including Codex, Claude Code, OpenCode, and Pi through `gentle-pi`.
 
 ## Runtime Flow
 
@@ -32,7 +32,7 @@ Subagent executes with original skill intent preserved
 ## Refresh Flow
 
 ```text
-gentle-ai skill-registry refresh
+hgtran-ai skill-registry refresh
    │
    ├─ Scan project skill roots first
    │     skills/, .opencode/skills/, .claude/skills/, ...
@@ -106,7 +106,7 @@ Audits each indexed SKILL.md against docs/skill-style-guide.md
    └─ Apply mode: safely refactor skills and preserve intent
    │
    ▼
-Run gentle-ai skill-registry refresh again
+Run hgtran-ai skill-registry refresh again
 ```
 
 ## Why Not Compact Rules?
@@ -133,14 +133,14 @@ prints it instead of writing `.atl/skill-registry.md`, the cache, or
 `.gitignore`. Handy for debugging what a delegator would see.
 
 ```bash
-gentle-ai skill-registry list          # name<TAB>scope<TAB>path
-gentle-ai skill-registry list --json   # machine-readable, includes descriptions
+hgtran-ai skill-registry list          # name<TAB>scope<TAB>path
+hgtran-ai skill-registry list --json   # machine-readable, includes descriptions
 ```
 
 ## Quick Check
 
 ```bash
-gentle-ai skill-registry refresh --force
+hgtran-ai skill-registry refresh --force
 ```
 
 Open `.atl/skill-registry.md` and verify each row has a useful description and a real `SKILL.md` path.

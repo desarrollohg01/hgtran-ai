@@ -15,7 +15,7 @@ import (
 )
 
 var (
-	// refusal:by-design world-action: the exit is a filesystem repair (chown, takeown, icacls /setowner, or deleting the offending link) that only the operator can perform; no gentle-ai command may rewrite ownership of paths it refuses to trust
+	// refusal:by-design world-action: the exit is a filesystem repair (chown, takeown, icacls /setowner, or deleting the offending link) that only the operator can perform; no hgtran-ai command may rewrite ownership of paths it refuses to trust
 	errUnsafeRARAuthorityPath = errors.New(
 		"unsafe RAR authority path; restore trusted ownership of the reported " +
 			"path (chown on POSIX; takeown or icacls /setowner on Windows) or " +
@@ -34,7 +34,7 @@ func ensureRARRepositoryRoot(commonDir, root string, create bool) error {
 		return errors.New("RAR authority root escapes the Git common directory")
 	}
 	want := filepath.Join(
-		"gentle-ai",
+		"hgtran-ai",
 		"review-transactions",
 		rarAuthorityDirectory,
 		rarAuthorityVersion,

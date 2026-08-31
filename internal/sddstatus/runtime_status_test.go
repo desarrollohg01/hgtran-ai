@@ -33,8 +33,8 @@ func TestResolveEmbedsAndRoutesNativeRuntimeAuthority(t *testing.T) {
 			t.Fatalf("runtime status = %#v, want active ordinal 1", status.RuntimeStatus)
 		}
 		assertRuntimeContinuationBlocked(t, status, "blocked(active_attempt)")
-		if instructions := strings.Join(status.PhaseInstructions.Apply, "\n"); !strings.Contains(instructions, "gentle-ai sdd-attempt acquire") ||
-			!strings.Contains(instructions, "gentle-ai sdd-attempt settle") {
+		if instructions := strings.Join(status.PhaseInstructions.Apply, "\n"); !strings.Contains(instructions, "hgtran-ai sdd-attempt acquire") ||
+			!strings.Contains(instructions, "hgtran-ai sdd-attempt settle") {
 			t.Fatalf("apply instructions omit native runtime commands:\n%s", instructions)
 		}
 	})
@@ -108,12 +108,12 @@ func TestResolveEngramUsesTheSameNativeRuntimeAuthority(t *testing.T) {
 	if err := os.MkdirAll(filepath.Join(repo, ".engram"), 0o755); err != nil {
 		t.Fatal(err)
 	}
-	runRuntimeLedgerGit(t, repo, "remote", "add", "origin", "git@github.com:Gentleman-Programming/gentle-ai.git")
+	runRuntimeLedgerGit(t, repo, "remote", "add", "origin", "git@github.com:Gentleman-Programming/hgtran-ai.git")
 	restore := stubEngramExport(t, []engramObservation{
-		{Title: "sdd/engram-runtime/proposal", Content: "## Proposal\nNative runtime", Project: "gentle-ai", Scope: "project"},
-		{Title: "sdd/engram-runtime/spec", Content: "### Requirement: Runtime\n#### Scenario: Native authority\n", Project: "gentle-ai", Scope: "project"},
-		{Title: "sdd/engram-runtime/design", Content: "## Design\nUse the native ledger", Project: "gentle-ai", Scope: "project"},
-		{Title: "sdd/engram-runtime/tasks", Content: "- [ ] 1.1 Work\n", Project: "gentle-ai", Scope: "project"},
+		{Title: "sdd/engram-runtime/proposal", Content: "## Proposal\nNative runtime", Project: "hgtran-ai", Scope: "project"},
+		{Title: "sdd/engram-runtime/spec", Content: "### Requirement: Runtime\n#### Scenario: Native authority\n", Project: "hgtran-ai", Scope: "project"},
+		{Title: "sdd/engram-runtime/design", Content: "## Design\nUse the native ledger", Project: "hgtran-ai", Scope: "project"},
+		{Title: "sdd/engram-runtime/tasks", Content: "- [ ] 1.1 Work\n", Project: "hgtran-ai", Scope: "project"},
 	})
 	defer restore()
 
@@ -138,7 +138,7 @@ func TestResolveEngramUsesTheSameNativeRuntimeAuthority(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, forbidden := range []string{"attemptLedger", "attempt-ledger", "gentle-ai.sdd-attempt-ledger/v1"} {
+	for _, forbidden := range []string{"attemptLedger", "attempt-ledger", "hgtran-ai.sdd-attempt-ledger/v1"} {
 		if strings.Contains(string(payload), forbidden) {
 			t.Fatalf("Engram status leaked mutable runtime artifact %q: %s", forbidden, payload)
 		}
@@ -178,13 +178,13 @@ func TestResolveRoutesPureEngramRuntimeRemediationSuccessorToFreshVerify(t *test
 	if err := os.MkdirAll(filepath.Join(fixture.repo, ".engram"), 0o755); err != nil {
 		t.Fatal(err)
 	}
-	runRuntimeLedgerGit(t, fixture.repo, "remote", "add", "origin", "git@github.com:Gentleman-Programming/gentle-ai.git")
+	runRuntimeLedgerGit(t, fixture.repo, "remote", "add", "origin", "git@github.com:Gentleman-Programming/hgtran-ai.git")
 	restore := stubEngramExport(t, []engramObservation{
-		{Title: "sdd/engram-runtime/proposal", Content: "## Proposal\nNative runtime", Project: "gentle-ai", Scope: "project"},
-		{Title: "sdd/engram-runtime/spec", Content: "### Requirement: Runtime\n#### Scenario: Native authority\n", Project: "gentle-ai", Scope: "project"},
-		{Title: "sdd/engram-runtime/design", Content: "## Design\nUse the native ledger", Project: "gentle-ai", Scope: "project"},
-		{Title: "sdd/engram-runtime/tasks", Content: "- [x] 1.1 Work\n", Project: "gentle-ai", Scope: "project"},
-		{Title: "sdd/engram-runtime/verify-report", Content: boundedVerifyEnvelope(fixture.failedEvidence, "fail"), Project: "gentle-ai", Scope: "project"},
+		{Title: "sdd/engram-runtime/proposal", Content: "## Proposal\nNative runtime", Project: "hgtran-ai", Scope: "project"},
+		{Title: "sdd/engram-runtime/spec", Content: "### Requirement: Runtime\n#### Scenario: Native authority\n", Project: "hgtran-ai", Scope: "project"},
+		{Title: "sdd/engram-runtime/design", Content: "## Design\nUse the native ledger", Project: "hgtran-ai", Scope: "project"},
+		{Title: "sdd/engram-runtime/tasks", Content: "- [x] 1.1 Work\n", Project: "hgtran-ai", Scope: "project"},
+		{Title: "sdd/engram-runtime/verify-report", Content: boundedVerifyEnvelope(fixture.failedEvidence, "fail"), Project: "hgtran-ai", Scope: "project"},
 	})
 	defer restore()
 

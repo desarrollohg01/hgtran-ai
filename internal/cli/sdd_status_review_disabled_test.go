@@ -32,7 +32,7 @@ func seedArchiveGatedSDDChange(t *testing.T, root string) {
 	writeSDDStatusFile(t, filepath.Join(changeRoot, "tasks.md"), "- [x] 1.1 Work\n")
 	writeSDDStatusFile(t, filepath.Join(changeRoot, "verify-report.md"), strings.Join([]string{
 		"```yaml",
-		"schema: gentle-ai.verify-result/v1",
+		"schema: hgtran-ai.verify-result/v1",
 		"evidence_revision: sha256:" + strings.Repeat("1", 64),
 		"verdict: pass",
 		"blockers: 0",
@@ -42,7 +42,7 @@ func seedArchiveGatedSDDChange(t *testing.T, root string) {
 		"test_command: go test ./internal/example",
 		"test_exit_code: 0",
 		"test_output_hash: sha256:" + strings.Repeat("2", 64),
-		"build_command: go test ./cmd/gentle-ai",
+		"build_command: go test ./cmd/hgtran-ai",
 		"build_exit_code: 0",
 		"build_output_hash: sha256:" + strings.Repeat("3", 64),
 		"```",
@@ -97,7 +97,7 @@ func requireDisabledUnmanagedSDDStatus(t *testing.T, status sddstatus.Status) {
 // The switch becomes unreadable, which is not the same as being off.
 func corruptCloneLocalReviewMode(t *testing.T, repo string) {
 	t.Helper()
-	root := filepath.Join(repo, ".git", "gentle-ai", "review-transactions")
+	root := filepath.Join(repo, ".git", "hgtran-ai", "review-transactions")
 	corrupted := 0
 	if err := filepath.WalkDir(root, func(path string, entry fs.DirEntry, err error) error {
 		if err != nil {

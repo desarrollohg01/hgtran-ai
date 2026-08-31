@@ -64,7 +64,7 @@ When the update check fails (rate-limit, network error, timeout), the system MUS
 
 ### Requirement: State Persistence
 
-`last_update_check` MUST be persisted as a field in `~/.gentle-ai/state.json`. It MUST be a timestamp (RFC 3339 or Unix epoch). Older binaries that do not know this field MUST be able to load the state file without error (additive field, backward-compatible).
+`last_update_check` MUST be persisted as a field in `~/.hgtran-ai/state.json`. It MUST be a timestamp (RFC 3339 or Unix epoch). Older binaries that do not know this field MUST be able to load the state file without error (additive field, backward-compatible).
 
 #### Scenario: Older binary reads state with new field
 

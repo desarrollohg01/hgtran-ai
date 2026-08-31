@@ -2,7 +2,7 @@
 
 ## Technical Approach
 
-Keep `gentle-ai.review-transaction/v1`, the repository-derived CAS chain, and existing CLI commands. Add only native immutable-genesis and targeted-validation rules, then expose them through the one embedded lifecycle contract already rendered into every agent. No adapter receives lifecycle code or a copied prompt.
+Keep `hgtran-ai.review-transaction/v1`, the repository-derived CAS chain, and existing CLI commands. Add only native immutable-genesis and targeted-validation rules, then expose them through the one embedded lifecycle contract already rendered into every agent. No adapter receives lifecycle code or a copied prompt.
 
 ## Architecture Decisions
 

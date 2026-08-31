@@ -64,7 +64,7 @@ Chain strategy: pending
 
 ### Phase 2 — Green (implementation)
 - [ ] 3.3 `internal/components/engram/download.go` — add `channel cli.InstallChannel` param to `DownloadLatestBinary`; when `channel.IsBeta()` use `@main`, else `versions.EngramCore` (fills admitted gap at line ~52–54)
-- [ ] 3.4 `internal/update/upgrade/strategy.go` — update `engramDownloadFn` signature to accept channel; `engramBinaryUpgrade` reads `GENTLE_AI_CHANNEL` via `cli.ResolveInstallChannel` and passes channel to `engramDownloadFn`
+- [ ] 3.4 `internal/update/upgrade/strategy.go` — update `engramDownloadFn` signature to accept channel; `engramBinaryUpgrade` reads `HGTRAN_AI_CHANNEL` via `cli.ResolveInstallChannel` and passes channel to `engramDownloadFn`
 - [ ] 3.5 `internal/update/upgrade/strategy.go` — update `engramDownloadFn` package-level var declaration to match new signature; update all callers in test stubs
 
 ### Phase 3 — Refactor
@@ -78,13 +78,13 @@ Chain strategy: pending
 
 ### Phase 1 — Red (failing tests)
 - [ ] 4.1 `internal/state/state_test.go` — add test: `PendingSync` bool round-trips via `Write`/`Read`; absent field reads as `false` (back-compat)
-- [ ] 4.2 `internal/app/selfupdate_test.go` (new or existing) — add test: after successful `gentle-ai` self-upgrade, `PendingSync = true` is written to state before process exit
+- [ ] 4.2 `internal/app/selfupdate_test.go` (new or existing) — add test: after successful `hgtran-ai` self-upgrade, `PendingSync = true` is written to state before process exit
 - [ ] 4.3 `internal/app/app_test.go` (new or existing) — add test: on startup with `state.PendingSync = true`, `RunSync` is called and `PendingSync` is cleared on success; on failure, `PendingSync` remains true
 
 ### Phase 2 — Green (implementation)
 - [ ] 4.4 `internal/state/state.go` — add `PendingSync bool \`json:"pending_sync,omitempty"\`` to `InstallState`; carry field through `MergeAgents`
-- [ ] 4.5 `internal/app/selfupdate.go` — after `upgradeExecute` confirms `gentle-ai` succeeded, call `state.Read` + set `PendingSync = true` + `state.Write` before calling `restartAfterGentleAIUpgrade`
-- [ ] 4.6 `internal/app/selfupdate.go` `restartAfterGentleAIUpgrade` — converge Unix + Windows: drop `goOS() == "windows"` branch; always print "Updated to vX — restart gentle-ai…" and return (no re-exec); remove `reExec` var and `syscall` import if unused
+- [ ] 4.5 `internal/app/selfupdate.go` — after `upgradeExecute` confirms `hgtran-ai` succeeded, call `state.Read` + set `PendingSync = true` + `state.Write` before calling `restartAfterGentleAIUpgrade`
+- [ ] 4.6 `internal/app/selfupdate.go` `restartAfterGentleAIUpgrade` — converge Unix + Windows: drop `goOS() == "windows"` branch; always print "Updated to vX — restart hgtran-ai…" and return (no re-exec); remove `reExec` var and `syscall` import if unused
 - [ ] 4.7 `internal/app/app.go` — after `state.Read` at line ~127, check `installedState.PendingSync`; if true, call `cli.RunSync`; on success write state with `PendingSync = false`; on failure log error and leave flag set
 - [ ] 4.8 `internal/tui/screens/upgrade_sync.go` — set `PendingSync = true` in state when Upgrade+Sync detects a self-upgrade event (parallel to CLI path)
 
@@ -98,17 +98,17 @@ Chain strategy: pending
 **Spec**: self-update | **Files**: `internal/app/selfupdate.go`, `internal/app/selfupdate_test.go`
 
 ### Phase 1 — Red (failing tests)
-- [ ] 5.1 `internal/app/selfupdate_test.go` — add test: `selfUpdate` calls `promptFn` unconditionally when update is available (without `GENTLE_AI_CONFIRM_UPDATE`); test `GENTLE_AI_CONFIRM_UPDATE` env set to "1" does NOT gate the prompt (env is ignored)
+- [ ] 5.1 `internal/app/selfupdate_test.go` — add test: `selfUpdate` calls `promptFn` unconditionally when update is available (without `HGTRAN_AI_CONFIRM_UPDATE`); test `HGTRAN_AI_CONFIRM_UPDATE` env set to "1" does NOT gate the prompt (env is ignored)
 - [ ] 5.2 `internal/app/selfupdate_test.go` — add test: non-TTY stdin causes `defaultPromptForUpdate` to return `(false, nil)` (auto-decline in CI)
 - [ ] 5.3 `internal/app/selfupdate_test.go` — add test: `--yes` flag (via injected promptFn) bypasses interactive prompt and returns `(true, nil)`
 
 ### Phase 2 — Green (implementation)
 - [ ] 5.4 `internal/app/selfupdate.go` — remove `envConfirmUpdate` constant and the guard block at lines ~111–116; always call `promptFn` when update is available
-- [ ] 5.5 `internal/app/selfupdate.go` — add `--yes` flag handling: accept `yesFlag bool` param or read `GENTLE_AI_YES=1`; when set, substitute `promptFn` with a stub that returns `(true, nil)`
+- [ ] 5.5 `internal/app/selfupdate.go` — add `--yes` flag handling: accept `yesFlag bool` param or read `HGTRAN_AI_YES=1`; when set, substitute `promptFn` with a stub that returns `(true, nil)`
 - [ ] 5.6 `internal/app/selfupdate.go` `defaultPromptForUpdate` — change prompt text to "[Y/n]" (default Y); update answer parse: empty string or "y"/"yes" → true; "n"/"no" → false
 
 ### Phase 3 — Refactor
-- [ ] 5.7 Remove `envConfirmUpdate` from constant block entirely; update any test that set it; add a comment "GENTLE_AI_CONFIRM_UPDATE removed — prompt is now unconditional"
+- [ ] 5.7 Remove `envConfirmUpdate` from constant block entirely; update any test that set it; add a comment "HGTRAN_AI_CONFIRM_UPDATE removed — prompt is now unconditional"
 
 ---
 
@@ -153,7 +153,7 @@ Chain strategy: pending
 - [ ] 7.5 `internal/update/advisory_test.go` — add test: `FetchAdvisory` with empty `message` field returns `Advisory{}, false` (nothing to display)
 
 ### Phase 2 — Green (implementation)
-- [ ] 7.6 `internal/update/advisory.go` (create) — define `Advisory{Message, Severity, URL string}`; implement `FetchAdvisory(ctx context.Context) (Advisory, bool)` with 2s timeout, GET to advisory tag asset URL (`https://github.com/Gentleman-Programming/gentle-ai/releases/download/advisory/advisory.json`), JSON decode, fail-open on any error
+- [ ] 7.6 `internal/update/advisory.go` (create) — define `Advisory{Message, Severity, URL string}`; implement `FetchAdvisory(ctx context.Context) (Advisory, bool)` with 2s timeout, GET to advisory tag asset URL (`https://github.com/Gentleman-Programming/hgtran-ai/releases/download/advisory/advisory.json`), JSON decode, fail-open on any error
 - [ ] 7.7 `internal/app/app.go` — launch `update.FetchAdvisory` in background goroutine alongside `update.CheckAll` at TUI init; collect result; display non-empty `Advisory.Message` as informational text on Welcome screen or after prompt (never gate launch)
 
 ### Phase 3 — Refactor

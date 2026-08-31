@@ -44,7 +44,7 @@ func disabledReviewRepo(t *testing.T, lineage string) (repo string, started Revi
 }
 
 func reviewReceiptPath(repo, lineage string) string {
-	return filepath.Join(repo, ".git", "gentle-ai", "review-transactions", "v2", lineage, "review-receipt.json")
+	return filepath.Join(repo, ".git", "hgtran-ai", "review-transactions", "v2", lineage, "review-receipt.json")
 }
 
 // TestDisabledReviewRefusesFinalizeThroughTheRouter is the reproduction of the
@@ -119,7 +119,7 @@ func TestDisabledReviewFreezesAuthorityInsteadOfDestroyingIt(t *testing.T) {
 // prove nothing about the switch.
 func TestDisabledReviewRefusesEveryAuthorityMutatingVerb(t *testing.T) {
 	const digest = "sha256:0000000000000000000000000000000000000000000000000000000000000000"
-	const authorization = "gentle-ai.maintainer-authorization/v1"
+	const authorization = "hgtran-ai.maintainer-authorization/v1"
 	input := filepath.Join(t.TempDir(), "input.json")
 	if err := os.WriteFile(input, []byte("{}\n"), 0o644); err != nil {
 		t.Fatal(err)
@@ -297,7 +297,7 @@ func TestDisabledReviewMutationRefusalNamesARunnableContinuation(t *testing.T) {
 		t.Fatalf("finalize was not refused:\n%s", output.String())
 	}
 	message := err.Error()
-	if !strings.Contains(message, "gentle-ai review mode enable --scope=clone") {
+	if !strings.Contains(message, "hgtran-ai review mode enable --scope=clone") {
 		t.Fatalf("mutation refusal names no runnable continuation: %s", message)
 	}
 	if !strings.Contains(message, "frozen") {
@@ -327,7 +327,7 @@ func TestDisabledReviewNegotiatedMutationEmitsTheTypedFailure(t *testing.T) {
 	if failure.MutationOutcome != ReviewMutationNotStarted {
 		t.Fatalf("negotiated failure claimed mutation outcome %q", failure.MutationOutcome)
 	}
-	if !strings.Contains(failure.Cause, "gentle-ai review mode enable --scope=clone") {
+	if !strings.Contains(failure.Cause, "hgtran-ai review mode enable --scope=clone") {
 		t.Fatalf("negotiated failure carries no runnable continuation: %#v", failure)
 	}
 	if err := failure.Validate(); err != nil {

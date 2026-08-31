@@ -1,5 +1,5 @@
 ```yaml
-schema: gentle-ai.verify-result/v1
+schema: hgtran-ai.verify-result/v1
 evidence_revision: sha256:958e3224e858b6fc938f76ebe3ce7d4686ecdbec4c6c870bed8edf5a07dea472
 verdict: pass_with_warnings
 blockers: 0
@@ -17,7 +17,7 @@ build_output_hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca49599
 ## Verification Report
 
 **Change**: `sdd-compact-authority-recovery`
-**Issue**: [#1179](https://github.com/Gentleman-Programming/gentle-ai/issues/1179)
+**Issue**: [#1179](https://github.com/Gentleman-Programming/hgtran-ai/issues/1179)
 **Version**: N/A
 **Mode**: Strict TDD
 **Approved review authority**: `review-a690f3e160da0732`

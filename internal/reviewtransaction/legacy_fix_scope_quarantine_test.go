@@ -12,7 +12,7 @@ import (
 	"testing"
 )
 
-// legacyFixScopeFixture reproduces the three historical Gentle Pi shapes: two
+// legacyFixScopeFixture reproduces the three historical Hgtran Pi shapes: two
 // terminal complete-fix records and one followed by validate-fix.
 func legacyFixScopeFixture(t *testing.T, repo, lineage string, added []string, successor bool) (Store, string, string) {
 	t.Helper()
@@ -93,8 +93,8 @@ func TestQuarantineHistoricalLegacyFixScopeReproducesPiShapes(t *testing.T) {
 		successor     bool
 	}{
 		{"complete target", "issue-1099-complete-target-review-20260710", []string{"lib/sdd-preflight.ts"}, false},
-		{"final complete", "issue-1099-final-complete-review-20260710", []string{"assets/agents/gentle-ai-worker.md"}, false},
-		{"corrected candidate", "issue-1099-corrected-candidate-review-20260710", []string{"extensions/gentle-ai.ts", "tests/gentle-ai.test.ts"}, true},
+		{"final complete", "issue-1099-final-complete-review-20260710", []string{"assets/agents/hgtran-ai-worker.md"}, false},
+		{"corrected candidate", "issue-1099-corrected-candidate-review-20260710", []string{"extensions/hgtran-ai.ts", "tests/hgtran-ai.test.ts"}, true},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 			repo := initSnapshotRepo(t)
@@ -244,7 +244,7 @@ func TestQuarantineHistoricalLegacyFixScopeRejectsFabricatedReplayAndRace(t *tes
 		if err := os.RemoveAll(conflictPath); err != nil {
 			t.Fatal(err)
 		}
-		if err := os.WriteFile(filepath.Join(record.QuarantinePath, "reclaim-record.json"), []byte(`{"schema":"gentle-ai.review-reclaim-record/v1","status":"committed","lineage_id":"`+record.LineageID+`"}`), 0o644); err != nil {
+		if err := os.WriteFile(filepath.Join(record.QuarantinePath, "reclaim-record.json"), []byte(`{"schema":"hgtran-ai.review-reclaim-record/v1","status":"committed","lineage_id":"`+record.LineageID+`"}`), 0o644); err != nil {
 			t.Fatal(err)
 		}
 		if _, err := QuarantineHistoricalLegacyFixScope(context.Background(), repo, request); err == nil || !strings.Contains(err.Error(), "incomplete or mismatched") {

@@ -1,16 +1,16 @@
 # Organic Recovery Architecture and Implementation Plan
 
 - **Decision date:** 2026-07-23
-- **Status:** Gentle AI provider release-ready subject to exact-candidate CI; 51 of 52 acceptance criteria proved; ecosystem activation remains pending on the sole deferred Gentle Pi consumer matrix
+- **Status:** Hgtran AI provider release-ready subject to exact-candidate CI; 51 of 52 acceptance criteria proved; ecosystem activation remains pending on the sole deferred Hgtran Pi consumer matrix
 - **Architecture baseline:** `main` at `0d95c399c79edb341e3d874032eba4654b2b3f17`
 - **Implementation baseline:** `main` at `0d216f26d1e2fdb21f6fcfbefa05a1767f92eba8`
 - **Parent architecture:** [Systemic Remediation Architecture](./2026-07-23-systemic-remediation-architecture.md)
 - **Scope:** canonical implementation routing, optional SDD planning, proportional verification, the common RAR/PAD handoff, an outcome-first user experience, and typed delivery routes
-- **Delivery posture:** provider-first GO: merge and publish Gentle AI after freezing and validating the exact candidate; keep default/unset activation read-only and do not claim ecosystem activation until Gentle Pi passes its subsequent provider-version/consumer matrix
+- **Delivery posture:** provider-first GO: merge and publish Hgtran AI after freezing and validating the exact candidate; keep default/unset activation read-only and do not claim ecosystem activation until Hgtran Pi passes its subsequent provider-version/consumer matrix
 
-> **Decision:** Restore Gentle AI's organic “ask for the outcome” experience without removing its trust kernel. Keep byte integrity, immutable candidate identity, typed evidence, bounded review, receipts, and gate revalidation invisible behind one provider-owned safety envelope shared by multiple implementation routes. Make semantic verification proportional to applicability, risk, and cost; surface only decisions that materially affect the user's intent, exposure, or delivery.
+> **Decision:** Restore Hgtran AI's organic “ask for the outcome” experience without removing its trust kernel. Keep byte integrity, immutable candidate identity, typed evidence, bounded review, receipts, and gate revalidation invisible behind one provider-owned safety envelope shared by multiple implementation routes. Make semantic verification proportional to applicability, risk, and cost; surface only decisions that materially affect the user's intent, exposure, or delivery.
 
-> **Implementation audit:** Gentle AI now composes the productive path end to
+> **Implementation audit:** Hgtran AI now composes the productive path end to
 > end: normal outcome-only intake, authenticated connector/bootstrap, semantic
 > evaluation, live policy provisioning, exact Git candidate authority,
 > hosting/PAD probe and execution, connectorless recovery, and route-neutral
@@ -18,7 +18,7 @@
 > delegated, common-review, and kill-switch journeys. Independent adversarial
 > review reports PASS with P0/P1/P2 = 0/0/0. The provider is therefore
 > release-ready at 51 of 52 criteria. The sole unchecked criterion is the
-> downstream Gentle Pi provider-version/consumer matrix. Publishing the
+> downstream Hgtran Pi provider-version/consumer matrix. Publishing the
 > provider does not activate the ecosystem: the canonical manifest and unset
 > runtime mode remain dormant/read-only, while effective advertisement still
 > requires explicit enabled mode and an authenticated repository- and
@@ -28,7 +28,7 @@ This is a recovery slice within the nine-context systemic architecture, not a re
 
 ## 1. Executive decision
 
-Gentle AI should return to a simple public mental model:
+Hgtran AI should return to a simple public mental model:
 
 1. The user asks for an outcome.
 2. PAD records an initial admission decision and typed delivery intent.
@@ -61,7 +61,7 @@ Hashes, lineages, revisions, locks, actor tickets, attempt ordinals, recovery cl
 - No requirement that every delivery use both an issue and a pull request.
 - No route may weaken immutable candidate identity, managed mutation integrity, receipt binding, remote revalidation, or repository protection.
 - No consumer may author an SDD decline fallback, infer a recovery action from prose, retry `work-start` after an ambiguous result, or invoke delivery reconciliation automatically.
-- No optional fields may be added to the existing `sdd-status` v1 response because Gentle Pi decodes that shape exactly.
+- No optional fields may be added to the existing `sdd-status` v1 response because Hgtran Pi decodes that shape exactly.
 - A kill switch may disable the new capability or reduce it to read-only diagnostics; it may not restore consumer-side inference or prose authority.
 
 ## 2. Problem and evidence
@@ -77,7 +77,7 @@ The four-R review model improved investigation and found risks that the previous
 - the user has to understand review internals to recover;
 - issue-first and pull-request-first governance is treated as if it were universal security policy;
 - ordinary subagent delegation and full SDD planning are conflated even though they solve different complexity problems;
-- SDD, RDD, gates, CLI adapters, and Gentle Pi can each infer a next action.
+- SDD, RDD, gates, CLI adapters, and Hgtran Pi can each infer a next action.
 
 The result is safe stopping without an operable path forward. Users who were satisfied with “build this for me” encounter review vocabulary, repeated prompts, and non-convergent flows after the implementation is already correct.
 
@@ -93,7 +93,7 @@ This recovery therefore cannot be another sequence of isolated workflow patches.
 
 ### 2.3 Existing implementation seams
 
-Gentle AI already contains reusable foundations:
+Hgtran AI already contains reusable foundations:
 
 | Existing seam | Reuse decision |
 |---|---|
@@ -103,7 +103,7 @@ Gentle AI already contains reusable foundations:
 | `RuntimeStore` and SDD CAS records | Extract/reuse the route-neutral verification reservation/result core as `WorkRunStore`. SDD composes it with its phase graph and budgets only when SDD was selected; direct and delegated work never become fake SDD runs. |
 | `CandidateIdentity`, review authority, and immutable receipts | Preserve unchanged as the trust kernel. |
 | `applyPreVerifyReviewRouting` in `internal/sddstatus/status.go` | Replace the current review-before-final-verification ordering with functional verification before the review candidate is frozen. |
-| `gentle-ai.sdd-status` v1 | Introduce an explicit strict v1 projection for legacy SDD consumers that matches the current Gentle Pi decoder and cannot leak `runtimeStatus`, `remediationState.correctionBudget`, new root keys, or work-contract-only next-action tokens. |
+| `hgtran-ai.sdd-status` v1 | Introduce an explicit strict v1 projection for legacy SDD consumers that matches the current Hgtran Pi decoder and cannot leak `runtimeStatus`, `remediationState.correctionBudget`, new root keys, or work-contract-only next-action tokens. |
 
 Pre-review `not_applicable` requires a new RAR-owned applicability decision bound to the post-normalization snapshot and supported by EPD-admitted evidence. It must not reuse the RAR-only low-risk evidence preimage.
 
@@ -127,7 +127,7 @@ If an apparently simple task reveals genuine complexity, the router may propose 
 
 The router emits an `ImplementationRouteDecision` with `direct_inline`, `delegated_direct`, or `propose_sdd`. Only a selected executable route—`direct_inline`, `delegated_direct`, or `sdd`—is persisted as `ImplementationRoute` in a `WorkRun`; `sdd` additionally requires acceptance unless the user requested it explicitly.
 
-`gentle-ai.work-route/v1` makes that boundary explicit:
+`hgtran-ai.work-route/v1` makes that boundary explicit:
 
 - `work-route decide` accepts only the human choice `accept_sdd` or `decline_sdd`. The consumer cannot submit a replacement route or routing facts.
 - The provider persists the safe decline fallback with the original `propose_sdd` authority. A decline selects only that owner-authored `direct_inline` or `delegated_direct` fallback; if none exists, the decision fails closed.
@@ -142,7 +142,7 @@ The normal user does not invoke SDD, RDD, or PAD commands. Natural language rema
 
 > Create this poster using the supplied copy and dimensions.
 
-Internally, Gentle AI can classify the work, perform a structural readback, run a renderer or parser when one is applicable, select the bounded review plan, and authorize delivery. The final response remains about the outcome.
+Internally, Hgtran AI can classify the work, perform a structural readback, run a renderer or parser when one is applicable, select the bounded review plan, and authorize delivery. The final response remains about the outcome.
 
 The system asks a question only when the answer changes at least one of:
 
@@ -187,7 +187,7 @@ Operational replay of an interrupted durable operation does not consume the corr
 
 ### 3.5 One terminal stop, one explicit recovery
 
-`gentle-ai.work-advance/v1` is terminal: one bounded call returns either
+`hgtran-ai.work-advance/v1` is terminal: one bounded call returns either
 **Ready** with `deliveryResultRef`, or **Needs your decision** with one owner
 diagnostic. It never returns an intermediate **Working** or **Checking**
 envelope. When the diagnostic branch is present, its top-level value must be
@@ -204,7 +204,7 @@ when authorization was already bound. The old WorkRun cannot continue around
 that blocker.
 
 If the user explicitly chooses recovery,
-`gentle-ai.work-reconcile/v1` performs one owner-only reconciliation against
+`hgtran-ai.work-reconcile/v1` performs one owner-only reconciliation against
 the exact terminal revision and diagnostic reference:
 
 | Reconciliation outcome | Public result |
@@ -590,11 +590,11 @@ public state, cached local state, or prose. The
 
 ### 8.1 Provider first
 
-Gentle AI owns policy and must publish the new contracts first. Gentle Pi adapts only after the provider release exists.
+Hgtran AI owns policy and must publish the new contracts first. Hgtran Pi adapts only after the provider release exists.
 
-> **Release boundary:** Provider GO means the Gentle AI contracts and productive
+> **Release boundary:** Provider GO means the Hgtran AI contracts and productive
 > composition may be merged and published first. It does not authorize
-> ecosystem-wide consumer activation. Gentle Pi must adapt against that
+> ecosystem-wide consumer activation. Hgtran Pi must adapt against that
 > published provider, prove its consumer matrix, and release before operators
 > explicitly enable or advertise the combined ecosystem path.
 
@@ -602,22 +602,22 @@ The canonical delegation rules remain an ACI-owned projection, and every capable
 
 | Invocation | Provider response |
 |---|---|
-| `gentle-ai work-capabilities --cwd <repo> --contract gentle-ai.work-capabilities/v1 --json` | The authenticated effective capability. A managed start is permitted only when exposure is `advertised` and all six exact `start`, `route`, `advance`, `reconcile`, `status`, and `transition` contracts are present for the current agent and repository. |
-| `gentle-ai work-start --cwd <repo> --contract gentle-ai.work-start/v1 --json` with the outcome-only request on stdin | A typed initial `WorkStatusV1`. START is not a consumer retry promise: an interrupted, diagnostic, malformed, or ambiguous result stops without automatic retry or legacy fallback because a mutation may have started. |
-| `gentle-ai sdd-status ... --json` | A strict `StatusV1Projection` only for legacy/current SDD runs, containing exactly the fields and tokens accepted by the current Gentle Pi decoder. It never selects an implementation route. |
-| `gentle-ai work-route decide --cwd <repo> --work-run <id> --expected-revision <revision> --contract gentle-ai.work-route/v1 --choice <choice> --json` | Records only the human choice `accept_sdd` or `decline_sdd`. Acceptance reaches **Working**/`sdd_runtime_pending`; decline uses only the provider-persisted fallback and fails closed when no safe fallback exists. |
-| `gentle-ai work-route bind-sdd --cwd <repo> --work-run <id> --expected-revision <revision> --contract gentle-ai.work-route/v1 --run-ref <existing-run> --json` | Binds an already-existing native SDD runtime to an already-accepted SDD WorkRun and reaches `implementation_selected`; it never creates a run or performs a second route decision. |
-| `gentle-ai work-advance --cwd <repo> --work-run <id> --expected-revision <revision> --contract gentle-ai.work-advance/v1 --json` | Performs one bounded owner convergence attempt and terminates as **Ready** with `deliveryResultRef` or **Needs your decision** with one diagnostic duplicated exactly in `status.diagnostic`. That diagnostic carries only `start_fresh_work_run` or `reconcile_before_new_work`; the consumer never loops or infers another action. |
-| `gentle-ai work-reconcile --cwd <repo> --work-run <id> --expected-revision <revision> --diagnostic-ref <ref> --contract gentle-ai.work-reconcile/v1 --json` | After explicit user choice, performs one owner-only reconciliation and returns `delivery_confirmed`, `no_delivery_confirmed`, or `manual_resolution_required`. Exact request replay may reproduce the result but cannot launch another effect. |
-| `gentle-ai work-status --cwd <repo> --work-run <id> --contract gentle-ai.work-status/v1 --json` | A typed `WorkStatusV1` with the route decision, optional selected `implementationRoute`, optional `sddRunRef`, verification summary/references, delivery intent, and at most one provider-issued `AuthorizedTransition`. |
-| `gentle-ai work-transition apply --cwd <repo> --work-run <id> --contract gentle-ai.work-transition/v1 --authorization-ref <ref> --expected-revision <revision> --json` | The only generic `WorkStatusV1`-authorized transition surface. It applies the stored owner-issued transition through CAS; route choice/binding and explicit terminal reconciliation remain separate closed mutations under their own exact contracts. |
+| `hgtran-ai work-capabilities --cwd <repo> --contract hgtran-ai.work-capabilities/v1 --json` | The authenticated effective capability. A managed start is permitted only when exposure is `advertised` and all six exact `start`, `route`, `advance`, `reconcile`, `status`, and `transition` contracts are present for the current agent and repository. |
+| `hgtran-ai work-start --cwd <repo> --contract hgtran-ai.work-start/v1 --json` with the outcome-only request on stdin | A typed initial `WorkStatusV1`. START is not a consumer retry promise: an interrupted, diagnostic, malformed, or ambiguous result stops without automatic retry or legacy fallback because a mutation may have started. |
+| `hgtran-ai sdd-status ... --json` | A strict `StatusV1Projection` only for legacy/current SDD runs, containing exactly the fields and tokens accepted by the current Hgtran Pi decoder. It never selects an implementation route. |
+| `hgtran-ai work-route decide --cwd <repo> --work-run <id> --expected-revision <revision> --contract hgtran-ai.work-route/v1 --choice <choice> --json` | Records only the human choice `accept_sdd` or `decline_sdd`. Acceptance reaches **Working**/`sdd_runtime_pending`; decline uses only the provider-persisted fallback and fails closed when no safe fallback exists. |
+| `hgtran-ai work-route bind-sdd --cwd <repo> --work-run <id> --expected-revision <revision> --contract hgtran-ai.work-route/v1 --run-ref <existing-run> --json` | Binds an already-existing native SDD runtime to an already-accepted SDD WorkRun and reaches `implementation_selected`; it never creates a run or performs a second route decision. |
+| `hgtran-ai work-advance --cwd <repo> --work-run <id> --expected-revision <revision> --contract hgtran-ai.work-advance/v1 --json` | Performs one bounded owner convergence attempt and terminates as **Ready** with `deliveryResultRef` or **Needs your decision** with one diagnostic duplicated exactly in `status.diagnostic`. That diagnostic carries only `start_fresh_work_run` or `reconcile_before_new_work`; the consumer never loops or infers another action. |
+| `hgtran-ai work-reconcile --cwd <repo> --work-run <id> --expected-revision <revision> --diagnostic-ref <ref> --contract hgtran-ai.work-reconcile/v1 --json` | After explicit user choice, performs one owner-only reconciliation and returns `delivery_confirmed`, `no_delivery_confirmed`, or `manual_resolution_required`. Exact request replay may reproduce the result but cannot launch another effect. |
+| `hgtran-ai work-status --cwd <repo> --work-run <id> --contract hgtran-ai.work-status/v1 --json` | A typed `WorkStatusV1` with the route decision, optional selected `implementationRoute`, optional `sddRunRef`, verification summary/references, delivery intent, and at most one provider-issued `AuthorizedTransition`. |
+| `hgtran-ai work-transition apply --cwd <repo> --work-run <id> --contract hgtran-ai.work-transition/v1 --authorization-ref <ref> --expected-revision <revision> --json` | The only generic `WorkStatusV1`-authorized transition surface. It applies the stored owner-issued transition through CAS; route choice/binding and explicit terminal reconciliation remain separate closed mutations under their own exact contracts. |
 | An explicitly empty or unknown `--contract` value on any contract-bearing surface | A typed unsupported-contract diagnostic and a read-only exit before any transition or mutation. No contract, result, or status shape is inferred from command presence, prose, cached state, or provider version. |
 
-The default SDD v1 projection must exclude `runtimeStatus`, `remediationState.correctionBudget`, new root keys, and work-contract-only next-action tokens even when the internal aggregate contains them. Gentle Pi's current decoder rejects unknown root fields, so adding “optional” fields is not compatible.
+The default SDD v1 projection must exclude `runtimeStatus`, `remediationState.correctionBudget`, new root keys, and work-contract-only next-action tokens even when the internal aggregate contains them. Hgtran Pi's current decoder rejects unknown root fields, so adding “optional” fields is not compatible.
 
-`WorkStatusV1` distinguishes the pending `routeDecision` from the selected `implementationRoute`; `sddRunRef` is valid only when the latter is `sdd`. It does not publish a menu from which a client reconstructs policy. The native controller returns zero or one exact `AuthorizedTransition`, bound to `gentle-ai.work-transition/v1`, its opaque authorization reference, expected work revision, candidate, action ticket, and applicable authorization. A client may present it and submit only the returned reference and revision to `work-transition apply`; it may not choose other flags, rebuild recovery algebra, or synthesize an alternative transition. Missing, expired, replayed-with-different-inputs, or mismatched authorization fails CAS without mutation.
+`WorkStatusV1` distinguishes the pending `routeDecision` from the selected `implementationRoute`; `sddRunRef` is valid only when the latter is `sdd`. It does not publish a menu from which a client reconstructs policy. The native controller returns zero or one exact `AuthorizedTransition`, bound to `hgtran-ai.work-transition/v1`, its opaque authorization reference, expected work revision, candidate, action ticket, and applicable authorization. A client may present it and submit only the returned reference and revision to `work-transition apply`; it may not choose other flags, rebuild recovery algebra, or synthesize an alternative transition. Missing, expired, replayed-with-different-inputs, or mismatched authorization fails CAS without mutation.
 
-The current `sdd-continue` contract remains unchanged for SDD v1 consumers. Direct and delegated runs never call it, never call `sdd-status`, and carry no `sddRunRef`. The new common behavior stays behind the advertised `gentle-ai.work-routing/v1` capability until a consumer explicitly requests the recognized contract. There is no ambient upgrade based on provider version, field presence, prose, or adapter detection.
+The current `sdd-continue` contract remains unchanged for SDD v1 consumers. Direct and delegated runs never call it, never call `sdd-status`, and carry no `sddRunRef`. The new common behavior stays behind the advertised `hgtran-ai.work-routing/v1` capability until a consumer explicitly requests the recognized contract. There is no ambient upgrade based on provider version, field presence, prose, or adapter detection.
 
 Compatibility is asymmetric and fail-closed:
 
@@ -632,20 +632,20 @@ Compatibility is asymmetric and fail-closed:
 - New readers may render old records, but cannot silently upgrade their authorization.
 - Unsupported capability yields read-only status or a typed stop, not adapter inference.
 
-### 8.3 Gentle Pi follow-up — sole deferred criterion
+### 8.3 Hgtran Pi follow-up — sole deferred criterion
 
-The Gentle Pi change is intentionally outside this provider PR and represents
+The Hgtran Pi change is intentionally outside this provider PR and represents
 the sole unchecked acceptance criterion. Its subsequent implementation against
-the published Gentle AI provider must:
+the published Hgtran AI provider must:
 
 - apply the canonical delegation rules before any SDD negotiation;
-- negotiate `gentle-ai.work-capabilities/v1` and require the exact six-contract set before START;
+- negotiate `hgtran-ai.work-capabilities/v1` and require the exact six-contract set before START;
 - preserve the legacy direct/delegated/optional-SDD path only when negotiation fails before a managed WorkRun exists;
 - treat START as non-retryable from the consumer side and never downgrade an existing WorkRun to legacy behavior;
 - submit only `accept_sdd` or `decline_sdd`; never construct a decline fallback;
 - after an accepted or explicit SDD status reaches `working`/`sdd_runtime_pending`, create a native SDD runtime and bind that already-existing run without asking for consent again;
 - consume the provider-issued next transition;
-- invoke the exact `gentle-ai.work-transition/v1` apply surface with the returned authorization reference and revision;
+- invoke the exact `hgtran-ai.work-transition/v1` apply surface with the returned authorization reference and revision;
 - invoke SDD-specific status/continuation only after the `sdd` route was accepted or explicitly requested;
 - require a WorkAdvance diagnostic to equal `status.diagnostic`, close the current generation on `start_fresh_work_run`, and never retry the same WorkRun;
 - present `reconcile_before_new_work` as an explicit human action and never invoke reconciliation from advance handling, polling, hydration, startup, completion, or retry logic;
@@ -663,13 +663,13 @@ The pull request is not one undifferentiated change:
 
 - Wave 0 inventory and every required owner foundation are checked before behavior is activated.
 - Existing `MMI` and `ACI` foundations are prerequisites. Changed owner units follow `HCR` facts/execution, `RAR` authority, `EPD` evidence/policy, route-neutral `WorkRun` coordination, optional `SDD` integration, and `PAD` delivery. Final `ACI` work projects the already-proven routing and owner contracts; SDD may not depend on generated projection.
-- The `gentle-ai.work-routing/v1` capability remains unadvertised and unable to
+- The `hgtran-ai.work-routing/v1` capability remains unadvertised and unable to
   start new work throughout intermediate commits.
 - The canonical capability manifest and unset runtime mode remain
   dormant/read-only. A released provider advertises only through an explicit
   `enabled` runtime overlay with an authenticated, repository- and agent-bound
-  connector. Publishing Gentle AI is therefore safe before consumer activation;
-  ecosystem enablement remains separately gated by the Gentle Pi matrix.
+  connector. Publishing Hgtran AI is therefore safe before consumer activation;
+  ecosystem enablement remains separately gated by the Hgtran Pi matrix.
 - A missing foundation is implemented only inside its owning work unit and port. It is never improvised inside SDD, CLI, Pi, prompts, or generated assets.
 - Each work unit must build and prove its owner acceptance before the next dependent unit is considered reviewable.
 - The pull request may merge only when the complete provider contract is coherent and the exact final candidate passes independent review.
@@ -693,25 +693,25 @@ The planning center was approximately **15,000 changed lines**. LOC is a review-
 
 ### 9.1 Implemented foundation and audit result
 
-The Gentle AI provider implementation is complete enough to publish first. The
+The Hgtran AI provider implementation is complete enough to publish first. The
 remaining downstream consumer gate is intentionally separate.
 
 | Result | Evidence |
 |---|---|
 | Exact branch footprint | `105,705` additions + `4,026` deletions = **109,731 changed lines** across `302` files, measured on the clean candidate against implementation baseline `0d216f26d1e2fdb21f6fcfbefa05a1767f92eba8`. |
-| Contract freeze | The sorted 28-file `contracts/work-routing/v1/{fixtures,schemas}` manifest is SHA-256 `8dc64d275f17ab213de7ed3561bb351bd5fecc061eee1aaaa60ddaa15341f878`; recompute it from the published tag before Gentle Pi adapts. |
+| Contract freeze | The sorted 28-file `contracts/work-routing/v1/{fixtures,schemas}` manifest is SHA-256 `8dc64d275f17ab213de7ed3561bb351bd5fecc061eee1aaaa60ddaa15341f878`; recompute it from the published tag before Hgtran Pi adapts. |
 | Provider composition | Normal outcome-only intake, authenticated TLS connector, live policy provisioning, exact candidate catalog, productive execution, hosting/PAD transport, connectorless recovery, and default/read-only authority composition are implemented and tested. |
 | Real-agent E2E | Pinned OpenCode `1.18.4` completed **4/4 PASS**: direct inline, delegated direct, direct route with common review, and kill-switch-before-advance. Full package: `41.986s`; repeated direct-inline package: `22.304s`. |
 | Authority and replay audit | **PASS**, P0/P1/P2 = **0/0/0**. CandidateAuthority, terminal replay, historical reconciliation, cache-loss recovery, production/default/read-only wiring, and one-effect delivery behavior passed adversarial review. |
 | Additional gates | Full repository suite `321.25s`; full repository race suite `440.79s`; Workprovider full suite `339.638s`; WorkRun full suite `23.469s`; app/assets/CLI/status focused normal and race suites passed; 72 contract JSON files parsed; repository gofmt checker, actionlint, and `git diff --check` passed. |
 | Legacy platform E2E | The 113-scenario installation/platform suite remains retained. Docker was unavailable locally, so its exact-candidate Linux matrix remains a CI release gate rather than a claimed local pass. |
-| Acceptance result | **51 of 52 proved.** Gentle AI provider release: GO after exact-candidate CI. Ecosystem activation: pending the sole Gentle Pi provider-version/consumer matrix. |
+| Acceptance result | **51 of 52 proved.** Hgtran AI provider release: GO after exact-candidate CI. Ecosystem activation: pending the sole Hgtran Pi provider-version/consumer matrix. |
 
 Commit `db6e8607` remains the historical safety boundary that reverted premature
 activation. Provider completion does not weaken it: the canonical manifest and
-unset `GENTLE_AI_WORK_ROUTING_MODE` remain dormant/read-only. Explicit enabled
+unset `HGTRAN_AI_WORK_ROUTING_MODE` remain dormant/read-only. Explicit enabled
 mode is still required, and downstream ecosystem activation remains gated by
-Gentle Pi.
+Hgtran Pi.
 
 ### Work-unit rules
 
@@ -750,8 +750,8 @@ Their exact migration is:
 
 ## 10. Acceptance evidence
 
-Exactly 51 checked items are proved by Gentle AI provider, integration, and
-real-agent evidence. The sole unchecked item is downstream Gentle Pi consumer
+Exactly 51 checked items are proved by Hgtran AI provider, integration, and
+real-agent evidence. The sole unchecked item is downstream Hgtran Pi consumer
 evidence. It does not block publishing the provider, but it does block claiming
 or enabling ecosystem-wide activation.
 
@@ -808,12 +808,12 @@ or enabling ecosystem-wide activation.
 
 ### 10.5 Compatibility and operations
 
-- [x] The default `sdd-status` v1 JSON remains byte-shape compatible for current Gentle Pi fixtures.
+- [x] The default `sdd-status` v1 JSON remains byte-shape compatible for current Hgtran Pi fixtures.
 - [x] `StatusV1Projection` strips `runtimeStatus`, `remediationState.correctionBudget`, new root keys, and work-contract-only tokens regardless of internal state.
-- [x] Exact `gentle-ai.work-route/v1`, `gentle-ai.work-advance/v1`, and `gentle-ai.work-reconcile/v1` requests preserve owner-only route choice, diagnostic action, delivery fencing, and one-shot reconciliation; `gentle-ai.work-status/v1` distinguishes decision from selected route and permits `sddRunRef` only for `sdd`.
-- [x] `gentle-ai.work-transition/v1` is the sole generic `WorkStatusV1`-authorized transition surface and rejects missing, expired, mismatched, or stale authorizations; route and reconciliation mutations remain closed under their own exact contracts.
+- [x] Exact `hgtran-ai.work-route/v1`, `hgtran-ai.work-advance/v1`, and `hgtran-ai.work-reconcile/v1` requests preserve owner-only route choice, diagnostic action, delivery fencing, and one-shot reconciliation; `hgtran-ai.work-status/v1` distinguishes decision from selected route and permits `sddRunRef` only for `sdd`.
+- [x] `hgtran-ai.work-transition/v1` is the sole generic `WorkStatusV1`-authorized transition surface and rejects missing, expired, mismatched, or stale authorizations; route and reconciliation mutations remain closed under their own exact contracts.
 - [x] An empty explicit or unknown contract fails read-only before mutation; before START an inexact handshake preserves legacy behavior, while after START no failure retries, downgrades, or falls back; absence of a contract on `sdd-status` continues to select legacy SDD v1.
-- [ ] **Deferred to Gentle Pi:** Capable and incapable consumers are covered by a provider-version/contract matrix; START is never retried, accepted/explicit SDD binds once without new consent, fresh-start closes the generation, reconciliation requires explicit human action, and `sdd-continue` remains unchanged for v1 consumers.
+- [ ] **Deferred to Hgtran Pi:** Capable and incapable consumers are covered by a provider-version/contract matrix; START is never retried, accepted/explicit SDD binds once without new consent, fresh-start closes the generation, reconciliation requires explicit human action, and `sdd-continue` remains unchanged for v1 consumers.
 - [x] Semantic parity fixtures prove the 1–3/4+/2+ delegation thresholds and SDD proposal semantics across every supported orchestrator projection.
 - [x] E2E/unit tests, fixtures, and goldens that assert intentionally retired workflow behavior are removed with a recorded replacement or retirement rationale; CI/scripts contain no stale reference.
 - [x] Tests that still prove live safety invariants or strict legacy SDD v1 compatibility remain.
@@ -826,7 +826,7 @@ or enabling ecosystem-wide activation.
 
 ### 11.1 Runtime rollback
 
-- Disable advertising `gentle-ai.work-routing/v1` and reject new `WorkRun` starts.
+- Disable advertising `hgtran-ai.work-routing/v1` and reject new `WorkRun` starts.
 - Keep current SDD v1 status and historical authority readable.
 - Keep `WorkRun`/`work-status` compatibility readers plus owner-issued terminalization and explicitly requested one-shot reconciliation available for already-started common work. Pending `work-route decide` or `bind-sdd` mutations are not terminal recovery and remain stopped until a compatible enabled provider can resume them.
 - Reject every other new proportional-verification or delivery-intent transition with a typed unsupported/read-only result.
@@ -855,7 +855,7 @@ or enabling ecosystem-wide activation.
 - Implementing all nine systemic architecture contexts in this recovery PR.
 - Resuming or merging the 74 colliding community PRs one by one.
 - Migrating the 16 multi-context PRs; their extraction follows the parent architecture.
-- The Gentle Pi consumer implementation and release.
+- The Hgtran Pi consumer implementation and release.
 - A second review/evidence ledger for SDD.
 - General arbitrary-shell verification supplied by a model.
 - Treating aesthetics or subjective writing quality as objectively verified without explicit criteria.
@@ -865,15 +865,15 @@ or enabling ecosystem-wide activation.
 
 ## 13. Immediate next action
 
-1. Freeze the exact Gentle AI candidate, update its final LOC footprint, rerun
+1. Freeze the exact Hgtran AI candidate, update its final LOC footprint, rerun
    the release gates, and record the audited SHA.
-2. Merge and publish the Gentle AI provider first while default/unset activation
+2. Merge and publish the Hgtran AI provider first while default/unset activation
    remains read-only.
-3. Adapt Gentle Pi against the published provider, including the exact
+3. Adapt Hgtran Pi against the published provider, including the exact
    six-contract capability matrix, non-retryable START, one-time SDD binding,
    generation closure, and explicit reconciliation behavior.
-4. Run the Gentle Pi provider-version matrix and real consumer journeys, then
-   publish Gentle Pi.
+4. Run the Hgtran Pi provider-version matrix and real consumer journeys, then
+   publish Hgtran Pi.
 5. Only after both releases and the consumer matrix pass may a maintainer
    explicitly authorize ecosystem activation. Provider presence or version
    alone must never activate it.
@@ -882,5 +882,5 @@ or enabling ecosystem-wide activation.
 
 - [Systemic Remediation Architecture](./2026-07-23-systemic-remediation-architecture.md)
 - [Receipt-Driven Development System Audit](./2026-07-21-rdd-system-audit.md)
-- [Implementation tracker #1794](https://github.com/Gentleman-Programming/gentle-ai/issues/1794)
-- [Architecture baseline commit `0d95c399c79edb341e3d874032eba4654b2b3f17`](https://github.com/Gentleman-Programming/gentle-ai/commit/0d95c399c79edb341e3d874032eba4654b2b3f17)
+- [Implementation tracker #1794](https://github.com/Gentleman-Programming/hgtran-ai/issues/1794)
+- [Architecture baseline commit `0d95c399c79edb341e3d874032eba4654b2b3f17`](https://github.com/Gentleman-Programming/hgtran-ai/commit/0d95c399c79edb341e3d874032eba4654b2b3f17)

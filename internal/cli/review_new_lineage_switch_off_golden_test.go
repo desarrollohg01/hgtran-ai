@@ -49,7 +49,7 @@ func TestReviewNewLineageSwitchOffByteEquivalenceRelease(t *testing.T) {
 
 func assertReviewNewLineageSwitchOffByteEquivalence(t *testing.T, gate reviewtransaction.GateKind) {
 	t.Helper()
-	// GENTLE_AI_RDD_NEW_LINEAGE is deliberately never set in this fixture:
+	// HGTRAN_AI_RDD_NEW_LINEAGE is deliberately never set in this fixture:
 	// the activation switch is start-only (design decision 5), so a v3
 	// authority never exists here regardless. What this test actually
 	// proves is decision 4's own zero-cost construction: no explicit
@@ -80,7 +80,7 @@ func assertReviewNewLineageSwitchOffByteEquivalence(t *testing.T, gate reviewtra
 
 	// The additive branch is a true no-op for this candidate: no v3/ root
 	// is ever created.
-	if _, statErr := os.Stat(filepath.Join(repo, ".git", "gentle-ai", "review-transactions", "v3")); !os.IsNotExist(statErr) {
+	if _, statErr := os.Stat(filepath.Join(repo, ".git", "hgtran-ai", "review-transactions", "v3")); !os.IsNotExist(statErr) {
 		t.Fatalf("switch-off %s gate created a v3 authority root: %v", gate, statErr)
 	}
 }

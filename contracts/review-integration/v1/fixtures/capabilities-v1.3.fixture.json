@@ -1,12 +1,12 @@
 {
-  "schema": "gentle-ai.review-integration.capabilities/v1.3",
-  "contract": "gentle-ai.review-integration/v1",
+  "schema": "hgtran-ai.review-integration.capabilities/v1.3",
+  "contract": "hgtran-ai.review-integration/v1",
   "protocol": {
     "major": 1,
     "minor": 3
   },
   "package": {
-    "name": "gentle-ai",
+    "name": "hgtran-ai",
     "version": "2.1.7-test",
     "release_channel": "prerelease"
   },
@@ -45,25 +45,25 @@
     "workspace"
   ],
   "schemas": [
-    "gentle-ai.review-admitted-result/v1",
-    "gentle-ai.review-artifact-subject/v1",
-    "gentle-ai.review-authority-repair-assessment/v1",
-    "gentle-ai.review-authority-status/v1",
-    "gentle-ai.review-gate-request/v1",
-    "gentle-ai.review-integration.capabilities/v1.3",
-    "gentle-ai.review-integration.failure/v1",
-    "gentle-ai.review-integration.operation/v1",
-    "gentle-ai.review-integration.projection/v1",
-    "gentle-ai.review-integration.repair/v1",
-    "gentle-ai.review-integration.start/v2",
-    "gentle-ai.review-integration.status/v2",
-    "gentle-ai.review-receipt/v1",
-    "gentle-ai.review-receipt/v2",
-    "gentle-ai.review-result-artifact/v2",
-    "gentle-ai.review-targeted-validation-request/v1",
-    "https://gentle-ai.dev/schema/review/refuter/v1",
-    "https://gentle-ai.dev/schema/review/reviewer/v1",
-    "https://gentle-ai.dev/schema/review/validator/v1"
+    "hgtran-ai.review-admitted-result/v1",
+    "hgtran-ai.review-artifact-subject/v1",
+    "hgtran-ai.review-authority-repair-assessment/v1",
+    "hgtran-ai.review-authority-status/v1",
+    "hgtran-ai.review-gate-request/v1",
+    "hgtran-ai.review-integration.capabilities/v1.3",
+    "hgtran-ai.review-integration.failure/v1",
+    "hgtran-ai.review-integration.operation/v1",
+    "hgtran-ai.review-integration.projection/v1",
+    "hgtran-ai.review-integration.repair/v1",
+    "hgtran-ai.review-integration.start/v2",
+    "hgtran-ai.review-integration.status/v2",
+    "hgtran-ai.review-receipt/v1",
+    "hgtran-ai.review-receipt/v2",
+    "hgtran-ai.review-result-artifact/v2",
+    "hgtran-ai.review-targeted-validation-request/v1",
+    "https://hgtran-ai.dev/schema/review/refuter/v1",
+    "https://hgtran-ai.dev/schema/review/reviewer/v1",
+    "https://hgtran-ai.dev/schema/review/validator/v1"
   ],
   "features": {
     "mandatory": [
@@ -242,7 +242,7 @@
     ]
   },
   "bootstrap": {
-    "command": "gentle-ai review status --cwd \u003crepo\u003e --contract gentle-ai.review-integration/v1 --next-transition",
+    "command": "hgtran-ai review status --cwd \u003crepo\u003e --contract hgtran-ai.review-integration/v1 --next-transition",
     "target_selector_variants": [
       {
         "target_type": "staged",

@@ -27,7 +27,7 @@ func RunReviewLegacyFixScopeQuarantine(args []string, stdout io.Writer) error {
 	aliasOperation := flags.String("validate-fix-alias-operation", "", "exact historical alias operation")
 	reason := flags.String("reason", "", "non-empty quarantine reason")
 	actor := flags.String("actor", "", "quarantine actor")
-	authorization := flags.String("maintainer-authorization", "", "exact eleven-line LF-only binding: gentle-ai.review-legacy-fix-scope-quarantine-authorization/v2, repository, lineage, revision, diagnostic, disposition, anomaly_set, validate_fix_alias_revision, validate_fix_alias_operation, actor, reason")
+	authorization := flags.String("maintainer-authorization", "", "exact eleven-line LF-only binding: hgtran-ai.review-legacy-fix-scope-quarantine-authorization/v2, repository, lineage, revision, diagnostic, disposition, anomaly_set, validate_fix_alias_revision, validate_fix_alias_operation, actor, reason")
 	if err := parseReviewFlags(flags, args); err != nil {
 		return err
 	}

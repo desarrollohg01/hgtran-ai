@@ -40,7 +40,7 @@ func RuntimeCMDPath(homeDir string) string {
 // Behavior change from "only-if-missing" to "always-write":
 // WriteFileAtomic performs a content-equality check — it is a no-op when the
 // embedded asset matches the file on disk, and an atomic replace when it differs.
-// This guarantees pr_mode.sh stays current after gentle-ai updates without
+// This guarantees pr_mode.sh stays current after hgtran-ai updates without
 // touching the file on every sync when nothing has changed.
 func EnsureRuntimeAssets(homeDir string) error {
 	prModePath := RuntimePRModePath(homeDir)

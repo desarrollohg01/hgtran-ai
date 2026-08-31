@@ -13,9 +13,9 @@ Wave 1 of the RDD root simplification is complete and merged to main. The change
 
 ### Final Merged State
 
-- **Main Checkout**: /home/gentleman/work/gentle-ai at commit d591f4cf (2026-08-02)
+- **Main Checkout**: /home/gentleman/work/hgtran-ai at commit d591f4cf (2026-08-02)
 - **Merged PR Chain**: #2261–#2267 merged into tracker; tracker PR #2272 MERGED TO MAIN
-- **Issue Closure**: gentle-ai #2260 (Wave 1 scope tracking issue) auto-closed
+- **Issue Closure**: hgtran-ai #2260 (Wave 1 scope tracking issue) auto-closed
 - **Feature Branch**: `feature/rdd-root-simplification` continues on main, active for Wave 2
 
 ### PR Delivery Summary

@@ -63,7 +63,7 @@ After the main refactor, the `ScreenPreset` confirm ladder was also collapsed on
 
 This change is captured by:
 - **Topic Key**: `openspec/specs/installer-picker-navigation/spec.md`
-- **Location**: `/Users/alanbuscaglia/work/gentle-ai/openspec/specs/installer-picker-navigation/spec.md`
+- **Location**: `/Users/alanbuscaglia/work/hgtran-ai/openspec/specs/installer-picker-navigation/spec.md`
 
 The spec establishes the picker flow ordering contract, symmetric reverse navigation requirement, and cross-cutting guard boundaries. All requirements are enforced by the TUI test suite (existing + new regression tests).
 

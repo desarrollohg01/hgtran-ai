@@ -6,7 +6,7 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
-// logoLines contains the ASCII art for the Gentle-AI neon rose logo.
+// logoLines contains the ASCII art for the hgtran-ai neon rose logo.
 var logoLines = []string{
 	"             ⣠⣾⣷⣶⣦⣤⣤⣄⣠⣄⣀  ⢀⣀⣀",
 	"          ⢀⣴⣿⣿⠿⣋⣭⣭⣯⣭⣍⣭⣿⣟⠛⠛⠿⠿⣿⣷⣄",

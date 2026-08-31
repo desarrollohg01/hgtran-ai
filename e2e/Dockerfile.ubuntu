@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-# Dockerfile.ubuntu — E2E test image for gentle-ai on Ubuntu 22.04
+# Dockerfile.ubuntu — E2E test image for hgtran-ai on Ubuntu 22.04
 # Builds the binary from source and runs the E2E test suite as a non-root user.
 FROM ubuntu:22.04
 
@@ -54,7 +54,7 @@ COPY . .
 RUN --mount=type=cache,target=/root/.cache/go-build \
     --mount=type=cache,target=/root/go/pkg/mod \
     CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
-    go build -o /usr/local/bin/gentle-ai ./cmd/gentle-ai
+    go build -o /usr/local/bin/hgtran-ai ./cmd/hgtran-ai
 
 # ---------------------------------------------------------------------------
 # Prepare test environment

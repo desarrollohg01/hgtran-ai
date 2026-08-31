@@ -1,6 +1,6 @@
 # 🧪 How to test — Organic RDD (pre-release 2.2.0-rc.1)
 
-> Community testing guide for the candidate built from PR [#1801](https://github.com/Gentleman-Programming/gentle-ai/pull/1801). Every **Expected** here was validated against real output before publication. The guide uses a throwaway HOME precisely so it does not touch your real config — do not skip the setup.
+> Community testing guide for the candidate built from PR [#1801](https://github.com/Gentleman-Programming/hgtran-ai/pull/1801). Every **Expected** here was validated against real output before publication. The guide uses a throwaway HOME precisely so it does not touch your real config — do not skip the setup.
 
 > [!IMPORTANT]
 > **This guide moves; a published asset does not.** It tracks the PR head and describes behaviour that may have landed *after* the binary you downloaded was built. Running it literally against an older asset produces false regressions — that is the guide's fault, not the product's.
@@ -8,36 +8,36 @@
 > Before you start, write down which candidate you are testing:
 >
 > ```
-> gentle-ai --version          # or "$RC_BIN" --version
+> hgtran-ai --version          # or "$RC_BIN" --version
 > ```
 >
 > **Put that string in your report.** If a step disagrees with what you see, the first question is always whether the guide is describing a newer commit than your binary. Say which one you ran and we can tell the difference; without it we cannot.
 
 ## How to get this binary
 
-The binaries are on the pre-release page: **https://github.com/Gentleman-Programming/gentle-ai/releases/tag/v2.2.0-rc.1**
+The binaries are on the pre-release page: **https://github.com/Gentleman-Programming/hgtran-ai/releases/tag/v2.2.0-rc.1**
 
 1. Download the asset for your platform from the Assets section of that page.
 2. Verify the checksum against `SHA256SUMS.txt`:
    ```
    sha256sum -c SHA256SUMS.txt --ignore-missing
    ```
-3. Make it runnable and confirm which build you have. **You do not need gentle-ai installed already** — this works on a clean machine:
+3. Make it runnable and confirm which build you have. **You do not need hgtran-ai installed already** — this works on a clean machine:
    ```
-   RC_BIN="$(pwd)/gentle-ai_2.2.0-rc.1_<os>_<arch>"
+   RC_BIN="$(pwd)/hgtran-ai_2.2.0-rc.1_<os>_<arch>"
    chmod +x "$RC_BIN"
    "$RC_BIN" --version
    ```
 4. Either invoke `"$RC_BIN"` explicitly for every step, or put it on your PATH under a throwaway directory:
    ```
-   mkdir -p /tmp/rdd-bin && ln -sf "$RC_BIN" /tmp/rdd-bin/gentle-ai
+   mkdir -p /tmp/rdd-bin && ln -sf "$RC_BIN" /tmp/rdd-bin/hgtran-ai
    export PATH="/tmp/rdd-bin:$PATH"
    ```
-5. **Only if you already had gentle-ai installed** and want to replace it, back the old one up first:
+5. **Only if you already had hgtran-ai installed** and want to replace it, back the old one up first:
    ```
-   command -v gentle-ai && cp "$(command -v gentle-ai)" ~/gentle-ai.backup
+   command -v hgtran-ai && cp "$(command -v hgtran-ai)" ~/hgtran-ai.backup
    ```
-   Roll back with `mv ~/gentle-ai.backup "$(command -v gentle-ai)"` when you are done.
+   Roll back with `mv ~/hgtran-ai.backup "$(command -v hgtran-ai)"` when you are done.
 
 ## Setup (once)
 
@@ -54,22 +54,22 @@ The binaries are on the pre-release page: **https://github.com/Gentleman-Program
 
 ### Flow 1: Routing without SDD (the main fix)
 
-1. [ ] `gentle-ai install --scope workspace --agents claude-code --components permissions` → **Expected**: it installs and ends with "You're ready", without asking anything about SDD.
+1. [ ] `hgtran-ai install --scope workspace --agents claude-code --components permissions` → **Expected**: it installs and ends with "You're ready", without asking anything about SDD.
 2. [ ] Open `$HOME/demo/.claude/CLAUDE.md` → **Expected**: a routing section with **direct inline**, **delegated direct** and **optional SDD**.
 3. [ ] Search for `WorkRun` or `work-capabilities` → **Expected**: **zero results**. If it shows up, that is a bug.
-4. [ ] Search for `review mode` → **Expected**: `gentle-ai review mode enable|disable|status` shows up.
+4. [ ] Search for `review mode` → **Expected**: `hgtran-ai review mode enable|disable|status` shows up.
 5. [ ] Run the same install again → **Expected**: same output and the files do NOT change.
 
 ### Flow 2: Kill switch
 
-1. [ ] `gentle-ai review mode status --cwd $HOME/demo --json` → **Expected**: effective `on`, with the source that decides it.
-2. [ ] `gentle-ai review mode disable --cwd $HOME/demo` → **Expected**: it confirms reviews are off.
+1. [ ] `hgtran-ai review mode status --cwd $HOME/demo --json` → **Expected**: effective `on`, with the source that decides it.
+2. [ ] `hgtran-ai review mode disable --cwd $HOME/demo` → **Expected**: it confirms reviews are off.
 3. [ ] `status` again → **Expected**: effective `off`, source `global`.
-4. [ ] `gentle-ai review start --cwd $HOME/demo` → **Expected**: refused, naming that reviews are turned off **and naming the command that turns them back on**, scoped to the source that actually decided:
+4. [ ] `hgtran-ai review start --cwd $HOME/demo` → **Expected**: refused, naming that reviews are turned off **and naming the command that turns them back on**, scoped to the source that actually decided:
 
 ```
 receipt-driven development is disabled: start is rejected because the global mode source
-keeps it off; turn it back on with gentle-ai review mode enable --scope=global
+keeps it off; turn it back on with hgtran-ai review mode enable --scope=global
 ```
 
 It does NOT hang, it does NOT review. A refusal that exits non-zero and names no command is the defect. If you turned it off at clone scope, the scope in the message must say `clone`, not `global`.
@@ -80,7 +80,7 @@ It does NOT hang, it does NOT review. A refusal that exits non-zero and names no
 ### Flow 3: Documentation-only change (zero ceremony)
 
 1. [ ] Edit `README.md` (plain text) and stage **only that file**: `git add README.md`.
-2. [ ] `gentle-ai review start --cwd $HOME/demo` → **Expected**: `risk_level: low`, `selected_lenses: []` — zero reviewers, no question.
+2. [ ] `hgtran-ai review start --cwd $HOME/demo` → **Expected**: `risk_level: low`, `selected_lenses: []` — zero reviewers, no question.
 
 ### Flow 4: The review is chosen by evidence, not by size
 
@@ -90,7 +90,7 @@ It does NOT hang, it does NOT review. A refusal that exits non-zero and names no
 
 ### Flow 5: The consent question (needs a real terminal)
 
-1. [ ] With a tier 1/2 change ready, `review start` in an interactive terminal → **Expected**: **two** options — `1) Run the review now` / `2) Not now, just this once` — and a final line naming `gentle-ai review mode disable`. **There is no option 3.**
+1. [ ] With a tier 1/2 change ready, `review start` in an interactive terminal → **Expected**: **two** options — `1) Run the review now` / `2) Not now, just this once` — and a final line naming `hgtran-ai review mode disable`. **There is no option 3.**
 2. [ ] Answer `2` → **Expected**: it does not review this candidate.
 3. [ ] ANOTHER change and `review start` → **Expected**: it asks again.
 4. [ ] Answer `1` → **Expected**: it reviews, and the next change no longer asks.
@@ -108,7 +108,7 @@ git push -u origin HEAD
 ```
 
 1. [ ] Turn reviews off, make a change and commit → **Expected**: the commit works normally.
-2. [ ] `gentle-ai review validate --gate pre-push --cwd $HOME/demo` → **Expected**: `"delivery": "disabled/unmanaged"`, `"allowed": false`, **exit 0**. It reports, it does not block.
+2. [ ] `hgtran-ai review validate --gate pre-push --cwd $HOME/demo` → **Expected**: `"delivery": "disabled/unmanaged"`, `"allowed": false`, **exit 0**. It reports, it does not block.
 3. [ ] Check that it does NOT say `allow` → **Expected**: never a false PASS.
 
 ### Flow 7: Turning it off mid-work and coming back
@@ -118,13 +118,13 @@ git push -u origin HEAD
 
 ### Flow 8: No phantom SDD artifacts
 
-1. [ ] `git rev-parse --git-common-dir` and look inside → **Expected**: inside `gentle-ai/` only review state; nothing like `sdd*`, `trace`, `evaluation`.
+1. [ ] `git rev-parse --git-common-dir` and look inside → **Expected**: inside `hgtran-ai/` only review state; nothing like `sdd*`, `trace`, `evaluation`.
 
 ---
 
 ## Flows 9 to 13: what we fixed with your feedback
 
-These flows are new. Each one reproduces a bug someone in the community found in earlier rounds. They need a binary **later than Refresh 4**. Check which build you have with `gentle-ai doctor`: it names the binary you actually invoked and its version, and warns when that differs from the one on your `PATH`. If yours predates the current refresh, download it again from the release page or build from the PR branch.
+These flows are new. Each one reproduces a bug someone in the community found in earlier rounds. They need a binary **later than Refresh 4**. Check which build you have with `hgtran-ai doctor`: it names the binary you actually invoked and its version, and warns when that differs from the one on your `PATH`. If yours predates the current refresh, download it again from the release page or build from the PR branch.
 
 ### Flow 9: Pre-push after you already pushed (the bug that cost us the most)
 
@@ -140,7 +140,7 @@ You need the remote from Flow 6.
 6. [ ] Turn reviews on and repeat the gate → **Expected**: `result: "scope-changed"` naming a **runnable** recovery, not just a reason:
 
 ```
-review lifecycle gate denied: scope-changed: recover via gentle-ai review recover
+review lifecycle gate denied: scope-changed: recover via hgtran-ai review recover
   --base-ref <commit> --committed-only (requires: predecessor_lineage_id, ...)
 ```
 
@@ -159,7 +159,7 @@ Reported by @lu149e, with the root cause confirmed by @Denver2828.
 1. [ ] `mkdir $HOME/unborn && cd $HOME/unborn && git init -b main`.
 2. [ ] Create a code file, `gofmt` if it applies, and `git add -A`. **Do not commit yet.**
 3. [ ] `git rev-parse --verify HEAD` → **Expected**: it fails, because there is no first commit yet. That is correct.
-4. [ ] `gentle-ai review start --cwd "$PWD"` → **Expected**: the review **starts**. It used to blow up with `Needed a single revision`.
+4. [ ] `hgtran-ai review start --cwd "$PWD"` → **Expected**: the review **starts**. It used to blow up with `Needed a single revision`.
 
 ### Flow 11: Transitions run exactly as they are printed
 
@@ -168,7 +168,7 @@ This one is for people using agents. The product prints the next command; if it 
 1. [ ] With a review in progress, ask for the next transition. The command needs the explicit contract:
 
 ```
-gentle-ai review status --next-transition --contract gentle-ai.review-integration/v1
+hgtran-ai review status --next-transition --contract hgtran-ai.review-integration/v1
 ```
 
 **First read `next_transition.kind`. Steps 2 to 4 only apply when it is `execute`.**
@@ -178,10 +178,10 @@ If it is `collect`, the tool is waiting for reviewer results that do not exist y
 The quickest way to land on `execute` is to ask before any review has started, or right after `review capture-result`.
 
 2. [ ] Look at the `token` of each argument in the response → **Expected**: each one is a complete flag ready to run (`--target=sha256:...`), not a name and a value sitting apart.
-3. [ ] Read the `next_transition.execute.command` field → **Expected**: one complete line, starting with `gentle-ai review <verb>`, carrying every argument from step 2 in the same order and in `--flag=value` form. You never assemble it yourself: `operation` is a logical name (`review.start`), `command` is the runnable line.
+3. [ ] Read the `next_transition.execute.command` field → **Expected**: one complete line, starting with `hgtran-ai review <verb>`, carrying every argument from step 2 in the same order and in `--flag=value` form. You never assemble it yourself: `operation` is a logical name (`review.start`), `command` is the runnable line.
 4. [ ] **Copy and paste that `command` exactly as it came out**, without fixing anything → **Expected**: it runs. It used to print `--captured-results true` (with a space) and the parser rejected it, and before that there was no `command` at all — only `operation`, which an agent had to translate into a verb by guessing.
 5. [ ] If you landed on `collect`, look at its `inputs[].arguments` → **Expected**: each one carries a `token` too, because those arguments are literally the flags of `review capture-result`. Do **not** mark the flow FAIL for the missing `command` on a collect: there is genuinely nothing runnable to print until a model has produced the reviewer result that `--input` points at.
-6. [ ] Paste those collect tokens straight into `gentle-ai review capture-result` → **Expected**: it runs. **Do not add `--cwd`**: the tokens already carry `--repository-context`, and passing both is refused. If you hit that refusal, report whether it told you which one to drop.
+6. [ ] Paste those collect tokens straight into `hgtran-ai review capture-result` → **Expected**: it runs. **Do not add `--cwd`**: the tokens already carry `--repository-context`, and passing both is refused. If you hit that refusal, report whether it told you which one to drop.
 
 ### Flow 12: Finalize without evidence says what to do
 
@@ -193,12 +193,12 @@ That is deliberate. Three testers in a row marked this N/A because they could no
 
 **The actual test:**
 
-2. [ ] With that review in `validating` and no captured evidence, run `gentle-ai review finalize --lineage <id> --cwd .` → **Expected**: an error that **names both commands** to get out:
+2. [ ] With that review in `validating` and no captured evidence, run `hgtran-ai review finalize --lineage <id> --cwd .` → **Expected**: an error that **names both commands** to get out:
 
 ```
 finalize for lineage "<id>" had no verification evidence to consume and made no
-transition; capture it first with `gentle-ai review capture-evidence`, then run
-`gentle-ai review finalize --lineage <id> --captured-evidence`
+transition; capture it first with `hgtran-ai review capture-evidence`, then run
+`hgtran-ai review finalize --lineage <id> --captured-evidence`
 ```
 
 It used to say `continue the current review state` and nothing ever happened.
@@ -220,7 +220,7 @@ The bug @decode2 and @fisidj found. You need the remote from Flow 6.
 1. [ ] Make **three** docs changes, each one with `review start` + `review finalize` + commit. Push the first two.
 2. [ ] Turn reviews off and make a fourth commit **without reviewing it**.
 3. [ ] `review validate --gate pre-push` → **Expected**: `delivery: "disabled/unmanaged"`, exit 0. **Never** "multiple terminal review receipts require explicit target selection".
-4. [ ] Turn reviews on and run `review status --contract gentle-ai.review-integration/v1` → **Expected**: it says nothing governs the candidate and that you should start a new one. The old lineages show up listed as a recovery option, **not** as a list you are forced to pick from.
+4. [ ] Turn reviews on and run `review status --contract hgtran-ai.review-integration/v1` → **Expected**: it says nothing governs the candidate and that you should start a new one. The old lineages show up listed as a recovery option, **not** as a list you are forced to pick from.
 
 ### Flow 15: Recovery that drives itself
 
@@ -230,11 +230,11 @@ The bug @decode2 and @fisidj found. You need the remote from Flow 6.
 
 ### Flow 16: Blocks say which command comes next
 
-1. [ ] With a review in progress waiting for results, run `review finalize --lineage <id>` → **Expected**: the error names `gentle-ai review capture-result`.
+1. [ ] With a review in progress waiting for results, run `review finalize --lineage <id>` → **Expected**: the error names `hgtran-ai review capture-result`.
 2. [ ] Run a gate in a repo **with no review at all**, asking for the negotiated envelope:
 
 ```
-gentle-ai review validate --gate pre-commit --contract gentle-ai.review-integration/v1
+hgtran-ai review validate --gate pre-commit --contract hgtran-ai.review-integration/v1
 ```
 
 → **Expected**: `code: receipt_missing` and `next_action: review.start`. It used to say only "stop" and the agent had to guess.
@@ -253,14 +253,14 @@ Earlier rounds asked you to report this flow "if you hit a terminal block caused
 2. [ ] Break the stored receipt on purpose so it no longer matches the authority that produced it — edit that file and change `"generation"` to a different number:
 
 ```
-$EDITOR "$(git rev-parse --git-common-dir)"/gentle-ai/review-transactions/v2/<lineage>/review-receipt.json
+$EDITOR "$(git rev-parse --git-common-dir)"/hgtran-ai/review-transactions/v2/<lineage>/review-receipt.json
 ```
 
 3. [ ] Run `review finalize --lineage <lineage>` again → **Expected**: it fails with **exit 1**, and the last sentence names the report file and the link:
 
 ```
-... A defect report was saved at <...>/gentle-ai/defect-reports/receipt-publication-conflict-<hash>.md
--- file it at https://github.com/Gentleman-Programming/gentle-ai/issues/new/choose.
+... A defect report was saved at <...>/hgtran-ai/defect-reports/receipt-publication-conflict-<hash>.md
+-- file it at https://github.com/Gentleman-Programming/hgtran-ai/issues/new/choose.
 ```
 
 4. [ ] Open that file → **Expected**: it carries version, commit, OS, the operation and the error. It does **NOT** carry the contents of your files, or absolute paths with your username, or environment variables. It is meant to be pasted into a public issue.
@@ -292,9 +292,9 @@ macOS puts `$TMPDIR` under `/var/folders/...`, and `/var` is a symlink to `/priv
 ```
 echo "one more line" >> guide.md
 git add guide.md
-gentle-ai review start --cwd .
-gentle-ai review finalize --cwd .
-gentle-ai review validate --gate pre-commit --cwd .
+hgtran-ai review start --cwd .
+hgtran-ai review finalize --cwd .
+hgtran-ai review validate --gate pre-commit --cwd .
 ```
 
 → **Expected**: it completes with `allow`. No "no discoverable review lineage", no path-shaped error.
@@ -364,7 +364,7 @@ Run everything below with output going **outside** the repo.
 1. [ ] Ask for the next transition and keep the `command` it prints:
 
 ```
-gentle-ai review status --next-transition --contract gentle-ai.review-integration/v1 --cwd . > /tmp/rdd-out/nt.json
+hgtran-ai review status --next-transition --contract hgtran-ai.review-integration/v1 --cwd . > /tmp/rdd-out/nt.json
 ```
 
 2. [ ] Now change the workspace, exactly as a linter would: `echo "lint output" > lint-report.txt` **inside the repo**.
@@ -385,8 +385,8 @@ The `cause` naming the real reason is the point. A bare `invalid_request` with a
 
 Windows never auto-updated: it detected a new version and handed you a command to run yourself. With Go on PATH it now upgrades through a pinned `go install`. All the evidence we have is synthetic — this flow is the first real execution.
 
-1. [ ] On Windows with Go 1.25.10+ on PATH, run a command that triggers the update check with an older gentle-ai installed → **Expected**: it upgrades itself. It does **not** print "requires manual update", and it does **not** send you to a releases page.
-2. [ ] `gentle-ai --version` afterwards → **Expected**: the new version.
+1. [ ] On Windows with Go 1.25.10+ on PATH, run a command that triggers the update check with an older hgtran-ai installed → **Expected**: it upgrades itself. It does **not** print "requires manual update", and it does **not** send you to a releases page.
+2. [ ] `hgtran-ai --version` afterwards → **Expected**: the new version.
 3. [ ] **Report the full output even when it works.** This path has never run outside a test double.
 4. [ ] On Windows **without** Go → **Expected**: it still refuses, and the refusal names the exact `go install github.com/...@vX.Y.Z` command plus the Go version needed. A releases URL as the only guidance is the defect.
 
@@ -397,7 +397,7 @@ Windows never auto-updated: it detected a new version and handed you a command t
 1. [ ] Arrange the mismatch on purpose: `export GOBIN=$HOME/go-elsewhere` (a directory that is **not** on your PATH), then trigger the upgrade.
 2. [ ] → **Expected**: the upgrade still reports success, **and** warns naming **both absolute paths** — where it wrote and what your shell runs.
 3. [ ] → **Expected**: it never silently reports a clean success. If it does, you would keep running the old binary believing you updated, which is the defect this replaced.
-4. [ ] If your `gentle-ai` is a symlink into the go-install directory → **Expected**: treated as a match, no warning. A spurious warning there is also a defect.
+4. [ ] If your `hgtran-ai` is a symlink into the go-install directory → **Expected**: treated as a match, no warning. A spurious warning there is also a defect.
 
 ---
 
@@ -436,9 +436,9 @@ into whichever of the two it happens to reach first.
 2. [ ] Run the ordinary cycle there:
 
 ```
-gentle-ai review start --cwd .
-gentle-ai review finalize --cwd .
-gentle-ai review validate --gate pre-commit --cwd .
+hgtran-ai review start --cwd .
+hgtran-ai review finalize --cwd .
+hgtran-ai review validate --gate pre-commit --cwd .
 ```
 
 → **Expected**: it completes with `allow`, exactly as on a local disk.
@@ -468,15 +468,15 @@ a typed refusal, not a stack of failed writes.
 sudo mount -o remount,ro <mountpoint>     # or: sudo mount -o ro,bind /src /ro-copy
 ```
 
-2. [ ] `gentle-ai review status --cwd .` → **Expected**: it works. Status is
+2. [ ] `hgtran-ai review status --cwd .` → **Expected**: it works. Status is
    read-only by contract and must not need to write anything, not even a lock
    file.
-3. [ ] `gentle-ai review start --cwd .` → **Expected**: a typed refusal naming
+3. [ ] `hgtran-ai review start --cwd .` → **Expected**: a typed refusal naming
    that the store is not writable. A raw `EROFS` or
    `read-only file system` with no continuation is the defect.
 4. [ ] → **Expected**: nothing was half-created. After the refusal,
    `git status` shows no new untracked files and the common dir holds no partial
-   `gentle-ai/` tree.
+   `hgtran-ai/` tree.
 
 ### Flow 29: The disk fills during a receipt write — **needs a small filesystem you can fill**
 
@@ -562,9 +562,9 @@ reported as a permanent corruption.
 
 ```powershell
 1..20 | ForEach-Object {
-  gentle-ai review start --cwd .
-  gentle-ai review finalize --cwd .
-  gentle-ai review validate --gate pre-commit --cwd .
+  hgtran-ai review start --cwd .
+  hgtran-ai review finalize --cwd .
+  hgtran-ai review validate --gate pre-commit --cwd .
 }
 ```
 
@@ -584,7 +584,7 @@ reported as a permanent corruption.
 ### Flow 32: Long paths — **needs Windows**
 
 The Git common directory sits under `.git/`, the review store adds
-`gentle-ai/review-transactions/v2/<lineage>/`, and the lineage identifier is
+`hgtran-ai/review-transactions/v2/<lineage>/`, and the lineage identifier is
 long. Start from a deep checkout and the full path to a receipt passes 260
 characters, which is the classic Win32 `MAX_PATH` wall.
 
@@ -592,7 +592,7 @@ characters, which is the classic Win32 `MAX_PATH` wall.
    that the receipt path exceeds 260 characters. Check it:
 
 ```powershell
-$p = "$(git rev-parse --git-common-dir)\gentle-ai\review-transactions\v2"
+$p = "$(git rev-parse --git-common-dir)\hgtran-ai\review-transactions\v2"
 $p.Length
 ```
 
@@ -628,8 +628,8 @@ starting with a host clock behind the one that wrote the state.
    look at the receipt:
 
 ```
-gentle-ai review start --cwd . && gentle-ai review finalize --cwd .
-cat "$(git rev-parse --git-common-dir)"/gentle-ai/review-transactions/v2/<lineage>/review-receipt.json
+hgtran-ai review start --cwd . && hgtran-ai review finalize --cwd .
+cat "$(git rev-parse --git-common-dir)"/hgtran-ai/review-transactions/v2/<lineage>/review-receipt.json
 ```
 
 → **Expected**: the receipt carries **no timestamp of any kind** — only
@@ -644,15 +644,15 @@ claim is already false and the rest of this flow is academic.
 sudo date -s "-1 hour"        # or restore a VM snapshot taken an hour ago
 ```
 
-3. [ ] `gentle-ai review validate --gate pre-commit --cwd .` → **Expected**:
+3. [ ] `hgtran-ai review validate --gate pre-commit --cwd .` → **Expected**:
    `allow`, unchanged. The approval is bound to bytes that did not move.
-4. [ ] `gentle-ai review status --cwd .` → **Expected**: the same lineage and
+4. [ ] `hgtran-ai review status --cwd .` → **Expected**: the same lineage and
    state. No "receipt from the future", no `authority_corrupted`.
 5. [ ] The kill switch keeps a timestamp that the design says is provenance
-   only. Test that directly: `gentle-ai review mode disable`, then
-   `gentle-ai review mode enable`, then move the clock back past
-   `rdd_mode_recorded_at` in `$HOME/.gentle-ai/state.json`, then
-   `gentle-ai review mode status --json` → **Expected**: `effective: on`, and
+   only. Test that directly: `hgtran-ai review mode disable`, then
+   `hgtran-ai review mode enable`, then move the clock back past
+   `rdd_mode_recorded_at` in `$HOME/.hgtran-ai/state.json`, then
+   `hgtran-ai review mode status --json` → **Expected**: `effective: on`, and
    the source that decided it. A candidate refused because it is "older than
    the mode record" would be exactly the time-based approximation the design
    says it deliberately does not implement.
@@ -669,7 +669,7 @@ sudo date -s "-1 hour"        # or restore a VM snapshot taken an hour ago
 **Why this exists.** The friction harness drives the binary. It cannot drive a
 document — and one of the two documented known-open limitations lives entirely
 in one. `j42-kill-switch-versus-sdd-archive` proves the **product** half is
-closed: with reviews off, `gentle-ai sdd-status <change> --json` reports the
+closed: with reviews off, `hgtran-ai sdd-status <change> --json` reports the
 archive dependency `ready` and a `reviewGate` carrying
 `delivery: "disabled/unmanaged"` whose `result` is never `allow`, because
 declining to manage is not approval. What no journey can check is what an
@@ -677,12 +677,12 @@ declining to manage is not approval. What no journey can check is what an
 requires structured status with `reviewGate.result: allow` — a value a disabled
 run is right never to produce.
 
-1. [ ] `gentle-ai install` (or `gentle-ai sync`) into a throwaway HOME, then
+1. [ ] `hgtran-ai install` (or `hgtran-ai sync`) into a throwaway HOME, then
    read the installed `sdd-archive` skill and the shared review-ledger contract
    → **Expected today**: both still require `reviewGate.result: allow`.
 2. [ ] In a repository with a complete, verified SDD change, run
-   `gentle-ai review mode disable` and then
-   `gentle-ai sdd-status <change> --json` → **Expected**: `archive` is not
+   `hgtran-ai review mode disable` and then
+   `hgtran-ai sdd-status <change> --json` → **Expected**: `archive` is not
    blocked, `reviewGate.delivery` is `disabled/unmanaged`, `reviewGate.result`
    is **not** `allow`.
 3. [ ] Ask your agent to archive that change → **Report what it does.** An agent
@@ -698,12 +698,12 @@ run is right never to produce.
 
 Six things that made earlier reports measure the wrong thing. They are not bugs, they are environment traps:
 
-**Never write command output inside the repository under test.** The review target is derived from the workspace snapshot, so `gentle-ai ... > out.txt` run from inside the repo adds an untracked file and changes the very thing being measured. A transition proposed before the redirect no longer matches after it, and you get a refusal that has nothing to do with what you were testing. Keep a separate directory:
+**Never write command output inside the repository under test.** The review target is derived from the workspace snapshot, so `hgtran-ai ... > out.txt` run from inside the repo adds an untracked file and changes the very thing being measured. A transition proposed before the redirect no longer matches after it, and you get a refusal that has nothing to do with what you were testing. Keep a separate directory:
 
 ```
 mkdir -p /tmp/rdd-out
 cd $HOME/demo
-gentle-ai review start --cwd . > /tmp/rdd-out/o.txt 2> /tmp/rdd-out/e.txt
+hgtran-ai review start --cwd . > /tmp/rdd-out/o.txt 2> /tmp/rdd-out/e.txt
 ```
 
 This one cost the maintainer an hour of chasing a defect that was his own redirect. Flow 24 turns it into a deliberate test instead.
@@ -711,15 +711,15 @@ This one cost the maintainer an hour of chasing a defect that was his own redire
 **If an agent runs it, set `CI=1`.** The consent question only shows up when there is a real terminal. Many agent harnesses allocate a pseudo-terminal, so the tool asks… and nobody answers: the shell hangs until it is killed, and the flow ends up as PARTIAL for a reason that is not the product's.
 
 ```
-CI=1 gentle-ai review start
+CI=1 hgtran-ai review start
 ```
 
 With `CI=1` the tool reviews anyway and warns on stderr that it did not ask. It is the same path CI already uses. **Exception: Flow 5 is precisely the test for the question**, so that one needs a real terminal and does not take `CI=1`; if your environment does not have one, mark it N/A.
 
-**Exit codes get lost through a pipe.** In bash, `$?` gives you the status of the **last command in the pipeline**, not the binary's. If you run `gentle-ai ... | tee log.txt`, `$?` is `tee`'s and it is always 0. In PowerShell, `$LASTEXITCODE` does give you the binary's, and that is why the same case "behaved differently" between Windows and Linux. To measure properly:
+**Exit codes get lost through a pipe.** In bash, `$?` gives you the status of the **last command in the pipeline**, not the binary's. If you run `hgtran-ai ... | tee log.txt`, `$?` is `tee`'s and it is always 0. In PowerShell, `$LASTEXITCODE` does give you the binary's, and that is why the same case "behaved differently" between Windows and Linux. To measure properly:
 
 ```
-gentle-ai review start --projection staged --base-ref HEAD~1 > out.txt 2> err.txt
+hgtran-ai review start --projection staged --base-ref HEAD~1 > out.txt 2> err.txt
 echo "exit=$?"
 ```
 
@@ -731,11 +731,11 @@ echo "exit=$?"
 
 ## What to report
 
-Anything that does not match an **Expected** — and anything you find confusing even if it works. Open an issue with: what you tried, what you expected, what you saw, `gentle-ai --version`, OS, and terminal output.
+Anything that does not match an **Expected** — and anything you find confusing even if it works. Open an issue with: what you tried, what you expected, what you saw, `hgtran-ai --version`, OS, and terminal output.
 
-👉 https://github.com/Gentleman-Programming/gentle-ai/issues/new/choose — mention that this is the **2.2.0-rc.1 pre-release**.
+👉 https://github.com/Gentleman-Programming/hgtran-ai/issues/new/choose — mention that this is the **2.2.0-rc.1 pre-release**.
 
-If everything worked, comment on PR [#1801](https://github.com/Gentleman-Programming/gentle-ai/pull/1801) with which flows passed and on which platform — that feedback decides the merge.
+If everything worked, comment on PR [#1801](https://github.com/Gentleman-Programming/hgtran-ai/pull/1801) with which flows passed and on which platform — that feedback decides the merge.
 
 ## What is NOT a bug
 

@@ -1,4 +1,4 @@
-# Systemic Remediation Architecture for Gentle AI
+# Systemic Remediation Architecture for Hgtran AI
 
 **Decision date:** 2026-07-23
 
@@ -12,7 +12,7 @@
 
 > **Decision:** Stop ticket-by-ticket remediation. Build the shared architectural seams first, migrate existing behavior and community contributions through those seams, and resume isolated feature delivery only when the owning seam is stable.
 
-This is a consolidation, not a rewrite. Gentle AI should preserve the proven review trust kernel and replace duplicated planning, capability inference, direct mutation, prose authority, and adapter-specific policy with nine bounded contexts. Each fact gets one owner; each lifecycle gets one authority; every side effect is re-observed before success.
+This is a consolidation, not a rewrite. Hgtran AI should preserve the proven review trust kernel and replace duplicated planning, capability inference, direct mutation, prose authority, and adapter-specific policy with nine bounded contexts. Each fact gets one owner; each lifecycle gets one authority; every side effect is re-observed before success.
 
 ## 1. Executive decision
 
@@ -82,20 +82,20 @@ No issue state was treated as proof of a defect. No CI state was treated as appr
 
 | Evidence artifact | SHA-256 |
 |---|---|
-| `gentle-ai-open-issues-2026-07-23.json` | `c5f3a4547e819feaede2f9558b5d7bed8869b8687984c704bbfa986da8f8f1ac` |
-| `gentle-ai-open-prs-2026-07-23.json` | `5780413ef205bf7ae6dff47f097f2b36b7d72eb786d3a6b6806c904ad0da2a5b` |
-| `gentle-ai-open-prs-enriched-2026-07-23.json` | `6777a16fbb2fd22ccf5714993277aa80921925114b90be942299605f330b19d1` |
-| `gentle-ai-backlog-linkage-2026-07-23.json` | `ab347cfebc4d0154aac264419b9759cefa924d524fba82fadd80101c815b5e55` |
-| `gentle-ai-open-pr-conflict-graph.json` | `f2b154e5d75a04de8fee3aa4b6da6200791079b6ecfa6e41a688a91232d0e16b` |
-| `gentle-ai-backlog-cluster-1.json` | `5b6e6c33402ef594b4737826d0b570dad30e7cc067c09855bff937a986c90733` |
-| `gentle-ai-backlog-cluster-2.json` | `994a439e5a8bd6e0d08e332975a7118078b3a1ba785a52309ff7182260422fdd` |
-| `gentle-ai-backlog-cluster-3.json` | `6fffe0a2efd2fae6b660600bb247c704ad648c40194b8c2047345615ad81f3b8` |
-| `gentle-ai-backlog-cluster-4.json` | `9efb1c414507b0eef0e834beb55f4775addc4bd0b4f331fd0c4f3fe16cc2bf57` |
-| `gentle-ai-backlog-completeness-validation.json` | `c1a85296155ebc3cfd5449f32929036c119e60b71ed80b07bf55ca178be11151` |
+| `hgtran-ai-open-issues-2026-07-23.json` | `c5f3a4547e819feaede2f9558b5d7bed8869b8687984c704bbfa986da8f8f1ac` |
+| `hgtran-ai-open-prs-2026-07-23.json` | `5780413ef205bf7ae6dff47f097f2b36b7d72eb786d3a6b6806c904ad0da2a5b` |
+| `hgtran-ai-open-prs-enriched-2026-07-23.json` | `6777a16fbb2fd22ccf5714993277aa80921925114b90be942299605f330b19d1` |
+| `hgtran-ai-backlog-linkage-2026-07-23.json` | `ab347cfebc4d0154aac264419b9759cefa924d524fba82fadd80101c815b5e55` |
+| `hgtran-ai-open-pr-conflict-graph.json` | `f2b154e5d75a04de8fee3aa4b6da6200791079b6ecfa6e41a688a91232d0e16b` |
+| `hgtran-ai-backlog-cluster-1.json` | `5b6e6c33402ef594b4737826d0b570dad30e7cc067c09855bff937a986c90733` |
+| `hgtran-ai-backlog-cluster-2.json` | `994a439e5a8bd6e0d08e332975a7118078b3a1ba785a52309ff7182260422fdd` |
+| `hgtran-ai-backlog-cluster-3.json` | `6fffe0a2efd2fae6b660600bb247c704ad648c40194b8c2047345615ad81f3b8` |
+| `hgtran-ai-backlog-cluster-4.json` | `9efb1c414507b0eef0e834beb55f4775addc4bd0b4f331fd0c4f3fe16cc2bf57` |
+| `hgtran-ai-backlog-completeness-validation.json` | `c1a85296155ebc3cfd5449f32929036c119e60b71ed80b07bf55ca178be11151` |
 
 ## 3. What the prior RDD audit proved
 
-The [prior audit](./2026-07-21-rdd-system-audit.md) proved that Gentle AI's review core is not the problem to rewrite. It also proved that the orchestration around that core had become distributed and operation-specific.
+The [prior audit](./2026-07-21-rdd-system-audit.md) proved that Hgtran AI's review core is not the problem to rewrite. It also proved that the orchestration around that core had become distributed and operation-specific.
 
 ### 3.1 Trust kernel to preserve
 
@@ -821,22 +821,22 @@ The validator identified 16 PRs that must be decomposed because they exceed a di
 
 | PR | Author | Required treatment |
 |---:|---|---|
-| [#731](https://github.com/Gentleman-Programming/gentle-ai/pull/731) | @Snakeblack | Extract VS Code model-assignment descriptor and tests; close cumulative slice after mapping. |
-| [#738](https://github.com/Gentleman-Programming/gentle-ai/pull/738) | @Snakeblack | Split capability projection from managed mutation and installation safety. |
-| [#740](https://github.com/Gentleman-Programming/gentle-ai/pull/740) | @Snakeblack | Separate model flow, UI, docs, and earlier VS Code chain content. |
-| [#765](https://github.com/Gentleman-Programming/gentle-ai/pull/765) | @Alan-TheGentleman | Split Termux host capability, install strategy, and platform acceptance. |
-| [#840](https://github.com/Gentleman-Programming/gentle-ai/pull/840) | @salema97 | Extract Kimi variant/target descriptor; exclude global update behavior. |
-| [#852](https://github.com/Gentleman-Programming/gentle-ai/pull/852) | @statick88 | Extract Kilo capabilities/assets; do not ship provider-specific SDD orchestration. |
-| [#946](https://github.com/Gentleman-Programming/gentle-ai/pull/946) | @mauricioalfarodev | Split provider source, model catalog, and resource reconciliation. |
-| [#973](https://github.com/Gentleman-Programming/gentle-ai/pull/973) | @decode2 | Extract editing UX from mutation/snapshot/ownership engine work. |
-| [#976](https://github.com/Gentleman-Programming/gentle-ai/pull/976) | @decode2 | Separate curated-registry ingestion from managed persistence. |
-| [#1059](https://github.com/Gentleman-Programming/gentle-ai/pull/1059) | @aleka | Recast CodeGraph as the first reconciler-backed extension; split install runtime. |
-| [#1280](https://github.com/Gentleman-Programming/gentle-ai/pull/1280) | @pablon | Extract JSONC/provider/model fixtures into the catalog source seam. |
-| [#1297](https://github.com/Gentleman-Programming/gentle-ai/pull/1297) | @salema97 | Separate runtime provenance from the repository-wide `/v2` release migration. |
-| [#1359](https://github.com/Gentleman-Programming/gentle-ai/pull/1359) | @Sitray | Split shared-skill convergence, backup/rollback, and containment tests. |
-| [#1608](https://github.com/Gentleman-Programming/gentle-ai/pull/1608) | @ardelperal | Extract lifecycle probe/diagnostic fixtures; drop dormant threshold and planning payload. |
-| [#1713](https://github.com/Gentleman-Programming/gentle-ai/pull/1713) | @pablontiv | Split persona projection from migration and transaction-backed writes. |
-| [#1749](https://github.com/Gentleman-Programming/gentle-ai/pull/1749) | @pablontiv | Extract language-contract assets/compiler tests; route writes through reconciliation. |
+| [#731](https://github.com/Gentleman-Programming/hgtran-ai/pull/731) | @Snakeblack | Extract VS Code model-assignment descriptor and tests; close cumulative slice after mapping. |
+| [#738](https://github.com/Gentleman-Programming/hgtran-ai/pull/738) | @Snakeblack | Split capability projection from managed mutation and installation safety. |
+| [#740](https://github.com/Gentleman-Programming/hgtran-ai/pull/740) | @Snakeblack | Separate model flow, UI, docs, and earlier VS Code chain content. |
+| [#765](https://github.com/Gentleman-Programming/hgtran-ai/pull/765) | @Alan-TheGentleman | Split Termux host capability, install strategy, and platform acceptance. |
+| [#840](https://github.com/Gentleman-Programming/hgtran-ai/pull/840) | @salema97 | Extract Kimi variant/target descriptor; exclude global update behavior. |
+| [#852](https://github.com/Gentleman-Programming/hgtran-ai/pull/852) | @statick88 | Extract Kilo capabilities/assets; do not ship provider-specific SDD orchestration. |
+| [#946](https://github.com/Gentleman-Programming/hgtran-ai/pull/946) | @mauricioalfarodev | Split provider source, model catalog, and resource reconciliation. |
+| [#973](https://github.com/Gentleman-Programming/hgtran-ai/pull/973) | @decode2 | Extract editing UX from mutation/snapshot/ownership engine work. |
+| [#976](https://github.com/Gentleman-Programming/hgtran-ai/pull/976) | @decode2 | Separate curated-registry ingestion from managed persistence. |
+| [#1059](https://github.com/Gentleman-Programming/hgtran-ai/pull/1059) | @aleka | Recast CodeGraph as the first reconciler-backed extension; split install runtime. |
+| [#1280](https://github.com/Gentleman-Programming/hgtran-ai/pull/1280) | @pablon | Extract JSONC/provider/model fixtures into the catalog source seam. |
+| [#1297](https://github.com/Gentleman-Programming/hgtran-ai/pull/1297) | @salema97 | Separate runtime provenance from the repository-wide `/v2` release migration. |
+| [#1359](https://github.com/Gentleman-Programming/hgtran-ai/pull/1359) | @Sitray | Split shared-skill convergence, backup/rollback, and containment tests. |
+| [#1608](https://github.com/Gentleman-Programming/hgtran-ai/pull/1608) | @ardelperal | Extract lifecycle probe/diagnostic fixtures; drop dormant threshold and planning payload. |
+| [#1713](https://github.com/Gentleman-Programming/hgtran-ai/pull/1713) | @pablontiv | Split persona projection from migration and transaction-backed writes. |
+| [#1749](https://github.com/Gentleman-Programming/hgtran-ai/pull/1749) | @pablontiv | Extract language-contract assets/compiler tests; route writes through reconciliation. |
 
 ### 10.3 Snapshot carrier posture
 
@@ -999,7 +999,7 @@ Live notes:
 
 ## Appendix B. Complete snapshot ledger
 
-Numbers in the issue table refer to `Gentleman-Programming/gentle-ai` issues; numbers in the PR table refer to pull requests in the same repository. Each snapshot item appears exactly once in its table.
+Numbers in the issue table refer to `Gentleman-Programming/hgtran-ai` issues; numbers in the PR table refer to pull requests in the same repository. Each snapshot item appears exactly once in its table.
 
 ### B.1 Issues — 241/241
 

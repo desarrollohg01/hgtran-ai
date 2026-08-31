@@ -19,7 +19,7 @@ import (
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/reviewtransaction"
 )
 
-const reviewBindingSchema = "gentle-ai.sdd-review-binding/v1"
+const reviewBindingSchema = "hgtran-ai.sdd-review-binding/v1"
 
 var reviewBindingChange = regexp.MustCompile(`^[a-z0-9]+(?:-[a-z0-9]+)*$`)
 var reviewBindingLineage = regexp.MustCompile(`^[a-z0-9]+(?:-[a-z0-9]+)*$`)
@@ -61,7 +61,7 @@ func BindApprovedReview(ctx context.Context, repo, change, lineage, expected str
 	if err != nil {
 		return ReviewBinding{}, err
 	}
-	requestID := "bind-" + strings.TrimPrefix(runtimeValueHash("gentle-ai.sdd-review-binding-request-id/v1", struct {
+	requestID := "bind-" + strings.TrimPrefix(runtimeValueHash("hgtran-ai.sdd-review-binding-request-id/v1", struct {
 		Change   string `json:"change"`
 		Lineage  string `json:"lineage"`
 		Expected string `json:"expected"`
@@ -665,7 +665,7 @@ func verifyBindingLedger(changeRoot string, findings []reviewtransaction.Finding
 	return nil
 }
 func bindingPath(store reviewtransaction.CompactStore, change string) string {
-	return filepath.Join(filepath.Dir(filepath.Dir(filepath.Dir(filepath.Dir(store.Dir)))), "gentle-ai", "sdd-review-bindings", "v1", change, "binding.json")
+	return filepath.Join(filepath.Dir(filepath.Dir(filepath.Dir(filepath.Dir(store.Dir)))), "hgtran-ai", "sdd-review-bindings", "v1", change, "binding.json")
 }
 func bindingHash(payload []byte) string {
 	sum := sha256.Sum256(payload)

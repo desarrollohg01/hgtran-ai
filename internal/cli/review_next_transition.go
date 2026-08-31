@@ -29,9 +29,9 @@ type ReviewNextTransition struct {
 type ReviewTransitionExecution struct {
 	Operation string `json:"operation"`
 	// Command is the complete, literally runnable command line for this
-	// transition, e.g. "gentle-ai review start --contract=... --target=...".
+	// transition, e.g. "hgtran-ai review start --contract=... --target=...".
 	// Operation alone is a dotted logical name, so a caller had to already know
-	// that "review.start" means "gentle-ai review start" before it could run
+	// that "review.start" means "hgtran-ai review start" before it could run
 	// anything. Operation, Arguments and their Tokens stay byte-identical, so
 	// existing consumers never move.
 	Command           string                      `json:"command,omitempty"`
@@ -131,7 +131,7 @@ func newReviewNextTransition(status ReviewTargetStatusResult, selectedLenses []s
 			return reviewExecuteTransition("fresh_target_ready", "review.start", reviewStartArguments(status, input.StartLineage, input.RuntimeAgent), []ReviewTransitionArgument{{Name: "target_identity", Value: status.TargetIdentity}}, ReviewTransitionBinding{LineageID: input.StartLineage, TargetIdentity: status.TargetIdentity}, nil)
 		case reviewtransaction.TargetApplicabilityAmbiguous:
 			return reviewCollectTransition("lineage_selection_required", ReviewTransitionInput{
-				Name: "lineage_selection", Schema: "gentle-ai.review-lineage-selection/v1", CaptureOperation: "external.select_lineage",
+				Name: "lineage_selection", Schema: "hgtran-ai.review-lineage-selection/v1", CaptureOperation: "external.select_lineage",
 				Arguments: append(reviewTargetArguments(status), ReviewTransitionArgument{Name: "candidates", Value: strings.Join(status.Candidates, ",")}),
 			})
 		case reviewtransaction.TargetApplicabilityCorrupted:
@@ -227,7 +227,7 @@ func newReviewNextTransition(status ReviewTargetStatusResult, selectedLenses []s
 			return reviewStopTransition("corrupted_or_unverifiable_authority")
 		}
 		transition := reviewCollectTransition("correction_plan_required", ReviewTransitionInput{
-			Name: "correction_lines", Schema: "gentle-ai.review-correction-plan/v1", CaptureOperation: "external.plan_correction",
+			Name: "correction_lines", Schema: "hgtran-ai.review-correction-plan/v1", CaptureOperation: "external.plan_correction",
 			Arguments: reviewBindingArguments(binding), Submission: reviewCorrectionPlanSubmission(input.Contract, binding, *input.CorrectionRequest),
 		})
 		transition.CorrectionRequest = input.CorrectionRequest
@@ -283,7 +283,7 @@ func newReviewNextTransition(status ReviewTargetStatusResult, selectedLenses []s
 			return reviewExecuteTransition("exact_receipt_replay", "review.finalize", []ReviewTransitionArgument{{Name: "lineage", Value: binding.LineageID}}, []ReviewTransitionArgument{{Name: "state", Value: "approved"}, {Name: "receipt", Value: "publication_pending"}}, binding, nil)
 		}
 		return reviewCollectTransition("delivery_gate_required", ReviewTransitionInput{
-			Name: "gate", Schema: "gentle-ai.review-gate-selection/v1", CaptureOperation: "external.select_gate",
+			Name: "gate", Schema: "hgtran-ai.review-gate-selection/v1", CaptureOperation: "external.select_gate",
 			Arguments: reviewBindingArguments(binding),
 		})
 	case reviewtransaction.StateEscalated:
@@ -389,7 +389,7 @@ func reviewMissingCaptureTransition(binding ReviewTransitionBinding, selectedLen
 const reviewCaptureResultCaptureOperation = "review.capture-result"
 
 // reviewNativeCaptureOperationPrefix marks a capture_operation this product
-// performs itself. Everything after it is the runnable `gentle-ai review`
+// performs itself. Everything after it is the runnable `hgtran-ai review`
 // verb, which is exactly why such an input's arguments are argv.
 const reviewNativeCaptureOperationPrefix = "review."
 
@@ -412,7 +412,7 @@ func reviewNativeCaptureVerb(captureOperation string) (string, bool) {
 }
 
 // reviewCaptureResultCommandName renders the exact runnable command name for
-// reviewCaptureResultCaptureOperation, e.g. "gentle-ai review capture-result".
+// reviewCaptureResultCaptureOperation, e.g. "hgtran-ai review capture-result".
 func reviewCaptureResultCommandName() string {
 	verb, _ := reviewNativeCaptureVerb(reviewCaptureResultCaptureOperation)
 	return reviewTransitionCommandTool + " review " + verb
@@ -626,7 +626,7 @@ func reviewRecoveryCollection(status ReviewTargetStatusResult, binding ReviewTra
 		return transition
 	}
 	return reviewCollectTransition("recovery_authorization_required", ReviewTransitionInput{
-		Name: "recovery_authorization", Schema: "gentle-ai.review-recovery-authorization/v1", CaptureOperation: "external.authorize_recovery",
+		Name: "recovery_authorization", Schema: "hgtran-ai.review-recovery-authorization/v1", CaptureOperation: "external.authorize_recovery",
 		Arguments: append(reviewBindingArguments(binding), ReviewTransitionArgument{Name: "disposition", Value: string(disposition)}),
 	})
 }
@@ -702,7 +702,7 @@ func (input reviewNextTransitionInput) recoveryAuthorized(binding ReviewTransiti
 }
 
 func reviewTransitionRecoveryAuthorization(binding ReviewTransitionBinding, successor, actor, reason string) string {
-	value := "gentle-ai.review-recovery-authorization/v1\npredecessor_lineage=" + binding.LineageID + "\npredecessor_revision=" + binding.Revision + "\ntarget_identity=" + binding.TargetIdentity
+	value := "hgtran-ai.review-recovery-authorization/v1\npredecessor_lineage=" + binding.LineageID + "\npredecessor_revision=" + binding.Revision + "\ntarget_identity=" + binding.TargetIdentity
 	if successor != "" {
 		value += "\nsuccessor_lineage=" + successor
 	}
@@ -762,7 +762,7 @@ func reviewExecuteTransition(reason, operation string, arguments, preconditions 
 // (benchmarking runs do exactly that), and echoing that path back would emit a
 // command that only runs on the machine that generated the payload. The
 // canonical name is the one every caller already has on PATH.
-const reviewTransitionCommandTool = "gentle-ai"
+const reviewTransitionCommandTool = "hgtran-ai"
 
 // reviewTransitionCommandVerb resolves the runnable CLI verb for one
 // transition operation. reviewIntegrationOperationRegistry -- the single
@@ -844,7 +844,7 @@ func reviewTransitionArgumentToken(argument ReviewTransitionArgument) string {
 // The arguments of an input whose capture_operation names an operation this
 // product performs are tokenized through the same single tokenizer the execute
 // form uses, because they are the same thing: the flags of a real
-// `gentle-ai review <verb>` command. A caller no longer re-derives
+// `hgtran-ai review <verb>` command. A caller no longer re-derives
 // "--lineage=" + value by hand, which is where a hand-assembled invocation
 // twice dropped or mispaired --repository-context. An "external.*" input is
 // left untokenized on purpose; see reviewNativeCaptureVerb.

@@ -78,7 +78,7 @@ The adapter MUST check for `~/.hermes/` directory existence and report its prese
 
 ### Requirement: Auto-Install Not Supported
 
-The adapter MUST report `SupportsAutoInstall() = false`. Hermes is detect-only; gentle-ai will never attempt to install it automatically.
+The adapter MUST report `SupportsAutoInstall() = false`. Hermes is detect-only; hgtran-ai will never attempt to install it automatically.
 
 #### Scenario: Auto-install disabled
 
@@ -88,7 +88,7 @@ The adapter MUST report `SupportsAutoInstall() = false`. Hermes is detect-only; 
 
 ### Requirement: Install Command Returns Not-Installable Error
 
-`InstallCommand()` MUST return an error indicating Hermes is not auto-installable, with a message directing the user to install Hermes manually. It MUST NOT return a command slice that gentle-ai will execute.
+`InstallCommand()` MUST return an error indicating Hermes is not auto-installable, with a message directing the user to install Hermes manually. It MUST NOT return a command slice that hgtran-ai will execute.
 
 #### Scenario: Install command rejected
 
@@ -126,7 +126,7 @@ The adapter MUST report `SupportsAutoInstall() = false`. Hermes is detect-only; 
 
 ### Requirement: System Prompt Strategy
 
-`SystemPromptStrategy()` MUST return `model.StrategyMarkdownSections`. SOUL.md content is managed via `<!-- gentle-ai:... -->` marker-based section injection without replacing user content.
+`SystemPromptStrategy()` MUST return `model.StrategyMarkdownSections`. SOUL.md content is managed via `<!-- hgtran-ai:... -->` marker-based section injection without replacing user content.
 
 #### Scenario: System prompt strategy
 
@@ -220,7 +220,7 @@ All YAML emitted by the merge helper MUST use consistent 2-space indentation. En
 
 ### Requirement: context7 Server Injected
 
-When gentle-ai configures Hermes, the `context7` MCP server block MUST be written to `~/.hermes/config.yaml` under `mcp_servers:`.
+When hgtran-ai configures Hermes, the `context7` MCP server block MUST be written to `~/.hermes/config.yaml` under `mcp_servers:`.
 
 #### Scenario: context7 injection
 
@@ -240,7 +240,7 @@ When gentle-ai configures Hermes, the `context7` MCP server block MUST be writte
 
 ### Requirement: Engram Server Injected
 
-When gentle-ai configures Hermes with engram enabled, the `engram` MCP server block MUST be written to `~/.hermes/config.yaml` under `mcp_servers:`.
+When hgtran-ai configures Hermes with engram enabled, the `engram` MCP server block MUST be written to `~/.hermes/config.yaml` under `mcp_servers:`.
 
 #### Scenario: Engram injection
 
@@ -260,26 +260,26 @@ The `engram.isStandardAgent()` helper (or its equivalent) MUST return `true` for
 
 ### Requirement: Engram Command Recovery from config.yaml
 
-When gentle-ai reconfigures Hermes, it MUST recover any engram `command` already present under `mcp_servers.engram` in `~/.hermes/config.yaml` and preserve it, rather than overwriting it with a bare `engram` command. Recovery MUST read the YAML config (via a read-only YAML helper, e.g. `filemerge.ReadYAMLMCPServerCommand(content, "engram")`) and feed the recovered command through the same stabilization path used for JSON agents (`stableEngramCommandForExisting`), so a versioned Homebrew cellar path is replaced with the stable `engram`/stable path while a user-customized absolute path is preserved. When no engram command is recovered, the stable fallback `engram` command MUST be used.
+When hgtran-ai reconfigures Hermes, it MUST recover any engram `command` already present under `mcp_servers.engram` in `~/.hermes/config.yaml` and preserve it, rather than overwriting it with a bare `engram` command. Recovery MUST read the YAML config (via a read-only YAML helper, e.g. `filemerge.ReadYAMLMCPServerCommand(content, "engram")`) and feed the recovered command through the same stabilization path used for JSON agents (`stableEngramCommandForExisting`), so a versioned Homebrew cellar path is replaced with the stable `engram`/stable path while a user-customized absolute path is preserved. When no engram command is recovered, the stable fallback `engram` command MUST be used.
 
 This requires `existingMergedEngramCommand` (or its equivalent) to branch on `AgentHermes` to the YAML reader BEFORE attempting JSON parsing, so YAML content never reaches the JSON merge path.
 
 #### Scenario: Custom command preserved on reconfigure
 
 - GIVEN `~/.hermes/config.yaml` has `mcp_servers:` → `engram:` → `command: /custom/path/engram`
-- WHEN gentle-ai reconfigures Hermes (engram injection runs again)
+- WHEN hgtran-ai reconfigures Hermes (engram injection runs again)
 - THEN the recovered `command` remains `/custom/path/engram` and is NOT clobbered with bare `engram`
 
 #### Scenario: Versioned cellar command stabilized
 
 - GIVEN `~/.hermes/config.yaml` has an engram `command` pointing at a versioned Homebrew cellar path
-- WHEN gentle-ai reconfigures Hermes
+- WHEN hgtran-ai reconfigures Hermes
 - THEN recovery returns that command AND stabilization replaces it with the stable `engram` (or stable Homebrew path)
 
 #### Scenario: No engram present — stable fallback used
 
 - GIVEN `~/.hermes/config.yaml` has no `engram` entry under `mcp_servers:`
-- WHEN gentle-ai reconfigures Hermes
+- WHEN hgtran-ai reconfigures Hermes
 - THEN recovery returns `("", false)` AND the stable fallback `engram` command is used
 
 #### Scenario: Command as YAML list — executable recovered
@@ -314,24 +314,24 @@ This requires `existingMergedEngramCommand` (or its equivalent) to branch on `Ag
 
 ### Requirement: SDD Orchestrator Injected into SOUL.md
 
-When `sdd.Inject()` is called with the Hermes adapter, the SDD orchestrator content MUST be written into `~/.hermes/SOUL.md` using `<!-- gentle-ai:sdd-orchestrator -->` markers, without replacing content outside the markers.
+When `sdd.Inject()` is called with the Hermes adapter, the SDD orchestrator content MUST be written into `~/.hermes/SOUL.md` using `<!-- hgtran-ai:sdd-orchestrator -->` markers, without replacing content outside the markers.
 
 #### Scenario: Orchestrator injection — fresh SOUL.md
 
 - GIVEN `~/.hermes/SOUL.md` does not exist
 - WHEN `sdd.Inject(homeDir, hermesAdapter, "")` is called
-- THEN `~/.hermes/SOUL.md` is created and contains `<!-- gentle-ai:sdd-orchestrator -->` markers with orchestrator content between them
+- THEN `~/.hermes/SOUL.md` is created and contains `<!-- hgtran-ai:sdd-orchestrator -->` markers with orchestrator content between them
 
 #### Scenario: Orchestrator injection — existing user content preserved
 
 - GIVEN `~/.hermes/SOUL.md` exists with user-authored content
 - WHEN `sdd.Inject()` is called
-- THEN user content outside the `<!-- gentle-ai:sdd-orchestrator -->` markers is preserved verbatim
+- THEN user content outside the `<!-- hgtran-ai:sdd-orchestrator -->` markers is preserved verbatim
 - AND the orchestrator block is inserted or updated within the markers
 
 #### Scenario: Orchestrator injection — idempotent
 
-- GIVEN `~/.hermes/SOUL.md` already contains the `<!-- gentle-ai:sdd-orchestrator -->` block
+- GIVEN `~/.hermes/SOUL.md` already contains the `<!-- hgtran-ai:sdd-orchestrator -->` block
 - WHEN `sdd.Inject()` is called again
 - THEN the block is replaced in place, not appended again
 
@@ -357,7 +357,7 @@ The Hermes SDD orchestrator asset MUST reference `~/.hermes/skills/` for skill p
 
 ### Requirement: Strict-TDD Instructions Injected
 
-The strict-TDD instructions MUST be injected into `~/.hermes/SOUL.md` via `<!-- gentle-ai:strict-tdd -->` markers using the standard markdown-sections flow.
+The strict-TDD instructions MUST be injected into `~/.hermes/SOUL.md` via `<!-- hgtran-ai:strict-tdd -->` markers using the standard markdown-sections flow.
 
 ---
 
@@ -429,17 +429,17 @@ For the `custom` persona option, `personaContent()` MUST return empty content (n
 
 ### Requirement: Persona Content Written to SOUL.md
 
-When persona injection runs for Hermes, the persona content MUST be written into `~/.hermes/SOUL.md` using the standard `StrategyMarkdownSections` flow (same `<!-- gentle-ai:persona -->` markers).
+When persona injection runs for Hermes, the persona content MUST be written into `~/.hermes/SOUL.md` using the standard `StrategyMarkdownSections` flow (same `<!-- hgtran-ai:persona -->` markers).
 
 #### Scenario: Persona injected into SOUL.md
 
 - GIVEN persona option is `gentleman` and Hermes adapter is selected
 - WHEN persona injection runs
-- THEN `~/.hermes/SOUL.md` contains the Hermes-specific gentleman persona content within `<!-- gentle-ai:persona -->` markers
+- THEN `~/.hermes/SOUL.md` contains the Hermes-specific gentleman persona content within `<!-- hgtran-ai:persona -->` markers
 
 ### Requirement: Persona Language Contract — Technical Artifacts in English
 
-Technical artifact content (code comments, SOUL.md injected blocks, skill references, identifiers) generated by gentle-ai for Hermes MUST default to English, regardless of persona voice or conversation language. The persona governs agent tone in SOUL.md replies, not the language of embedded technical content.
+Technical artifact content (code comments, SOUL.md injected blocks, skill references, identifiers) generated by hgtran-ai for Hermes MUST default to English, regardless of persona voice or conversation language. The persona governs agent tone in SOUL.md replies, not the language of embedded technical content.
 
 ---
 

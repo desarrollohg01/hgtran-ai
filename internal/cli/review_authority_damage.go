@@ -35,6 +35,6 @@ func reviewAuthorityCorruptionDetail(ctx context.Context, repo string) string {
 		return ""
 	}
 	return strings.Join(kinds, "; ") +
-		". Capture the complete machine-readable diagnosis for every affected lineage with `gentle-ai review inspect-authority --cwd " +
+		". Capture the complete machine-readable diagnosis for every affected lineage with `hgtran-ai review inspect-authority --cwd " +
 		strconv.Quote(repo) + "`"
 }

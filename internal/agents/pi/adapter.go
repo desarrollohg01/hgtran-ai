@@ -55,7 +55,7 @@ type Adapter struct {
 	statPath func(string) statResult
 }
 
-// CodeGraphPathSet declares the Pi paths owned or inspected by Gentle AI's
+// CodeGraphPathSet declares the Pi paths owned or inspected by Hgtran AI's
 // optional CodeGraph integration. It intentionally contains no gentle-pi path.
 type CodeGraphPathSet struct {
 	AgentDir  string

@@ -334,7 +334,7 @@ func rarSharedSecurityDescriptorOwnedByCurrentProcess(
 //
 // Only the shared repository-parent checks consult this set. Private RAR
 // authority state (privateRARSecurityDescriptorSafe) remains strictly
-// current-token-user-only because gentle-ai creates it itself with an
+// current-token-user-only because hgtran-ai creates it itself with an
 // explicit owner-only descriptor.
 func rarTrustedWindowsAdministrativeOwner(owner *windows.SID) bool {
 	if owner == nil || !owner.IsValid() {

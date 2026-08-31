@@ -19,7 +19,7 @@ import (
 )
 
 const (
-	reviewResultArtifactSchema     = "gentle-ai.review-result-artifact/v2"
+	reviewResultArtifactSchema     = "hgtran-ai.review-result-artifact/v2"
 	reviewResultArtifactCapability = "review.native_result_artifact"
 	reviewAdmittedResultSchema     = reviewtransaction.AdmittedReviewerResultSchema
 	reviewResultReferencePrefix    = "rart1_"
@@ -218,7 +218,7 @@ func RunReviewCaptureResult(args []string, stdout io.Writer) error {
 	order := flags.Int("order", -1, "zero-based selected lens order")
 	revision := flags.String("expected-revision", "", "exact reviewing authority revision")
 	subjectHash := flags.String("subject-hash", "", "provider-issued artifact subject hash for native-Git context")
-	input := flags.String("input", "", "raw reviewer result JSON file or - for stdin; `gentle-ai review schema reviewer` emits the schema and a working example")
+	input := flags.String("input", "", "raw reviewer result JSON file or - for stdin; `hgtran-ai review schema reviewer` emits the schema and a working example")
 	preflight := flags.Bool("preflight", false, "verify the capture binding against the current reviewing authority without reading or persisting any result")
 	if err := parseReviewFlags(flags, args); err != nil {
 		return err
@@ -228,7 +228,7 @@ func RunReviewCaptureResult(args []string, stdout io.Writer) error {
 	}
 	if flags.NArg() != 0 || strings.TrimSpace(*lineage) == "" || strings.TrimSpace(*target) == "" ||
 		strings.TrimSpace(*lens) == "" || *order < 0 || (!*preflight && strings.TrimSpace(*input) == "") {
-		return reviewPreflightError(errors.New("review capture-result requires an exact repository context, --lineage, --target, --lens, --order, and --input (or --preflight); `gentle-ai review status --contract gentle-ai.review-integration/v1 --next-transition` prints the exact bindings and `gentle-ai review schema reviewer` emits the result schema with a working example"))
+		return reviewPreflightError(errors.New("review capture-result requires an exact repository context, --lineage, --target, --lens, --order, and --input (or --preflight); `hgtran-ai review status --contract hgtran-ai.review-integration/v1 --next-transition` prints the exact bindings and `hgtran-ai review schema reviewer` emits the result schema with a working example"))
 	}
 	if *preflight && strings.TrimSpace(*input) != "" {
 		return reviewPreflightError(errors.New("review capture-result --preflight verifies the binding only and does not accept --input"))
@@ -295,11 +295,11 @@ func RunReviewCaptureResult(args []string, stdout io.Writer) error {
 		if *subjectHash != "" && *subjectHash != subject.SubjectHash {
 			legacyFrozen, legacyErr := (reviewtransaction.SnapshotBuilder{Repo: root}).WithLegacyCandidateDiff(ctx, state.InitialSnapshot, frozen)
 			if legacyErr != nil {
-				return reviewPreflightError(errors.New("review capture preflight subject hash does not match the provider-owned authority; refresh the binding with gentle-ai review status --cwd <repo> --contract <same-contract> --next-transition"))
+				return reviewPreflightError(errors.New("review capture preflight subject hash does not match the provider-owned authority; refresh the binding with hgtran-ai review status --cwd <repo> --contract <same-contract> --next-transition"))
 			}
 			legacySubject, legacyErr := reviewtransaction.NewLegacyArtifactSubject(state, record.Revision, legacyFrozen, *lens, *order, "")
 			if legacyErr != nil || *subjectHash != legacySubject.SubjectHash {
-				return reviewPreflightError(errors.New("review capture preflight subject hash does not match the provider-owned authority; refresh the binding with gentle-ai review status --cwd <repo> --contract <same-contract> --next-transition"))
+				return reviewPreflightError(errors.New("review capture preflight subject hash does not match the provider-owned authority; refresh the binding with hgtran-ai review status --cwd <repo> --contract <same-contract> --next-transition"))
 			}
 			frozen, subject = legacyFrozen, legacySubject
 		}

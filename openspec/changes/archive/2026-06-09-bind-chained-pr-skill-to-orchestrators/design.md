@@ -40,7 +40,7 @@ restating it.
 
 ### Decision: Bind by registry name, defer path to each host's skill-resolution mechanism
 
-**Choice**: Reference `chained-pr` (registry name) and `gentle-ai-chained-pr`
+**Choice**: Reference `chained-pr` (registry name) and `hgtran-ai-chained-pr`
 (frontmatter) by name; do not hardcode `skills/chained-pr/SKILL.md`.
 
 **Alternatives considered**: Inject the literal skill path.
@@ -88,13 +88,13 @@ Canonical binding sentence (append after the `chain_strategy` forwarding line in
 every template's `### Chain Strategy` section):
 
 ```markdown
-When delivery planning yields chained PRs, treat `chained-pr` (registry skill `gentle-ai-chained-pr`) as a required skill match: resolve it by registry name through this template's existing skill-resolution mechanism (the same one it already uses to pass skills to phases) and ensure the `sdd-tasks` and `sdd-apply` phases load and follow it BEFORE planning or creating any PR. Do not hardcode the skill path; defer resolution to that mechanism.
+When delivery planning yields chained PRs, treat `chained-pr` (registry skill `hgtran-ai-chained-pr`) as a required skill match: resolve it by registry name through this template's existing skill-resolution mechanism (the same one it already uses to pass skills to phases) and ensure the `sdd-tasks` and `sdd-apply` phases load and follow it BEFORE planning or creating any PR. Do not hardcode the skill path; defer resolution to that mechanism.
 ```
 
 New static-assertion substring (single, common to all 11 + goldens):
 
 ```
-treat `chained-pr` (registry skill `gentle-ai-chained-pr`) as a required skill match
+treat `chained-pr` (registry skill `hgtran-ai-chained-pr`) as a required skill match
 ```
 
 Cursor `### Chain Strategy` section body (mirrors the canonical 10; uses

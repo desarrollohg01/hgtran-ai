@@ -1,6 +1,6 @@
 /**
  * model-variants
- * Exports per-model variant (effort level) data for gentle-ai.
+ * Exports per-model variant (effort level) data for hgtran-ai.
  *
  * On OpenCode startup, fetches the provider list via the in-process SDK client,
  * extracts variant keys per model, and writes a minimal JSON cache to

@@ -16,11 +16,11 @@ import (
 )
 
 const (
-	AdmittedReviewerResultSchemaV1         = "gentle-ai.review-admitted-result/v1"
-	AdmittedReviewerResultSchema           = "gentle-ai.review-admitted-result/v2"
+	AdmittedReviewerResultSchemaV1         = "hgtran-ai.review-admitted-result/v1"
+	AdmittedReviewerResultSchema           = "hgtran-ai.review-admitted-result/v2"
 	CompactResultReopenOperation           = "review/reopen-results"
 	CompactQuarantinedReviewerResultsDir   = "quarantined-reviewer-results"
-	compactResultReopenAuthorizationSchema = "gentle-ai.review-result-reopen-authorization/v1"
+	compactResultReopenAuthorizationSchema = "hgtran-ai.review-result-reopen-authorization/v1"
 	compactReviewerResultSizeLimit         = 4 << 20
 )
 
@@ -286,7 +286,7 @@ func buildCompactResultReopenPlan(ctx context.Context, repository string, store 
 	}
 	state := record.State
 	if state.InitialSnapshot.Identity != request.TargetIdentity || !compactResultReopenStateEligible(state) {
-		return CompactResultReopenPlan{}, errors.New("review reopen-results requires an uncorrected validating or correction-required authority on the exact frozen target; run `gentle-ai review status --cwd <repo>` to see where this review actually is")
+		return CompactResultReopenPlan{}, errors.New("review reopen-results requires an uncorrected validating or correction-required authority on the exact frozen target; run `hgtran-ai review status --cwd <repo>` to see where this review actually is")
 	}
 	if _, err := os.Stat(store.ReceiptPath()); err == nil {
 		return CompactResultReopenPlan{}, errors.New("review reopen-results refuses an authority that already has a receipt")

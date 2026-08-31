@@ -1,5 +1,5 @@
 ```yaml
-schema: gentle-ai.verify-result/v1
+schema: hgtran-ai.verify-result/v1
 evidence_revision: sha256:b49e476132e10fa867a0152484b0663b0b8a97232456e3864f50def0d4402eb5
 verdict: fail
 blockers: 3
@@ -9,7 +9,7 @@ scenarios: 16/30
 test_command: go test ./... -count=1
 test_exit_code: 0
 test_output_hash: sha256:5fc7feb902a9a840a979996f07a438da0c90d29320849b495a99ce37c82ff5ae
-build_command: go build -o gentle-ai ./cmd/gentle-ai
+build_command: go build -o hgtran-ai ./cmd/hgtran-ai
 build_exit_code: 0
 build_output_hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
 ```
@@ -20,7 +20,7 @@ build_output_hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca49599
 **Version**: N/A (delta specs, unarchived)
 **Mode**: Strict TDD
 **Attempt authority (echoed, not settled)**: sha256:a05ba9415c1f4d2e193232ece14cd38a2f544331272068e9a1720b42a296f691
-**Candidate**: worktree `/home/gentleman/work/gentle-ai-worktrees/rdd-wave4`, tip `d039d6e34de45763a906a2b93fcc33c1a3a6b063`
+**Candidate**: worktree `/home/gentleman/work/hgtran-ai-worktrees/rdd-wave4`, tip `d039d6e34de45763a906a2b93fcc33c1a3a6b063`
 
 ### Completeness
 
@@ -44,7 +44,7 @@ Wave 3's final commit `67be4867`, which the Wave 4 chain never included. See CRI
 **Build**: PASS
 
 ```text
-$ go build -o gentle-ai ./cmd/gentle-ai
+$ go build -o hgtran-ai ./cmd/hgtran-ai
 (no output)   exit 0
 $ gofmt -l .
 (clean)
@@ -57,15 +57,15 @@ $ go vet ./...
 ```text
 $ go test ./... -count=1
 ...
-ok  	github.com/gentleman-programming/gentle-ai/v2/internal/reviewtransaction	124.880s
-ok  	github.com/gentleman-programming/gentle-ai/v2/internal/sddstatus	24.201s
-ok  	github.com/gentleman-programming/gentle-ai/v2/internal/update/upgrade	7.115s
-ok  	github.com/gentleman-programming/gentle-ai/v2/internal/verify	0.002s
-ok  	github.com/gentleman-programming/gentle-ai/v2/internal/versions	0.002s
+ok  	github.com/gentleman-programming/hgtran-ai/v2/internal/reviewtransaction	124.880s
+ok  	github.com/gentleman-programming/hgtran-ai/v2/internal/sddstatus	24.201s
+ok  	github.com/gentleman-programming/hgtran-ai/v2/internal/update/upgrade	7.115s
+ok  	github.com/gentleman-programming/hgtran-ai/v2/internal/verify	0.002s
+ok  	github.com/gentleman-programming/hgtran-ai/v2/internal/versions	0.002s
 ROOT_EXIT=0
 
 $ cd bench && go test ./... -count=1
-ok  	github.com/gentleman-programming/gentle-ai/bench	0.178s
+ok  	github.com/gentleman-programming/hgtran-ai/bench	0.178s
 BENCH_EXIT=0
 ```
 
@@ -77,10 +77,10 @@ no new unreachable functions
 RATCHET_EXIT=0
 
 $ go test ./internal/cli/ -run 'RefusalResolution|EveryProductionRefusal' -count=1
-ok  	github.com/gentleman-programming/gentle-ai/v2/internal/cli	0.134s
+ok  	github.com/gentleman-programming/hgtran-ai/v2/internal/cli	0.134s
 
 $ go test ./internal/components/ -run Golden -count=1     # no -update
-ok  	github.com/gentleman-programming/gentle-ai/v2/internal/components	0.564s
+ok  	github.com/gentleman-programming/hgtran-ai/v2/internal/components	0.564s
 ```
 
 **Coverage**: not collected — no coverage threshold configured for this repo.
@@ -90,15 +90,15 @@ ok  	github.com/gentleman-programming/gentle-ai/v2/internal/components	0.564s
 #### (a) Kill switch OFF — full SDD status resolution
 
 Fixture: `git init` repo, one change `demo-change`, all tasks complete, admitted verify report,
-`gentle-ai review mode disable --cwd <repo> --scope clone` → `off (decided by clone_local)`.
+`hgtran-ai review mode disable --cwd <repo> --scope clone` → `off (decided by clone_local)`.
 
 ```text
-$ gentle-ai sdd-status demo-change --cwd <repo>
+$ hgtran-ai sdd-status demo-change --cwd <repo>
 keys present: ['reviewGate']
 {
   "reviewGate": {
     "result": "invalidated",
-    "reason": "receipt-driven development is disabled, so no review governs this change; it closes under ordinary repository policy rather than under a review receipt: terminal review receipt is missing; run the fresh full review of the current state with gentle-ai review start",
+    "reason": "receipt-driven development is disabled, so no review governs this change; it closes under ordinary repository policy rather than under a review receipt: terminal review receipt is missing; run the fresh full review of the current state with hgtran-ai review start",
     "delivery": "disabled/unmanaged"
   },
   "dependencies": { ... "verify": "all_done", "archive": "ready" },
@@ -117,12 +117,12 @@ keys present: ['reviewGate']
 #### (b) Post-verify offer, switch ON
 
 ```text
-$ gentle-ai review mode enable --scope global      # → on (decided by global)
-$ gentle-ai sdd-status demo-change --cwd <repo>
+$ hgtran-ai review mode enable --scope global      # → on (decided by global)
+$ hgtran-ai sdd-status demo-change --cwd <repo>
 keys present: ['reviewGate']
 {
   "reviewGate": { "result": "invalidated",
-    "reason": "terminal review receipt is missing; run the fresh full review of the current state with gentle-ai review start" },
+    "reason": "terminal review receipt is missing; run the fresh full review of the current state with hgtran-ai review start" },
   "nextRecommended": "resolve-review"
 }
 ```
@@ -227,10 +227,10 @@ Call sites: `internal/cli/sdd_attempt.go:117` (production) + `runtime_compact_te
 --- PASS: TestAdapterForbiddenConstructionGuardCatchesKnownShapes (4 subtests)
 --- PASS: TestAdapterForbiddenConstructionGuardHoldsForProductionFiles (5 production files)
 $ go test ./internal/components/ -run Golden -count=1
-ok  	github.com/gentleman-programming/gentle-ai/v2/internal/components	0.564s
+ok  	github.com/gentleman-programming/hgtran-ai/v2/internal/components	0.564s
 ```
 
-Pin corrected to `gentle-ai.review-integration/v2` in both `sdd-apply.md` assets; goldens match without `-update`.
+Pin corrected to `hgtran-ai.review-integration/v2` in both `sdd-apply.md` assets; goldens match without `-update`.
 
 ### Spec Compliance Matrix
 
@@ -335,8 +335,8 @@ CRITICAL-2 survived a fully green suite.
 **CRITICAL**
 
 1. **`reviewGate` disabled/unmanaged ceremony still runs and is emitted when the kill switch is OFF** — CONFIRMED.
-   Repro: fixture repo, all tasks done, admitted verify report, `gentle-ai review mode disable --cwd R --scope clone`,
-   then `gentle-ai sdd-status demo-change --cwd R` → `"reviewGate": {"result":"invalidated", "delivery":"disabled/unmanaged", ...}`.
+   Repro: fixture repo, all tasks done, admitted verify report, `hgtran-ai review mode disable --cwd R --scope clone`,
+   then `hgtran-ai sdd-status demo-change --cwd R` → `"reviewGate": {"result":"invalidated", "delivery":"disabled/unmanaged", ...}`.
    Producing it runs `applyReviewGate` → `resolveReviewAuthority` → `discoverNativeReceipts`, a full repository walk.
    Violates `rdd-post-verify-review-offer` REQ "Kill-Switch-Off Is Structural Absence" ("no disabled/unmanaged ceremony
    capable of failing or blocking"; "archive consults no `reviewGate` structured status"),
@@ -347,7 +347,7 @@ CRITICAL-2 survived a fully green suite.
    through to `blockReviewGate` and sets `Dependencies.Archive = blocked` **while the switch is off**.
 
 2. **`Status.ReviewOffer` and `Status.ReVerify` never reach any consumer** — CONFIRMED.
-   Repro: `gentle-ai review mode enable --scope global`, then `gentle-ai sdd-status demo-change --cwd R` with
+   Repro: `hgtran-ai review mode enable --scope global`, then `hgtran-ai sdd-status demo-change --cwd R` with
    `verify: all_done` → no `reviewOffer` key. Cause: `internal/sddstatus/status_v1.go`'s `StatusV1Projection`
    (lines 14-35) has no `ReviewOffer`/`ReVerify` field, and `RunSDDStatus`/`RunSDDContinue`
    (`internal/cli/sdd_status.go:39,70`) plus `RenderMarkdown`/`RenderDispatcherMarkdown`
@@ -449,7 +449,7 @@ genuine spec-MUST gaps in decline semantics and re-verify enforcement.
 ---
 
 ```yaml
-schema: gentle-ai.verify-result/v1
+schema: hgtran-ai.verify-result/v1
 evidence_revision: sha256:ad34c5c2e1c699dcbb456c972a0a215b9e21484ee22314aab8fe63d58661f75f
 verdict: fail
 blockers: 3
@@ -459,7 +459,7 @@ scenarios: 24/30
 test_command: go test ./... -count=1
 test_exit_code: 0
 test_output_hash: sha256:5de7da8dbe0882ba983cdd4e13c2a5e1b45d5540ff9d550deecbaa59c375f08a
-build_command: go build -o gentle-ai ./cmd/gentle-ai
+build_command: go build -o hgtran-ai ./cmd/hgtran-ai
 build_exit_code: 0
 build_output_hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
 ```
@@ -469,7 +469,7 @@ build_output_hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca49599
 **Change**: rdd-root-simplification-wave4
 **Mode**: Strict TDD
 **Attempt authority (echoed, not settled)**: sha256:07979978bc79aec5f41ea725b57945ee948c82503795a39db216934438f3a473
-**Candidate**: worktree `/home/gentleman/work/gentle-ai-worktrees/rdd-wave4`, tip `0a5f13b9f09f320c031ae51c9eb7974ae5ba4ff6`
+**Candidate**: worktree `/home/gentleman/work/hgtran-ai-worktrees/rdd-wave4`, tip `0a5f13b9f09f320c031ae51c9eb7974ae5ba4ff6`
 **Chain base**: `git merge-base HEAD 67be4867` = `67be4867033d4391b077544c9b437ee34bf6f5de` — the rebase claim is CONFIRMED; `git merge-base --is-ancestor 67be4867 HEAD` succeeds.
 **Verdict**: **FAIL** — 3 CRITICAL, 4 WARNING, 2 SUGGESTION.
 
@@ -490,7 +490,7 @@ Cycle-1 history is preserved above/below this section; this cycle appends only.
 Binary built from `0a5f13b9`. Fixture: git repo, complete OpenSpec change, all tasks `[x]`, parseable passing verify report. `review mode disable --scope clone`:
 
 ```text
-$ gentle-ai review mode status --cwd <fx> --json
+$ hgtran-ai review mode status --cwd <fx> --json
 "global": "on", "clone_local": "off", "effective": "off", "source": "clone_local"
 ```
 
@@ -517,7 +517,7 @@ reviewGate: {"result": "invalidated",
 ```
 
 **No-discovery-walk proof (strace, `openat`/`getdents64`)** — a decoy store was planted at
-`.git/gentle-ai/review-transactions/v2/decoy-lineage/artifacts/receipt.json`:
+`.git/hgtran-ai/review-transactions/v2/decoy-lineage/artifacts/receipt.json`:
 
 ```text
 TIP: review-transactions/v1|v2 opens = 0     decoy-lineage touches = 0
@@ -532,16 +532,16 @@ Only the kill-switch record itself (`rar-authority/v1/rdd-mode/gen-0000000001.js
 Switch ON (`effective: on`), verify passed:
 
 ```text
-$ gentle-ai sdd-status c1 --cwd <fx> --json
+$ hgtran-ai sdd-status c1 --cwd <fx> --json
 "reviewOffer": {"available": true, "lineageId": "c1",
-                "invocation": "gentle-ai review start --cwd \"<fx>\""}
-$ gentle-ai sdd-continue c1 --cwd <fx> --json
+                "invocation": "hgtran-ai review start --cwd \"<fx>\""}
+$ hgtran-ai sdd-continue c1 --cwd <fx> --json
 "reviewOffer": {"available": true, "lineageId": "c1", "invocation": "..."}
 ```
 
 Pre-corrective binary, same fixture: `reviewOffer present: False`, `reVerify present: False`. **C2 CONFIRMED on both surfaces.**
 
-**Decline → unmanaged ordinary archive: NOT SATISFIED (W3 unchanged).** The offer's own named invocation is `gentle-ai review start --cwd "<repo>"`; that form rejects `--consent declined` ("review start --consent requires the negotiated form"), and the negotiated form stops at `immutable_review_transport_unsupported`. Simply not acting on the offer leaves `dependencies.archive: blocked`, `nextRecommended: resolve-review` — the opposite of the requirement's "archive completes under ordinary `disabled/unmanaged` policy".
+**Decline → unmanaged ordinary archive: NOT SATISFIED (W3 unchanged).** The offer's own named invocation is `hgtran-ai review start --cwd "<repo>"`; that form rejects `--consent declined` ("review start --consent requires the negotiated form"), and the negotiated form stops at `immutable_review_transport_unsupported`. Simply not acting on the offer leaves `dependencies.archive: blocked`, `nextRecommended: resolve-review` — the opposite of the requirement's "archive completes under ordinary `disabled/unmanaged` policy".
 
 **Re-verify block when a correction is recorded: NOT PROVEN, and the gate is defective.** See CRITICAL-A.
 
@@ -552,10 +552,10 @@ Pre-corrective binary, same fixture: `reviewOffer present: False`, `reVerify pre
 ```text
 --- PASS: TestNewLineageFrozenTierIsNeverRecomputedAfterFreeze (0.11s)
 --- PASS: TestNewLineageKillSwitchOffProducesZeroSideEffectsAcrossEntrySurfaces (0.15s)
-ok  	github.com/gentleman-programming/gentle-ai/v2/internal/cli	0.286s
+ok  	github.com/gentleman-programming/hgtran-ai/v2/internal/cli	0.286s
 --- PASS: TestNewLineageActivationSwitchIdentityNeverOverloadsAnotherSwitch (0.00s)
 --- PASS: TestNewLineageActivationSwitchIndependentOfKillSwitch (0.03s)
-ok  	github.com/gentleman-programming/gentle-ai/v2/internal/reviewtransaction	0.049s
+ok  	github.com/gentleman-programming/hgtran-ai/v2/internal/reviewtransaction	0.049s
 ```
 
 **PASS.**
@@ -580,15 +580,15 @@ Stripping the guard body of `blockArchiveForUnsatisfiedReVerify` (`if true { ret
 ```text
     review_reverify_test.go:304: reason = "", want a non-empty blocked reason
 --- FAIL: TestBlockArchiveForUnsatisfiedReVerify (0.00s)
-FAIL	github.com/gentleman-programming/gentle-ai/v2/internal/sddstatus	0.007s
+FAIL	github.com/gentleman-programming/hgtran-ai/v2/internal/sddstatus	0.007s
 ```
 
 Genuine RED. **But** stripping the two *call sites* in `Resolve()`/`resolveEngramStatus()` instead leaves everything green:
 
 ```text
-ok  github.com/gentleman-programming/gentle-ai/v2/internal/sddstatus       22.237s
-ok  github.com/gentleman-programming/gentle-ai/v2/internal/cli            176.419s
-ok  github.com/gentleman-programming/gentle-ai/v2/e2e/organicruntime       13.022s
+ok  github.com/gentleman-programming/hgtran-ai/v2/internal/sddstatus       22.237s
+ok  github.com/gentleman-programming/hgtran-ai/v2/internal/cli            176.419s
+ok  github.com/gentleman-programming/hgtran-ai/v2/e2e/organicruntime       13.022s
 ```
 
 Restore verified byte-identical: `git diff` empty, `git status --porcelain` empty, HEAD `0a5f13b9`.
@@ -598,7 +598,7 @@ Restore verified byte-identical: `git diff` empty, `git status --porcelain` empt
 | Check | Command | Result |
 |---|---|---|
 | Root tests | `go test ./... -count=1` | exit 0, 63 `ok`, 0 `FAIL` |
-| Build | `go build -o gentle-ai ./cmd/gentle-ai` | exit 0, empty output |
+| Build | `go build -o hgtran-ai ./cmd/hgtran-ai` | exit 0, empty output |
 | Format | `gofmt -l .` | clean |
 | Vet | `go vet ./...` | clean |
 | Bench module | `gofmt -l . && go vet ./... && go build ./... && go test ./... -count=1` | all clean / `ok` |
@@ -621,7 +621,7 @@ per lineage (`internal/reviewtransaction/compact.go:1326`; cleared only for a su
 Proven with a throwaway in-package probe (created, run, deleted; worktree restored byte-identically):
 
 ```text
-cycle 1 blocked: ... record its outcome with gentle-ai sdd-attempt finish --remediates-evidence-revision sha256:R1
+cycle 1 blocked: ... record its outcome with hgtran-ai sdd-attempt finish --remediates-evidence-revision sha256:R1
 (operator complies: re-verifies, records a passing attempt remediating sha256:R1)
 cycle 2 archive="blocked" next="verify" reason="... --remediates-evidence-revision sha256:R2"
 LIVELOCK CONFIRMED
@@ -633,7 +633,7 @@ defeats the requirement the gate implements.
 The named continuation is also not runnable as printed:
 
 ```text
-$ gentle-ai sdd-attempt finish --remediates-evidence-revision sha256:1111... --cwd <fx> --change c1
+$ hgtran-ai sdd-attempt finish --remediates-evidence-revision sha256:1111... --cwd <fx> --change c1
 Error: sdd-attempt finish requires --expected-revision, --request-id, --outcome, --evidence-revision,
        --diagnosis, --harness-disposition, --cleanup-evidence, --process-evidence
 ```
@@ -641,7 +641,7 @@ Error: sdd-attempt finish requires --expected-revision, --request-id, --outcome,
 and `internal/cli/sdd_attempt.go:94-96` additionally refuses the flag unless
 `--expected-binding-revision`, `--successor-lineage`, and `--remediates-evidence-revision` are given
 **together** — `--successor-lineage` requires an approved compact successor, i.e. a full review round trip.
-The apply-progress claim "no new writer — `gentle-ai sdd-attempt finish --remediates-evidence-revision <rev>`
+The apply-progress claim "no new writer — `hgtran-ai sdd-attempt finish --remediates-evidence-revision <rev>`
 already exists" is therefore incorrect as stated. This is exactly the class of defect the untested call site
 (Item 5) hides.
 
@@ -659,17 +659,17 @@ bodies are still ungated by `reviewDisabled`:
 Proven with the tip binary, `effective: off` (clone scope), stale verify totals (2/2 vs a 1/1 spec):
 
 ```text
-$ gentle-ai sdd-status c1 --cwd <fx-stale> --json
+$ hgtran-ai sdd-status c1 --cwd <fx-stale> --json
 dependencies.verify: blocked | dependencies.archive: blocked
 nextRecommended: resolve-review
 blockedReasons: [
- "terminal review receipt is missing; run the fresh full review of the current state with gentle-ai review start",
+ "terminal review receipt is missing; run the fresh full review of the current state with hgtran-ai review start",
  "verify evidence cannot enter remediation: verify result total 2 does not match actual requirement count 1; ..."
 ]
 strace: review-transactions/v1|v2 opens while OFF = 4      (with a planted decoy: 14 opens, 8 decoy touches)
 ```
 
-The first blocked reason names `gentle-ai review start`, which the kill switch itself refuses — the exact
+The first blocked reason names `hgtran-ai review start`, which the kill switch itself refuses — the exact
 orchestrator dead-end `ResolveOptions.ReviewDisabled`'s own doc comment says must not happen, and a direct
 violation of "archive cannot fail or block for review reasons". The pre-corrective binary behaves the same
 here, so this hole predates the corrective cycle: CRITICAL-1 was under-scoped, not regressed.
@@ -754,7 +754,7 @@ corpus that the wave left red. Do not archive; return to `sdd-apply`.
 ---
 
 ```yaml
-schema: gentle-ai.verify-result/v1
+schema: hgtran-ai.verify-result/v1
 evidence_revision: sha256:cf7ac66fa49c9fe39a0bc532a08aa72551a6dafeadf222eeb9e1fa1218e71835
 verdict: fail
 blockers: 1
@@ -764,7 +764,7 @@ scenarios: 27/30
 test_command: go test ./... -count=1
 test_exit_code: 0
 test_output_hash: sha256:b479959c385030f2a8a2b0216ae34d914ed1f20ef0dd9423f323d6066ffe30b6
-build_command: go build -o gentle-ai ./cmd/gentle-ai
+build_command: go build -o hgtran-ai ./cmd/hgtran-ai
 build_exit_code: 0
 build_output_hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
 ```
@@ -774,7 +774,7 @@ build_output_hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca49599
 **Change**: rdd-root-simplification-wave4
 **Mode**: Strict TDD
 **Attempt authority (echoed, not settled)**: sha256:a931314e61555b98398639d6723d2e797d55976bd20415f63ea311c111233289
-**Candidate**: worktree `/home/gentleman/work/gentle-ai-worktrees/rdd-wave4`, tip `89c7e5fde07fabd73d28d4ac43a3a21351f02c87`
+**Candidate**: worktree `/home/gentleman/work/hgtran-ai-worktrees/rdd-wave4`, tip `89c7e5fde07fabd73d28d4ac43a3a21351f02c87`
 **Chain base**: `git merge-base HEAD 67be4867` = `67be4867033d4391b077544c9b437ee34bf6f5de` (unchanged, still an ancestor).
 **Verdict**: **FAIL** — **0 CRITICAL**, 1 blocker, 4 WARNING, 3 SUGGESTION.
 
@@ -809,7 +809,7 @@ stderr bytes: 0
 review-transactions/v1|v2 opens while OFF: 0
 ```
 
-**B) same + planted decoy store** (`.git/gentle-ai/review-transactions/v2/decoy-lineage/artifacts/receipt.json`):
+**B) same + planted decoy store** (`.git/hgtran-ai/review-transactions/v2/decoy-lineage/artifacts/receipt.json`):
 
 ```text
 review-transactions/v1|v2 opens: 0
@@ -827,7 +827,7 @@ blockedReasons: ["discover compact review stores: invalid compact authority grap
 ```
 
 Cycle 2 measured 4 store opens (14 with a decoy, 8 decoy touches) and a blocked reason naming
-`gentle-ai review start`. All are now zero. **The `staleEvidenceUnmanaged` leniency is surfaced, not silence**:
+`hgtran-ai review start`. All are now zero. **The `staleEvidenceUnmanaged` leniency is surfaced, not silence**:
 `verify: ready` + `nextRecommended: verify` with zero blocked reasons — the same "please re-verify" outcome the
 enabled path grants, reached without consulting review at all.
 
@@ -905,7 +905,7 @@ The claim is correct. The new assertion still carries a real regression pin (zer
 |---|---|---|
 | Root tests | `go test ./... -count=1` | exit 0, 63 `ok`, 0 `FAIL` |
 | e2e | `e2e/organicruntime` (in root suite) | `ok 11.826s` |
-| Build | `go build -o gentle-ai ./cmd/gentle-ai` | exit 0, empty output |
+| Build | `go build -o hgtran-ai ./cmd/hgtran-ai` | exit 0, empty output |
 | Format | `gofmt -l .` | clean |
 | Vet | `go vet ./...` | clean |
 | Bench module | `gofmt -l . && go vet ./... && go build ./... && go test ./... -count=1` | all clean / `ok` |
@@ -926,13 +926,13 @@ The claim is correct. The new assertion still carries a real regression pin (zer
 Re-verified on the fresh `89c7e5fd` binary, switch ON, verify passed:
 
 ```text
-reviewOffer: {"available": true, "lineageId": "c1", "invocation": "gentle-ai review start --cwd \"<repo>\""}
+reviewOffer: {"available": true, "lineageId": "c1", "invocation": "hgtran-ai review start --cwd \"<repo>\""}
 archive: blocked | next: resolve-review
-blockedReasons: ["terminal review receipt is missing; run the fresh full review of the current state with gentle-ai review start"]
+blockedReasons: ["terminal review receipt is missing; run the fresh full review of the current state with hgtran-ai review start"]
 
-$ gentle-ai review start --cwd <repo> --consent declined
+$ hgtran-ai review start --cwd <repo> --consent declined
 Error: review start --consent requires the negotiated form; rerun as
-       gentle-ai review start --contract gentle-ai.review-integration/v1 with the bound --target and --projection
+       hgtran-ai review start --contract hgtran-ai.review-integration/v1 with the bound --target and --projection
 
 (after declining, i.e. not acting)
 archive: blocked | next: resolve-review
@@ -1025,7 +1025,7 @@ same explicit spec amendment that 7.4 received.
 ---
 
 ```yaml
-schema: gentle-ai.verify-result/v1
+schema: hgtran-ai.verify-result/v1
 evidence_revision: sha256:2a5f5cd219c1120119e39886d831f8d7cc450a938259f622520e268f5341039a
 verdict: fail
 blockers: 2
@@ -1035,7 +1035,7 @@ scenarios: 25/30
 test_command: go test ./... -count=1
 test_exit_code: 0
 test_output_hash: sha256:6522e06bf4b4bbd23f32ac4aa5b67df18be4907ce9d1eaff122511ab53845eaa
-build_command: go build -o gentle-ai ./cmd/gentle-ai
+build_command: go build -o hgtran-ai ./cmd/hgtran-ai
 build_exit_code: 0
 build_output_hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
 ```
@@ -1045,7 +1045,7 @@ build_output_hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca49599
 **Change**: rdd-root-simplification-wave4
 **Mode**: Strict TDD
 **Attempt authority (echoed, not settled)**: sha256:17c89195eaef97bf88b76d012d4e84115696fbf67ae7b5c9e04c012a1ff54914
-**Candidate**: worktree `/home/gentleman/work/gentle-ai-worktrees/rdd-wave4`, tip `cb195782fbc3f6394536e9f3e6ba92cb25b9118e`
+**Candidate**: worktree `/home/gentleman/work/hgtran-ai-worktrees/rdd-wave4`, tip `cb195782fbc3f6394536e9f3e6ba92cb25b9118e`
 **Chain base**: `git merge-base HEAD 67be4867` = `67be4867…` (unchanged).
 **Verdict**: **FAIL** — **2 CRITICAL**, 3 WARNING, 3 SUGGESTION.
 
@@ -1069,7 +1069,7 @@ propagated to two places that still state the old contract: the **shipped `sdd-a
 Fresh `cb195782` binary, switch ON (`effective: on`), verify passed, no receipt:
 
 ```text
-reviewOffer: {"available": true, "lineageId": "c1", "invocation": "gentle-ai review start --cwd \"<repo>\""}
+reviewOffer: {"available": true, "lineageId": "c1", "invocation": "hgtran-ai review start --cwd \"<repo>\""}
 reviewGate present: False
 dependencies.archive: ready
 nextRecommended: archive
@@ -1137,7 +1137,7 @@ Read-elimination only, exactly as claimed.
 |---|---|
 | `go test ./... -count=1` (root) | exit 0, 63 `ok`, 0 `FAIL` |
 | e2e/organicruntime (in root suite) | `ok 11.851s` |
-| `go build -o gentle-ai ./cmd/gentle-ai` | exit 0, empty output |
+| `go build -o hgtran-ai ./cmd/hgtran-ai` | exit 0, empty output |
 | `gofmt -l .` / `go vet ./...` | clean / clean |
 | bench module gofmt+vet+build+test | all clean / `ok` |
 | `bench run --binary <fresh tip>` | **exit 0, 59 completed, 0 failed** |
@@ -1154,7 +1154,7 @@ state it.**
 #### CRITICAL-D — the shipped `sdd-archive` skill still states the pre-Wave-4 archive gate and would refuse what `sdd-status` now reports as ready
 
 `internal/assets/skills/sdd-archive/SKILL.md:79` (verbatim, embedded in the shipped binary — `strings` finds
-"Native Review Receipt Gate" in `gentle-ai`):
+"Native Review Receipt Gate" in `hgtran-ai`):
 
 > Before any task reconciliation, spec sync, or archive move, require structured status with
 > `reviewGate.result: allow`, or with `reviewGate.delivery: disabled/unmanaged` when the kill switch is off and
@@ -1273,7 +1273,7 @@ prose work of the same kind the wave has already done well elsewhere.
 ---
 
 ```yaml
-schema: gentle-ai.verify-result/v1
+schema: hgtran-ai.verify-result/v1
 evidence_revision: sha256:ff0ecd611c050e802655ca81268f62e21391d589b5512e99670faa2c0ad68572
 verdict: fail
 blockers: 1
@@ -1283,7 +1283,7 @@ scenarios: 30/31
 test_command: go test ./... -count=1
 test_exit_code: 0
 test_output_hash: sha256:9848b5ec15ec532a67b3ac500e411f01e1c668bdcc6787fc64a2491b3cbd26fa
-build_command: go build -o gentle-ai ./cmd/gentle-ai
+build_command: go build -o hgtran-ai ./cmd/hgtran-ai
 build_exit_code: 0
 build_output_hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
 ```
@@ -1293,7 +1293,7 @@ build_output_hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca49599
 **Change**: rdd-root-simplification-wave4
 **Mode**: Strict TDD
 **Attempt authority (echoed, not settled)**: sha256:2b8d92b357a1b0ee1f80df78343216b3aa22460ac803ca4a3fd4c3a621604df3
-**Candidate**: worktree `/home/gentleman/work/gentle-ai-worktrees/rdd-wave4`, tip `ea73f7cd`
+**Candidate**: worktree `/home/gentleman/work/hgtran-ai-worktrees/rdd-wave4`, tip `ea73f7cd`
 **Chain base**: `git merge-base HEAD 67be4867` = `67be4867…` (unchanged).
 **Verdict**: **FAIL** — **0 CRITICAL**, 1 blocker, 3 WARNING, 3 SUGGESTION.
 
@@ -1345,8 +1345,8 @@ GATE line, and the OpenCode settings prompt blob that embeds the contract. Nothi
 Measured on a clean switch-off fixture:
 
 ```text
-$ gentle-ai review validate --cwd <fx> --gate pre-commit
-schema: gentle-ai.review-gate-result/v1 | action: repository-policy
+$ hgtran-ai review validate --cwd <fx> --gate pre-commit
+schema: hgtran-ai.review-gate-result/v1 | action: repository-policy
 reason: receipt-driven development is disabled and no receipt governs this candidate, so delivery
         follows ordinary repository policy …
 ```
@@ -1391,7 +1391,7 @@ rg 'Missing, pending|explicit review artifact that failed|only relaxation|omitte
 |---|---|
 | `go test ./... -count=1` (root) | exit 0, 63 `ok`, 0 `FAIL` |
 | e2e/organicruntime (in root suite) | `ok 11.759s` |
-| `go build -o gentle-ai ./cmd/gentle-ai` | exit 0, empty output |
+| `go build -o hgtran-ai ./cmd/hgtran-ai` | exit 0, empty output |
 | `gofmt -l .` / `go vet ./...` | clean / clean |
 | bench module gofmt+vet+build+test | all clean / `ok` |
 | `bench run --binary <fresh tip>` | **exit 0, 59 completed, 0 failed** |
@@ -1424,9 +1424,9 @@ forbidden constructions. That is exactly the scenario's "does not self-construct
 of any kind" clause, covered by a test that passes at runtime:
 
 ```text
-ok  github.com/gentleman-programming/gentle-ai/v2/internal/agents                    0.007s
-ok  github.com/gentleman-programming/gentle-ai/v2/internal/agents/pi                 0.007s
-ok  github.com/gentleman-programming/gentle-ai/v2/internal/agents/capabilitymanifest 0.003s
+ok  github.com/gentleman-programming/hgtran-ai/v2/internal/agents                    0.007s
+ok  github.com/gentleman-programming/hgtran-ai/v2/internal/agents/pi                 0.007s
+ok  github.com/gentleman-programming/hgtran-ai/v2/internal/agents/capabilitymanifest 0.003s
 ```
 
 The "enters unavailable mode" clause is the provider-side fail-closed path I measured in cycle 3
@@ -1512,7 +1512,7 @@ requirement 11 already received — and nothing else.
 ---
 
 ```yaml
-schema: gentle-ai.verify-result/v1
+schema: hgtran-ai.verify-result/v1
 evidence_revision: sha256:b0ce122da982ca99d537fcb4ce9d7d8ebbcb219a2f06059cbd3b113ba10efb96
 verdict: pass
 blockers: 0
@@ -1522,7 +1522,7 @@ scenarios: 31/31
 test_command: go test ./... -count=1
 test_exit_code: 0
 test_output_hash: sha256:09cb7e2679e28b9d018feedeb345d4e241b3d8737643d2142eec3da1d7441371
-build_command: go build -o gentle-ai ./cmd/gentle-ai
+build_command: go build -o hgtran-ai ./cmd/hgtran-ai
 build_exit_code: 0
 build_output_hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
 ```
@@ -1532,7 +1532,7 @@ build_output_hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca49599
 **Change**: rdd-root-simplification-wave4
 **Mode**: Strict TDD
 **Attempt authority (echoed, not settled)**: sha256:ae1cd5b82dfb877b8396c05c681a3b4d96edf94ebc75f252c544a822de12aff3
-**Candidate**: worktree `/home/gentleman/work/gentle-ai-worktrees/rdd-wave4`, tip `7598eda430a6cc1fe8ab6b62cd971862ba03a786`
+**Candidate**: worktree `/home/gentleman/work/hgtran-ai-worktrees/rdd-wave4`, tip `7598eda430a6cc1fe8ab6b62cd971862ba03a786`
 **Chain base**: `git merge-base HEAD 67be4867` = `67be4867…` (unchanged across all six cycles).
 **Verdict**: **PASS** — 0 CRITICAL, 0 blockers, 4 WARNING, 3 SUGGESTION. **16/16 requirements, 31/31 scenarios.**
 
@@ -1585,7 +1585,7 @@ already established in this wave, and it matches the resolution cycle 5 prescrib
   ```text
   --- PASS: TestAdapterForbiddenConstructionGuardCatchesKnownShapes (0.00s)
   --- PASS: TestAdapterForbiddenConstructionGuardHoldsForProductionFiles (0.00s)
-  ok  github.com/gentleman-programming/gentle-ai/v2/internal/agents  0.003s
+  ok  github.com/gentleman-programming/hgtran-ai/v2/internal/agents  0.003s
   ```
 
 The amendment's claim is therefore **true and independently verified**. The stale SHA is a citation-accuracy
@@ -1607,7 +1607,7 @@ verdict should carry evidence from the candidate it admits, so all of this was r
 
 | Check | Result |
 |---|---|
-| `go build -o gentle-ai ./cmd/gentle-ai` | exit 0, empty output |
+| `go build -o hgtran-ai ./cmd/hgtran-ai` | exit 0, empty output |
 | `go test ./... -count=1` (root) | exit 0, 63 `ok`, 0 `FAIL` |
 | e2e/organicruntime (in root suite) | `ok 11.857s` |
 | `gofmt -l .` / `go vet ./...` | clean / clean |

@@ -21,7 +21,7 @@
 
 **Task completion**: 44/44 tasks checked `[x]` in the persisted `tasks.md` (Phase 0: 2, Phase 1: 14, Phase 2: 14, Phase 3: 5, Phase 4: 5). Verified against both the Engram tasks observation (#10129) and the filesystem copy — no stale unchecked implementation tasks. Task Completion Gate passes cleanly, no reconciliation needed.
 
-**Verification**: `sdd-verify` (#10149) recorded **PASS WITH WARNINGS** — 0 CRITICAL, 6 WARNING, 4 SUGGESTION, 19/19 requirements, 24/24 scenarios, full uncached `go test -count=1 ./...` exit 0 (63 packages), `go build ./...` exit 0, `gentle-ai-bench run --axis damaged-store` 65/65 journeys completed (0 failed, including new `ds06`/`ds07`/`ds08`), deadcode ratchet clean, `gofmt`/`go vet` clean.
+**Verification**: `sdd-verify` (#10149) recorded **PASS WITH WARNINGS** — 0 CRITICAL, 6 WARNING, 4 SUGGESTION, 19/19 requirements, 24/24 scenarios, full uncached `go test -count=1 ./...` exit 0 (63 packages), `go build ./...` exit 0, `hgtran-ai-bench run --axis damaged-store` 65/65 journeys completed (0 failed, including new `ds06`/`ds07`/`ds08`), deadcode ratchet clean, `gofmt`/`go vet` clean.
 
 ## Evidence-Driven Fixes: Verification Wins
 

@@ -109,7 +109,7 @@ func TestReviewValidateDiscoveryIntegrityMarkerCorruptedDeniesNeverLegacy(t *tes
 
 // TestResolveGoverningAuthorityInFlightDeniesEveryGate is CRITICAL C5's
 // primary RED/GREEN evidence: the verify report's exact repro
-// (`GENTLE_AI_RDD_NEW_LINEAGE=1 gentle-ai review start --lineage inflight`,
+// (`HGTRAN_AI_RDD_NEW_LINEAGE=1 hgtran-ai review start --lineage inflight`,
 // nothing else — no reviewer, no finalize, no review-receipt.json) reached
 // GateAllow at all five gates including release. A lineage that was started
 // but never finalized is `reviewing`, never `approved`, and has no receipt —

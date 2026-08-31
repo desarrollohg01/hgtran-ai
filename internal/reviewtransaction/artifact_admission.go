@@ -14,7 +14,7 @@ import (
 	"unicode/utf8"
 )
 
-const ArtifactAdmissionSchema = "gentle-ai.review-artifact-admission/v1"
+const ArtifactAdmissionSchema = "hgtran-ai.review-artifact-admission/v1"
 
 type ArtifactAdmissionDecision string
 
@@ -172,7 +172,7 @@ func (admission ArtifactAdmission) Validate(subject ArtifactSubject) error {
 // is what keeps the two messages from drifting into promising different
 // recoveries for the same recoverable state.
 const artifactRecaptureContinuation = "the rejected admission did not consume the lens slot, " +
-	"so re-run the lens and invoke gentle-ai review capture-result again on the same lineage " +
+	"so re-run the lens and invoke hgtran-ai review capture-result again on the same lineage " +
 	"with a result that echoes the binding's top-level subject_hash"
 
 // AdmitArtifact performs the single provider-owned admission decision. It

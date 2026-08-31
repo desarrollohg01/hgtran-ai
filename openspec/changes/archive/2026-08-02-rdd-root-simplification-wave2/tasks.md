@@ -32,7 +32,7 @@ Chain strategy: feature-branch-chain on tracker `feature/rdd-root-simplification
 | 0 | Land SDD docs | PR0 | N/A (docs) | N/A — docs only | Revert docs commit |
 | 1 | Plan type + seam + classification | PR1 | `go test ./internal/reviewtransaction/... -run 'TestAuthorityDispositionPlan|TestLoadCompactRecoveryRecords|TestDispositionClass'` | N/A — not wired to any live path until PR3 | Revert `authority_disposition_plan.go` + `compact_reconcile.go`/`compact_inspect.go` diffs |
 | 2 | Leaf executor | PR2 | `go test ./internal/reviewtransaction/... -run 'TestAdmitLeafDisposition|TestAuthorityDispositionExecute'` | N/A — not wired to `review repair` CLI until PR3 | Revert `authority_disposition_execute.go` + `compact_reclaim.go`/`authority_repair.go` diffs |
-| 3 | `review repair` wiring | PR3 | `go test ./internal/cli/... -run 'TestReviewRepairPreflight|TestReviewRepairExecute'` | `gentle-ai review repair --preflight` against a fixture-damaged store, real CLI invocation | Revert `review_repair.go`/`review_next_transition.go` diffs; verb reverts to legacy-alias-only |
+| 3 | `review repair` wiring | PR3 | `go test ./internal/cli/... -run 'TestReviewRepairPreflight|TestReviewRepairExecute'` | `hgtran-ai review repair --preflight` against a fixture-damaged store, real CLI invocation | Revert `review_repair.go`/`review_next_transition.go` diffs; verb reverts to legacy-alias-only |
 | 4 | Bench + crash/concurrency evidence | PR4 | `go test ./internal/reviewtransaction/... -run 'TestCompactDamagedStoreExit|TestMaintenanceLock'` | `bench/axis_damaged_store.go` journeys, real repo fixtures | Revert bench fixture + integration test additions; no production code touched |
 
 ## Phase 0 (PR0): Land Wave 2 SDD Artifacts

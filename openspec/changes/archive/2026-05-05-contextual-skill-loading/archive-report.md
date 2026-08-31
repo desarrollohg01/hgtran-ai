@@ -1,7 +1,7 @@
 # Archive Report — contextual-skill-loading
 
 **Archived**: 2026-05-05  
-**Worktree**: /Users/alanbuscaglia/work/gentle-ai-claude-skills  
+**Worktree**: /Users/alanbuscaglia/work/hgtran-ai-claude-skills  
 **Branch**: feat/claude-contextual-skill-loading (NOT pushed)  
 **Status**: COMPLETED — all tests pass, all specs reconciled, ready for merge
 
@@ -156,7 +156,7 @@ This change is **ready for merge**. The following are candidates for future SDD 
 
 1. **Behavioral verification of contextual skill loading** — implement option A (manual transcript) or option B (Claude API automation) to verify live model behavior with `Skill` tool.
 2. **Linter hardening** — enforce `license` and `metadata.author` as required fields in SKILL.md frontmatter.
-3. **Opencode user-skill mechanism** — currently out of scope; gentle-ai's skill-registry and `load` directive only ship to Claude Code, not to OpenCode's manual import flow.
+3. **Opencode user-skill mechanism** — currently out of scope; hgtran-ai's skill-registry and `load` directive only ship to Claude Code, not to OpenCode's manual import flow.
 
 ---
 

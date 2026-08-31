@@ -20,7 +20,7 @@ import (
 
 const (
 	ReviewRepositoryContextCapability = "review.opaque_repository_context"
-	ReviewRepositoryContextSchema     = "gentle-ai.review-repository-context/v1"
+	ReviewRepositoryContextSchema     = "hgtran-ai.review-repository-context/v1"
 
 	reviewRepositoryContextHandlePrefix = "rctx1_"
 	reviewRepositoryLocatorMaxBytes     = 64 << 10

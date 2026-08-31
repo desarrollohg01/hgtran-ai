@@ -16,7 +16,7 @@ package cli
 // sources of internal/cli, internal/reviewtransaction, and internal/sddstatus
 // either
 //
-//  (a) names a runnable continuation (a `gentle-ai ...` invocation in the
+//  (a) names a runnable continuation (a `hgtran-ai ...` invocation in the
 //      message),
 //  (b) carries an adjacent `// refusal:by-design <shape>: <reason>` marker
 //      whose shape comes from the CLOSED vocabulary the bench classifier
@@ -25,7 +25,7 @@ package cli
 //  (c) is frozen in the baseline (.refusal-ratchet-baseline.txt at the repo
 //      root), which may only shrink. Regenerate after fixing entries with:
 //
-//        GENTLE_AI_REFUSAL_RATCHET_UPDATE=1 go test ./internal/cli \
+//        HGTRAN_AI_REFUSAL_RATCHET_UPDATE=1 go test ./internal/cli \
 //          -run TestEveryProductionRefusalNamesResolutionOrDeclaresByDesign -count=1
 //
 // Why a ratchet and not a clean gate: these packages already carry thousands
@@ -92,9 +92,9 @@ const refusalRatchetMarkerHint = "refusal:by-design"
 var refusalRatchetMarkerRegexp = regexp.MustCompile(`^refusal:by-design\s+([a-z-]+):\s*(\S.*)$`)
 
 // refusalRatchetNamedContinuationRegexp matches an explicit runnable
-// continuation. Requiring a lowercase letter directly after "gentle-ai "
+// continuation. Requiring a lowercase letter directly after "hgtran-ai "
 // excludes prose that mentions the product name without naming a command.
-var refusalRatchetNamedContinuationRegexp = regexp.MustCompile(`gentle-ai [a-z][a-z-]*`)
+var refusalRatchetNamedContinuationRegexp = regexp.MustCompile(`hgtran-ai [a-z][a-z-]*`)
 
 type refusalRatchetSite struct {
 	file        string // slash path relative to the repository root
@@ -201,9 +201,9 @@ func TestRefusalRatchetClassifiesSyntheticSites(t *testing.T) {
 		}
 	})
 
-	t.Run("naming a gentle-ai continuation satisfies", func(t *testing.T) {
+	t.Run("naming a hgtran-ai continuation satisfies", func(t *testing.T) {
 		analysis := refusalRatchetMustAnalyze(t, header+
-			"func f(l string) error {\n\treturn fmt.Errorf(\"blocked: run `gentle-ai review reopen-results --lineage %s`\", l)\n}\n")
+			"func f(l string) error {\n\treturn fmt.Errorf(\"blocked: run `hgtran-ai review reopen-results --lineage %s`\", l)\n}\n")
 		if len(analysis.violations) != 0 || analysis.satisfiedNamed != 1 {
 			t.Fatalf("want 1 named satisfaction and no violations, got %+v", analysis)
 		}
@@ -244,7 +244,7 @@ func TestRefusalRatchetClassifiesSyntheticSites(t *testing.T) {
 		analysis := refusalRatchetMustAnalyze(t, header+
 			"func f() error {\n"+
 			"\t// refusal:by-design human-authority: a maintainer must decide\n"+
-			"\treturn errors.New(\"blocked: run gentle-ai review finalize\")\n"+
+			"\treturn errors.New(\"blocked: run hgtran-ai review finalize\")\n"+
 			"}\n")
 		if len(analysis.problems) != 1 || !strings.Contains(analysis.problems[0], "contradictory") {
 			t.Fatalf("want one contradictory-claims error, got %+v", analysis.problems)
@@ -300,7 +300,7 @@ func TestRefusalRatchetClassifiesSyntheticSites(t *testing.T) {
 
 	t.Run("concatenated literals are analyzed as one message", func(t *testing.T) {
 		analysis := refusalRatchetMustAnalyze(t, header+
-			"func f() error {\n\treturn errors.New(\"blocked: run \" + \"gentle-ai review status\")\n}\n")
+			"func f() error {\n\treturn errors.New(\"blocked: run \" + \"hgtran-ai review status\")\n}\n")
 		if analysis.satisfiedNamed != 1 || len(analysis.violations) != 0 {
 			t.Fatalf("want the concatenated name to satisfy, got %+v", analysis)
 		}
@@ -348,7 +348,7 @@ func TestEveryProductionRefusalNamesResolutionOrDeclaresByDesign(t *testing.T) {
 	}
 	baselinePath := filepath.Join("..", "..", ".refusal-ratchet-baseline.txt")
 
-	if os.Getenv("GENTLE_AI_REFUSAL_RATCHET_UPDATE") == "1" {
+	if os.Getenv("HGTRAN_AI_REFUSAL_RATCHET_UPDATE") == "1" {
 		keys := make([]string, 0, len(current))
 		for key := range current {
 			keys = append(keys, key)
@@ -368,7 +368,7 @@ func TestEveryProductionRefusalNamesResolutionOrDeclaresByDesign(t *testing.T) {
 
 	raw, err := os.ReadFile(baselinePath)
 	if err != nil {
-		t.Fatalf("missing baseline %s -- run: GENTLE_AI_REFUSAL_RATCHET_UPDATE=1 go test ./internal/cli -run TestEveryProductionRefusalNamesResolutionOrDeclaresByDesign -count=1 (%v)", baselinePath, err)
+		t.Fatalf("missing baseline %s -- run: HGTRAN_AI_REFUSAL_RATCHET_UPDATE=1 go test ./internal/cli -run TestEveryProductionRefusalNamesResolutionOrDeclaresByDesign -count=1 (%v)", baselinePath, err)
 	}
 	baseline := map[string]bool{}
 	for _, line := range strings.Split(strings.TrimRight(string(raw), "\n"), "\n") {
@@ -387,7 +387,7 @@ func TestEveryProductionRefusalNamesResolutionOrDeclaresByDesign(t *testing.T) {
 	for _, key := range newKeys {
 		site := current[key]
 		t.Errorf("NEW refusal with no named resolution: %s:%d %s(%q)\n"+
-			"  Either name the runnable continuation in the message (`gentle-ai ...`),\n"+
+			"  Either name the runnable continuation in the message (`hgtran-ai ...`),\n"+
 			"  or, if no command can honestly exist here, annotate the site:\n"+
 			"    // refusal:by-design <operator-knowledge|world-action|human-authority>: <why>",
 			site.file, site.line, site.constructor, site.message)
@@ -401,7 +401,7 @@ func TestEveryProductionRefusalNamesResolutionOrDeclaresByDesign(t *testing.T) {
 	}
 	if removed > 0 {
 		t.Logf("note: %d baselined entries now name a resolution, are annotated, or are gone.", removed)
-		t.Logf("      Tighten the baseline with: GENTLE_AI_REFUSAL_RATCHET_UPDATE=1 go test ./internal/cli -run TestEveryProductionRefusalNamesResolutionOrDeclaresByDesign -count=1")
+		t.Logf("      Tighten the baseline with: HGTRAN_AI_REFUSAL_RATCHET_UPDATE=1 go test ./internal/cli -run TestEveryProductionRefusalNamesResolutionOrDeclaresByDesign -count=1")
 	}
 }
 
@@ -556,7 +556,7 @@ func refusalRatchetAnalyzeSource(fileLabel, source string) (refusalRatchetAnalys
 				fileLabel, line, marker.shape))
 		case marker != nil && named:
 			analysis.problems = append(analysis.problems, fmt.Sprintf(
-				"%s:%d is contradictory: the message names a `gentle-ai` continuation AND the site declares by-design %q; a refusal either has a runnable exit or it does not -- the two claims are mutually exclusive",
+				"%s:%d is contradictory: the message names a `hgtran-ai` continuation AND the site declares by-design %q; a refusal either has a runnable exit or it does not -- the two claims are mutually exclusive",
 				fileLabel, line, marker.shape))
 		case marker != nil:
 			analysis.satisfiedAnnotated++

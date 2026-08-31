@@ -364,7 +364,7 @@ func GenerateProfileOverlay(profile model.Profile, homeDir, settingsPath string,
 		}
 		// Issue #557: consult fallback when the profile did not set the phase,
 		// so generated *-{name} agents stay consistent with what the user sees
-		// in the gentle-ai TUI. Profile-level assignments still win.
+		// in the hgtran-ai TUI. Profile-level assignments still win.
 		assignment := resolveProfileAssignment(profile, fallbackPhaseAssignments, phase)
 		if assignment.ProviderID != "" && assignment.ModelID != "" {
 			entry["model"] = assignment.FullID()
@@ -423,7 +423,7 @@ func GenerateProfileOverlay(profile model.Profile, homeDir, settingsPath string,
 // Issue #557 motivated this helper: prior to the fix, the profile overlay
 // silently emitted agents without a model field whenever the user did not
 // re-touch the phase inside the profile picker — surfacing as "Unassigned"
-// in OpenCode while gentle-ai's UI showed the phase as assigned.
+// in OpenCode while hgtran-ai's UI showed the phase as assigned.
 func resolveProfileAssignment(profile model.Profile, fallback map[string]model.ModelAssignment, phase string) model.ModelAssignment {
 	if assignment, ok := profile.PhaseAssignments[phase]; ok && assignment.ProviderID != "" && assignment.ModelID != "" {
 		return assignment
@@ -566,8 +566,8 @@ func buildProfileOrchestratorPrompt(profile model.Profile) (string, error) {
 	base = extractModelSection(base, capability)
 
 	// Inject model assignments table.
-	const openMarker = "<!-- gentle-ai:sdd-model-assignments -->"
-	const closeMarker = "<!-- /gentle-ai:sdd-model-assignments -->"
+	const openMarker = "<!-- hgtran-ai:sdd-model-assignments -->"
+	const closeMarker = "<!-- /hgtran-ai:sdd-model-assignments -->"
 
 	start := strings.Index(base, openMarker)
 	end := strings.Index(base, closeMarker)

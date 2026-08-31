@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://gentle-ai.dev/audits/data/organic-rdd-recovery/schemas/test-ledger.schema.json",
+  "$id": "https://hgtran-ai.dev/audits/data/organic-rdd-recovery/schemas/test-ledger.schema.json",
   "title": "Organic RDD recovery test ledger",
   "type": "object",
   "additionalProperties": false,

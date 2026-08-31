@@ -114,7 +114,7 @@ func TestListBackupsWithSourceMetadata(t *testing.T) {
 	}
 }
 
-// TestRunArgsRestoreListIsDispatched verifies that `gentle-ai restore --list`
+// TestRunArgsRestoreListIsDispatched verifies that `hgtran-ai restore --list`
 // is correctly dispatched through RunArgs and produces a meaningful response
 // (either a backup list or a "no backups" message — never "unknown command").
 func TestRunArgsRestoreListIsDispatched(t *testing.T) {
@@ -263,7 +263,7 @@ func TestRunArgsInstallHelpPrintsInstallSpecificHelp(t *testing.T) {
 	}
 
 	out := buf.String()
-	for _, want := range []string{"--channel", "beta", "nightly", "GENTLE_AI_CHANNEL"} {
+	for _, want := range []string{"--channel", "beta", "nightly", "HGTRAN_AI_CHANNEL"} {
 		if !strings.Contains(out, want) {
 			t.Fatalf("install help missing %q; output:\n%s", want, out)
 		}
@@ -314,7 +314,7 @@ func TestRunArgsSDDAttemptIsDispatchedBeforePlatformValidation(t *testing.T) {
 	if err := RunArgs([]string{"sdd-attempt", "status", "--cwd", root, "--change", "app-attempt"}, &buf); err != nil {
 		t.Fatalf("RunArgs(sdd-attempt) error = %v", err)
 	}
-	if !strings.Contains(buf.String(), `"schema": "gentle-ai.sdd-runtime-status/v1"`) || !strings.Contains(buf.String(), `"change": "app-attempt"`) {
+	if !strings.Contains(buf.String(), `"schema": "hgtran-ai.sdd-runtime-status/v1"`) || !strings.Contains(buf.String(), `"change": "app-attempt"`) {
 		t.Fatalf("sdd-attempt output missing native status:\n%s", buf.String())
 	}
 }
@@ -374,7 +374,7 @@ func TestRunArgsReviewSubcommandHelpExitsSuccessfully(t *testing.T) {
 			if err := RunArgs([]string{command, "--help"}, &output); err != nil {
 				t.Fatalf("RunArgs(%s --help) error = %v", command, err)
 			}
-			if !strings.Contains(output.String(), "Usage: gentle-ai "+command+" [flags]") {
+			if !strings.Contains(output.String(), "Usage: hgtran-ai "+command+" [flags]") {
 				t.Fatalf("RunArgs(%s --help) output:\n%s", command, output.String())
 			}
 		})
@@ -408,7 +408,7 @@ func TestRunArgsDispatchesReviewModeBeforePlatformValidation(t *testing.T) {
 	if err := RunArgs([]string{"review", "mode", "--help"}, &output); err != nil {
 		t.Fatalf("RunArgs(review mode --help) error = %v", err)
 	}
-	if !strings.Contains(output.String(), "gentle-ai review mode <enable|disable|status>") {
+	if !strings.Contains(output.String(), "hgtran-ai review mode <enable|disable|status>") {
 		t.Fatalf("review mode help missing:\n%s", output.String())
 	}
 
@@ -644,7 +644,7 @@ func TestTuiSyncClaudeModelConfigWritesSelectedAssignments(t *testing.T) {
 	for _, want := range []string{
 		"| sdd-apply | haiku | default | Implementation |",
 		"| default | haiku | default | SDD/JD phase fallback |",
-		"Gentle AI does not configure the main orchestrator model",
+		"Hgtran AI does not configure the main orchestrator model",
 	} {
 		if !strings.Contains(string(body), want) {
 			t.Fatalf("lazy SDD workflow missing %q; got:\n%s", want, body)
@@ -1199,7 +1199,7 @@ func TestLoadPersistedAssignmentsWiresEffort(t *testing.T) {
 	}
 }
 
-// TestVersionBeforeSystemGuards verifies that `gentle-ai version` returns the
+// TestVersionBeforeSystemGuards verifies that `hgtran-ai version` returns the
 // version string without going through system detection or platform guards.
 func TestVersionBeforeSystemGuards(t *testing.T) {
 	var buf bytes.Buffer
@@ -1207,8 +1207,8 @@ func TestVersionBeforeSystemGuards(t *testing.T) {
 	if err != nil {
 		t.Fatalf("version should not fail: %v", err)
 	}
-	if !strings.Contains(buf.String(), "gentle-ai") {
-		t.Error("version output should contain 'gentle-ai'")
+	if !strings.Contains(buf.String(), "hgtran-ai") {
+		t.Error("version output should contain 'hgtran-ai'")
 	}
 }
 
@@ -1233,15 +1233,15 @@ func TestHelpCommand(t *testing.T) {
 }
 
 // TestUnknownCommandSuggestsHelp verifies that an unrecognised command returns
-// an error whose message suggests running 'gentle-ai help'.
+// an error whose message suggests running 'hgtran-ai help'.
 func TestUnknownCommandSuggestsHelp(t *testing.T) {
 	var buf bytes.Buffer
 	err := RunArgs([]string{"notacommand"}, &buf)
 	if err == nil {
 		t.Fatal("unknown command should return error")
 	}
-	if !strings.Contains(err.Error(), "gentle-ai help") {
-		t.Error("unknown command error should suggest 'gentle-ai help'")
+	if !strings.Contains(err.Error(), "hgtran-ai help") {
+		t.Error("unknown command error should suggest 'hgtran-ai help'")
 	}
 }
 
@@ -1307,7 +1307,7 @@ func TestRunArgs_UpdateSkipsSelfUpdate(t *testing.T) {
 	updateCheckAll = func(context.Context, string, system.PlatformProfile) []update.UpdateResult {
 		return []update.UpdateResult{
 			{
-				Tool:             update.ToolInfo{Name: "gentle-ai"},
+				Tool:             update.ToolInfo{Name: "hgtran-ai"},
 				InstalledVersion: "1.0.0",
 				LatestVersion:    "1.0.0",
 				Status:           update.UpToDate,
@@ -1353,7 +1353,7 @@ func TestRunArgs_UpgradeSkipsSelfUpdate(t *testing.T) {
 	updateCheckFiltered = func(context.Context, string, system.PlatformProfile, []string) []update.UpdateResult {
 		return []update.UpdateResult{
 			{
-				Tool:             update.ToolInfo{Name: "gentle-ai", InstallMethod: update.InstallBinary},
+				Tool:             update.ToolInfo{Name: "hgtran-ai", InstallMethod: update.InstallBinary},
 				InstalledVersion: "1.0.0",
 				LatestVersion:    "1.0.0",
 				Status:           update.UpToDate,
@@ -1799,7 +1799,7 @@ func writeAppSDDStatusFile(t *testing.T, path string, content string) {
 }
 
 // TestRunArgs_TUIRestartsAfterGentleAIUpgradeResult verifies that when the TUI
-// reports a successful gentle-ai upgrade, RunArgs calls restartAfterGentleAIUpgrade
+// reports a successful hgtran-ai upgrade, RunArgs calls restartAfterGentleAIUpgrade
 // which (after task 4.6) prints the restart guidance message instead of re-execing.
 func TestRunArgs_TUIRestartsAfterGentleAIUpgradeResult(t *testing.T) {
 	origDetect := detectSystem
@@ -1819,7 +1819,7 @@ func TestRunArgs_TUIRestartsAfterGentleAIUpgradeResult(t *testing.T) {
 	}
 
 	report := upgrade.UpgradeReport{Results: []upgrade.ToolUpgradeResult{
-		{ToolName: "gentle-ai", Status: upgrade.UpgradeSucceeded, NewVersion: "v1.40.0"},
+		{ToolName: "hgtran-ai", Status: upgrade.UpgradeSucceeded, NewVersion: "v1.40.0"},
 	}}
 	runTUI = func(m tea.Model, _ ...tea.ProgramOption) (tea.Model, error) {
 		model := m.(tui.Model)
@@ -1832,7 +1832,7 @@ func TestRunArgs_TUIRestartsAfterGentleAIUpgradeResult(t *testing.T) {
 		t.Fatalf("RunArgs(TUI) error = %v", err)
 	}
 	// After task 4.6: restart message is printed, no re-exec occurs.
-	if !strings.Contains(buf.String(), "restart gentle-ai") {
+	if !strings.Contains(buf.String(), "restart hgtran-ai") {
 		t.Fatalf("output missing restart notice:\n%s", buf.String())
 	}
 }

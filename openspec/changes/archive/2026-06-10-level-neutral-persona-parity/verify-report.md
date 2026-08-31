@@ -16,7 +16,7 @@
 **Focused coverage remediation**: ✅ Passed
 ```text
 go test -count=1 -coverprofile=/private/tmp/persona-reverify.cover ./internal/components/persona
-ok   github.com/gentleman-programming/gentle-ai/internal/components/persona 3.293s coverage: 81.0% of statements
+ok   github.com/gentleman-programming/hgtran-ai/internal/components/persona 3.293s coverage: 81.0% of statements
 
 go tool cover -func=/private/tmp/persona-reverify.cover | tail -20
 internal/components/persona/inject.go:546: mergeJSONFileToleratingMalformed 100.0%
@@ -28,17 +28,17 @@ total:                                           80.9% of statements
 **Focused package tests**: ✅ Passed
 ```text
 go test -count=1 ./internal/cli ./internal/components/persona ./internal/assets
-ok   github.com/gentleman-programming/gentle-ai/internal/cli 28.186s
-ok   github.com/gentleman-programming/gentle-ai/internal/components/persona 3.279s
-ok   github.com/gentleman-programming/gentle-ai/internal/assets 0.099s
+ok   github.com/gentleman-programming/hgtran-ai/internal/cli 28.186s
+ok   github.com/gentleman-programming/hgtran-ai/internal/components/persona 3.279s
+ok   github.com/gentleman-programming/hgtran-ai/internal/assets 0.099s
 ```
 
 **Focused changed-area coverage**: ✅ Passed
 ```text
 go test -count=1 -coverprofile=/private/tmp/level-neutral-final.cover ./internal/assets ./internal/components/persona ./internal/cli
-ok   github.com/gentleman-programming/gentle-ai/internal/assets 0.161s coverage: 63.6% of statements
-ok   github.com/gentleman-programming/gentle-ai/internal/components/persona 6.584s coverage: 81.0% of statements
-ok   github.com/gentleman-programming/gentle-ai/internal/cli 76.389s coverage: 80.2% of statements
+ok   github.com/gentleman-programming/hgtran-ai/internal/assets 0.161s coverage: 63.6% of statements
+ok   github.com/gentleman-programming/hgtran-ai/internal/components/persona 6.584s coverage: 81.0% of statements
+ok   github.com/gentleman-programming/hgtran-ai/internal/cli 76.389s coverage: 80.2% of statements
 
 go tool cover -func=/private/tmp/level-neutral-final.cover | grep -E 'applyResolvedPersona|injectInternal|mergeJSONFileToleratingMalformed|removeJSONKeyIfValue|total:'
 internal/cli/sync.go:781: applyResolvedPersona 85.7%

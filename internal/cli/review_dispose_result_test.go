@@ -24,7 +24,7 @@ const unreplayableReviewerOutput = `{"findings":[{"id":"R1-001","location":"inte
 const wrongTargetReviewerOutput = `{"findings":[{"id":"R1-001","location":"internal/billing/charge.go:42"}],"evidence":["read internal/billing/charge.go"]}`
 
 func disposeResultAuthorization(repository, lineage, revision, target, lens string, order int, digest, class, actor, reason string) string {
-	return "gentle-ai.review-result-disposition-authorization/v1" +
+	return "hgtran-ai.review-result-disposition-authorization/v1" +
 		"\nrepository=" + repository +
 		"\nlineage=" + lineage +
 		"\nrevision=" + revision +

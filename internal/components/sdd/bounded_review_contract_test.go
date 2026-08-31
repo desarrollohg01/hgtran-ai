@@ -12,7 +12,7 @@ import (
 
 var boundedReviewRequiredClauses = []string{
 	"Parent orchestrator and native CLI only",
-	"gentle-ai review status --cwd <repo> --contract gentle-ai.review-integration/v2 --agent claude-code --next-transition",
+	"hgtran-ai review status --cwd <repo> --contract hgtran-ai.review-integration/v2 --agent claude-code --next-transition",
 	"route only from the returned `next_transition`",
 	"exact operation and ordered argument tokens unchanged",
 	"exact `review.capture-result` collection input once per provider-returned collection attempt",
@@ -20,7 +20,7 @@ var boundedReviewRequiredClauses = []string{
 	"fresh `next_transition` reoffers the exact same bound slot",
 	"If STATUS discovers a committed capture, continue without relaunching",
 	"Never infer a retry from transcript or error text alone",
-	"exact literal prefix `GENTLE_AI_REVIEW_BINDING `",
+	"exact literal prefix `HGTRAN_AI_REVIEW_BINDING `",
 	"including the trailing space and never `=`",
 	"These are the prompt's first bytes",
 	"one-line JSON assembled only from that input",
@@ -36,7 +36,7 @@ var boundedReviewRequiredClauses = []string{
 	"canonical four-lens selection is long work",
 	"one cost/side-effect forecast",
 	"four reviewer model runs",
-	"typed `gentle-ai.review-integration.consent/v3` envelope",
+	"typed `hgtran-ai.review-integration.consent/v3` envelope",
 	"required `agent: claude-code`",
 	"Lossless Blocking Prompt",
 	"Global RDD enabled permits reviews; it never grants consent for this candidate",
@@ -88,10 +88,10 @@ func TestBoundedReviewContractRequiresRuntimeBoundReviewerContext(t *testing.T) 
 		"Never hand candidate bytes through `/tmp`",
 		"another external file",
 		"a repository scratch file",
-		"`GENTLE_AI_FROZEN_CANDIDATE_CONTEXT`",
+		"`HGTRAN_AI_FROZEN_CANDIDATE_CONTEXT`",
 		"Claude Code carries immutable candidate evidence directly in the reviewer task prompt",
 		"path evidence for every manifest index in exact order",
-		"gentle-ai review inspect-candidate --repository-context <repository_context> --expected-revision <revision> --lineage <lineage> --target <target> --lens <lens> --order <order> --operation <operation>",
+		"hgtran-ai review inspect-candidate --repository-context <repository_context> --expected-revision <revision> --lineage <lineage> --target <target> --lens <lens> --order <order> --operation <operation>",
 		"its lens agents expose no shell outside prompt-carried context",
 		"Claude Code is the only supported immutable receipt-review runtime",
 		"OpenCode and Codex are eligible but transport-disabled",
@@ -109,7 +109,7 @@ func TestBoundedReviewContractRequiresRuntimeBoundReviewerContext(t *testing.T) 
 			t.Errorf("orchestrator contract missing reviewer context rule %q", want)
 		}
 	}
-	if strings.Contains(content, "`GENTLE_AI_REVIEW_BINDING=") {
+	if strings.Contains(content, "`HGTRAN_AI_REVIEW_BINDING=") {
 		t.Fatal("orchestrator contract permits equals-delimited reviewer bindings")
 	}
 }
@@ -122,7 +122,7 @@ func TestGeneratedOpenCodeReviewControllersUseNegotiatedStatusRouting(t *testing
 	for name, content := range controllers {
 		t.Run(name, func(t *testing.T) {
 			for _, required := range []string{
-				"gentle-ai review status --cwd <repo> --contract gentle-ai.review-integration/v2 --agent claude-code --next-transition",
+				"hgtran-ai review status --cwd <repo> --contract hgtran-ai.review-integration/v2 --agent claude-code --next-transition",
 				"route only from the returned `next_transition`",
 				"exact operation and ordered argument tokens unchanged",
 				"`execute`", "`collect`", "`stop`",
@@ -132,9 +132,9 @@ func TestGeneratedOpenCodeReviewControllersUseNegotiatedStatusRouting(t *testing
 				}
 			}
 			for _, stale := range []string{
-				"Call `gentle-ai review start` once.",
-				"runs `gentle-ai review start --cwd <repo>`",
-				"| 01 | `gentle-ai review start`",
+				"Call `hgtran-ai review start` once.",
+				"runs `hgtran-ai review start --cwd <repo>`",
+				"| 01 | `hgtran-ai review start`",
 			} {
 				if strings.Contains(content, stale) {
 					t.Errorf("generated OpenCode %s controller retains direct START route %q", name, stale)
@@ -217,8 +217,8 @@ func TestPreservedSharedOrchestratorLeavesRetiredWorkCommandsUntouched(t *testin
 	t.Parallel()
 
 	retired := []string{
-		"gentle-ai work-capabilities --cwd <repo> --contract gentle-ai.work-capabilities/v2 --json",
-		"gentle-ai work-start --cwd <repo> --contract gentle-ai.work-start/v1 --json",
+		"hgtran-ai work-capabilities --cwd <repo> --contract hgtran-ai.work-capabilities/v2 --json",
+		"hgtran-ai work-start --cwd <repo> --contract hgtran-ai.work-start/v1 --json",
 	}
 	rendered := renderPreservedOpenCodeOrchestratorPrompt(
 		strings.Join(retired, "\n"),
@@ -240,25 +240,25 @@ func TestRenderedReviewersAreReadOnlyAndSingleResult(t *testing.T) {
 			path := family + "/agents/review-" + lens + ".md"
 			t.Run(family+"/"+lens, func(t *testing.T) {
 				content := renderBoundedReviewAsset(path)
-				for _, want := range []string{"Review once", "changed_path_manifest", "base_tree", "candidate_tree", "incomplete inspection", "Never read the live worktree", "## Candidate-Causal Admission", "Return one JSON object and no prose", `"subject_hash":"<artifact_subject.subject_hash>"`, "GENTLE_AI_REVIEW_BINDING.subject_hash", `"inspection":{"status":"completed","paths":["<every changed_path_manifest.path in exact order>"]}`, "lens triage", "Emit no unknown fields"} {
+				for _, want := range []string{"Review once", "changed_path_manifest", "base_tree", "candidate_tree", "incomplete inspection", "Never read the live worktree", "## Candidate-Causal Admission", "Return one JSON object and no prose", `"subject_hash":"<artifact_subject.subject_hash>"`, "HGTRAN_AI_REVIEW_BINDING.subject_hash", `"inspection":{"status":"completed","paths":["<every changed_path_manifest.path in exact order>"]}`, "lens triage", "Emit no unknown fields"} {
 					if !strings.Contains(content, want) {
 						t.Errorf("%s missing %q", path, want)
 					}
 				}
 				if family == "claude" {
-					for _, want := range []string{"GENTLE_AI_CLAUDE_REVIEW_CONTEXT", "prompt-carried immutable context", "path evidence for every manifest index", "Missing, partial, reordered, mismatched, or unavailable evidence", "no execution tools"} {
+					for _, want := range []string{"HGTRAN_AI_CLAUDE_REVIEW_CONTEXT", "prompt-carried immutable context", "path evidence for every manifest index", "Missing, partial, reordered, mismatched, or unavailable evidence", "no execution tools"} {
 						if !strings.Contains(content, want) {
 							t.Errorf("%s missing Claude transport clause %q", path, want)
 						}
 					}
-					for _, forbidden := range []string{"OpenCode tasks begin", "gentle-ai review inspect-candidate"} {
+					for _, forbidden := range []string{"OpenCode tasks begin", "hgtran-ai review inspect-candidate"} {
 						if strings.Contains(content, forbidden) {
 							t.Errorf("%s retains provider-only instruction %q", path, forbidden)
 						}
 					}
 					return
 				}
-				for _, want := range []string{"GENTLE_AI_REVIEW_CONTEXT", "sole source of artifact_subject", "gentle-ai review inspect-candidate", "--operation name-status", "--operation numstat", "--operation stat --path-index", "--operation patch --path-index", "--operation object --path-index", "--side base", "--side candidate", "provider binding", "zero-based changed_path_manifest index", "never pass --binary"} {
+				for _, want := range []string{"HGTRAN_AI_REVIEW_CONTEXT", "sole source of artifact_subject", "hgtran-ai review inspect-candidate", "--operation name-status", "--operation numstat", "--operation stat --path-index", "--operation patch --path-index", "--operation object --path-index", "--side base", "--side candidate", "provider binding", "zero-based changed_path_manifest index", "never pass --binary"} {
 					if !strings.Contains(content, want) {
 						t.Errorf("%s missing provider transport clause %q", path, want)
 					}
@@ -310,7 +310,7 @@ func TestBoundedReviewContractListsOnlySupportedLifecycleGates(t *testing.T) {
 func TestAuthorityFirstTerminalProcedureIsStructuredAndMirrorEligibilityIsClosed(t *testing.T) {
 	rows := parseAuthorityFirstRows(t, authorityFirstTerminalProcedure())
 	wantOperations := []string{
-		"gentle-ai review status --cwd <repo> --contract gentle-ai.review-integration/v2 --agent claude-code --next-transition",
+		"hgtran-ai review status --cwd <repo> --contract hgtran-ai.review-integration/v2 --agent claude-code --next-transition",
 		"provider-returned transition", "repeat 01–02", "reconcile-terminal-mirrors",
 	}
 	if len(rows) != len(wantOperations) {
@@ -354,10 +354,10 @@ func TestOpenCodeAndClaudeApplyCommandsRequireAuthorityBeforeMirrors(t *testing.
 			if strings.Contains(content, authorityFirstProcedurePlaceholder) || strings.Count(content, authorityFirstTerminalProcedure()) != 1 {
 				t.Fatalf("%s did not render the centralized terminal procedure", path)
 			}
-			if !strings.Contains(content, "gentle-ai review status --cwd <repo> --contract gentle-ai.review-integration/v2 --agent claude-code --next-transition") {
+			if !strings.Contains(content, "hgtran-ai review status --cwd <repo> --contract hgtran-ai.review-integration/v2 --agent claude-code --next-transition") {
 				t.Fatalf("%s does not begin negotiated review routing with STATUS", path)
 			}
-			if strings.Contains(content, "runs `gentle-ai review start --cwd <repo>`") {
+			if strings.Contains(content, "runs `hgtran-ai review start --cwd <repo>`") {
 				t.Fatalf("%s retains direct post-apply START routing", path)
 			}
 		})

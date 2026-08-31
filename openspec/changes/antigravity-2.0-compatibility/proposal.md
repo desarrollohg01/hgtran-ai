@@ -19,7 +19,7 @@ The new Antigravity implementation works for the desktop product as well as the 
 
 ## Acceptance criteria
 
-- `gentle-ai install --agent antigravity ...` uses the unified Antigravity behavior.
+- `hgtran-ai install --agent antigravity ...` uses the unified Antigravity behavior.
 - `antigravity-cli` is not available as a separate catalog, CLI, or TUI agent option.
 - Legacy Antigravity config under `~/.gemini/antigravity/` is no longer written by this support path.
 - Tests and golden files cover the unified `antigravity` behavior.

@@ -20,7 +20,7 @@ import (
 // eleven-line LF-only reviewer-result disposition maintainer authorization
 // binding; the remaining lines are, in order: repository, lineage, revision,
 // target_identity, lens, order, artifact_digest, class, actor, and reason.
-const compactResultDispositionAuthorizationSchema = "gentle-ai.review-result-disposition-authorization/v1"
+const compactResultDispositionAuthorizationSchema = "hgtran-ai.review-result-disposition-authorization/v1"
 
 // CompactResultDispositionOperation is the audited compact-v2 operation that
 // terminally escalates a reviewing lineage whose preserved reviewer result

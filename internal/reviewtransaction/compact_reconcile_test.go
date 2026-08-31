@@ -754,7 +754,7 @@ func TestReconcileInvalidRecoveryEdgeRefusesIneligibleTargetsAndBindings(t *test
 // preContractRecoveryFixture persists an escalated predecessor with its
 // receipt and a changed-target escalated recovery successor whose sole edge
 // anomaly is a pre-contract free-form maintainer authorization written before
-// the exact gentle-ai.review-recovery-authorization/v1 binding existed.
+// the exact hgtran-ai.review-recovery-authorization/v1 binding existed.
 // mutate, when non-nil, adjusts the successor before it is persisted.
 func preContractRecoveryFixture(t *testing.T, repo, authorization string, mutate func(*CompactState)) (CompactRecord, CompactStore, CompactRecord, CompactStore) {
 	t.Helper()

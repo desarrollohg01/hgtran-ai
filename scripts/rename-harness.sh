@@ -49,19 +49,19 @@ countfiles() {
 
 census() {
   echo "I1_binary=$(count '\bgentle-ai\b')"
-  echo "I2_module=$(count 'gentleman-programming/gentle-ai' '*.go')"
+  echo "I2_module=$(count 'gentleman-programming/hgtran-ai' '*.go')"
   echo "I3_gga=$(count '\bgga\b')"
   echo "I4_urls=$(count 'github.com/Gentleman-Programming')"
-  echo "I5_brand=$(count 'Gentle AI')"
-  echo "I6_golden=$(countfiles '\(gentleman\|gentle-ai\)' '*.golden')"
+  echo "I5_brand=$(count 'Hgtran AI')"
+  echo "I6_golden=$(countfiles '\(gentleman\|hgtran-ai\)' '*.golden')"
   # The user state root, tracked apart from the binary name because it is the
   # one class where getting it wrong orphans data instead of breaking a build.
   # The quoted form excludes the three filename prefixes that merely start with
-  # the old name (.gentle-ai-*.tmp, .gentle-ai-default-agent.json, and the
+  # the old name (.hgtran-ai-*.tmp, .hgtran-ai-default-agent.json, and the
   # OpenCode uninstall marker) — those are brand, not the state root.
-  echo "I7_stateroot=$(count '"\.gentle-ai"')"
-  echo "TOTAL=$(count '\(gentleman\|gentle-ai\|Gentleman\|Gentle AI\)')"
-  echo "FILES=$(countfiles '\(gentleman\|gentle-ai\|Gentleman\|Gentle AI\)')"
+  echo "I7_stateroot=$(count '"\.hgtran-ai"')"
+  echo "TOTAL=$(count '\(gentleman\|hgtran-ai\|Gentleman\|Hgtran AI\)')"
+  echo "FILES=$(countfiles '\(gentleman\|hgtran-ai\|Gentleman\|Hgtran AI\)')"
 }
 
 # --- functional state -------------------------------------------------------

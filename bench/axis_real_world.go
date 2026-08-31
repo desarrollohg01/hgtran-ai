@@ -707,7 +707,7 @@ func ignoredLargeBinary(sandbox *Sandbox) error {
 	}
 	// The ignore rule is committed history, as it would be in a real
 	// repository — not a staged change that would contaminate the candidate.
-	if err := sandbox.write(filepath.Join(sandbox.Repo, ".gitignore"), ".claude/\n.gentle-ai/\ndist/\n"); err != nil {
+	if err := sandbox.write(filepath.Join(sandbox.Repo, ".gitignore"), ".claude/\n.hgtran-ai/\ndist/\n"); err != nil {
 		return err
 	}
 	if err := sandbox.git(sandbox.Repo, "add", "--", ".gitignore"); err != nil {
@@ -718,7 +718,7 @@ func ignoredLargeBinary(sandbox *Sandbox) error {
 	}
 	// 15MB of deterministic non-text bytes: no randomness, so two runs write
 	// identical files.
-	pattern := append([]byte{0x00, 0x01, 0xfe, 0xff}, []byte("gentle-ai-bench-binary-block")...)
+	pattern := append([]byte{0x00, 0x01, 0xfe, 0xff}, []byte("hgtran-ai-bench-binary-block")...)
 	binary := bytes.Repeat(pattern, 15*1024*1024/len(pattern)+1)[:15*1024*1024]
 	path := filepath.Join(sandbox.Repo, "dist", ignoredBinaryName)
 	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {

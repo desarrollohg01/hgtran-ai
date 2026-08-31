@@ -4,7 +4,7 @@ The LAST wave. Waves 0–6 built the new lineage beside the old one; Wave 7 dele
 
 ## Gate
 
-**This wave cannot start until Waves 3, 4, 5 and 6 are all merged to `main`.** Verified at proposal time on `main`: Wave 1 and Wave 2 have landed (`shadow_*.go`, `authority_disposition_execute.go` present; both archived); Waves 3–6 have **not** (`GENTLE_AI_RDD_NEW_LINEAGE` appears in `openspec/changes/rdd-root-simplification-wave3/**` only, zero hits under `internal/`). Every inventory below is therefore *known candidates*, not the final list.
+**This wave cannot start until Waves 3, 4, 5 and 6 are all merged to `main`.** Verified at proposal time on `main`: Wave 1 and Wave 2 have landed (`shadow_*.go`, `authority_disposition_execute.go` present; both archived); Waves 3–6 have **not** (`HGTRAN_AI_RDD_NEW_LINEAGE` appears in `openspec/changes/rdd-root-simplification-wave3/**` only, zero hits under `internal/`). Every inventory below is therefore *known candidates*, not the final list.
 
 ## Intent
 
@@ -21,8 +21,8 @@ Delete the legacy RDD machinery. Today two lifecycles coexist behind a switch: t
 | `ReconcileInvalidRecoveryEdge` (Wave 6 explicitly deferred this to W7) | `internal/reviewtransaction/compact_reconcile.go:233` | `internal/cli/review_reconcile.go`; bench `ds01`/`ds02`/`ds04` (`bench/axis_damaged_store.go`) |
 | `ReconcileInvalidRecoveryEdges` | `internal/reviewtransaction/compact_batch_reconcile_journal.go:71` | `internal/cli/review_reconcile_batch.go` |
 | Legacy public verbs | `internal/cli/review_facade.go:701–714` — `reconcile-authority`, `reconcile-authority-batch`, `quarantine-legacy`, `quarantine-legacy-fix-scope`, `repair-legacy-alias` | facade dispatch + per-verb handlers/tests |
-| `GENTLE_AI_RDD_NEW_LINEAGE` switch + the legacy `start` branch it guards | Wave 3 (`review_facade.go` start branch) | switch removal makes the new lineage the only path |
-| `GENTLE_AI_RDD_SHADOW` observer and the `ShadowRelation` alias | `internal/reviewtransaction/shadow_*.go`; alias in `candidate_relation.go` post-W3 rename | Wave 1 scaffolding; its exit evidence is already banked in the golden matrix |
+| `HGTRAN_AI_RDD_NEW_LINEAGE` switch + the legacy `start` branch it guards | Wave 3 (`review_facade.go` start branch) | switch removal makes the new lineage the only path |
+| `HGTRAN_AI_RDD_SHADOW` observer and the `ShadowRelation` alias | `internal/reviewtransaction/shadow_*.go`; alias in `candidate_relation.go` post-W3 rename | Wave 1 scaffolding; its exit evidence is already banked in the golden matrix |
 | Duplicate contract projections | `contracts/review-integration/v1/**` (47 files) vs `v2/**` | adapters, schema guard tests |
 
 Also in scope: the deletion proof the design requires for backlog rows classified `superseded-by-design` (`#1455`, `#1462`, `#1570`, PRs `#1549`, `#1550`).
@@ -49,7 +49,7 @@ Also in scope: the deletion proof the design requires for backlog rows classifie
 
 **Consumer-first, never provider-first.** For each target: (1) prove the consumer inventory from the call graph, (2) migrate or retire every consumer, (3) delete the provider, (4) delete the now-unreachable tests *as part of the same slice, with the deletion proof naming what they covered*. A provider is never deleted while a live consumer exists — if a consumer cannot be retired, the target is deferred with a written reason rather than force-deleted.
 
-The switch removal has its own ordering: **byte-equivalence exit evidence before removal.** Prove a `GENTLE_AI_RDD_NEW_LINEAGE=1` build and a switch-free build produce byte-identical goldens, envelopes and receipts across the full journey set; only then delete the switch and the legacy branch. Goldens stay byte-stable across the entire wave — a golden diff is a defect signal, not an update task.
+The switch removal has its own ordering: **byte-equivalence exit evidence before removal.** Prove a `HGTRAN_AI_RDD_NEW_LINEAGE=1` build and a switch-free build produce byte-identical goldens, envelopes and receipts across the full journey set; only then delete the switch and the legacy branch. Goldens stay byte-stable across the entire wave — a golden diff is a defect signal, not an update task.
 
 Expected shape: deadcode ratchet strongly net-negative; net line count strongly negative. Slices are cut by **consumer cluster**, not by file count, so each PR remains a coherent, independently revertible retirement.
 
@@ -99,7 +99,7 @@ Each slice is one consumer cluster and is independently revertible by `git rever
 
 ## Success criteria
 
-- [ ] Exactly one lifecycle: no `GENTLE_AI_RDD_NEW_LINEAGE` switch, no legacy start branch, no legacy mutation path.
+- [ ] Exactly one lifecycle: no `HGTRAN_AI_RDD_NEW_LINEAGE` switch, no legacy start branch, no legacy mutation path.
 - [ ] Every retired path has a measured consumer inventory, a migration boundary and a deletion proof (design *Acceptance criteria*).
 - [ ] Byte-equivalence proven before switch removal; goldens byte-stable across the whole wave.
 - [ ] Deadcode ratchet strongly net-negative; net line count strongly negative.

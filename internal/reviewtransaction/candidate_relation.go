@@ -4,7 +4,7 @@
 // the target RDD relation model
 // (docs/architecture/rdd-root-simplification-design.md). Promotion means it
 // now serves both the shadow observer (shadow_observer.go, still gated by
-// GENTLE_AI_RDD_SHADOW) and the live ReviewCore (Wave 3 Slice 3+) — one
+// HGTRAN_AI_RDD_SHADOW) and the live ReviewCore (Wave 3 Slice 3+) — one
 // implementation, not two names for the same function. It compares a
 // frozen CandidateIdentity with a live one and returns exactly one of seven
 // target-architecture relations, in a fixed fail-closed order (design
@@ -175,7 +175,7 @@ var (
 // own tests. They mirror shadow_observer.go's shadowObserverCallCountForTest
 // idiom: the cheapest possible proof that the live gate path (gate.go) pays
 // zero shadow-side merge-base/changedPaths/patchIdentity/merge-tree cost
-// when GENTLE_AI_RDD_SHADOW is unset — "Off by Default in Live Paths"
+// when HGTRAN_AI_RDD_SHADOW is unset — "Off by Default in Live Paths"
 // (spec.md).
 func shadowDeriveBaseAdvanceCallCountForTest() int {
 	shadowDeriveBaseAdvanceMu.Lock()

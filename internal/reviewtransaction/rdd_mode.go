@@ -20,10 +20,10 @@ const (
 	// RDDModeStatusSchema identifies the observable projection of the kill
 	// switch. It reports both sources plus the effective mode; it is never an
 	// authorization and never carries a review outcome.
-	RDDModeStatusSchema = "gentle-ai.rdd-mode-status/v1"
+	RDDModeStatusSchema = "hgtran-ai.rdd-mode-status/v1"
 
-	rddModeOverrideSchema   = "gentle-ai.rdd-mode-override/v1"
-	rddModeDigestDomain     = "gentle-ai.rdd-mode-override-digest/v1"
+	rddModeOverrideSchema   = "hgtran-ai.rdd-mode-override/v1"
+	rddModeDigestDomain     = "hgtran-ai.rdd-mode-override-digest/v1"
 	rddModeDirectory        = "rdd-mode"
 	rddModeLockName         = "LOCK"
 	rddModeGenerationPrefix = "gen-"
@@ -39,7 +39,7 @@ const (
 
 	// rddConsentSchema identifies the one-shot latch recording that the user has
 	// already been asked whether receipt-driven development may run.
-	rddConsentSchema = "gentle-ai.rdd-consent-asked/v1"
+	rddConsentSchema = "hgtran-ai.rdd-consent-asked/v1"
 	// rddConsentName never matches the gen-%010d.json generation pattern, so the
 	// override head scan ignores it instead of mistaking it for a generation.
 	rddConsentName = "asked.json"
@@ -49,7 +49,7 @@ var (
 	// ErrRDDDisabled reports that the user kill switch keeps receipt-driven
 	// development off. It is a stop, never a fallback signal.
 	//
-	// refusal:by-design human-authority: a sentinel, not a user-facing message. Callers wrap it with the deciding scope and the exact `gentle-ai review mode enable` invocation; naming a command here would offer to undo a choice only the operator may reverse.
+	// refusal:by-design human-authority: a sentinel, not a user-facing message. Callers wrap it with the deciding scope and the exact `hgtran-ai review mode enable` invocation; naming a command here would offer to undo a choice only the operator may reverse.
 	ErrRDDDisabled = errors.New("receipt-driven development is disabled")
 
 	// ErrRDDModeUnknown reports an unrecognised mode value. Callers that ignore
@@ -186,9 +186,9 @@ func (err *RDDDisabledError) Error() string {
 		return message
 	}
 	if err.Operation == RDDOperationMutate {
-		return fmt.Sprintf("%s; turn reviews back on with gentle-ai review mode enable --scope=%s to continue it from where it stopped", message, scope)
+		return fmt.Sprintf("%s; turn reviews back on with hgtran-ai review mode enable --scope=%s to continue it from where it stopped", message, scope)
 	}
-	return fmt.Sprintf("%s; turn it back on with gentle-ai review mode enable --scope=%s", message, scope)
+	return fmt.Sprintf("%s; turn it back on with hgtran-ai review mode enable --scope=%s", message, scope)
 }
 
 // rddOperationSubject names the refused operation the way an operator would say
@@ -202,7 +202,7 @@ func rddOperationSubject(operation RDDOperation) string {
 }
 
 // reviewModeScopeForSource maps the deciding source onto the --scope value of
-// `gentle-ai review mode enable`. The default source expresses no opinion, so
+// `hgtran-ai review mode enable`. The default source expresses no opinion, so
 // it can never be what keeps reviews off and gets no continuation rather than
 // a guessed one.
 func reviewModeScopeForSource(source RDDModeSource) string {
@@ -534,7 +534,7 @@ func cloneLocalRDDModeRoot(ctx context.Context, repo string, create bool) (strin
 	identity := reviewRepositoryIdentityRecordFromLease(lease)
 	base := filepath.Join(
 		identity.GitCommonDir,
-		"gentle-ai",
+		"hgtran-ai",
 		"review-transactions",
 		rarAuthorityDirectory,
 		rarAuthorityVersion,

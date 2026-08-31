@@ -40,7 +40,7 @@ Use `too-tight` when drift is expected to reject legitimate inputs, `too-loose` 
 After an intentional reviewed declaration or guard-node change, regenerate the registry before final verification:
 
 ```bash
-GENTLE_AI_GUARD_POPULATION_UPDATE=1 go test ./internal/cli -run TestEveryRegisteredGuardPopulationDeclarationMatchesProduction -count=1
+HGTRAN_AI_GUARD_POPULATION_UPDATE=1 go test ./internal/cli -run TestEveryRegisteredGuardPopulationDeclarationMatchesProduction -count=1
 ```
 
 ## Proof boundary

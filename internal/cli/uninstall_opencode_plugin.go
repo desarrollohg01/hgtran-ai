@@ -14,7 +14,7 @@ import (
 )
 
 // UninstallOpenCodePluginFlags are the parsed flags for the
-// `gentle-ai uninstall opencode-plugin <id>` sub-command.
+// `hgtran-ai uninstall opencode-plugin <id>` sub-command.
 type UninstallOpenCodePluginFlags struct {
 	PluginID model.OpenCodeCommunityPluginID
 	Yes      bool
@@ -34,7 +34,7 @@ var validOpenCodePluginIDs = []model.OpenCodeCommunityPluginID{
 // Expects exactly one positional argument (the plugin id). --yes/-y are hoisted
 // before flag.Parse because Go's flag package stops scanning flags at the
 // first non-flag argument, and the natural usage
-// `gentle-ai uninstall opencode-plugin <id> --yes` puts the flag after the id.
+// `hgtran-ai uninstall opencode-plugin <id> --yes` puts the flag after the id.
 func ParseUninstallOpenCodePluginFlags(args []string) (UninstallOpenCodePluginFlags, error) {
 	var opts UninstallOpenCodePluginFlags
 
@@ -55,7 +55,7 @@ func ParseUninstallOpenCodePluginFlags(args []string) (UninstallOpenCodePluginFl
 		return UninstallOpenCodePluginFlags{}, err
 	}
 	if fs.NArg() != 1 {
-		return UninstallOpenCodePluginFlags{}, fmt.Errorf("usage: gentle-ai uninstall opencode-plugin <id> [--yes]")
+		return UninstallOpenCodePluginFlags{}, fmt.Errorf("usage: hgtran-ai uninstall opencode-plugin <id> [--yes]")
 	}
 
 	id := model.OpenCodeCommunityPluginID(strings.TrimSpace(fs.Arg(0)))
@@ -226,7 +226,7 @@ func pluginDisplayName(id model.OpenCodeCommunityPluginID) string {
 	}
 	switch id {
 	case model.OpenCodePluginGentleLogo:
-		return "Gentle Logo"
+		return "Hgtran Logo"
 	}
 	return string(id)
 }

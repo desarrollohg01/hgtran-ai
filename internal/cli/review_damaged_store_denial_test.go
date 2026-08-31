@@ -66,7 +66,7 @@ func writeDamagedStoreProse(t *testing.T, repo, name string) {
 
 func damagedStoreLineageDir(t *testing.T, repo, lineage string) string {
 	t.Helper()
-	return filepath.Join(repo, ".git", "gentle-ai", "review-transactions", "v2", lineage)
+	return filepath.Join(repo, ".git", "hgtran-ai", "review-transactions", "v2", lineage)
 }
 
 // forgeDamagedStoreRecoveryReason edits the recorded recovery reason after the
@@ -132,13 +132,13 @@ type damagedStoreInspection struct {
 }
 
 // liftBacktickedReviewCommand lifts one backtick-quoted runnable
-// `gentle-ai review <verb> ...` command out of a refusal, mirroring what an
+// `hgtran-ai review <verb> ...` command out of a refusal, mirroring what an
 // operator would copy. Tokens stop at the first unfilled <placeholder>; a
 // flag left dangling by that cut is dropped so the operator-owned values can
 // be appended in its place.
 func liftBacktickedReviewCommand(t *testing.T, message, verb string) []string {
 	t.Helper()
-	for _, match := range regexp.MustCompile("`gentle-ai ([^`]*)`").FindAllStringSubmatch(message, -1) {
+	for _, match := range regexp.MustCompile("`hgtran-ai ([^`]*)`").FindAllStringSubmatch(message, -1) {
 		tokens := []string{}
 		for _, token := range strings.Fields(match[1]) {
 			token = strings.Trim(token, "'\"")
@@ -154,7 +154,7 @@ func liftBacktickedReviewCommand(t *testing.T, message, verb string) []string {
 			return tokens
 		}
 	}
-	t.Fatalf("message names no runnable `gentle-ai review %s ...`: %q", verb, message)
+	t.Fatalf("message names no runnable `hgtran-ai review %s ...`: %q", verb, message)
 	return nil
 }
 
@@ -166,7 +166,7 @@ func dispatchNamedDiagnosis(t *testing.T, repo, message string) damagedStoreInsp
 	tokens := liftBacktickedReviewCommand(t, message, "inspect-authority")
 	var output bytes.Buffer
 	if err := RunReview(tokens[1:], &output); err != nil {
-		t.Fatalf("the diagnosis the denial named exits non-zero (named dead end): gentle-ai %s: %v\n%s",
+		t.Fatalf("the diagnosis the denial named exits non-zero (named dead end): hgtran-ai %s: %v\n%s",
 			strings.Join(tokens, " "), err, output.String())
 	}
 	var report damagedStoreInspection
@@ -347,7 +347,7 @@ func TestReclaimRefusalOverTruncatedRecordNamesDiagnosisNotReconcile(t *testing.
 	if !strings.Contains(message, "malformed_compact_state") {
 		t.Fatalf("reclaim refusal does not carry the inspection's classification: %q", message)
 	}
-	if strings.Contains(message, "gentle-ai review reconcile-authority") {
+	if strings.Contains(message, "hgtran-ai review reconcile-authority") {
 		t.Fatalf("reclaim still names reconcile for a record reconcile cannot load (named dead end): %q", message)
 	}
 	report := dispatchNamedDiagnosis(t, repo, message)

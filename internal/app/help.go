@@ -6,15 +6,15 @@ import (
 )
 
 func printHelp(w io.Writer, version string) {
-	fmt.Fprintf(w, `gentle-ai — Gentle-AI: Ecosystem, Frameworks, Workflows (%s)
+	fmt.Fprintf(w, `hgtran-ai — hgtran-ai: Ecosystem, Frameworks, Workflows (%s)
 
 USAGE
-  gentle-ai                     Launch interactive TUI
-  gentle-ai <command> [flags]
+  hgtran-ai                     Launch interactive TUI
+  hgtran-ai <command> [flags]
 
 COMMANDS
   install      Configure AI coding agents on this machine
-  uninstall    Remove Gentle AI managed files from this machine
+  uninstall    Remove Hgtran AI managed files from this machine
   sync         Sync agent configs and skills to current version
   skill-registry refresh
                Refresh .atl/skill-registry.md with cache-hit fast path
@@ -44,7 +44,7 @@ COMMANDS
                'review start' asks once per clone before a review that would do work;
                accepting the review records that answer, 'not now' applies to that candidate only
                and persists nothing, turning reviews off for good needs a deliberate
-               'gentle-ai review mode disable', and a session without a terminal reviews
+               'hgtran-ai review mode disable', and a session without a terminal reviews
                the change and says so instead of asking
 
 COMPATIBILITY COMMANDS
@@ -72,7 +72,7 @@ COMPATIBILITY COMMANDS
 FLAGS
   --help, -h    Show global help; every review subcommand also supports help
 
-Run 'gentle-ai help' for this message.
-Documentation: https://github.com/Gentleman-Programming/gentle-ai
+Run 'hgtran-ai help' for this message.
+Documentation: https://github.com/Gentleman-Programming/hgtran-ai
 `, version)
 }

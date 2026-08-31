@@ -32,7 +32,7 @@ func TestRelayedCandidateDeclineAllowsOnlyExactPreCommitDelivery(t *testing.T) {
 	} else if _, err := store.Load(); !errors.Is(err, os.ErrNotExist) {
 		t.Fatalf("declined candidate created review lineage: %v", err)
 	}
-	if _, err := os.Stat(filepath.Join(repo, ".git", "gentle-ai", "review-transactions", "v2", "review-candidate-decline", "receipt.json")); !errors.Is(err, os.ErrNotExist) {
+	if _, err := os.Stat(filepath.Join(repo, ".git", "hgtran-ai", "review-transactions", "v2", "review-candidate-decline", "receipt.json")); !errors.Is(err, os.ErrNotExist) {
 		t.Fatalf("declined candidate created receipt: %v", err)
 	}
 	declinedSnapshot, err := (reviewtransaction.SnapshotBuilder{Repo: repo}).Build(context.Background(), reviewtransaction.Target{

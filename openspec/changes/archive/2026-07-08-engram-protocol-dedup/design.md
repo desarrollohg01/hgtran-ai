@@ -4,7 +4,7 @@
 
 Two independent levers, decoupled on purpose:
 
-1. **Section slimming (gentle-ai-owned, ships now).** Replace the three source assets (`claude/engram-protocol.md`, `codex/engram-instructions.md`, `codex/engram-compact-prompt.md`) with ONE canonical marker-sectioned source, `internal/assets/engram/protocol.md`. `inject.go` selects the slim section ONLY for adapters with a design-verified redundant channel; for Claude Code that verification additionally requires the installed engram binary to be ≥ v1.4.0 (see Decision 1). Only **Claude Code** qualifies. Codex renders its three surfaces from the same source (dedup, not slimming). Written on-disk paths stay identical, so the uninstaller does not churn.
+1. **Section slimming (hgtran-ai-owned, ships now).** Replace the three source assets (`claude/engram-protocol.md`, `codex/engram-instructions.md`, `codex/engram-compact-prompt.md`) with ONE canonical marker-sectioned source, `internal/assets/engram/protocol.md`. `inject.go` selects the slim section ONLY for adapters with a design-verified redundant channel; for Claude Code that verification additionally requires the installed engram binary to be ≥ v1.4.0 (see Decision 1). Only **Claude Code** qualifies. Codex renders its three surfaces from the same source (dedup, not slimming). Written on-disk paths stay identical, so the uninstaller does not churn.
 2. **Hook verbosity flag (upstream-gated).** Forward `engram setup <slug> --protocol=slim|full` only when a side-effect-free `--help` probe proves the installed binary supports it. Omission is always safe.
 
 Slimming Claude Code is safe only when the installed engram binary is verified to serve the MCP `instructions` channel — it is NOT true for every engram binary ever released (see Decision 1 for the evidence-backed version floor). Once verified, that channel carries the full protocol regardless of the `--protocol` flag; the flag itself (Decision 4) is a separate, independently-gated optimization for the SessionStart hook, not a precondition for slimming.
@@ -56,7 +56,7 @@ MCP server instructions and the SessionStart hook. Always-on rules:
 - Before saying "done", call `mem_session_summary`.
 ```
 
-Size: ~11 lines / ~130 tokens vs. the 101-line / ~1,175-token full asset → **~1,045 tokens/session saved** on Claude Code, plus ~2.5K tokens from the upstream hook once the `--protocol` flag lands. This savings figure applies to Claude Code only — Codex's per-session token footprint does not shrink (see Decision 3): it goes from 3 near-duplicate gentle-ai-owned copies to 1 canonically-sourced copy, and the rendered `model_instructions_file` grows slightly (~6 bullets + self-check line) rather than shrinking.
+Size: ~11 lines / ~130 tokens vs. the 101-line / ~1,175-token full asset → **~1,045 tokens/session saved** on Claude Code, plus ~2.5K tokens from the upstream hook once the `--protocol` flag lands. This savings figure applies to Claude Code only — Codex's per-session token footprint does not shrink (see Decision 3): it goes from 3 near-duplicate hgtran-ai-owned copies to 1 canonically-sourced copy, and the rendered `model_instructions_file` grows slightly (~6 bullets + self-check line) rather than shrinking.
 
 ## Decision 3 — Canonical asset structure for Codex
 
@@ -101,7 +101,7 @@ Section slimming in `inject.go` is **not** gated on this `--help` probe. It is g
 - **Flag:** `engram setup <slug> --protocol=<slim|full>`, **default `full`** (absent flag = current behavior).
 - **Slim hook output:** KEEP the dynamic status line (e.g. `N chunks imported`) plus a one-line proactive-save reminder; DROP the verbose protocol prose (already in MCP instructions).
 - **MCP instructions:** UNCHANGED by this flag — they remain the canonical full-protocol channel.
-- **Compatibility:** old gentle-ai + new engram → no flag passed → `full`. New gentle-ai + old engram → probe omits flag → runs as today. New + new → `--protocol=slim` for Claude Code.
+- **Compatibility:** old hgtran-ai + new engram → no flag passed → `full`. New hgtran-ai + old engram → probe omits flag → runs as today. New + new → `--protocol=slim` for Claude Code.
 
 ## Per-slug forwarding semantics
 

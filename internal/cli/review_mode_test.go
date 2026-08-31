@@ -36,7 +36,7 @@ func TestReviewModeStatusReportsBothSourcesWithoutMutating(t *testing.T) {
 	if _, err := os.Lstat(state.Path(home)); !errors.Is(err, os.ErrNotExist) {
 		t.Fatalf("status created global user state: %v", err)
 	}
-	if _, err := os.Lstat(filepath.Join(repo, ".git", "gentle-ai")); !errors.Is(err, os.ErrNotExist) {
+	if _, err := os.Lstat(filepath.Join(repo, ".git", "hgtran-ai")); !errors.Is(err, os.ErrNotExist) {
 		t.Fatalf("status created repository state: %v", err)
 	}
 }
@@ -486,7 +486,7 @@ func assertReviewConsentPrompt(t *testing.T, prompt, reason string) string {
 		"substantially safer",
 		"1) Run the review now",
 		"2) Not now, just this once",
-		"gentle-ai review mode disable",
+		"hgtran-ai review mode disable",
 	} {
 		if !strings.Contains(prompt, want) {
 			t.Fatalf("consent prompt missing %q:\n%s", want, prompt)
@@ -500,7 +500,7 @@ func assertReviewConsentPrompt(t *testing.T, prompt, reason string) string {
 			t.Fatalf("consent prompt still offers a permanent disable %q:\n%s", forbidden, prompt)
 		}
 	}
-	for _, forbidden := range []string{"gentle-ai.", "sha256:", "lineage", "schema", "contract", "lens"} {
+	for _, forbidden := range []string{"hgtran-ai.", "sha256:", "lineage", "schema", "contract", "lens"} {
 		if strings.Contains(prompt, forbidden) {
 			t.Fatalf("consent prompt leaked internal vocabulary %q:\n%s", forbidden, prompt)
 		}

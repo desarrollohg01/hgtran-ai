@@ -425,7 +425,7 @@ func TestDisabledReviewModeDoesNotBlockPreVerifyRouting(t *testing.T) {
 // validation/blocking branch -- were still ungated by reviewDisabled, so a
 // stale-verify-totals fixture (evidence report claims more requirements
 // than the spec actually has) reached resolveReviewAuthority's discovery
-// walk and appended a blocked reason naming `gentle-ai review start`, a
+// walk and appended a blocked reason naming `hgtran-ai review start`, a
 // command the kill switch itself refuses, while the switch was OFF.
 
 // staleTotalsVerifyEnvelope claims one more requirement/scenario than
@@ -464,7 +464,7 @@ func TestEnabledStaleEvidenceWithNoReceiptNamesReviewStart(t *testing.T) {
 	if status.Dependencies.Archive != DependencyBlocked || status.NextRecommended != "resolve-review" {
 		t.Fatalf("enabled stale-evidence archive=%q next=%q, want blocked/resolve-review", status.Dependencies.Archive, status.NextRecommended)
 	}
-	if !strings.Contains(strings.Join(status.BlockedReasons, "\n"), "gentle-ai review start") {
+	if !strings.Contains(strings.Join(status.BlockedReasons, "\n"), "hgtran-ai review start") {
 		t.Fatalf("enabled stale-evidence BlockedReasons = %v, want it to name the fresh review", status.BlockedReasons)
 	}
 }
@@ -472,7 +472,7 @@ func TestEnabledStaleEvidenceWithNoReceiptNamesReviewStart(t *testing.T) {
 // TestDisabledStaleEvidenceNeverConsultsReviewAuthority is the fix: the same
 // fixture, with the switch off, grants the same "please re-verify" leniency
 // with zero review consultation and zero blocked reasons -- never naming
-// gentle-ai review start, a command the switch itself refuses to run.
+// hgtran-ai review start, a command the switch itself refuses to run.
 func TestDisabledStaleEvidenceNeverConsultsReviewAuthority(t *testing.T) {
 	root := t.TempDir()
 	seedStaleEvidenceReadyChange(t, root)

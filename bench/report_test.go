@@ -34,7 +34,7 @@ func byDesignResults() Results {
 			{Sequence: 2, Step: "an ordinary defect", ExitCode: 1, Block: BlockOutOfBand, Message: "Error: no."},
 		},
 	}
-	results := Results{Schema: ResultsSchema, Mode: ModeDriven, Binary: "/bin/gentle-ai", Journeys: []JourneyResult{journey}}
+	results := Results{Schema: ResultsSchema, Mode: ModeDriven, Binary: "/bin/hgtran-ai", Journeys: []JourneyResult{journey}}
 	results.Totals, results.JourneysCounted, results.JourneysUnsupported, results.JourneysFailed = aggregate(results.Journeys)
 	return results
 }

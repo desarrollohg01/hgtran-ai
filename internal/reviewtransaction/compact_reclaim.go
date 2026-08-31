@@ -12,10 +12,10 @@ import (
 	"time"
 )
 
-const CompactReclaimRecordSchema = "gentle-ai.review-reclaim-record/v1"
+const CompactReclaimRecordSchema = "hgtran-ai.review-reclaim-record/v1"
 
 const (
-	ClassifiedAuthorityRepairAuditSchema = "gentle-ai.review-classified-authority-repair-audit/v1"
+	ClassifiedAuthorityRepairAuditSchema = "hgtran-ai.review-classified-authority-repair-audit/v1"
 	ClassifiedAuthorityRepairRoute       = "classified_authority_repair"
 )
 
@@ -200,11 +200,11 @@ func compactReclaimAuthorityRefusal(ctx context.Context, repo, dir, lineageID, a
 	if loadErr != nil {
 		if os.IsNotExist(loadErr) {
 			return fmt.Errorf("%s The entry holds no readable review-state.json beside that artifact, so nothing can prove the artifact never carried authority, and no advertised operation admits this shape today."+
-				" Capture the complete machine-readable diagnosis with `gentle-ai review inspect-authority --cwd %q` and escalate that report", refused, repo)
+				" Capture the complete machine-readable diagnosis with `hgtran-ai review inspect-authority --cwd %q` and escalate that report", refused, repo)
 		}
 		return fmt.Errorf("%s Its record cannot be loaded (%v) — inspection classifies it %s, which an interrupted write leaves behind — and no advertised operation admits an unreadable record:"+
 			" reconciliation re-derives its proof from readable state, and admitting bytes that can prove nothing is a maintainer policy decision, not a repair."+
-			" Capture the complete machine-readable diagnosis with `gentle-ai review inspect-authority --cwd %q` and escalate that report",
+			" Capture the complete machine-readable diagnosis with `hgtran-ai review inspect-authority --cwd %q` and escalate that report",
 			refused, loadErr, compactRecoveryEntryProblem(loadErr), repo)
 	}
 	if recovery := record.State.Recovery; recovery != nil {
@@ -212,7 +212,7 @@ func compactReclaimAuthorityRefusal(ctx context.Context, repo, dir, lineageID, a
 		if predecessorErr == nil {
 			classification := classifyCompactRecoveryEdgeAnomalies(predecessor, record)
 			if !classification.Valid && len(classification.Anomalies) > 0 {
-				return fmt.Errorf("%s Its recovery edge classifies as %s, which `gentle-ai review reconcile-authority` admits: %s",
+				return fmt.Errorf("%s Its recovery edge classifies as %s, which `hgtran-ai review reconcile-authority` admits: %s",
 					refused, strings.Join(classification.Anomalies, ","),
 					compactReconcileCommandText(repo, recovery.PredecessorLineageID, predecessor.Revision, record.State.LineageID, record.Revision, classification.Anomalies))
 			}
@@ -220,12 +220,12 @@ func compactReclaimAuthorityRefusal(ctx context.Context, repo, dir, lineageID, a
 	}
 	eligibility, eligibilityErr := InspectCompactPristineAbandonment(ctx, repo, lineageID)
 	if eligibilityErr == nil && eligibility.Eligible {
-		return fmt.Errorf("%s The entry is pristine, so `gentle-ai review abandon` quarantines it whole: %s",
+		return fmt.Errorf("%s The entry is pristine, so `hgtran-ai review abandon` quarantines it whole: %s",
 			refused, compactAbandonCommandText(repo, lineageID, eligibility))
 	}
 	return fmt.Errorf("%s No advertised operation admits it: reconciliation does not classify it into a supported anomaly class, and `review abandon` refuses because %s."+
 		" Nothing quarantines this shape today; the entry stays exactly as persisted."+
-		" Capture the complete machine-readable diagnosis with `gentle-ai review inspect-authority --cwd %q` and escalate that report",
+		" Capture the complete machine-readable diagnosis with `hgtran-ai review inspect-authority --cwd %q` and escalate that report",
 		refused, compactAbandonBlockerText(record.State), repo)
 }
 
@@ -301,11 +301,11 @@ func quarantineCompactStoreEntry(ctx context.Context, base, dir string, record C
 // before a quarantine operation can create, inspect, or rename inside them.
 func ensureCanonicalReviewQuarantineRoot(base, quarantineRoot string) error {
 	commonDir := filepath.Dir(filepath.Dir(base))
-	if filepath.Clean(base) != filepath.Join(commonDir, "gentle-ai", "review-transactions") ||
+	if filepath.Clean(base) != filepath.Join(commonDir, "hgtran-ai", "review-transactions") ||
 		filepath.Clean(quarantineRoot) != filepath.Join(base, "quarantine") {
 		return errors.New("review quarantine refused noncanonical authority root")
 	}
-	for _, component := range []string{"gentle-ai", "review-transactions", "quarantine"} {
+	for _, component := range []string{"hgtran-ai", "review-transactions", "quarantine"} {
 		path := filepath.Join(commonDir, component)
 		if component == "review-transactions" {
 			path = base

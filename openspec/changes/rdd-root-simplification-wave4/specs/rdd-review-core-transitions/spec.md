@@ -6,7 +6,7 @@
 
 ### Requirement: Consent-Gated Freeze With Immutable Tier, Lenses, and Budget, Preceded by Capability Admission
 
-`start` MUST freeze candidate identity, tier (0|1|4, reusing existing threshold logic — adopted default), lens set, and correction budget only after (1) transport capability admission has succeeded (Issue #1247) and (2) consent is granted via the reused `gentle-ai.review-integration.consent/v2` envelope (adopted default) for tier 1|4; tier 0 proceeds without a consent question. Capability admission MUST run before consent is even requested — an unsupported transport MUST deny before any consent prompt exists. Once frozen, tier, lenses, and budget MUST NOT be recomputed later in the same lineage.
+`start` MUST freeze candidate identity, tier (0|1|4, reusing existing threshold logic — adopted default), lens set, and correction budget only after (1) transport capability admission has succeeded (Issue #1247) and (2) consent is granted via the reused `hgtran-ai.review-integration.consent/v2` envelope (adopted default) for tier 1|4; tier 0 proceeds without a consent question. Capability admission MUST run before consent is even requested — an unsupported transport MUST deny before any consent prompt exists. Once frozen, tier, lenses, and budget MUST NOT be recomputed later in the same lineage.
 
 (Previously: freeze depended only on consent gating; capability was not a precondition of `start`.)
 

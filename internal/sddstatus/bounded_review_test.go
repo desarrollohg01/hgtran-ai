@@ -100,7 +100,7 @@ func TestResolveArchiveRequiresApprovedExactReviewReceipt(t *testing.T) {
 		{
 			name: "stale ledger mirror preserves native authority",
 			mutate: func(t *testing.T, changeRoot string, _ reviewtransaction.Receipt, _ reviewtransaction.GateRequest) {
-				write(t, filepath.Join(changeRoot, "reviews", "ledger.json"), "{\"schema\":\"gentle-ai.review-ledger/v1\",\"findings\":[{\"id\":\"stale\"}]}")
+				write(t, filepath.Join(changeRoot, "reviews", "ledger.json"), "{\"schema\":\"hgtran-ai.review-ledger/v1\",\"findings\":[{\"id\":\"stale\"}]}")
 			},
 			wantGate: reviewtransaction.GateAllow, wantArchive: DependencyReady, wantNext: "archive",
 		},
@@ -240,7 +240,7 @@ func TestNativeReceiptDiscoveryRejectsMultipleGoverningLineagesAsAmbiguous(t *te
 	if count != 2 || status.ReviewGate == nil || status.ReviewGate.Result != reviewtransaction.GateInvalidated {
 		t.Fatalf("native evaluations=%d gate=%#v, want both receipts evaluated and the ambiguity refused", count, status.ReviewGate)
 	}
-	if !strings.Contains(status.ReviewGate.Reason, "gentle-ai review bind-sdd") {
+	if !strings.Contains(status.ReviewGate.Reason, "hgtran-ai review bind-sdd") {
 		t.Fatalf("ambiguous governance names no runnable resolution: %q", status.ReviewGate.Reason)
 	}
 	if status.Dependencies.Archive != DependencyBlocked {
@@ -295,17 +295,17 @@ func TestReviewArtifactPathsUseExactOpenSpecAndEngramReferences(t *testing.T) {
 
 func TestEngramReviewArtifactDiscoveryRetainsOnlyExactNames(t *testing.T) {
 	observations := []engramObservation{
-		{Title: "sdd/bounded/review/chain-bundle", Content: "exact bundle", Project: "gentle-ai", Scope: "project"},
-		{Title: "sdd/bounded/review/chain-bundles", Content: "plural", Project: "gentle-ai", Scope: "project"},
-		{Title: "sdd/bounded/review/chain-bundle/extra", Content: "nested", Project: "gentle-ai", Scope: "project"},
-		{Title: "sdd/bounded/review/arbitrary", Content: "arbitrary", Project: "gentle-ai", Scope: "project"},
+		{Title: "sdd/bounded/review/chain-bundle", Content: "exact bundle", Project: "hgtran-ai", Scope: "project"},
+		{Title: "sdd/bounded/review/chain-bundles", Content: "plural", Project: "hgtran-ai", Scope: "project"},
+		{Title: "sdd/bounded/review/chain-bundle/extra", Content: "nested", Project: "hgtran-ai", Scope: "project"},
+		{Title: "sdd/bounded/review/arbitrary", Content: "arbitrary", Project: "hgtran-ai", Scope: "project"},
 	}
 
-	changes := collectEngramChanges(observations, "gentle-ai")
+	changes := collectEngramChanges(observations, "hgtran-ai")
 	if !reflect.DeepEqual(changes, []string{"bounded"}) {
 		t.Fatalf("collectEngramChanges() = %v, want exact chain-bundle change", changes)
 	}
-	artifacts := engramArtifactsForChange(observations, "gentle-ai", "bounded")
+	artifacts := engramArtifactsForChange(observations, "hgtran-ai", "bounded")
 	if len(artifacts) != 1 || artifacts["review/chain-bundle"].Content != "exact bundle" {
 		t.Fatalf("engramArtifactsForChange() = %#v, want only exact review/chain-bundle", artifacts)
 	}
@@ -1102,7 +1102,7 @@ func TestResolveRejectsForeignCompactAuthorityForStaleVerifyEvidence(t *testing.
 	// out. Reuse the same review continuation already proven for
 	// next_recommended == "review" (TestResolveStartsBoundedReviewBeforeFinalVerification).
 	dispatcher := RenderDispatcherMarkdown(status)
-	for _, want := range []string{"### Next Review Operation", "gentle-ai review start", "gentle-ai review validate --gate post-apply"} {
+	for _, want := range []string{"### Next Review Operation", "hgtran-ai review start", "hgtran-ai review validate --gate post-apply"} {
 		if !strings.Contains(dispatcher, want) {
 			t.Fatalf("dispatcher missing %q for resolve-review:\n%s", want, dispatcher)
 		}
@@ -1783,7 +1783,7 @@ func TestApplyReviewGateDiscoversCompactStateAndReceiptWithoutMirrors(t *testing
 func boundedVerifyEnvelope(revision, verdict string) string {
 	return strings.Join([]string{
 		"```yaml",
-		"schema: gentle-ai.verify-result/v1",
+		"schema: hgtran-ai.verify-result/v1",
 		"evidence_revision: " + revision,
 		"verdict: " + verdict,
 		"blockers: 0",
@@ -1793,7 +1793,7 @@ func boundedVerifyEnvelope(revision, verdict string) string {
 		"test_command: go test ./internal/example",
 		"test_exit_code: 0",
 		"test_output_hash: " + shaID("2"),
-		"build_command: go test ./cmd/gentle-ai",
+		"build_command: go test ./cmd/hgtran-ai",
 		"build_exit_code: 0",
 		"build_output_hash: " + shaID("3"),
 		"```",
@@ -1803,7 +1803,7 @@ func boundedVerifyEnvelope(revision, verdict string) string {
 func authorityOnlyVerifyEnvelope(revision, testExit, buildExit string) string {
 	return strings.ReplaceAll(strings.Join([]string{
 		"```yaml",
-		"schema: gentle-ai.verify-result/v1",
+		"schema: hgtran-ai.verify-result/v1",
 		"evidence_revision: " + shaID("1"),
 		"verdict: fail",
 		"blockers: 1",

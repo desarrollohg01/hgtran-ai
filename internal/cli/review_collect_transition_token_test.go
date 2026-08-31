@@ -14,7 +14,7 @@ import (
 // TestNativeCaptureCollectArgumentsCarryRunnableTokens is the RED-first proof
 // that a collect input naming an operation this product performs publishes the
 // exact argv it expects. `review.capture-result` is not a logical name a caller
-// has to interpret: it is `gentle-ai review capture-result`, and the input's
+// has to interpret: it is `hgtran-ai review capture-result`, and the input's
 // arguments are literally that command's flags. Emitting only {name, value}
 // left every caller re-deriving "--" + name + "=" + value by hand, which is
 // where the published testing guide lost --repository-context once and then
@@ -52,7 +52,7 @@ func TestNativeCaptureCollectArgumentsCarryRunnableTokens(t *testing.T) {
 			t.Errorf("collect argument %q token = %q, want %q", argument.Name, argument.Token, want)
 		}
 		if _, real := accepted[argument.Name]; !real {
-			t.Errorf("collect argument %q is not a flag `gentle-ai review capture-result` accepts: %v", argument.Name, sortedFlagNames(accepted))
+			t.Errorf("collect argument %q is not a flag `hgtran-ai review capture-result` accepts: %v", argument.Name, sortedFlagNames(accepted))
 		}
 	}
 }
@@ -103,7 +103,7 @@ func TestCollectCaptureOperationKindsAreClassifiedFromSource(t *testing.T) {
 	native, external := 0, 0
 	for _, operation := range operations {
 		transition := reviewCollectTransition("capture_operation_kind_probe", ReviewTransitionInput{
-			Name: "probe", Schema: "gentle-ai.review-capture-operation-probe/v1", CaptureOperation: operation,
+			Name: "probe", Schema: "hgtran-ai.review-capture-operation-probe/v1", CaptureOperation: operation,
 			Arguments: []ReviewTransitionArgument{{Name: "lineage", Value: "review-probe"}},
 		})
 		got := transition.Collect.Inputs[0].Arguments[0].Token
@@ -115,7 +115,7 @@ func TestCollectCaptureOperationKindsAreClassifiedFromSource(t *testing.T) {
 			}
 			verb := strings.TrimPrefix(operation, "review.")
 			if len(reviewVerbFlagNames(t, verb)) == 0 {
-				t.Errorf("native capture operation %q names no runnable `gentle-ai review %s` command", operation, verb)
+				t.Errorf("native capture operation %q names no runnable `hgtran-ai review %s` command", operation, verb)
 			}
 		case strings.HasPrefix(operation, "external."):
 			external++
@@ -188,7 +188,7 @@ func captureOperationsFromTransitionSource(t *testing.T) []string {
 	return operations
 }
 
-// reviewVerbFlagNames returns the flag names one `gentle-ai review <verb>`
+// reviewVerbFlagNames returns the flag names one `hgtran-ai review <verb>`
 // command really accepts, read from the command's own FlagSet through its
 // rendered help rather than from a list duplicated in a test.
 func reviewVerbFlagNames(t *testing.T, verb string) map[string]struct{} {

@@ -57,7 +57,7 @@ func (s RestoreService) Restore(manifest Manifest) error {
 // It extracts the tar.gz archive into a temp directory, then restores each
 // entry by resolving the relative SnapshotPath inside that temp directory.
 func (s RestoreService) restoreCompressed(manifest Manifest) error {
-	tempDir, err := os.MkdirTemp("", "gentle-ai-restore-*")
+	tempDir, err := os.MkdirTemp("", "hgtran-ai-restore-*")
 	if err != nil {
 		return fmt.Errorf("create temp restore dir: %w", err)
 	}

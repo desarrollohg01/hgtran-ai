@@ -42,7 +42,7 @@ type InjectOptions struct {
 	WorkspaceDir string
 
 	// StrictTDD enables Strict TDD mode. When true, a
-	// <!-- gentle-ai:strict-tdd-mode --> marker section is injected into
+	// <!-- hgtran-ai:strict-tdd-mode --> marker section is injected into
 	// the agent's system prompt so agents know Strict TDD is active.
 	StrictTDD bool
 
@@ -160,7 +160,7 @@ type bootstrapper interface {
 //  3. Weak marker (package.json only) — record as candidate but keep walking
 //     upward, since a monorepo marker may exist higher up.
 //
-// Walking upward means users can run gentle-ai from any subdirectory of their
+// Walking upward means users can run hgtran-ai from any subdirectory of their
 // project (e.g. repo/packages/app) and still detect the correct workspace root.
 // In a JS/TS monorepo, every package has package.json, so we must not stop at
 // the first one — we keep walking to find the highest ancestor with package.json
@@ -562,7 +562,7 @@ func Inject(homeDir string, adapter agents.Adapter, sddMode model.SDDModeID, opt
 
 	// 3b. Write native workflow files (Windsurf Hybrid-First, and any future
 	// agent that implements the workflowInjector optional interface).
-	// findProjectRoot walks upward from WorkspaceDir so gentle-ai can be
+	// findProjectRoot walks upward from WorkspaceDir so hgtran-ai can be
 	// invoked from any subdirectory (e.g. repo/internal/foo) and still inject
 	// workflows at the real project root. Skips silently if no root is found
 	// (e.g. running from home dir without a project).
@@ -913,15 +913,15 @@ func preserveOpenCodeRoutingGuidance(settingsPath string, orchestratorMap map[st
 	return nil
 }
 
-// extractManagedSection returns the content of one gentle-ai managed section.
+// extractManagedSection returns the content of one hgtran-ai managed section.
 //
 // An absent or malformed marker pair yields the empty string. That fail-closed
 // default matters here: filemerge.ExtractHTMLCommentSection serves a different
 // marker syntax and returns the whole document when it finds no section, which
 // would smuggle an entire orchestrator prompt into a guidance block.
 func extractManagedSection(content, sectionID string) string {
-	open := "<!-- gentle-ai:" + sectionID + " -->"
-	closing := "<!-- /gentle-ai:" + sectionID + " -->"
+	open := "<!-- hgtran-ai:" + sectionID + " -->"
+	closing := "<!-- /hgtran-ai:" + sectionID + " -->"
 
 	start := strings.Index(content, open)
 	if start < 0 {
@@ -1079,8 +1079,8 @@ func removeLegacyOpenCodePlainChatPreflightLines(prompt string) string {
 // authority. What survives is the local review receipt plus the native review
 // status/validate surface, and the ownership boundary the old rule protected --
 // the orchestrator still never selects lenses or authors PASS itself.
-const nativeReviewAuthorityRule = "7. **Authority rule**: read native review state with `gentle-ai review status`" +
-	" and let `gentle-ai review validate --gate <gate>` check the exact owner-issued receipt at every lifecycle gate." +
+const nativeReviewAuthorityRule = "7. **Authority rule**: read native review state with `hgtran-ai review status`" +
+	" and let `hgtran-ai review validate --gate <gate>` check the exact owner-issued receipt at every lifecycle gate." +
 	" Never select lenses, synthesize transitions, or infer PASS from prose."
 
 func ensurePreservedOpenCodeDelegationHardGates(prompt string) string {
@@ -1088,7 +1088,7 @@ func ensurePreservedOpenCodeDelegationHardGates(prompt string) string {
 	prompt = migrateLegacyMandatoryWordingInDelegationHardGates(prompt)
 	// Unmarked v1 prompts predate managed ownership boundaries. Migrate only
 	// exact generated sentences here; never infer that every byte after the
-	// legacy heading belongs to gentle-ai because users may have appended H4 or
+	// legacy heading belongs to hgtran-ai because users may have appended H4 or
 	// plain-text policy beneath it.
 	prompt = strings.NewReplacer(
 		"run a fresh-context review unless the diff is trivial docs/text",
@@ -1105,7 +1105,7 @@ func ensurePreservedOpenCodeDelegationHardGates(prompt string) string {
 
 	delegation := `
 
-<!-- gentle-ai:delegation-hard-gates-migration -->
+<!-- hgtran-ai:delegation-hard-gates-migration -->
 ### Mandatory Delegation Triggers (Non-Skippable)
 
 These routing boundaries are fully mandatory. They protect context quality without making SDD the universal implementation workflow.
@@ -1121,10 +1121,10 @@ Do not pass these rules to child agents as permission to spawn more agents; chil
 5. **Optional SDD rule**: propose SDD only when durable proposal/spec/design/tasks materially reduce substantial ambiguity. Select it only after explicit request or accepted proposal.
 6. **Per-action rule**: tests, builds, installs, and native review actors may use fresh workers without changing the implementation route or creating SDD state.
 ` + nativeReviewAuthorityRule + `
-<!-- /gentle-ai:delegation-hard-gates-migration -->
+<!-- /hgtran-ai:delegation-hard-gates-migration -->
 `
 
-	if strings.Contains(prompt, "<!-- gentle-ai:delegation-hard-gates-migration -->") &&
+	if strings.Contains(prompt, "<!-- hgtran-ai:delegation-hard-gates-migration -->") &&
 		strings.Contains(prompt, "fully mandatory") &&
 		strings.Contains(prompt, "Bounded read rule") &&
 		strings.Contains(prompt, "4-file rule") &&
@@ -1140,8 +1140,8 @@ Do not pass these rules to child agents as permission to spawn more agents; chil
 		return prompt
 	}
 
-	start := "<!-- gentle-ai:delegation-hard-gates-migration -->"
-	end := "<!-- /gentle-ai:delegation-hard-gates-migration -->"
+	start := "<!-- hgtran-ai:delegation-hard-gates-migration -->"
+	end := "<!-- /hgtran-ai:delegation-hard-gates-migration -->"
 	if startIdx := strings.Index(prompt, start); startIdx >= 0 {
 		if relEndIdx := strings.Index(prompt[startIdx:], end); relEndIdx >= 0 {
 			endIdx := startIdx + relEndIdx + len(end)
@@ -1167,7 +1167,7 @@ func removeRetiredWorkRoutingAuthorityRule(prompt string) string {
 	kept := make([]string, 0, len(lines))
 	for _, line := range lines {
 		retired := strings.Contains(line, "**Authority rule**") &&
-			(strings.Contains(line, "gentle-ai.work-") || strings.Contains(line, "WorkRun"))
+			(strings.Contains(line, "hgtran-ai.work-") || strings.Contains(line, "WorkRun"))
 		if retired {
 			continue
 		}
@@ -1178,8 +1178,8 @@ func removeRetiredWorkRoutingAuthorityRule(prompt string) string {
 
 func migrateLegacyMandatoryWordingInDelegationHardGates(prompt string) string {
 	const (
-		startMarker = "<!-- gentle-ai:delegation-hard-gates-migration -->"
-		endMarker   = "<!-- /gentle-ai:delegation-hard-gates-migration -->"
+		startMarker = "<!-- hgtran-ai:delegation-hard-gates-migration -->"
+		endMarker   = "<!-- /hgtran-ai:delegation-hard-gates-migration -->"
 	)
 
 	start := strings.Index(prompt, startMarker)
@@ -1202,8 +1202,8 @@ func migrateLegacyMandatoryWordingInDelegationHardGates(prompt string) string {
 
 func ensurePreservedOpenCodeReviewExecutionContract(prompt string) string {
 	const (
-		startMarker = "<!-- gentle-ai:review-execution-contract-migration -->"
-		endMarker   = "<!-- /gentle-ai:review-execution-contract-migration -->"
+		startMarker = "<!-- hgtran-ai:review-execution-contract-migration -->"
+		endMarker   = "<!-- /hgtran-ai:review-execution-contract-migration -->"
 		heading     = "#### Review Execution Contract"
 		nextHeading = "#### Cost and Context Balance"
 	)
@@ -1264,7 +1264,7 @@ func replacePreservedPromptSection(prompt string, start, end int, replacement st
 func ensurePreservedOpenCodeOrchestratorPreflight(prompt string) string {
 	preflight := `
 
-<!-- gentle-ai:sdd-session-preflight-migration -->
+<!-- hgtran-ai:sdd-session-preflight-migration -->
 ### SDD Session Preflight (HARD GATE)
 
 Before executing ANY SDD command or natural-language SDD request, ensure this session has an explicit ` + "`SDD Session Preflight`" + ` decision block.
@@ -1304,7 +1304,7 @@ Hard gate rules:
 - In ` + "`interactive`" + ` mode, pause after each delegated phase returns, summarize the phase, then ask before launching the next phase via the ` + "`question`" + ` tool, and STOP. Use the ` + "`question`" + ` tool for this between-phase decision: present the proceed/adjust/stop options through a single ` + "`question`" + ` tool call; do NOT render the options as a plain markdown bullet list or plain chat text. Match the user's language and active persona for the question labels; for Spanish neutral fallback frame it as: "¿Quiere ajustar algo o continuamos?". Do not run /sdd-ff phases back-to-back unless execution mode is ` + "`auto`" + `.
 - Interactive approval is phase-scoped. Words like "continue", "dale", or "go on" approve only the immediate next phase, not the rest of the SDD pipeline. Do not treat a generated artifact as approved until the user has had a chance to review or explicitly delegate that review.
 - Before the ` + "`sdd-propose`" + ` phase in interactive mode, offer the user a proposal question round instead of silently deciding whether the proposal is clear enough. Ask 3–5 concrete product questions to improve the PRD/proposal by uncovering business rules, implications, impact, edge cases, product tradeoffs, and decision gaps; then summarize assumptions and ask whether the user wants corrections or a second question round. Do not ask about test commands, PR shape, changed-line budget, or other harness mechanics at proposal time unless the user explicitly asks to discuss delivery.
-<!-- /gentle-ai:sdd-session-preflight-migration -->
+<!-- /hgtran-ai:sdd-session-preflight-migration -->
 `
 
 	if strings.Contains(prompt, "### SDD Session Preflight (HARD GATE)") &&
@@ -1338,8 +1338,8 @@ Hard gate rules:
 		return prompt
 	}
 
-	start := "<!-- gentle-ai:sdd-session-preflight-migration -->"
-	end := "<!-- /gentle-ai:sdd-session-preflight-migration -->"
+	start := "<!-- hgtran-ai:sdd-session-preflight-migration -->"
+	end := "<!-- /hgtran-ai:sdd-session-preflight-migration -->"
 	if startIdx := strings.Index(prompt, start); startIdx >= 0 {
 		if relEndIdx := strings.Index(prompt[startIdx:], end); relEndIdx >= 0 {
 			endIdx := startIdx + relEndIdx + len(end)
@@ -1472,7 +1472,7 @@ func ensureCodexSkillRegistryHook(hooksPath string) (bool, error) {
 		return false, err
 	}
 
-	const command = `gentle-ai skill-registry refresh --quiet --no-gitignore --cwd "$PWD" || true`
+	const command = `hgtran-ai skill-registry refresh --quiet --no-gitignore --cwd "$PWD" || true`
 	if claudeHookExists(root, command) {
 		return false, nil
 	}
@@ -1530,7 +1530,7 @@ func ensureClaudeSkillRegistryHook(settingsPath string) (bool, error) {
 		return false, err
 	}
 
-	const command = `gentle-ai skill-registry refresh --quiet --no-gitignore --cwd "${CLAUDE_PROJECT_DIR:-$PWD}" || true`
+	const command = `hgtran-ai skill-registry refresh --quiet --no-gitignore --cwd "${CLAUDE_PROJECT_DIR:-$PWD}" || true`
 	if claudeHookExists(root, command) {
 		return false, nil
 	}
@@ -1609,7 +1609,7 @@ func claudeHookListContains(hookEntries []any, command string) bool {
 	return false
 }
 
-// ManagedOpenCodePluginNames lists every OpenCode plugin gentle-ai manages as
+// ManagedOpenCodePluginNames lists every OpenCode plugin hgtran-ai manages as
 // versioned runtime artifacts. Their content is tied to the installed binary
 // version: install writes them and sync must keep already-installed copies
 // byte-equal to the embedded assets (issue #1440).
@@ -1703,7 +1703,7 @@ func removeOpenCodeOnlyReviewPlugin(pluginsDir string) (string, bool, error) {
 	return path, true, nil
 }
 
-// installOpenCodePlugins copies the OpenCode-compatible plugins that gentle-ai
+// installOpenCodePlugins copies the OpenCode-compatible plugins that hgtran-ai
 // still manages by default. Native OpenCode subagents replace the legacy
 // background-agents plugin, so that legacy cleanup is scoped to OpenCode only.
 func installOpenCodePlugins(homeDir string, adapter agents.Adapter) (InjectionResult, error) {
@@ -2163,7 +2163,7 @@ func injectFileAppend(homeDir string, adapter agents.Adapter, opts InjectOptions
 }
 
 func hasLegacyBareOrchestrator(content string) bool {
-	markedIdx := strings.Index(content, "<!-- gentle-ai:sdd-orchestrator -->")
+	markedIdx := strings.Index(content, "<!-- hgtran-ai:sdd-orchestrator -->")
 	if markedIdx >= 0 {
 		prefix := content[:markedIdx]
 		if strings.Contains(prefix, "# Agent Teams Lite — Orchestrator Instructions") {
@@ -2201,10 +2201,10 @@ func hasLegacyBareOrchestrator(content string) bool {
 //
 // Strategy:
 //   - start at the first known orchestrator heading
-//   - end at the next managed marker ("<!-- gentle-ai:") if present, else EOF
+//   - end at the next managed marker ("<!-- hgtran-ai:") if present, else EOF
 //   - preserve content before/after and normalize surrounding blank lines
 func stripBareOrchestratorForFilePrompt(content string) string {
-	if markedIdx := strings.Index(content, "<!-- gentle-ai:sdd-orchestrator -->"); markedIdx >= 0 {
+	if markedIdx := strings.Index(content, "<!-- hgtran-ai:sdd-orchestrator -->"); markedIdx >= 0 {
 		prefix := content[:markedIdx]
 		if start := strings.Index(prefix, "# Agent Teams Lite — Orchestrator Instructions"); start >= 0 {
 			before := strings.TrimRight(content[:start], "\n")
@@ -2235,7 +2235,7 @@ func stripBareOrchestratorForFilePrompt(content string) string {
 	}
 
 	end := len(content)
-	if rel := strings.Index(content[start:], "<!-- gentle-ai:"); rel >= 0 {
+	if rel := strings.Index(content[start:], "<!-- hgtran-ai:"); rel >= 0 {
 		end = start + rel
 	}
 
@@ -2263,7 +2263,7 @@ func stripBareOrchestratorForFilePrompt(content string) string {
 }
 
 const instructionsFrontmatter = "---\n" +
-	"name: Gentle AI Persona\n" +
+	"name: Hgtran AI Persona\n" +
 	"description: Gentleman persona with SDD orchestration and Engram protocol\n" +
 	"applyTo: \"**\"\n" +
 	"---\n"
@@ -2352,7 +2352,7 @@ func injectMarkdownSections(homeDir string, adapter agents.Adapter, legacyAssign
 	// If bare (un-marked) orchestrator content exists but the HTML markers are
 	// not present, strip the bare block first. This migrates legacy files to the
 	// canonical marker-based state without duplicating the section.
-	if hasSDDOrchestrator(existing) && !strings.Contains(existing, "<!-- gentle-ai:sdd-orchestrator -->") {
+	if hasSDDOrchestrator(existing) && !strings.Contains(existing, "<!-- hgtran-ai:sdd-orchestrator -->") {
 		existing = stripBareOrchestratorSection(existing)
 	}
 
@@ -2430,8 +2430,8 @@ func injectClaudeModelAssignments(content string, assignments map[string]model.C
 }
 
 func injectClaudePhaseAssignments(content string, legacyAssignments map[string]model.ClaudeModelAlias, phaseAssignments map[string]model.ClaudePhaseAssignment) (string, error) {
-	const openMarker = "<!-- gentle-ai:sdd-model-assignments -->"
-	const closeMarker = "<!-- /gentle-ai:sdd-model-assignments -->"
+	const openMarker = "<!-- hgtran-ai:sdd-model-assignments -->"
+	const closeMarker = "<!-- /hgtran-ai:sdd-model-assignments -->"
 
 	start := strings.Index(content, openMarker)
 	end := strings.Index(content, closeMarker)
@@ -2504,7 +2504,7 @@ func renderClaudeModelAssignmentsSection(assignments map[string]model.ClaudePhas
 	var b strings.Builder
 	b.WriteString("## Model Assignments\n\n")
 	b.WriteString("Read this table at session start (or before first SDD/Judgment-Day delegation), cache it for the session, and use the mapped alias only for SDD/Judgment-Day phase agents. If an SDD/Judgment-Day phase is missing, use the `default` fallback row. If you do not have access to the assigned model (for example, no Opus access), substitute `sonnet` and continue.\n\n")
-	b.WriteString("The Claude Code session model is controlled by Claude Code itself; Gentle AI does not configure the main orchestrator model. This table applies only to Agent tool calls for SDD/Judgment-Day phase sub-agents, not generic delegation.\n\n")
+	b.WriteString("The Claude Code session model is controlled by Claude Code itself; Hgtran AI does not configure the main orchestrator model. This table applies only to Agent tool calls for SDD/Judgment-Day phase sub-agents, not generic delegation.\n\n")
 	b.WriteString("**Mandatory phase model gate:** Agent tool calls for SDD/Judgment-Day phase agents MUST include `model`. Generic/non-SDD delegation MUST NOT use this table; omit `model` unless the user explicitly requested an override. Before each SDD/Judgment-Day Agent call, resolve the target phase to an alias from this table.\n\n")
 	b.WriteString("| Phase | Default Model | Effort | Reason |\n")
 	b.WriteString("|-------|---------------|--------|--------|\n")

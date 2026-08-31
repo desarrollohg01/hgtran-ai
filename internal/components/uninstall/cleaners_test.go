@@ -34,9 +34,9 @@ func TestRemoveMarkdownSections_RemovesOnlyManagedBlock(t *testing.T) {
 		"",
 		"Keep this.",
 		"",
-		"<!-- gentle-ai:engram-protocol -->",
+		"<!-- hgtran-ai:engram-protocol -->",
 		"Managed content.",
-		"<!-- /gentle-ai:engram-protocol -->",
+		"<!-- /hgtran-ai:engram-protocol -->",
 		"",
 		"# User Footer",
 		"",
@@ -47,7 +47,7 @@ func TestRemoveMarkdownSections_RemovesOnlyManagedBlock(t *testing.T) {
 	if !changed {
 		t.Fatal("removeMarkdownSections() changed = false, want true")
 	}
-	if strings.Contains(updated, "gentle-ai:engram-protocol") {
+	if strings.Contains(updated, "hgtran-ai:engram-protocol") {
 		t.Fatalf("managed marker block still present:\n%s", updated)
 	}
 	if !strings.Contains(updated, "# User Intro") || !strings.Contains(updated, "# User Footer") {
@@ -58,7 +58,7 @@ func TestRemoveMarkdownSections_RemovesOnlyManagedBlock(t *testing.T) {
 func TestRemoveManagedPersonaPreamble_PreservesManagedSuffix(t *testing.T) {
 	input := strings.Join([]string{
 		"---",
-		"name: Gentle AI Persona",
+		"name: Hgtran AI Persona",
 		"description: Teaching-oriented persona with SDD orchestration and Engram protocol",
 		"applyTo: \"**\"",
 		"---",
@@ -69,19 +69,19 @@ func TestRemoveManagedPersonaPreamble_PreservesManagedSuffix(t *testing.T) {
 		"## Rules",
 		"Be direct.",
 		"",
-		"<!-- gentle-ai:sdd-orchestrator -->",
+		"<!-- hgtran-ai:sdd-orchestrator -->",
 		"SDD stays.",
-		"<!-- /gentle-ai:sdd-orchestrator -->",
+		"<!-- /hgtran-ai:sdd-orchestrator -->",
 	}, "\n") + "\n"
 
 	updated, changed := removeManagedPersonaPreamble(input)
 	if !changed {
 		t.Fatal("removeManagedPersonaPreamble() changed = false, want true")
 	}
-	if strings.Contains(updated, "name: Gentle AI Persona") || strings.Contains(updated, "## Personality") {
+	if strings.Contains(updated, "name: Hgtran AI Persona") || strings.Contains(updated, "## Personality") {
 		t.Fatalf("managed persona preamble still present:\n%s", updated)
 	}
-	if !strings.HasPrefix(updated, "<!-- gentle-ai:sdd-orchestrator -->") {
+	if !strings.HasPrefix(updated, "<!-- hgtran-ai:sdd-orchestrator -->") {
 		t.Fatalf("managed suffix was not preserved at file start:\n%s", updated)
 	}
 }
@@ -89,7 +89,7 @@ func TestRemoveManagedPersonaPreamble_PreservesManagedSuffix(t *testing.T) {
 func TestRemoveManagedPersonaPreamble_WithoutMarkerDoesNotDeleteContent(t *testing.T) {
 	input := strings.Join([]string{
 		"---",
-		"name: Gentle AI Persona",
+		"name: Hgtran AI Persona",
 		"description: Teaching-oriented persona with SDD orchestration and Engram protocol",
 		"---",
 		"",
@@ -116,7 +116,7 @@ func TestRemoveMarkdownSections_RemovesSlimResidualPersonaViaMarkerNotFingerprin
 	input := strings.Join([]string{
 		"# User Intro",
 		"",
-		"<!-- gentle-ai:persona -->",
+		"<!-- hgtran-ai:persona -->",
 		"## Rules",
 		"",
 		`- Never add "Co-Authored-By" or AI attribution to commits.`,
@@ -124,7 +124,7 @@ func TestRemoveMarkdownSections_RemovesSlimResidualPersonaViaMarkerNotFingerprin
 		"## Persona Voice",
 		"",
 		"Your conversational tone is defined by the active output style.",
-		"<!-- /gentle-ai:persona -->",
+		"<!-- /hgtran-ai:persona -->",
 		"",
 		"# User Footer",
 	}, "\n") + "\n"
@@ -133,7 +133,7 @@ func TestRemoveMarkdownSections_RemovesSlimResidualPersonaViaMarkerNotFingerprin
 	if !changed {
 		t.Fatal("removeMarkdownSections() changed = false, want true for slim residual persona section")
 	}
-	if strings.Contains(updated, "gentle-ai:persona") {
+	if strings.Contains(updated, "hgtran-ai:persona") {
 		t.Fatalf("slim residual persona marker section still present:\n%s", updated)
 	}
 	if !strings.Contains(updated, "# User Intro") || !strings.Contains(updated, "# User Footer") {
@@ -383,9 +383,9 @@ func TestMarkdownCleanup_OnRealFileWithTempDir(t *testing.T) {
 		"",
 		"Hand-written intro.",
 		"",
-		"<!-- gentle-ai:engram-protocol -->",
+		"<!-- hgtran-ai:engram-protocol -->",
 		"Managed content.",
-		"<!-- /gentle-ai:engram-protocol -->",
+		"<!-- /hgtran-ai:engram-protocol -->",
 		"",
 		"# Footer",
 	}, "\n") + "\n"
@@ -410,7 +410,7 @@ func TestMarkdownCleanup_OnRealFileWithTempDir(t *testing.T) {
 		t.Fatalf("ReadFile(final) error = %v", err)
 	}
 	final := string(finalRaw)
-	if strings.Contains(final, "gentle-ai:engram-protocol") {
+	if strings.Contains(final, "hgtran-ai:engram-protocol") {
 		t.Fatalf("managed markdown block still present in file:\n%s", final)
 	}
 	if !strings.Contains(final, "Hand-written intro.") || !strings.Contains(final, "# Footer") {

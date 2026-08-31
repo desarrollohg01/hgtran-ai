@@ -17,7 +17,7 @@ import (
 )
 
 func TestMain(m *testing.M) {
-	if err := os.Unsetenv("GENTLE_AI_CHANNEL"); err != nil {
+	if err := os.Unsetenv("HGTRAN_AI_CHANNEL"); err != nil {
 		panic(err)
 	}
 
@@ -36,14 +36,14 @@ func TestDetectInstalledVersion(t *testing.T) {
 		wantVersion   string
 	}{
 		{
-			name:         "gentle-ai uses build var",
-			tool:         ToolInfo{Name: "gentle-ai", DetectCmd: nil},
+			name:         "hgtran-ai uses build var",
+			tool:         ToolInfo{Name: "hgtran-ai", DetectCmd: nil},
 			currentBuild: "1.5.0",
 			wantVersion:  "1.5.0",
 		},
 		{
-			name:         "gentle-ai dev build",
-			tool:         ToolInfo{Name: "gentle-ai", DetectCmd: nil},
+			name:         "hgtran-ai dev build",
+			tool:         ToolInfo{Name: "hgtran-ai", DetectCmd: nil},
 			currentBuild: "dev",
 			wantVersion:  "dev",
 		},
@@ -322,7 +322,7 @@ func TestCheckSingleToolOpenCodePluginRegisteredNotMaterialized(t *testing.T) {
 }
 
 func TestCheckSingleToolGentleAIBetaComparesMainHead(t *testing.T) {
-	t.Setenv("GENTLE_AI_CHANNEL", "beta")
+	t.Setenv("HGTRAN_AI_CHANNEL", "beta")
 
 	origClient := httpClient
 	t.Cleanup(func() { httpClient = origClient })
@@ -441,7 +441,7 @@ func TestUsesBetaMainHeadCheck(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.channelSet {
-				t.Setenv("GENTLE_AI_CHANNEL", tt.channel)
+				t.Setenv("HGTRAN_AI_CHANNEL", tt.channel)
 			} else {
 				unsetUpdateChannelEnv(t)
 			}
@@ -489,7 +489,7 @@ func TestCheckSingleToolGentleAIStableVersionWithoutChannelComparesLatestRelease
 }
 
 func TestCheckSingleToolGentleAIBetaAcceptsLocalCommitPrefix(t *testing.T) {
-	t.Setenv("GENTLE_AI_CHANNEL", "beta")
+	t.Setenv("HGTRAN_AI_CHANNEL", "beta")
 
 	origClient := httpClient
 	t.Cleanup(func() { httpClient = origClient })
@@ -733,8 +733,8 @@ func TestFetchLatestRelease_GithubToken(t *testing.T) {
 		t.Fatalf("Authorization = %q, want %q", gotAuth, "Bearer test-token-123")
 	}
 
-	if gotUserAgent != "gentle-ai-update-check" {
-		t.Fatalf("User-Agent = %q, want %q", gotUserAgent, "gentle-ai-update-check")
+	if gotUserAgent != "hgtran-ai-update-check" {
+		t.Fatalf("User-Agent = %q, want %q", gotUserAgent, "hgtran-ai-update-check")
 	}
 }
 
@@ -839,8 +839,8 @@ func TestCheckAll(t *testing.T) {
 		t.Fatalf("len(results) = %d, want 5", len(results))
 	}
 
-	// gentle-ai: 1.5.0 local == 1.5.0 remote → UpToDate
-	assertResult(t, results[0], "gentle-ai", UpToDate, "1.5.0", "1.5.0")
+	// hgtran-ai: 1.5.0 local == 1.5.0 remote → UpToDate
+	assertResult(t, results[0], "hgtran-ai", UpToDate, "1.5.0", "1.5.0")
 
 	// engram: 0.3.2 local < 0.4.0 remote → UpdateAvailable
 	assertResult(t, results[1], "engram", UpdateAvailable, "0.3.2", "0.4.0")
@@ -930,13 +930,13 @@ func TestCheckAll_NetworkError(t *testing.T) {
 	profile := system.PlatformProfile{OS: "linux", LinuxDistro: "ubuntu", PackageManager: "apt", Supported: true}
 	results := CheckAll(context.Background(), "1.0.0", profile)
 
-	// gentle-ai has no DetectCmd, so it gets currentBuildVersion "1.0.0" as local
+	// hgtran-ai has no DetectCmd, so it gets currentBuildVersion "1.0.0" as local
 	// but fetch fails → CheckFailed (it has a local version).
 	if results[0].Status != CheckFailed {
-		t.Fatalf("gentle-ai status = %q, want %q", results[0].Status, CheckFailed)
+		t.Fatalf("hgtran-ai status = %q, want %q", results[0].Status, CheckFailed)
 	}
 	if results[0].Err == nil {
-		t.Fatalf("gentle-ai expected error, got nil")
+		t.Fatalf("hgtran-ai expected error, got nil")
 	}
 
 	if results[1].Status != CheckFailed {
@@ -998,29 +998,29 @@ func TestUpdateHint(t *testing.T) {
 		want          string
 	}{
 		{
-			name:          "gentle-ai macOS brew-owned",
-			tool:          ToolInfo{Name: "gentle-ai"},
+			name:          "hgtran-ai macOS brew-owned",
+			tool:          ToolInfo{Name: "hgtran-ai"},
 			profile:       system.PlatformProfile{OS: "darwin", PackageManager: "brew"},
 			brewInstalled: true,
-			want:          "brew upgrade gentle-ai",
+			want:          "brew upgrade hgtran-ai",
 		},
 		{
-			name:    "gentle-ai macOS non-brew",
-			tool:    ToolInfo{Name: "gentle-ai"},
+			name:    "hgtran-ai macOS non-brew",
+			tool:    ToolInfo{Name: "hgtran-ai"},
 			profile: system.PlatformProfile{OS: "darwin", PackageManager: "brew"},
-			want:    "gentle-ai upgrade (downloads pre-built binary)",
+			want:    "hgtran-ai upgrade (downloads pre-built binary)",
 		},
 		{
-			name:    "gentle-ai linux",
-			tool:    ToolInfo{Name: "gentle-ai"},
+			name:    "hgtran-ai linux",
+			tool:    ToolInfo{Name: "hgtran-ai"},
 			profile: system.PlatformProfile{OS: "linux", PackageManager: "apt"},
-			want:    "curl -fsSL https://raw.githubusercontent.com/Gentleman-Programming/gentle-ai/main/scripts/install.sh | bash",
+			want:    "curl -fsSL https://raw.githubusercontent.com/Gentleman-Programming/hgtran-ai/main/scripts/install.sh | bash",
 		},
 		{
-			name:    "gentle-ai windows",
-			tool:    ToolInfo{Name: "gentle-ai"},
+			name:    "hgtran-ai windows",
+			tool:    ToolInfo{Name: "hgtran-ai"},
 			profile: system.PlatformProfile{OS: "windows", PackageManager: "winget"},
-			want:    "Windows binary distribution and Scoop are temporarily unavailable until publicly trusted Authenticode signing is enforced. Install/update from source with Go 1.25.10+: go install bitbucket.org/hgt_development/hgtran-ai/v2/cmd/gentle-ai@latest",
+			want:    "Windows binary distribution and Scoop are temporarily unavailable until publicly trusted Authenticode signing is enforced. Install/update from source with Go 1.25.10+: go install bitbucket.org/hgt_development/hgtran-ai/v2/cmd/hgtran-ai@latest",
 		},
 		{
 			name:          "engram macOS brew-owned",
@@ -1033,19 +1033,19 @@ func TestUpdateHint(t *testing.T) {
 			name:    "engram macOS non-brew",
 			tool:    ToolInfo{Name: "engram"},
 			profile: system.PlatformProfile{OS: "darwin", PackageManager: "brew"},
-			want:    "gentle-ai upgrade (downloads pre-built binary)",
+			want:    "hgtran-ai upgrade (downloads pre-built binary)",
 		},
 		{
 			name:    "engram linux",
 			tool:    ToolInfo{Name: "engram"},
 			profile: system.PlatformProfile{OS: "linux", PackageManager: "apt"},
-			want:    "gentle-ai upgrade (downloads pre-built binary)",
+			want:    "hgtran-ai upgrade (downloads pre-built binary)",
 		},
 		{
 			name:    "engram windows",
 			tool:    ToolInfo{Name: "engram"},
 			profile: system.PlatformProfile{OS: "windows", PackageManager: "winget"},
-			want:    "gentle-ai upgrade (downloads pre-built binary)",
+			want:    "hgtran-ai upgrade (downloads pre-built binary)",
 		},
 		{
 			name:          "gga macOS brew-owned",
@@ -1089,33 +1089,33 @@ func TestUpdateHint(t *testing.T) {
 }
 
 func TestHomebrewPackageInstalledWithRequiresActiveBrewPath(t *testing.T) {
-	brewPrefix := filepath.Join(t.TempDir(), "opt", "gentle-ai")
-	brewBin := filepath.Join(brewPrefix, "bin", "gentle-ai")
-	nonBrewBin := filepath.Join(t.TempDir(), "gentle-ai")
+	brewPrefix := filepath.Join(t.TempDir(), "opt", "hgtran-ai")
+	brewBin := filepath.Join(brewPrefix, "bin", "hgtran-ai")
+	nonBrewBin := filepath.Join(t.TempDir(), "hgtran-ai")
 
 	run := func(name string, args ...string) *exec.Cmd {
 		if name != "brew" {
 			return mockCmd("false")
 		}
-		if len(args) >= 3 && args[0] == "list" && args[1] == "--formula" && args[2] == "gentle-ai" {
+		if len(args) >= 3 && args[0] == "list" && args[1] == "--formula" && args[2] == "hgtran-ai" {
 			return mockCmd("true")
 		}
-		if len(args) == 2 && args[0] == "--prefix" && args[1] == "gentle-ai" {
+		if len(args) == 2 && args[0] == "--prefix" && args[1] == "hgtran-ai" {
 			return mockCmd("echo", brewPrefix)
 		}
 		return mockCmd("false")
 	}
 
-	if !homebrewPackageInstalledWith(run, func(string) (string, error) { return brewBin, nil }, "gentle-ai") {
+	if !homebrewPackageInstalledWith(run, func(string) (string, error) { return brewBin, nil }, "hgtran-ai") {
 		t.Fatal("expected brew-owned active path to be treated as Homebrew installed")
 	}
-	if homebrewPackageInstalledWith(run, func(string) (string, error) { return nonBrewBin, nil }, "gentle-ai") {
+	if homebrewPackageInstalledWith(run, func(string) (string, error) { return nonBrewBin, nil }, "hgtran-ai") {
 		t.Fatal("expected shadowing non-brew active path to avoid Homebrew")
 	}
-	if homebrewPackageInstalledWith(func(string, ...string) *exec.Cmd { return mockCmd("false") }, func(string) (string, error) { return brewBin, nil }, "gentle-ai") {
+	if homebrewPackageInstalledWith(func(string, ...string) *exec.Cmd { return mockCmd("false") }, func(string) (string, error) { return brewBin, nil }, "hgtran-ai") {
 		t.Fatal("expected brew list failure to avoid Homebrew")
 	}
-	if homebrewPackageInstalledWith(func(string, ...string) *exec.Cmd { return mockCmd("true") }, func(string) (string, error) { return "", fmt.Errorf("not found") }, "gentle-ai") {
+	if homebrewPackageInstalledWith(func(string, ...string) *exec.Cmd { return mockCmd("true") }, func(string) (string, error) { return "", fmt.Errorf("not found") }, "hgtran-ai") {
 		t.Fatal("expected active path lookup failure to avoid Homebrew")
 	}
 }
@@ -1259,7 +1259,7 @@ func TestRegistryContents(t *testing.T) {
 	}{
 		// The three tools HG forked resolve to HG. TestNoForkedToolPointsAtTheUpstream
 		// in fork_identity_test.go guards the same invariant from the other side.
-		"gentle-ai":                    {owner: "desarrollohg01", repo: "hgtran-ai"},
+		"hgtran-ai":                    {owner: "desarrollohg01", repo: "hgtran-ai"},
 		"engram":                       {owner: "desarrollohg01", repo: "engram"},
 		"hga":                          {owner: "desarrollohg01", repo: "hgtran-guardian-angel"},
 		"opencode-subagent-statusline": {owner: "Joaquinvesapa", repo: "sub-agent-statusline"},
@@ -1279,9 +1279,9 @@ func TestRegistryContents(t *testing.T) {
 		}
 	}
 
-	// gentle-ai must have nil DetectCmd.
+	// hgtran-ai must have nil DetectCmd.
 	if Tools[0].DetectCmd != nil {
-		t.Fatalf("gentle-ai DetectCmd should be nil")
+		t.Fatalf("hgtran-ai DetectCmd should be nil")
 	}
 
 	// engram and gga must have non-nil DetectCmd.
@@ -1314,7 +1314,7 @@ func TestCheckAll_DevVersion(t *testing.T) {
 	origLookPath := lookPath
 	origExecCommand := execCommand
 
-	// Override only the first tool (gentle-ai) by running CheckAll with "dev".
+	// Override only the first tool (hgtran-ai) by running CheckAll with "dev".
 	origTools := Tools
 	t.Cleanup(func() {
 		httpClient = origClient
@@ -1326,7 +1326,7 @@ func TestCheckAll_DevVersion(t *testing.T) {
 	httpClient = server.Client()
 	httpClient.Transport = &testTransport{server: server}
 
-	// Restrict to just gentle-ai to isolate the test.
+	// Restrict to just hgtran-ai to isolate the test.
 	Tools = []ToolInfo{Tools[0]}
 
 	lookPath = func(string) (string, error) { return "", fmt.Errorf("not found") }
@@ -1341,14 +1341,14 @@ func TestCheckAll_DevVersion(t *testing.T) {
 
 	// The spec requires: "dev" build MUST be reported as DevBuild, not VersionUnknown.
 	if results[0].Status != DevBuild {
-		t.Fatalf("gentle-ai dev status = %q, want %q", results[0].Status, DevBuild)
+		t.Fatalf("hgtran-ai dev status = %q, want %q", results[0].Status, DevBuild)
 	}
 }
 
 // --- TestCheckFiltered ---
 
 // TestCheckFiltered verifies that CheckFiltered restricts results to the named tools
-// and that the dev-build sentinel causes gentle-ai to be reported as DevBuild.
+// and that the dev-build sentinel causes hgtran-ai to be reported as DevBuild.
 func TestCheckFiltered_SubsetOfTools(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
@@ -1458,12 +1458,12 @@ func TestCheckFiltered_UnknownToolIgnored(t *testing.T) {
 }
 
 // TestCheckFiltered_DevBuildSemanticsForGentleAI verifies the design requirement:
-// when the running gentle-ai binary reports version "dev", it is identified as a
+// when the running hgtran-ai binary reports version "dev", it is identified as a
 // DevBuild and NOT reported as UpdateAvailable or VersionUnknown.
 //
 // The spec says:
 //   - Dev build MUST be reported as development-build semantic
-//   - gentle-ai self-upgrade is skipped while engram/gga remain eligible
+//   - hgtran-ai self-upgrade is skipped while engram/gga remain eligible
 func TestCheckFiltered_DevBuildSemanticsForGentleAI(t *testing.T) {
 	mockNoHomebrew(t)
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -1488,7 +1488,7 @@ func TestCheckFiltered_DevBuildSemanticsForGentleAI(t *testing.T) {
 	httpClient.Transport = &testTransport{server: server}
 	lookPath = func(string) (string, error) { return "", fmt.Errorf("not found") }
 	execCommand = func(name string, args ...string) *exec.Cmd { return mockCmd("false") }
-	Tools = []ToolInfo{Tools[0]} // gentle-ai only
+	Tools = []ToolInfo{Tools[0]} // hgtran-ai only
 
 	profile := system.PlatformProfile{OS: "darwin", PackageManager: "brew", Supported: true}
 
@@ -1498,8 +1498,8 @@ func TestCheckFiltered_DevBuildSemanticsForGentleAI(t *testing.T) {
 	}
 
 	r := results[0]
-	if r.Tool.Name != "gentle-ai" {
-		t.Fatalf("tool = %q, want gentle-ai", r.Tool.Name)
+	if r.Tool.Name != "hgtran-ai" {
+		t.Fatalf("tool = %q, want hgtran-ai", r.Tool.Name)
 	}
 
 	// Dev build should be reported as DevBuild status, not VersionUnknown or UpdateAvailable.
@@ -1509,7 +1509,7 @@ func TestCheckFiltered_DevBuildSemanticsForGentleAI(t *testing.T) {
 }
 
 // TestCheckFiltered_DevBuildSkipNotEligible verifies that in a mixed run,
-// gentle-ai with "dev" version gets DevBuild while engram with a real version stays eligible.
+// hgtran-ai with "dev" version gets DevBuild while engram with a real version stays eligible.
 func TestCheckFiltered_DevBuildSkipNotEligible(t *testing.T) {
 	mockNoHomebrew(t)
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -1557,7 +1557,7 @@ func TestCheckFiltered_DevBuildSkipNotEligible(t *testing.T) {
 		}
 		return mockCmd("false")
 	}
-	// Only gentle-ai and engram for this test
+	// Only hgtran-ai and engram for this test
 	Tools = []ToolInfo{Tools[0], Tools[1]}
 
 	profile := system.PlatformProfile{OS: "darwin", PackageManager: "brew", Supported: true}
@@ -1567,9 +1567,9 @@ func TestCheckFiltered_DevBuildSkipNotEligible(t *testing.T) {
 		t.Fatalf("len = %d, want 2", len(results))
 	}
 
-	// gentle-ai should be DevBuild
+	// hgtran-ai should be DevBuild
 	if results[0].Status != DevBuild {
-		t.Fatalf("gentle-ai status = %q, want DevBuild", results[0].Status)
+		t.Fatalf("hgtran-ai status = %q, want DevBuild", results[0].Status)
 	}
 
 	// engram should be UpdateAvailable (1.0.0 < 2.0.0)
@@ -1626,7 +1626,7 @@ func TestNoUpdatesPath(t *testing.T) {
 		}
 		return mockCmd("false")
 	}
-	// Only engram and gga for this test (skip gentle-ai to avoid dev-build behavior)
+	// Only engram and gga for this test (skip hgtran-ai to avoid dev-build behavior)
 	Tools = []ToolInfo{Tools[1], Tools[2]}
 
 	profile := system.PlatformProfile{OS: "darwin", PackageManager: "brew", Supported: true}
@@ -1834,19 +1834,19 @@ func TestDetectInstalledVersionPs1FallbackInvokesViaPowershell(t *testing.T) {
 func unsetUpdateChannelEnv(t *testing.T) {
 	t.Helper()
 
-	oldValue, hadValue := os.LookupEnv("GENTLE_AI_CHANNEL")
-	if err := os.Unsetenv("GENTLE_AI_CHANNEL"); err != nil {
-		t.Fatalf("unset GENTLE_AI_CHANNEL: %v", err)
+	oldValue, hadValue := os.LookupEnv("HGTRAN_AI_CHANNEL")
+	if err := os.Unsetenv("HGTRAN_AI_CHANNEL"); err != nil {
+		t.Fatalf("unset HGTRAN_AI_CHANNEL: %v", err)
 	}
 	t.Cleanup(func() {
 		if hadValue {
-			if err := os.Setenv("GENTLE_AI_CHANNEL", oldValue); err != nil {
-				t.Fatalf("restore GENTLE_AI_CHANNEL: %v", err)
+			if err := os.Setenv("HGTRAN_AI_CHANNEL", oldValue); err != nil {
+				t.Fatalf("restore HGTRAN_AI_CHANNEL: %v", err)
 			}
 			return
 		}
-		if err := os.Unsetenv("GENTLE_AI_CHANNEL"); err != nil {
-			t.Fatalf("restore unset GENTLE_AI_CHANNEL: %v", err)
+		if err := os.Unsetenv("HGTRAN_AI_CHANNEL"); err != nil {
+			t.Fatalf("restore unset HGTRAN_AI_CHANNEL: %v", err)
 		}
 	})
 }

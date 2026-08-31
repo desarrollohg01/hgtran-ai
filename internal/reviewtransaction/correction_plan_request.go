@@ -8,8 +8,8 @@ import (
 )
 
 const (
-	CorrectionPlanRequestSchema   = "gentle-ai.review-correction-plan-request/v1"
-	CorrectionPlanRequestSchemaID = "https://gentle-ai.dev/contracts/review-integration/v1/schemas/correction-plan-request.schema.json"
+	CorrectionPlanRequestSchema   = "hgtran-ai.review-correction-plan-request/v1"
+	CorrectionPlanRequestSchemaID = "https://hgtran-ai.dev/contracts/review-integration/v1/schemas/correction-plan-request.schema.json"
 )
 
 // CorrectionPlanRequest is the immutable provider-owned input for planning one

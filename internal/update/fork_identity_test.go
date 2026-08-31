@@ -15,7 +15,7 @@ import "testing"
 // Tools genuinely authored by third parties are absent on purpose — they are
 // not ours to repoint.
 var forkedTools = map[string]string{
-	"gentle-ai": "desarrollohg01/hgtran-ai",
+	"hgtran-ai": "desarrollohg01/hgtran-ai",
 	"engram":    "desarrollohg01/engram",
 	"hga":       "desarrollohg01/hgtran-guardian-angel",
 }

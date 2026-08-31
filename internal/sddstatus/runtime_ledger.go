@@ -18,10 +18,10 @@ import (
 )
 
 const (
-	RuntimeStatusSchema               = "gentle-ai.sdd-runtime-status/v1"
-	runtimeRecordSchema               = "gentle-ai.sdd-runtime-record/v1"
-	runtimeObjectiveSchema            = "gentle-ai.sdd-runtime-objective/v1"
-	runtimeObjectiveSchemaV2          = "gentle-ai.sdd-runtime-objective/v2"
+	RuntimeStatusSchema               = "hgtran-ai.sdd-runtime-status/v1"
+	runtimeRecordSchema               = "hgtran-ai.sdd-runtime-record/v1"
+	runtimeObjectiveSchema            = "hgtran-ai.sdd-runtime-objective/v1"
+	runtimeObjectiveSchemaV2          = "hgtran-ai.sdd-runtime-objective/v2"
 	DefaultRuntimeAttemptLimit        = 2
 	DefaultRuntimeChangedLines        = 200
 	maximumRuntimeAttemptLimit        = 100
@@ -48,14 +48,14 @@ const (
 	// includes --cwd/--change placeholders because the bare form is rejected
 	// by the CLI for missing required flags (internal/cli/sdd_attempt.go); a
 	// continuation that fails when pasted is worse than none.
-	runtimeLedgerStatusPointer = "run `gentle-ai sdd-attempt status --cwd <repo> --change <change>` — its next_action names the continuation"
+	runtimeLedgerStatusPointer = "run `hgtran-ai sdd-attempt status --cwd <repo> --change <change>` — its next_action names the continuation"
 
 	// runtimeReviewIntegrationContract mirrors cli.ReviewIntegrationContractV1,
 	// which owns the value. internal/cli imports this package, so the constant
 	// cannot be imported back; it is duplicated only to keep a refusal from
 	// naming a `review status` invocation the CLI would reject for a missing
 	// contract selector.
-	runtimeReviewIntegrationContract = "gentle-ai.review-integration/v1"
+	runtimeReviewIntegrationContract = "hgtran-ai.review-integration/v1"
 )
 
 var (
@@ -412,7 +412,7 @@ func OpenRuntimeStore(ctx context.Context, repo, change string) (RuntimeStore, e
 		return RuntimeStore{}, err
 	}
 	commonDir := filepath.Dir(filepath.Dir(filepath.Dir(filepath.Dir(probe.Dir))))
-	dir := filepath.Join(commonDir, "gentle-ai", "sdd-runtime", "v1", change)
+	dir := filepath.Join(commonDir, "hgtran-ai", "sdd-runtime", "v1", change)
 	return RuntimeStore{Dir: dir, Repo: root, Workspace: workspace, Change: change, commonDir: commonDir}, nil
 }
 
@@ -426,7 +426,7 @@ func (store RuntimeStore) Begin(ctx context.Context, request BeginAttemptRequest
 	if err != nil {
 		return RuntimeStatus{}, err
 	}
-	digest := runtimeValueHash("gentle-ai.sdd-runtime-begin-request/v1", request)
+	digest := runtimeValueHash("hgtran-ai.sdd-runtime-begin-request/v1", request)
 	return store.mutate(ctx, request.ExpectedRevision, request.RequestID, digest, func(replay runtimeReplay) (runtimeRecord, error) {
 		status := replay.Status
 		if status.ActiveAttempt != nil {
@@ -504,7 +504,7 @@ func (store RuntimeStore) Finish(ctx context.Context, request FinishAttemptReque
 	if err != nil {
 		return RuntimeStatus{}, err
 	}
-	digest := runtimeValueHash("gentle-ai.sdd-runtime-finish-request/v1", request)
+	digest := runtimeValueHash("hgtran-ai.sdd-runtime-finish-request/v1", request)
 	return store.mutate(ctx, request.ExpectedRevision, request.RequestID, digest, func(replay runtimeReplay) (runtimeRecord, error) {
 		status := replay.Status
 		active := status.ActiveAttempt
@@ -655,7 +655,7 @@ func (store RuntimeStore) runtimeRemediationExitRefusal(
 			return store.runtimeStrandedSuccessorRefusal(binding, stranded, ordinal)
 		}
 		return fmt.Errorf(
-			"%w: the candidate changed after attempt %d began, and lineage %q does not currently hold the approved review of this candidate, so it cannot be its own successor: get this candidate approved first with `gentle-ai review status --cwd %q --contract %s --next-transition`, which names the next review action, then re-run this finish adding --expected-binding-revision, --successor-lineage, and --remediates-evidence-revision for the lineage that then holds it; %s",
+			"%w: the candidate changed after attempt %d began, and lineage %q does not currently hold the approved review of this candidate, so it cannot be its own successor: get this candidate approved first with `hgtran-ai review status --cwd %q --contract %s --next-transition`, which names the next review action, then re-run this finish adding --expected-binding-revision, --successor-lineage, and --remediates-evidence-revision for the lineage that then holds it; %s",
 			ErrRuntimeRemediationSuccessorRequired, ordinal, binding.Lineage,
 			store.Workspace, runtimeReviewIntegrationContract, provenance,
 		)
@@ -667,7 +667,7 @@ func (store RuntimeStore) runtimeRemediationExitRefusal(
 		remediates = "<repaired-evidence-sha256>"
 	}
 	return fmt.Errorf(
-		"%w: the candidate changed after attempt %d began, and lineage %q already holds the approved review of the corrected candidate, so that same lineage IS the successor — re-run this finish with the remediation trio: `gentle-ai sdd-attempt finish --cwd %q --change %q --expected-revision %q --request-id \"<unique-request-id>\" --outcome passed --evidence-revision \"<corrected-evidence-sha256>\" --diagnosis \"<proven-diagnosis>\" --harness-disposition <reused|invalidated> --cleanup-evidence \"<cleanup-evidence>\" --process-evidence \"<process-evidence>\" --expected-binding-revision %q --successor-lineage %q --remediates-evidence-revision %s`; %s, and --evidence-revision must differ from --remediates-evidence-revision",
+		"%w: the candidate changed after attempt %d began, and lineage %q already holds the approved review of the corrected candidate, so that same lineage IS the successor — re-run this finish with the remediation trio: `hgtran-ai sdd-attempt finish --cwd %q --change %q --expected-revision %q --request-id \"<unique-request-id>\" --outcome passed --evidence-revision \"<corrected-evidence-sha256>\" --diagnosis \"<proven-diagnosis>\" --harness-disposition <reused|invalidated> --cleanup-evidence \"<cleanup-evidence>\" --process-evidence \"<process-evidence>\" --expected-binding-revision %q --successor-lineage %q --remediates-evidence-revision %s`; %s, and --evidence-revision must differ from --remediates-evidence-revision",
 		ErrRuntimeRemediationSuccessorRequired, ordinal, binding.Lineage,
 		store.Workspace, store.Change, status.Revision,
 		binding.Revision, binding.Lineage, runtimeRemediatesArgument(remediates), provenance,
@@ -695,7 +695,7 @@ func (store RuntimeStore) runtimeStrandedSuccessorRefusal(binding ReviewBinding,
 	// The sentinel stays in the %w position in every branch: callers that
 	// route on errors.Is must keep working no matter which exit is named.
 	return fmt.Errorf(
-		"%w: the candidate changed after attempt %d began, and lineage %q cannot hold the approved review of this candidate because recovery successor %q supersedes it and froze a target this candidate no longer has, so that successor can never be finalized — quarantine it, then re-run this finish: `gentle-ai review abandon --cwd %q --lineage %q --expected-revision %q --reason \"<why-it-is-abandoned>\" --actor \"<actor>\" --maintainer-authorization \"<maintainer-authorization>\"`; the abandonment quarantines the pristine successor and destroys nothing, because %q keeps the approved review of the corrected candidate. --maintainer-authorization is exactly these six lines, joined by LF, with no trailing newline, using the same --actor and --reason with surrounding whitespace trimmed:\n%s",
+		"%w: the candidate changed after attempt %d began, and lineage %q cannot hold the approved review of this candidate because recovery successor %q supersedes it and froze a target this candidate no longer has, so that successor can never be finalized — quarantine it, then re-run this finish: `hgtran-ai review abandon --cwd %q --lineage %q --expected-revision %q --reason \"<why-it-is-abandoned>\" --actor \"<actor>\" --maintainer-authorization \"<maintainer-authorization>\"`; the abandonment quarantines the pristine successor and destroys nothing, because %q keeps the approved review of the corrected candidate. --maintainer-authorization is exactly these six lines, joined by LF, with no trailing newline, using the same --actor and --reason with surrounding whitespace trimmed:\n%s",
 		ErrRuntimeRemediationSuccessorRequired, ordinal, binding.Lineage, stranded.Lineage,
 		store.Workspace, stranded.Lineage, stranded.Revision, binding.Lineage,
 		reviewtransaction.RenderCompactAbandonAuthorization(
@@ -734,7 +734,7 @@ func (store RuntimeStore) runtimeObjectiveChangeRefusal(ctx context.Context, sta
 	// route on errors.Is must keep working no matter which exit is named.
 	if store.runtimeObjectiveResetAdmissible(ctx, status) {
 		return fmt.Errorf(
-			"%w: reset the objective, then begin again — `gentle-ai sdd-attempt reset --cwd %q --change %q --expected-revision %q --request-id \"<unique-request-id>\" --reason \"<why-the-objective-changed>\" --actor \"<actor>\"`; the reset publishes a new ledger revision, so take the begin's --expected-revision from `gentle-ai sdd-attempt status --cwd %q --change %q` after it commits",
+			"%w: reset the objective, then begin again — `hgtran-ai sdd-attempt reset --cwd %q --change %q --expected-revision %q --request-id \"<unique-request-id>\" --reason \"<why-the-objective-changed>\" --actor \"<actor>\"`; the reset publishes a new ledger revision, so take the begin's --expected-revision from `hgtran-ai sdd-attempt status --cwd %q --change %q` after it commits",
 			ErrRuntimeObjectiveChange, store.Workspace, store.Change, status.Revision, store.Workspace, store.Change)
 	}
 	objective := status.Objective
@@ -745,7 +745,7 @@ func (store RuntimeStore) runtimeObjectiveChangeRefusal(ctx context.Context, sta
 		return ErrRuntimeObjectiveChange
 	}
 	return fmt.Errorf(
-		"%w: this objective is still open on its recorded scope and its candidate has not moved, so resetting it is refused as an elective budget reset; begin against the scope the ledger holds — `gentle-ai sdd-attempt begin --cwd %q --change %q --expected-revision %q --request-id \"<unique-request-id>\" --work-unit %q --evidence-goal %q --max-attempts %d --max-changed-lines %d`; `sdd-attempt status` publishes those four as objective.work_unit, objective.evidence_goal, objective.max_attempts, and objective.max_changed_lines",
+		"%w: this objective is still open on its recorded scope and its candidate has not moved, so resetting it is refused as an elective budget reset; begin against the scope the ledger holds — `hgtran-ai sdd-attempt begin --cwd %q --change %q --expected-revision %q --request-id \"<unique-request-id>\" --work-unit %q --evidence-goal %q --max-attempts %d --max-changed-lines %d`; `sdd-attempt status` publishes those four as objective.work_unit, objective.evidence_goal, objective.max_attempts, and objective.max_changed_lines",
 		ErrRuntimeObjectiveChange, store.Workspace, store.Change, status.Revision,
 		objective.WorkUnit, objective.EvidenceGoal, objective.MaxAttempts, objective.MaxChangedLines)
 }
@@ -805,7 +805,7 @@ func (store RuntimeStore) Reset(ctx context.Context, request ResetObjectiveReque
 	if err != nil {
 		return RuntimeStatus{}, err
 	}
-	digest := runtimeValueHash("gentle-ai.sdd-runtime-reset-request/v1", request)
+	digest := runtimeValueHash("hgtran-ai.sdd-runtime-reset-request/v1", request)
 	return store.mutate(ctx, request.ExpectedRevision, request.RequestID, digest, func(replay runtimeReplay) (runtimeRecord, error) {
 		status := replay.Status
 		if status.ActiveAttempt != nil {
@@ -858,7 +858,7 @@ func (store RuntimeStore) bindPreparedReview(
 	if err != nil {
 		return RuntimeStatus{}, err
 	}
-	requestDigest := runtimeValueHash("gentle-ai.sdd-runtime-bind-request/v1", request)
+	requestDigest := runtimeValueHash("hgtran-ai.sdd-runtime-bind-request/v1", request)
 	if err := ctx.Err(); err != nil {
 		return RuntimeStatus{}, err
 	}
@@ -1380,7 +1380,7 @@ func validateRuntimeBeginEvent(record runtimeRecord) error {
 		ExpectedRevision: record.PreviousRevision, RequestID: record.RequestID, WorkUnit: event.WorkUnit,
 		EvidenceGoal: event.EvidenceGoal, MaxAttempts: event.MaxAttempts, MaxChangedLines: event.MaxChangedLines,
 	}
-	if runtimeValueHash("gentle-ai.sdd-runtime-begin-request/v1", request) != record.RequestDigest {
+	if runtimeValueHash("hgtran-ai.sdd-runtime-begin-request/v1", request) != record.RequestDigest {
 		return errors.New("SDD runtime begin request digest does not match record")
 	}
 	return nil
@@ -1432,7 +1432,7 @@ func validateRuntimeRecordShape(record runtimeRecord) error {
 			EvidenceRevision: event.EvidenceRevision, Diagnosis: event.Diagnosis, HarnessDisposition: event.HarnessDisposition,
 			CleanupEvidence: event.CleanupEvidence, ProcessEvidence: event.ProcessEvidence,
 		}
-		if runtimeValueHash("gentle-ai.sdd-runtime-finish-request/v1", request) != record.RequestDigest {
+		if runtimeValueHash("hgtran-ai.sdd-runtime-finish-request/v1", request) != record.RequestDigest {
 			return errors.New("SDD runtime finish request digest does not match record")
 		}
 	case runtimeOperationFinishRemediation:
@@ -1471,7 +1471,7 @@ func validateRuntimeRecordShape(record runtimeRecord) error {
 			ExpectedBindingRevision: binding.ExpectedRevision, SuccessorLineageID: binding.Current.Lineage,
 			RemediatesEvidenceRevision: finish.RemediatesEvidenceRevision,
 		}
-		if runtimeValueHash("gentle-ai.sdd-runtime-finish-request/v1", request) != record.RequestDigest {
+		if runtimeValueHash("hgtran-ai.sdd-runtime-finish-request/v1", request) != record.RequestDigest {
 			return errors.New("atomic SDD runtime remediation request digest does not match record")
 		}
 	case runtimeOperationReset:
@@ -1487,7 +1487,7 @@ func validateRuntimeRecordShape(record runtimeRecord) error {
 		request := ResetObjectiveRequest{
 			ExpectedRevision: record.PreviousRevision, RequestID: record.RequestID, Reason: event.Reason, Actor: event.Actor,
 		}
-		if runtimeValueHash("gentle-ai.sdd-runtime-reset-request/v1", request) != record.RequestDigest {
+		if runtimeValueHash("hgtran-ai.sdd-runtime-reset-request/v1", request) != record.RequestDigest {
 			return errors.New("SDD runtime reset request digest does not match record")
 		}
 	case runtimeOperationBind:
@@ -1514,7 +1514,7 @@ func validateRuntimeRecordShape(record runtimeRecord) error {
 		request := BindReviewRequest{
 			ExpectedBindingRevision: event.ExpectedRevision, RequestID: record.RequestID, LineageID: event.Current.Lineage,
 		}
-		if runtimeValueHash("gentle-ai.sdd-runtime-bind-request/v1", request) != record.RequestDigest {
+		if runtimeValueHash("hgtran-ai.sdd-runtime-bind-request/v1", request) != record.RequestDigest {
 			return errors.New("SDD runtime binding request digest does not match record")
 		}
 	case runtimeOperationReceipt:
@@ -1542,7 +1542,7 @@ func validateRuntimeRecordShape(record runtimeRecord) error {
 		request := RecordReceiptRequest{
 			ExpectedReceiptRevision: event.ExpectedRevision, RequestID: record.RequestID, Lineage: event.Current.Lineage,
 		}
-		if runtimeValueHash("gentle-ai.sdd-runtime-receipt-request/v1", request) != record.RequestDigest {
+		if runtimeValueHash("hgtran-ai.sdd-runtime-receipt-request/v1", request) != record.RequestDigest {
 			return errors.New("SDD runtime receipt request digest does not match record") // refusal:by-design world-action: the digest is computed from the same request at write time, so a mismatch is a mutated record and the exit is restoring the store
 		}
 	default:
@@ -1685,7 +1685,7 @@ func validatePreparedRuntimeBinding(binding ReviewBinding, change, lineage strin
 // Callers invoke it only while the native runtime binding is absent; replay of
 // a native import never consults the legacy artifact again.
 func (store RuntimeStore) readLegacyBinding() (*ReviewBinding, string, error) {
-	path := filepath.Join(store.commonDir, "gentle-ai", "sdd-review-bindings", "v1", store.Change, "binding.json")
+	path := filepath.Join(store.commonDir, "hgtran-ai", "sdd-review-bindings", "v1", store.Change, "binding.json")
 	payload, err := readBoundedRuntimeFile(path)
 	if os.IsNotExist(err) {
 		return nil, "", nil
@@ -1826,9 +1826,9 @@ func (store RuntimeStore) ensureDirectories() error {
 		info, statErr := os.Lstat(current)
 		if os.IsNotExist(statErr) {
 			mode := os.FileMode(0o700)
-			// The shared gentle-ai container predates this private store and may
+			// The shared hgtran-ai container predates this private store and may
 			// also hold review authority. New SDD runtime descendants remain 0700.
-			if index == 0 && segment == "gentle-ai" {
+			if index == 0 && segment == "hgtran-ai" {
 				mode = 0o755
 			}
 			if err := os.Mkdir(current, mode); err != nil {

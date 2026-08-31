@@ -104,30 +104,30 @@ var reviewStopReasonNarration = map[string]string{
 	"captured_result_selection_unavailable": "This run reached a state that should never happen: every review result it expected was already present. " +
 		"This is a defect; there is nothing more to do from here.",
 	"corrected_candidate_unavailable": "Change the candidate content so it differs from the frozen original, then re-run " +
-		"`gentle-ai review status --next-transition` (or `review finalize`). " +
+		"`hgtran-ai review status --next-transition` (or `review finalize`). " +
 		"That is the right path when the review found real defects. If instead the reviewers were given the wrong input " +
 		"and their findings describe content that was never the candidate, a maintainer can quarantine those results and " +
-		"reopen their lenses over the same frozen content: run `gentle-ai review reopen-results --prepare --quarantine-lens <lens>` " +
+		"reopen their lenses over the same frozen content: run `hgtran-ai review reopen-results --prepare --quarantine-lens <lens>` " +
 		"(repeat `--quarantine-lens` per affected lens) and follow its output.",
 	"correction_repository_verification_failed": "Repository verification failed for this correction candidate. Change the candidate within the open correction, then re-run " +
-		"`gentle-ai review status --next-transition` to capture evidence for the new candidate.",
+		"`hgtran-ai review status --next-transition` to capture evidence for the new candidate.",
 	"corrupted_or_unverifiable_authority": "This review's stored record cannot be trusted as-is, and it cannot be repaired automatically. " +
 		"Ask a maintainer to inspect it directly.",
 	"final_verification_retry_unavailable": "This run reached a state that should never happen: it was routed to retry a final verification it was not eligible to retry. " +
 		"This is a defect; there is nothing more to do from here.",
-	"manual_intervention_required": "This review reached a state Gentle AI does not recognize. " +
+	"manual_intervention_required": "This review reached a state Hgtran AI does not recognize. " +
 		"This is a defect; there is nothing more to do from here.",
 	"missing_authority_binding": "This run reached a state that should never happen: it lost track of the record it needs to continue. " +
 		"This is a defect; there is nothing more to do from here.",
 	"native_stop_required": "This review is stuck at an escalated state that is not yet eligible to continue. " +
 		"Ask a maintainer to review it before doing anything else.",
-	"original_finalize_request_required": "Re-run `gentle-ai review finalize` with the exact same results or evidence you submitted before.",
+	"original_finalize_request_required": "Re-run `hgtran-ai review finalize` with the exact same results or evidence you submitted before.",
 	"pre_pr_selector_unrepresentable":    "Pass a branch or tag name to `--base-ref` instead of a raw commit id when selecting the pre-pr gate.",
 	"recovery_scope_unchanged":           "Change the candidate so it targets something different from what is already on record, then retry the recovery.",
 	"recovery_target_unrepresentable": "Use one of the supported ways to select what to recover: no base selector for current changes, " +
 		"`--base-ref <ref> --committed-only` for a base diff, or `--workspace-overlay --base-ref <ref>` for a workspace overlay.",
 	"staged_workspace_overlay_recovery_unavailable": "Pass `--lineage <id>` to continue the review you already started, " +
-		"or drop `--workspace-overlay` and run `gentle-ai review start --projection staged` to start fresh.",
+		"or drop `--workspace-overlay` and run `hgtran-ai review start --projection staged` to start fresh.",
 	"unchanged_or_unverified_authority": "This review already used its one correction attempt without a verified change. Start a new review to continue.",
 }
 
@@ -165,7 +165,7 @@ var reviewNarrationCodeSpanRegexp = regexp.MustCompile("`[^`]*`")
 // reviewNarrationStripCodeSpans removes every backtick-quoted command/flag
 // literal before the vocabulary ban runs. A flag like `--lineage <id>` is an
 // unavoidable, literal public CLI contract token a caller must type; the ban
-// exists so narration never asks a human to understand gentle-ai's internal
+// exists so narration never asks a human to understand hgtran-ai's internal
 // architecture in prose, not so a copy-pasteable command can never contain
 // one of those words as its flag name.
 func reviewNarrationStripCodeSpans(text string) string {

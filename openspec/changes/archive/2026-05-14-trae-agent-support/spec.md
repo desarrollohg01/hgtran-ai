@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Define the exact requirements, scenarios, and acceptance criteria for adding Trae IDE as a first-class agent in gentle-ai.
+Define the exact requirements, scenarios, and acceptance criteria for adding Trae IDE as a first-class agent in hgtran-ai.
 
 ---
 

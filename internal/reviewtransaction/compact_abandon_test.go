@@ -592,7 +592,7 @@ func TestAbandonRefusesCorruptedNonPristineInvalidatedRecord(t *testing.T) {
 }
 
 // An abandon refusal must name what to run next. `review reclaim` already ends
-// its cascade by naming `gentle-ai review inspect-authority` and asking for the
+// its cascade by naming `hgtran-ai review inspect-authority` and asking for the
 // report to be escalated; abandon refused with the reason alone, which leaves
 // an operator holding a diagnosis and no next command. The damaged-store bench
 // axis declares that composition a dead end, and a refusal that names a
@@ -617,7 +617,7 @@ func TestAbandonRefusalOverAuthoritativeArtifactNamesAContinuation(t *testing.T)
 	if !strings.Contains(err.Error(), "holds authoritative artifact") {
 		t.Fatalf("abandon refusal lost its reason: %v", err)
 	}
-	if !strings.Contains(err.Error(), "gentle-ai review inspect-authority") {
+	if !strings.Contains(err.Error(), "hgtran-ai review inspect-authority") {
 		t.Fatalf("abandon refusal names no runnable continuation: %v", err)
 	}
 }

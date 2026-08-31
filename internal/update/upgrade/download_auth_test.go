@@ -24,7 +24,7 @@ import (
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/update"
 )
 
-const testMinisignKeyDomain = "gentle-ai issue 359 minisign TEST KEY; never use for releases"
+const testMinisignKeyDomain = "hgtran-ai issue 359 minisign TEST KEY; never use for releases"
 
 func testMinisignKey(t *testing.T) (string, minisign.PrivateKey) {
 	t.Helper()
@@ -55,7 +55,7 @@ func signTestManifest(t *testing.T, secret minisign.PrivateKey, manifest []byte,
 	t.Helper()
 	signature, err := secret.Sign(manifest, minisign.SignOptions{
 		Hashed:           true,
-		UntrustedComment: "gentle-ai test signature",
+		UntrustedComment: "hgtran-ai test signature",
 		TrustedComment:   releaseTrustedComment(owner, repo, version),
 	})
 	if err != nil {
@@ -76,7 +76,7 @@ func useTestReleaseKey(t *testing.T) minisign.PrivateKey {
 func TestVerifyChecksumsSignatureFailsClosed(t *testing.T) {
 	const (
 		owner   = "Gentleman-Programming"
-		repo    = "gentle-ai"
+		repo    = "hgtran-ai"
 		version = "2.2.0"
 	)
 	manifest := []byte(strings.Repeat("a", sha256.Size*2) + "  gentle-ai_2.2.0_linux_amd64.tar.gz\n")
@@ -113,7 +113,7 @@ func TestVerifyChecksumsSignatureFailsClosed(t *testing.T) {
 		{name: "wrong tag binding", keys: publicKey, manifest: manifest, signature: validSignature, owner: owner, repo: repo, version: "2.2.1", wantErr: true},
 		{name: "version prefix rejected", keys: publicKey, manifest: manifest, signature: validSignature, owner: owner, repo: repo, version: "v2.2.0", wantErr: true},
 		{name: "prerelease rejected", keys: publicKey, manifest: manifest, signature: validSignature, owner: owner, repo: repo, version: "2.2.0-rc.1", wantErr: true},
-		{name: "comment injection rejected", keys: publicKey, manifest: manifest, signature: validSignature, owner: owner, repo: "gentle-ai\ntag=v2.2.0", version: version, wantErr: true},
+		{name: "comment injection rejected", keys: publicKey, manifest: manifest, signature: validSignature, owner: owner, repo: "hgtran-ai\ntag=v2.2.0", version: version, wantErr: true},
 		{name: "noncanonical untrusted comment prefix rejected", keys: publicKey, manifest: manifest, signature: noncanonicalEnvelope, owner: owner, repo: repo, version: version, wantErr: true},
 		{name: "malformed signature", keys: publicKey, manifest: manifest, signature: []byte("not minisign"), owner: owner, repo: repo, version: version, wantErr: true},
 	}
@@ -257,7 +257,7 @@ func TestExtractBinaryRejectsDuplicateEntriesAndCleansOutput(t *testing.T) {
 	var archive bytes.Buffer
 	gzipWriter := gzip.NewWriter(&archive)
 	tarWriter := tar.NewWriter(gzipWriter)
-	for _, name := range []string{"gentle-ai", "nested/gentle-ai"} {
+	for _, name := range []string{"hgtran-ai", "nested/hgtran-ai"} {
 		content := []byte(name)
 		if err := tarWriter.WriteHeader(&tar.Header{Name: name, Mode: 0o755, Size: int64(len(content)), Typeflag: tar.TypeReg}); err != nil {
 			t.Fatal(err)
@@ -273,8 +273,8 @@ func TestExtractBinaryRejectsDuplicateEntriesAndCleansOutput(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	outPath := filepath.Join(t.TempDir(), "gentle-ai.new")
-	if err := extractBinaryFromTarGz(bytes.NewReader(archive.Bytes()), "gentle-ai", outPath); err == nil {
+	outPath := filepath.Join(t.TempDir(), "hgtran-ai.new")
+	if err := extractBinaryFromTarGz(bytes.NewReader(archive.Bytes()), "hgtran-ai", outPath); err == nil {
 		t.Fatal("extractBinaryFromTarGz() accepted duplicate binary entries")
 	}
 	if _, err := os.Stat(outPath); !os.IsNotExist(err) {
@@ -288,9 +288,9 @@ func TestDownloadVerifiesSignatureBeforeArchiveAndPreservesInstalledBinary(t *te
 	}
 	const (
 		owner      = "Gentleman-Programming"
-		repo       = "gentle-ai"
+		repo       = "hgtran-ai"
 		version    = "2.2.0"
-		binaryName = "gentle-ai"
+		binaryName = "hgtran-ai"
 	)
 	privateKey := useTestReleaseKey(t)
 	tarPath := makeFakeTarGz(t, binaryName)

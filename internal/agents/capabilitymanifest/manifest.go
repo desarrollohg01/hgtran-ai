@@ -1,5 +1,5 @@
 // Package capabilitymanifest owns the canonical, provider-neutral capability
-// facts advertised by Gentle AI agent adapters.
+// facts advertised by Hgtran AI agent adapters.
 package capabilitymanifest
 
 import (
@@ -14,11 +14,11 @@ import (
 
 type SchemaVersion string
 
-const SchemaV1 SchemaVersion = "gentle-ai.agent-capability-manifest/v1"
+const SchemaV1 SchemaVersion = "hgtran-ai.agent-capability-manifest/v1"
 
 type ContractID string
 
-const ContractWorkRoutingV1 ContractID = "gentle-ai.work-routing/v1"
+const ContractWorkRoutingV1 ContractID = "hgtran-ai.work-routing/v1"
 
 // ContractReviewTransportV1 is Wave 4 S4's transport capability claim
 // (design.md decision 5): the adapter self-declares whether it can carry
@@ -26,7 +26,7 @@ const ContractWorkRoutingV1 ContractID = "gentle-ai.work-routing/v1"
 // review authority, tier, lens, budget, or collection slot exists. The
 // provider never probes a live runtime for this — an absent or unrecognised
 // claim fails closed.
-const ContractReviewTransportV1 ContractID = "gentle-ai.review-transport/v1"
+const ContractReviewTransportV1 ContractID = "hgtran-ai.review-transport/v1"
 
 type ContractExposure string
 
@@ -53,7 +53,7 @@ type AgentCapabilityManifest struct {
 }
 
 // AgentFeatureClaims describes adapter integration mechanisms. FileSubAgents
-// means the adapter consumes Gentle AI's file-based subagent projection; it
+// means the adapter consumes Hgtran AI's file-based subagent projection; it
 // does not infer whether the runtime can perform some other form of delegation.
 type AgentFeatureClaims struct {
 	AutoInstall   bool `json:"autoInstall"`
@@ -226,7 +226,7 @@ func (m AgentCapabilityManifest) Digest() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return digest("gentle-ai.agent-capability-manifest/v1", payload), nil
+	return digest("hgtran-ai.agent-capability-manifest/v1", payload), nil
 }
 
 func (m AgentCapabilityManifest) RoutingDigest() (string, error) {
@@ -237,7 +237,7 @@ func (m AgentCapabilityManifest) RoutingDigest() (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("marshal implementation routing facts: %w", err)
 	}
-	return digest("gentle-ai.implementation-routing/v1", payload), nil
+	return digest("hgtran-ai.implementation-routing/v1", payload), nil
 }
 
 func digest(domain string, payload []byte) string {

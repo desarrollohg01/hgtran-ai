@@ -92,7 +92,7 @@ func TestReviewQuarantineLegacyRestoresAuthoritativeInventory(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	authorization := "gentle-ai.review-legacy-quarantine-authorization/v1\nrepository=" + repository +
+	authorization := "hgtran-ai.review-legacy-quarantine-authorization/v1\nrepository=" + repository +
 		"\nlineage=" + lineage + "\nrevision=" + head + "\ndiagnostic=" + diagnostic +
 		"\ndisposition=" + disposition + "\nactor=" + actor + "\nreason=" + reason
 

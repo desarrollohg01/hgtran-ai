@@ -182,10 +182,10 @@ func normalizeCompactSettleRequest(request CompactSettleRequest) error {
 		return err
 	}
 	if request.SuccessorLineageID != "" && !validReviewBindingLineage(request.SuccessorLineageID) {
-		return errors.New("successor_lineage_id must be a canonical lowercase lineage; rerun `gentle-ai sdd-attempt settle` with a lowercase --successor-lineage")
+		return errors.New("successor_lineage_id must be a canonical lowercase lineage; rerun `hgtran-ai sdd-attempt settle` with a lowercase --successor-lineage")
 	}
 	if request.RemediatesEvidenceRevision != "" && !runtimeRevisionPattern.MatchString(request.RemediatesEvidenceRevision) {
-		return errors.New("remediates_evidence_revision must be sha256; rerun `gentle-ai sdd-attempt settle` with --remediates-evidence-revision sha256:<64-lowercase-hex>")
+		return errors.New("remediates_evidence_revision must be sha256; rerun `hgtran-ai sdd-attempt settle` with --remediates-evidence-revision sha256:<64-lowercase-hex>")
 	}
 	return nil
 }

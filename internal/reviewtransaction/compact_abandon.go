@@ -19,14 +19,14 @@ import (
 // It is exported so a refusal in another package that names `review abandon`
 // as its continuation can print the template and be checked against the schema
 // this gate actually verifies, rather than against a copy of the string.
-const CompactAbandonAuthorizationSchema = "gentle-ai.review-abandon-authorization/v1"
+const CompactAbandonAuthorizationSchema = "hgtran-ai.review-abandon-authorization/v1"
 
 // CompactIncompleteAbandonAuthorizationSchema binds the second, narrower
 // abandonment class: a reviewing lineage whose state is still pristine but
 // whose store already holds captured reviewer results for SOME of its selected
 // lenses. Its own schema exists so the ordinary pristine token can never
 // authorize discarding captured work by accident.
-const CompactIncompleteAbandonAuthorizationSchema = "gentle-ai.review-incomplete-abandon-authorization/v1"
+const CompactIncompleteAbandonAuthorizationSchema = "hgtran-ai.review-incomplete-abandon-authorization/v1"
 
 // CompactAbandonRequest identifies one pristine compact-v2 review lineage to
 // quarantine, together with the exact maintainer authorization binding for
@@ -291,7 +291,7 @@ func AbandonPristineCompactStore(ctx context.Context, repo string, request Compa
 	var capturedLenses, uncapturedLenses []string
 	if request.IncompleteInspection {
 		if record.State.State != StateReviewing {
-			return CompactReclaimRecord{}, fmt.Errorf("review abandon refused: incomplete-inspection abandonment applies only to a reviewing lineage; %q holds %q authority. See where this review actually is with `gentle-ai review status --cwd %q --lineage %s`",
+			return CompactReclaimRecord{}, fmt.Errorf("review abandon refused: incomplete-inspection abandonment applies only to a reviewing lineage; %q holds %q authority. See where this review actually is with `hgtran-ai review status --cwd %q --lineage %s`",
 				request.LineageID, record.State.State, repo, request.LineageID)
 		}
 		if !compactAbandonablePristineState(record.State) {
@@ -302,11 +302,11 @@ func AbandonPristineCompactStore(ctx context.Context, repo string, request Compa
 			return CompactReclaimRecord{}, fmt.Errorf("inspect incomplete review capture: %w", err)
 		}
 		if len(capturedLenses) == 0 {
-			return CompactReclaimRecord{}, fmt.Errorf("review abandon refused: lineage %q captured no reviewer result, so it is an ordinary pristine abandonment. Re-run without --incomplete-inspection; `gentle-ai review abandon` with no flags prints that class's template and where every value is read",
+			return CompactReclaimRecord{}, fmt.Errorf("review abandon refused: lineage %q captured no reviewer result, so it is an ordinary pristine abandonment. Re-run without --incomplete-inspection; `hgtran-ai review abandon` with no flags prints that class's template and where every value is read",
 				request.LineageID)
 		}
 		if len(uncapturedLenses) == 0 {
-			return CompactReclaimRecord{}, fmt.Errorf("review abandon refused: lineage %q captured every selected lens and can finalize; incomplete-inspection abandonment never discards a complete review. Continue it with `gentle-ai review status --cwd %q --lineage %s --next-transition`",
+			return CompactReclaimRecord{}, fmt.Errorf("review abandon refused: lineage %q captured every selected lens and can finalize; incomplete-inspection abandonment never discards a complete review. Continue it with `hgtran-ai review status --cwd %q --lineage %s --next-transition`",
 				request.LineageID, repo, request.LineageID)
 		}
 	} else {
@@ -348,7 +348,7 @@ func AbandonPristineCompactStore(ctx context.Context, repo string, request Compa
 			return CompactReclaimRecord{}, fmt.Errorf("review abandon refused: store entry %q holds authoritative artifact %q beyond its pristine state,"+
 				" and abandoning it would discard captured review work."+
 				" Nothing quarantines this shape today; the entry stays exactly as persisted."+
-				" Capture the complete machine-readable diagnosis with `gentle-ai review inspect-authority --cwd %q` and escalate that report",
+				" Capture the complete machine-readable diagnosis with `hgtran-ai review inspect-authority --cwd %q` and escalate that report",
 				request.LineageID, item.Name(), repo)
 		}
 		residue = append(residue, item.Name())

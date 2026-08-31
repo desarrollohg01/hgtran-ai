@@ -8,7 +8,7 @@ import (
 )
 
 // fakeBinary writes an executable that answers a fixed argv with a fixed
-// message, so the capability probe can be tested without a real gentle-ai.
+// message, so the capability probe can be tested without a real hgtran-ai.
 func fakeBinary(t *testing.T, script string) *Sandbox {
 	t.Helper()
 	root := t.TempDir()
@@ -105,13 +105,13 @@ func TestReadBackBlanksGitTrace(t *testing.T) {
 }
 
 func TestSandboxEnvIncludesBenchReceiptMutationPath(t *testing.T) {
-	sandbox, err := newSandbox("gentle-ai", t.TempDir())
+	sandbox, err := newSandbox("hgtran-ai", t.TempDir())
 	if err != nil {
 		t.Fatal(err)
 	}
 	sandbox.BenchReceiptMutationPath = filepath.Join(sandbox.Root, "receipt.json")
 	for _, entry := range sandbox.env() {
-		if entry == "GENTLE_AI_BENCH_MUTATE_RECEIPT="+sandbox.BenchReceiptMutationPath {
+		if entry == "HGTRAN_AI_BENCH_MUTATE_RECEIPT="+sandbox.BenchReceiptMutationPath {
 			return
 		}
 	}
@@ -119,7 +119,7 @@ func TestSandboxEnvIncludesBenchReceiptMutationPath(t *testing.T) {
 }
 
 func TestSandboxEnvKeepsTempFilesInsideTheSandbox(t *testing.T) {
-	sandbox, err := newSandbox("gentle-ai", t.TempDir())
+	sandbox, err := newSandbox("hgtran-ai", t.TempDir())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -151,7 +151,7 @@ func TestSandboxEnvKeepsTempFilesInsideTheSandbox(t *testing.T) {
 }
 
 func TestSandboxEnvKeepsWindowsHomeInsideTheSandbox(t *testing.T) {
-	sandbox, err := newSandbox("gentle-ai", t.TempDir())
+	sandbox, err := newSandbox("hgtran-ai", t.TempDir())
 	if err != nil {
 		t.Fatal(err)
 	}

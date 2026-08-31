@@ -153,7 +153,7 @@ T-13's `case model.AgentHermes` is applied.)*
   - `TestSDDOrchestratorAssetSelection` extended with case `{agent: model.AgentHermes, want: "hermes/sdd-orchestrator.md"}`
   - `TestInjectHermesWritesSDDOrchestratorToSOULMD`: fresh `t.TempDir()` home dir; call
     `sdd.Inject(homeDir, hermesAdapter, "")` with `StrategyMergeIntoYAML` for MCP strategy
-    awareness; assert `~/.hermes/SOUL.md` created with `<!-- gentle-ai:sdd-orchestrator -->` markers
+    awareness; assert `~/.hermes/SOUL.md` created with `<!-- hgtran-ai:sdd-orchestrator -->` markers
     and content; assert user content outside markers preserved on re-run
   - `TestInjectHermesStrategyMergeIntoYAML`: assert StrategyMergeIntoYAML dispatches correctly
     (no panic, returns InjectionResult with Changed=true on first run)
@@ -217,7 +217,7 @@ should be applied together in one commit.*
   - Hermes + `neutral` → returns content from `hermes/persona-neutral.md`; does NOT contain `<available_skills>`
   - Hermes + `custom` → returns empty string, no persona injected
   - Non-Hermes agent + `neutral` → returns byte-identical `generic/persona-neutral.md` (no regression)
-  - Hermes persona injected into SOUL.md → `<!-- gentle-ai:persona -->` markers present; engram
+  - Hermes persona injected into SOUL.md → `<!-- hgtran-ai:persona -->` markers present; engram
     and SDD sections coexist without duplication
 
 - [ ] T-30 `internal/components/persona/inject.go` — Refactor `personaContent()`:

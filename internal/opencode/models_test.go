@@ -996,7 +996,7 @@ func TestEnrichWithVariantsFallbackProviderMismatch(t *testing.T) {
 		t.Fatalf("write variants fixture: %v", err)
 	}
 
-	// Cached providers in gentle-ai has both "openai" (exact match) and "opencode" (built-in/custom alias)
+	// Cached providers in hgtran-ai has both "openai" (exact match) and "opencode" (built-in/custom alias)
 	cached := map[string]Provider{
 		"openai": {
 			ID:   "openai",

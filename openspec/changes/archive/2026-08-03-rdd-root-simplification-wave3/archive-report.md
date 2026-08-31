@@ -13,13 +13,13 @@ Wave 3 of the RDD root simplification is complete and merged to main. The change
 
 ### Final Merged State
 
-- **Main checkout**: `/home/gentleman/work/gentle-ai`, HEAD `4ca5715a` — Wave 3 merged
+- **Main checkout**: `/home/gentleman/work/hgtran-ai`, HEAD `4ca5715a` — Wave 3 merged
 - **PR chain**: #2309–#2314 (S1–S5 plus PR0/remediation slices), merged into the `feature/rdd-root-simplification` tracker branch via tracker PR #2318, which merged to `main`
 - **Feature branch**: `feature/rdd-root-simplification` continues on main for Wave 4/5
 
 ### Acceptance Gate Status
 
-**Review Gate**: no `sdd/rdd-root-simplification-wave3/review/{transaction,ledger,receipt,gate-context}` Engram topics were found for this change, and no negotiated-review artifacts exist under this change's SDD trail. Delivery evidence supplied to this archive (PR numbers, tracker merge, main merge commit) indicates ordinary GitHub PR review was the delivery path for this wave, consistent with the RDD receipt-gated lifecycle not yet being the default for gentle-ai's own delivery at the time this wave shipped (this wave IS the mechanism the kill switch would eventually gate). No fabricated `allow` receipt is claimed here; this is recorded as an assumption traced to the launch prompt's explicit merge evidence, not independently re-verified against `gentle-ai review status`.
+**Review Gate**: no `sdd/rdd-root-simplification-wave3/review/{transaction,ledger,receipt,gate-context}` Engram topics were found for this change, and no negotiated-review artifacts exist under this change's SDD trail. Delivery evidence supplied to this archive (PR numbers, tracker merge, main merge commit) indicates ordinary GitHub PR review was the delivery path for this wave, consistent with the RDD receipt-gated lifecycle not yet being the default for hgtran-ai's own delivery at the time this wave shipped (this wave IS the mechanism the kill switch would eventually gate). No fabricated `allow` receipt is claimed here; this is recorded as an assumption traced to the launch prompt's explicit merge evidence, not independently re-verified against `hgtran-ai review status`.
 
 **Task Completion Gate**: PASS, with one recorded exceptional reconciliation. `tasks.md`'s task 1.2 ("Archive Wave 2 … when its turn comes") was still an unchecked `- [ ]` checkbox in every persisted copy of `tasks.md` found (filesystem and the `sdd/rdd-root-simplification-wave3/tasks` Engram observation #10134), including across all three verify-report cycles, which repeatedly recorded it as open advisory item W1 ("Cleanup/sequencing, Wave-2-timing dependent, outside Wave 3's critical path... None blocks archive"). Independent filesystem inspection during this archive run found direct proof the task is in fact complete: `openspec/changes/archive/2026-08-02-rdd-root-simplification-wave2/` exists in full, including its own `archive-report.md`, `proposal.md`, `design.md`, `tasks.md`, `verify-report.md`, and `specs/{rdd-authority-disposition-plan,rdd-leaf-disposition-execution,rdd-authority-graph-classification}/spec.md` — Wave 2 was archived on 2026-08-02, evidently after Wave 3's `tasks.md` was last written, and the checkbox was simply never updated to reflect it. Per this reconciliation proof, the archived copy of `tasks.md` in this archive folder marks task 1.2 `[x]` with an inline annotation naming this exact evidence. This is the one exceptional stale-checkbox repair performed by this archive run; no other task was altered.
 
@@ -55,7 +55,7 @@ Two new CRITICALs surfaced during re-verification, both consequences of the same
 
 **Cycle-3 envelope re-admission** (tip `67be4867`, tests-only commit, 0 production bytes changed) closed the final 3 uncovered scenarios:
 - "Switch identity never overloads another switch" → COMPLIANT (`new_lineage_switch_identity_test.go`)
-- "Kill switch off produces no side effect" → COMPLIANT (`review_new_lineage_kill_switch_test.go`, proves byte-identical `.git/gentle-ai` subtree across all five gates plus `OfferReviewAfterVerify`)
+- "Kill switch off produces no side effect" → COMPLIANT (`review_new_lineage_kill_switch_test.go`, proves byte-identical `.git/hgtran-ai` subtree across all five gates plus `OfferReviewAfterVerify`)
 - "Frozen tier is never recomputed" → COMPLIANT (`review_new_lineage_frozen_tier_test.go`, non-vacuous via a `ClassifyRisk` drift sanity check)
 
 **Final result**: **32/32 scenarios COMPLIANT, 19/19 requirements fully compliant, 0 CRITICAL, 0 blockers.**

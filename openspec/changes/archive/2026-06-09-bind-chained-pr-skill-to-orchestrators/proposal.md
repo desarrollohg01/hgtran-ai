@@ -2,7 +2,7 @@
 
 ## Intent
 
-Make the `chained-pr` skill (registry name `chained-pr`, frontmatter `gentle-ai-chained-pr`) the operational source of truth for PR chaining during SDD, by binding it into every SDD orchestrator asset so that `sdd-tasks` and `sdd-apply` sub-agents are required to load and follow it before planning or creating any chained/stacked PR.
+Make the `chained-pr` skill (registry name `chained-pr`, frontmatter `hgtran-ai-chained-pr`) the operational source of truth for PR chaining during SDD, by binding it into every SDD orchestrator asset so that `sdd-tasks` and `sdd-apply` sub-agents are required to load and follow it before planning or creating any chained/stacked PR.
 
 Success looks like: across all 11 orchestrator templates, the orchestrator (a) keeps a short inline summary of the two chain strategies so it knows what to ask and static validation keeps passing, and (b) explicitly resolves the `chained-pr` skill by registry name and injects it into `sdd-tasks`/`sdd-apply` prompts under `## Skills to load before work`. The spec requires this binding, and static-validation tests plus golden fixtures enforce it.
 

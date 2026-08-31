@@ -156,7 +156,7 @@ func transitionArgumentValue(t *testing.T, transition *ReviewNextTransition, nam
 func TestNegotiatedReviewStatusContractAndSchemasAreStrict(t *testing.T) {
 	repo := initReviewCLIRepo(t)
 	var output bytes.Buffer
-	err := RunReview([]string{"status", "--contract", "gentle-ai.review-integration/v3", "--cwd", repo}, &output)
+	err := RunReview([]string{"status", "--contract", "hgtran-ai.review-integration/v3", "--cwd", repo}, &output)
 	if err == nil {
 		t.Fatalf("unsupported status contract = %q, %v", output.String(), err)
 	}
@@ -856,7 +856,7 @@ func newPublishedV149CLIRepo(t *testing.T) (string, string, string) {
 	}
 
 	commonDir := strings.TrimSpace(runReviewCLIGit(t, repo, "rev-parse", "--path-format=absolute", "--git-common-dir"))
-	authorityRoot := filepath.Join(commonDir, "gentle-ai")
+	authorityRoot := filepath.Join(commonDir, "hgtran-ai")
 	destination := filepath.Join(authorityRoot, "review-transactions", "v1", "legacy-valid")
 	source := filepath.Join("..", "reviewtransaction", "testdata", "v1.49.0-ordinary-4r")
 	files := []string{
@@ -1053,9 +1053,9 @@ func writeNegotiatedStatusHistory(t *testing.T, repo string, count int) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		sum := sha256.Sum256(append([]byte("gentle-ai.review-state/v2\x00"), statePayload...))
+		sum := sha256.Sum256(append([]byte("hgtran-ai.review-state/v2\x00"), statePayload...))
 		record := reviewtransaction.CompactRecord{
-			Schema: "gentle-ai.review-state-record/v2", Revision: "sha256:" + hex.EncodeToString(sum[:]), State: state,
+			Schema: "hgtran-ai.review-state-record/v2", Revision: "sha256:" + hex.EncodeToString(sum[:]), State: state,
 		}
 		payload, err := json.MarshalIndent(record, "", "  ")
 		if err != nil {

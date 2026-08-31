@@ -30,9 +30,9 @@ func TestGentleAIWindowsUpgradeFailsClosedToSourceInstall(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			r := update.UpdateResult{
 				Tool: update.ToolInfo{
-					Name:          "gentle-ai",
+					Name:          "hgtran-ai",
 					Owner:         "Gentleman-Programming",
-					Repo:          "gentle-ai",
+					Repo:          "hgtran-ai",
 					InstallMethod: update.InstallBinary,
 				},
 				LatestVersion: tc.latestVersion,
@@ -50,7 +50,7 @@ func TestGentleAIWindowsUpgradeFailsClosedToSourceInstall(t *testing.T) {
 			}
 			for _, required := range []string{
 				"Windows binary distribution and Scoop are temporarily unavailable",
-				"go install bitbucket.org/hgt_development/hgtran-ai/v2/cmd/gentle-ai" + tc.wantTarget,
+				"go install bitbucket.org/hgt_development/hgtran-ai/v2/cmd/hgtran-ai" + tc.wantTarget,
 			} {
 				if !strings.Contains(hint, required) {
 					t.Errorf("manual hint is missing %q: %s", required, hint)

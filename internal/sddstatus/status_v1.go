@@ -7,9 +7,9 @@ import (
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/reviewtransaction"
 )
 
-const StatusContractV1 = "gentle-ai.sdd-status/v1"
+const StatusContractV1 = "hgtran-ai.sdd-status/v1"
 
-// StatusV1Projection is the frozen wire shape consumed by legacy Gentle Pi
+// StatusV1Projection is the frozen wire shape consumed by legacy Hgtran Pi
 // clients. Status remains the internal aggregate and may grow independently.
 type StatusV1Projection struct {
 	SchemaName        string                         `json:"schemaName"`
@@ -117,7 +117,7 @@ type remediationStateV1 struct {
 
 // reviewGateStateV1 grows one omitempty field over the frozen v1 shape.
 // Delivery is empty on every path that could already produce a review gate, so
-// the bytes a legacy Gentle Pi client receives for those paths are unchanged;
+// the bytes a legacy Hgtran Pi client receives for those paths are unchanged;
 // it appears only for the disabled/unmanaged disposition, which no legacy path
 // could reach.
 type reviewGateStateV1 struct {

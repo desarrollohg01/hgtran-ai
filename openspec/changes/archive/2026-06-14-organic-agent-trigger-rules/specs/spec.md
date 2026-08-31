@@ -5,7 +5,7 @@
 **Change**: organic-agent-trigger-rules  
 **Status**: FINAL (Implemented and Verified)
 
-**Purpose**: Define a declarative trigger-rules system that gentle-ai INSTALLS (not executes) into every supported agent. The system defines a closed set of lifecycle events, a binding schema with structured `when` conditions, a token-aware built-in default rule set, and mechanism for rendering rules as plain instructional text and injecting them idempotently into all supported agent assets through the existing installer/injection path.
+**Purpose**: Define a declarative trigger-rules system that hgtran-ai INSTALLS (not executes) into every supported agent. The system defines a closed set of lifecycle events, a binding schema with structured `when` conditions, a token-aware built-in default rule set, and mechanism for rendering rules as plain instructional text and injecting them idempotently into all supported agent assets through the existing installer/injection path.
 
 ## Key Concepts
 
@@ -62,7 +62,7 @@
 
 **Renderer**: `internal/components/sdd/triggerrules.go` — RenderTriggerRules(set) -> pure, deterministic, plain-text directive block. No markers (caller wraps via InjectMarkdownSection).
 
-**Injection**: `internal/components/sdd/inject.go` step 1c — Injects rendered block under section ID `gentle-ai:trigger-rules` into all supported agents (claude, opencode, cursor, codex, gemini, vscode, windsurf, antigravity). Per-adapter routes:
+**Injection**: `internal/components/sdd/inject.go` step 1c — Injects rendered block under section ID `hgtran-ai:trigger-rules` into all supported agents (claude, opencode, cursor, codex, gemini, vscode, windsurf, antigravity). Per-adapter routes:
 - Jinja agents (Kimi/Qwen): write standalone module `trigger-rules.md`, add `{% include %}` to template
 - System-prompt agents: InjectMarkdownSection(existing, "trigger-rules", rendered)
 - OpenCode/Kilocode: append marker-wrapped block to gentle-orchestrator prompt
@@ -71,11 +71,11 @@
 
 ## Non-Goals (Absence Requirements)
 
-- No execution of agents by gentle-ai
+- No execution of agents by hgtran-ai
 - No git hook generation
 - No event bus, daemon, listener, or scheduler
 - No hard gates or blocking behavior
-- No `when` evaluation engine in gentle-ai (conditions rendered as instruction text only)
+- No `when` evaluation engine in hgtran-ai (conditions rendered as instruction text only)
 - No new parse dependencies (YAML/TOML/INI)
 
 ## Testing Strategy (Strict TDD)
@@ -97,4 +97,4 @@
 
 ## Organic Nature
 
-gentle-ai remains a pure installer/injector. It renders rules as plain instruction text for AI orchestrators to read and decide whether to follow. Orchestrators may ignore recommendations; gentle-ai does not execute, block, or verify compliance. The `when` conditions are rendered as human-readable constraints, never evaluated by the binary.
+hgtran-ai remains a pure installer/injector. It renders rules as plain instruction text for AI orchestrators to read and decide whether to follow. Orchestrators may ignore recommendations; hgtran-ai does not execute, block, or verify compliance. The `when` conditions are rendered as human-readable constraints, never evaluated by the binary.

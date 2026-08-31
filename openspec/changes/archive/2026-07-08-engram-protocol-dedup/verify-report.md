@@ -87,7 +87,7 @@ No deviation breaks a spec requirement. All are additive engineering choices, co
 
 | Fixture | Expected | Verified |
 |---------|----------|----------|
-| `engram-claude-claudemd.golden` | Slim content (~11-13 lines) | ✅ Read directly — contains the exact Decision 2 slim block, `<!-- gentle-ai:engram-protocol -->` marker, no "needs_review"/full-only text. |
+| `engram-claude-claudemd.golden` | Slim content (~11-13 lines) | ✅ Read directly — contains the exact Decision 2 slim block, `<!-- hgtran-ai:engram-protocol -->` marker, no "needs_review"/full-only text. |
 | `combined-claude-claudemd.golden` | Also carries slim (Claude embeds engram-protocol section) | ✅ `git diff --stat` shows regeneration (112 lines changed), consistent with slim swap. |
 | `combined-windsurf-global-rules.golden` | Byte-stable vs. HEAD (Windsurf stays full) | ✅ `git diff HEAD -- testdata/golden/combined-windsurf-global-rules.golden` — zero output, confirmed byte-stable. |
 | `engram-codex-instructions.golden` (new) | Full protocol + passive capture, content growth vs. old 104-line asset | ✅ 113 lines confirmed; PASSIVE CAPTURE block content independently diffed byte-identical to HEAD's `codex/engram-instructions.md` PASSIVE CAPTURE section (only reordered, per Decision 3's concatenation-not-replacement design). |

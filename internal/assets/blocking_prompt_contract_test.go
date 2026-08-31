@@ -142,15 +142,15 @@ func TestCoordinatorOrchestratorsCarryGentleAIProviderDefectHandoff(t *testing.T
 		text string
 	}{
 		{name: "admissibility before lossless relay", text: "Before losslessly relaying any blocking choice envelope, classify its semantic admissibility"},
-		{name: "direct repair prohibition", text: "never offer to switch to, inspect, modify, or directly repair the Gentle AI repository"},
+		{name: "direct repair prohibition", text: "never offer to switch to, inspect, modify, or directly repair the Hgtran AI repository"},
 		{name: "invalid upstream envelope", text: "reject it as semantically inadmissible and issue this separate orchestrator-owned handoff envelope"},
 		{name: "localized consent", text: "Ask the user first, in the active orchestrator conversation language"},
 		{name: "explicit consent", text: "for explicit consent to report the apparent defect"},
 		{name: "exact choice shape", text: "one single-select blocking envelope with exactly two semantic choices"},
 		{name: "localized labels", text: "Localize their labels and descriptions without changing these semantics"},
 		{name: "no internal labels", text: "do not expose machine or internal codes in user-facing labels"},
-		{name: "report choice", text: "**Report the Gentle AI defect**: Only after explicit consent and that final privacy scan"},
-		{name: "fixed repository", text: "`Gentleman-Programming/gentle-ai`"},
+		{name: "report choice", text: "**Report the Hgtran AI defect**: Only after explicit consent and that final privacy scan"},
+		{name: "fixed repository", text: "`Gentleman-Programming/hgtran-ai`"},
 		{name: "open and closed duplicate search", text: "search open and closed issues"},
 		{name: "create new automated report", text: "create a new automated provider-defect report"},
 		{name: "confirmed creation label precondition", text: "Confirmed creation is a HARD precondition for labeling: apply `gentle-report` only when the GitHub create operation confirms a newly-created issue identity/URL."},
@@ -293,7 +293,7 @@ func providerDefectHandoffLine(t *testing.T, contract, prefix string) string {
 
 func providerDefectHandoffSection(t *testing.T, path string) string {
 	t.Helper()
-	const heading = "#### Gentle AI Provider Defect Handoff (MANDATORY)"
+	const heading = "#### Hgtran AI Provider Defect Handoff (MANDATORY)"
 	content := MustRead(path)
 	start := strings.Index(content, heading)
 	if start == -1 {

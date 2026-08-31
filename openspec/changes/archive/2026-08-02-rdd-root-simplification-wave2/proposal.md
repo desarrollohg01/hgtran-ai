@@ -26,7 +26,7 @@ Wave 2 makes exactly one classified disposition executable, with the smallest pr
 
 ## Coverage
 
-`absorbed-into-wave-2`: gentle-ai #1656, #1892, #2014 (deferred), and PR #2111 (superseded). Wave 2 closes only the leaf case.
+`absorbed-into-wave-2`: hgtran-ai #1656, #1892, #2014 (deferred), and PR #2111 (superseded). Wave 2 closes only the leaf case.
 
 ## Capabilities
 

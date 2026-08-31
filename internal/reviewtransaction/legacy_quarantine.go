@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	legacyQuarantineAuthorizationSchema        = "gentle-ai.review-legacy-quarantine-authorization/v1"
+	legacyQuarantineAuthorizationSchema        = "hgtran-ai.review-legacy-quarantine-authorization/v1"
 	LegacyMalformedFreezeQuarantineDisposition = "quarantine-malformed-freeze-event"
 	legacyMalformedFreezeDiagnostic            = "historical findings freeze changed unrelated transaction state"
 )

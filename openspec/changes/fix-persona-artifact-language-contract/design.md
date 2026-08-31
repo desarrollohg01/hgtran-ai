@@ -69,7 +69,7 @@ Byte-for-byte equality is optional and should only be used if current examples/f
 
 ```mermaid
 sequenceDiagram
-    participant CLI as gentle-ai install
+    participant CLI as hgtran-ai install
     participant Assets as internal/assets embed FS
     participant SDD as internal/components/sdd.Inject
     participant Skills as internal/components/skills.Inject
@@ -89,7 +89,7 @@ sequenceDiagram
 
 ```mermaid
 sequenceDiagram
-    participant CLI as gentle-ai sync
+    participant CLI as hgtran-ai sync
     participant Assets as Updated embed FS
     participant SDD as sdd.Inject
     participant Skills as skills.Inject

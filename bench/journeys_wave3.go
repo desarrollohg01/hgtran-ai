@@ -7,7 +7,7 @@ import (
 )
 
 // Wave 3 Slice 5 (task 6.7): black-box new-lineage lifecycle journeys.
-// GENTLE_AI_RDD_NEW_LINEAGE is opted into per-journey via
+// HGTRAN_AI_RDD_NEW_LINEAGE is opted into per-journey via
 // Journey.NewLineageActivation (bench/runner.go) — every wave1/wave2/edge/sdd
 // journey stays on the byte-identical legacy `review start` path.
 //

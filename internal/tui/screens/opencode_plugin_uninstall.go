@@ -177,7 +177,7 @@ func pluginDisplayName(id model.OpenCodeCommunityPluginID) string {
 	}
 	switch id {
 	case model.OpenCodePluginGentleLogo:
-		return "Gentle Logo"
+		return "Hgtran Logo"
 	}
 	return string(id)
 }

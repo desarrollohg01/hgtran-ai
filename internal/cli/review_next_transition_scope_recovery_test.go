@@ -15,7 +15,7 @@ import (
 // operator's staged revision of the exact reviewed path set, negotiated status
 // answered fresh_target_ready, the printed START answered blocked-scope-action
 // at exit 0 having created nothing, and status then printed the same START
-// again. The gentle-ai.review-recovery-authorization/v1 collection was
+// again. The hgtran-ai.review-recovery-authorization/v1 collection was
 // reachable only after status had already selected recovery, which this shape
 // never did.
 //
@@ -85,7 +85,7 @@ func TestNegotiatedStatusRoutesApprovedScopeChangeToBoundRecovery(t *testing.T) 
 		t.Fatalf("next transition is not the bound recovery collection:\n%s", statusOut.String())
 	}
 	input := transition.Collect.Inputs[0]
-	if input.Schema != "gentle-ai.review-recovery-authorization/v1" || input.CaptureOperation != "external.authorize_recovery" {
+	if input.Schema != "hgtran-ai.review-recovery-authorization/v1" || input.CaptureOperation != "external.authorize_recovery" {
 		t.Fatalf("collection input = %q via %q, want the recovery authorization schema", input.Schema, input.CaptureOperation)
 	}
 	bound := map[string]string{}
@@ -101,7 +101,7 @@ func TestNegotiatedStatusRoutesApprovedScopeChangeToBoundRecovery(t *testing.T) 
 	// run verbatim, creates the generation-2 successor: the loop is closed
 	// by an exit the operator can actually take.
 	authorization := strings.Join([]string{
-		"gentle-ai.review-recovery-authorization/v1",
+		"hgtran-ai.review-recovery-authorization/v1",
 		"predecessor_lineage=" + bound["lineage"],
 		"predecessor_revision=" + bound["expected-revision"],
 		"target_identity=" + bound["target"],
@@ -198,7 +198,7 @@ func TestNegotiatedStatusRecoversApprovedFeatureOntoCurrentBase(t *testing.T) {
 		bound[argument.Name] = argument.Value
 	}
 	authorization := strings.Join([]string{
-		"gentle-ai.review-recovery-authorization/v1",
+		"hgtran-ai.review-recovery-authorization/v1",
 		"predecessor_lineage=" + bound["lineage"],
 		"predecessor_revision=" + bound["expected-revision"],
 		"target_identity=" + bound["target"],

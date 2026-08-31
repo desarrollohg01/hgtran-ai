@@ -3,7 +3,7 @@ description: Fast-forward all SDD planning phases — proposal through tasks
 ---
 
 Read `~/.claude/skills/_shared/sdd-orchestrator-workflow.md` FIRST, then treat it as the authoritative SDD workflow instructions for this command.
-The Claude Code session model is controlled by Claude Code; Gentle AI only configures models for Agent tool calls to phase sub-agents.
+The Claude Code session model is controlled by Claude Code; Hgtran AI only configures models for Agent tool calls to phase sub-agents.
 
 WORKFLOW:
 Honor the cached execution mode from SDD Session Preflight.

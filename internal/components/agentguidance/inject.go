@@ -62,7 +62,7 @@ type templateBootstrapper interface {
 // land the guidance in a scope the agent never loads, or inside a template its
 // own installer rewrites from an embedded asset on the next sync.
 //
-// Only the marked section is owned by Gentle AI: everything a user wrote around
+// Only the marked section is owned by Hgtran AI: everything a user wrote around
 // it is preserved verbatim, and a second identical injection is a no-op.
 func InjectRouting(targetDir string, agent model.AgentID) (Result, error) {
 	// Render before resolving the delivery so an unsupported agent is rejected

@@ -66,7 +66,7 @@ func TestCheckAllWithCooldown_StaleCacheRefreshes(t *testing.T) {
 		t.Fatalf("state.Write() error = %v", err)
 	}
 
-	stubResults := []UpdateResult{{Tool: ToolInfo{Name: "gentle-ai"}, Status: UpToDate}}
+	stubResults := []UpdateResult{{Tool: ToolInfo{Name: "hgtran-ai"}, Status: UpToDate}}
 	checkCalled := 0
 	stubCheckAll := func(_ context.Context, _ string, _ system.PlatformProfile) []UpdateResult {
 		checkCalled++
@@ -139,7 +139,7 @@ func TestCheckAllWithCooldown_FailedCheckDoesNotAdvanceTimestamp(t *testing.T) {
 
 	// Return a failed-check result (all tools failed).
 	failedResults := []UpdateResult{
-		{Tool: ToolInfo{Name: "gentle-ai"}, Status: CheckFailed},
+		{Tool: ToolInfo{Name: "hgtran-ai"}, Status: CheckFailed},
 	}
 	stubCheckAll := func(_ context.Context, _ string, _ system.PlatformProfile) []UpdateResult {
 		return failedResults
@@ -181,7 +181,7 @@ func TestCheckAllWithCooldown_EmptyHomeDirAlwaysChecks(t *testing.T) {
 	checkCalled := 0
 	stubCheckAll := func(_ context.Context, _ string, _ system.PlatformProfile) []UpdateResult {
 		checkCalled++
-		return []UpdateResult{{Tool: ToolInfo{Name: "gentle-ai"}, Status: UpToDate}}
+		return []UpdateResult{{Tool: ToolInfo{Name: "hgtran-ai"}, Status: UpToDate}}
 	}
 
 	results := CheckAllWithCooldown(context.Background(), "1.0.0", profile, "", 6*time.Hour,
@@ -285,7 +285,7 @@ func TestCheckAllWithCooldown_NonMissingReadErrorSkipsWrite(t *testing.T) {
 
 	stubCheckAll := func(_ context.Context, _ string, _ system.PlatformProfile) []UpdateResult {
 		// Return a successful result — checkSucceeded will be true.
-		return []UpdateResult{{Tool: ToolInfo{Name: "gentle-ai"}, Status: UpToDate}}
+		return []UpdateResult{{Tool: ToolInfo{Name: "hgtran-ai"}, Status: UpToDate}}
 	}
 
 	// stale first read: corrupt file → read error → always-check (skip cooldown).

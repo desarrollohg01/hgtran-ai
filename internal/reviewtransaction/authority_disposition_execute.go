@@ -15,7 +15,7 @@ import (
 )
 
 // AuthorityDispositionProofSchema identifies AuthorityDispositionProof's shape.
-const AuthorityDispositionProofSchema = "gentle-ai.review-authority-disposition-proof/v1"
+const AuthorityDispositionProofSchema = "hgtran-ai.review-authority-disposition-proof/v1"
 
 // errAuthorityDispositionCardinality is returned whenever a plan's closure
 // does not have cardinality exactly one — Wave 2's whole executor scope
@@ -287,7 +287,7 @@ func discoverAuthorityDispositionRecord(ctx context.Context, base, seed, planDig
 			continue
 		}
 		if matched != nil {
-			return CompactReclaimRecord{}, false, errors.New("authority disposition execution refused: duplicate quarantine records for the same plan digest; run `gentle-ai review inspect-authority` and escalate the report")
+			return CompactReclaimRecord{}, false, errors.New("authority disposition execution refused: duplicate quarantine records for the same plan digest; run `hgtran-ai review inspect-authority` and escalate the report")
 		}
 		found := record
 		matched = &found
@@ -317,7 +317,7 @@ func resumeAuthorityDispositionRecord(ctx context.Context, record CompactReclaim
 		return record, err
 	}
 	if sourceExists == residueExists {
-		return record, errors.New("authority disposition execution refused: ambiguous prepared residue state; run `gentle-ai review inspect-authority` and escalate the report")
+		return record, errors.New("authority disposition execution refused: ambiguous prepared residue state; run `hgtran-ai review inspect-authority` and escalate the report")
 	}
 	if sourceExists {
 		if err := reclaimQuarantineResidue(record.SourcePath, residuePath); err != nil {
@@ -351,18 +351,18 @@ func resumeAuthorityDispositionRecord(ctx context.Context, record CompactReclaim
 // Success").
 func readBackAuthorityDisposition(ctx context.Context, root string, record CompactReclaimRecord) (CompactReclaimRecord, error) {
 	if record.Status != CompactReclaimCommitted {
-		return record, fmt.Errorf("authority disposition execution refused: readback observed a non-committed record; run `gentle-ai review inspect-authority --cwd %q` and escalate the report", root)
+		return record, fmt.Errorf("authority disposition execution refused: readback observed a non-committed record; run `hgtran-ai review inspect-authority --cwd %q` and escalate the report", root)
 	}
 	report, err := InspectCompactRecoveryEdges(ctx, root)
 	if err != nil {
 		return record, fmt.Errorf("authority disposition readback: %w", err)
 	}
 	if !report.Complete || !report.Valid {
-		return record, fmt.Errorf("authority disposition execution refused: retained-graph readback did not revalidate cleanly; run `gentle-ai review inspect-authority --cwd %q` and escalate the report", root)
+		return record, fmt.Errorf("authority disposition execution refused: retained-graph readback did not revalidate cleanly; run `hgtran-ai review inspect-authority --cwd %q` and escalate the report", root)
 	}
 	for _, edge := range report.Edges {
 		if edge.PredecessorLineageID == record.LineageID || edge.SuccessorLineageID == record.LineageID {
-			return record, fmt.Errorf("authority disposition execution refused: retained graph still references the quarantined entry; run `gentle-ai review inspect-authority --cwd %q` and escalate the report", root)
+			return record, fmt.Errorf("authority disposition execution refused: retained graph still references the quarantined entry; run `hgtran-ai review inspect-authority --cwd %q` and escalate the report", root)
 		}
 	}
 	return record, nil

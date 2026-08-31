@@ -3,7 +3,7 @@
 **Change**: contextual-skill-loading
 **Mode**: Strict TDD
 **Date**: 2026-05-05 (re-verify after reconciliation commit 862d6f0)
-**Worktree**: /Users/alanbuscaglia/work/gentle-ai-claude-skills
+**Worktree**: /Users/alanbuscaglia/work/hgtran-ai-claude-skills
 **Branch**: feat/claude-contextual-skill-loading
 **HEAD**: 862d6f017888e96dcb0fa16ab4261362be681333
 **Commits in scope**: 7 (540d32b, 1b2b374, 45dc833, 31ca188, 131707f, 9bd58d9, 862d6f0)

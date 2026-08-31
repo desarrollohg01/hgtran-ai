@@ -95,7 +95,7 @@ func abandonCLIArgs(repo, revision, authorization string) []string {
 }
 
 func abandonCLIBinding(revision, snapshotIdentity string) string {
-	return "gentle-ai.review-abandon-authorization/v1\nlineage=abandon-accidental\nrevision=" + revision +
+	return "hgtran-ai.review-abandon-authorization/v1\nlineage=abandon-accidental\nrevision=" + revision +
 		"\nsnapshot_identity=" + snapshotIdentity +
 		"\nactor=maintainer@example.com\nreason=retire accidental pristine lineage"
 }

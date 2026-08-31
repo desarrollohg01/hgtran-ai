@@ -25,7 +25,7 @@ Wave 3 promotes those parts into the only owner of NEW lineages: one `ReviewCore
 
 ## Coverage
 
-22 `absorbed-into-wave-3` rows (gentle-ai #1215, #1259, #1264, #1308, #1384, #1454, #1464, #1484, #1517, #1519, #1528, #1554, #1555, #1575, #1577, #1579, #1583, #1611, #2050, #2061, #2103, #2233). Only **#1308** is OPEN — candidate-bound evidence for materially distinct behavior, which the causal-admission requirement addresses directly. The other 21 are closed/merged history; Wave 3 proves the mechanism, it closes nothing.
+22 `absorbed-into-wave-3` rows (hgtran-ai #1215, #1259, #1264, #1308, #1384, #1454, #1464, #1484, #1517, #1519, #1528, #1554, #1555, #1575, #1577, #1579, #1583, #1611, #2050, #2061, #2103, #2233). Only **#1308** is OPEN — candidate-bound evidence for materially distinct behavior, which the causal-admission requirement addresses directly. The other 21 are closed/merged history; Wave 3 proves the mechanism, it closes nothing.
 
 ## Capabilities
 
@@ -93,9 +93,9 @@ Turn the activation switch off: every new `start` takes the legacy path, no new-
 
 Auto execution mode — asked here rather than interactively. Assumptions stand unless corrected.
 
-1. **Consent UX shape for the new start.** Reuse the existing `gentle-ai.review-integration.consent/v2` envelope verbatim, or issue a new-lineage envelope? *Assumption: reuse v2 unchanged. It already carries candidate, tier, lenses, budget, and answer tokens; a second envelope would fork the one surface adapters implement, and Wave 4 is the wave allowed to change consumer contracts.*
+1. **Consent UX shape for the new start.** Reuse the existing `hgtran-ai.review-integration.consent/v2` envelope verbatim, or issue a new-lineage envelope? *Assumption: reuse v2 unchanged. It already carries candidate, tier, lenses, budget, and answer tokens; a second envelope would fork the one surface adapters implement, and Wave 4 is the wave allowed to change consumer contracts.*
 2. **Tier thresholds: reuse or redefine.** Wave 3 could re-derive low/standard/high risk selection. *Assumption: reuse the existing threshold logic unchanged and freeze the result into the new record. Redefining risk selection in the same wave that replaces the state machine makes any journey divergence unattributable.*
 3. **Receipt schema versioning.** Does `review-receipt.json` get a new schema identity, or extend the current receipt schema? *Assumption: a distinct new-lineage schema identity (e.g. `…review-receipt/v1`) with a `lineage_kind` discriminator. Extending the current schema makes "new lineages stop writing legacy artifacts" unprovable and blocks Wave 7 deletion.*
-4. **Activation switch identity and default.** Env switch (Wave 1 precedent) or a persisted repo-level setting? *Assumption: env switch, default OFF, distinct from `GENTLE_AI_RDD_SHADOW` and from the user-owned RDD kill switch — three switches with three meanings, never overloaded.*
+4. **Activation switch identity and default.** Env switch (Wave 1 precedent) or a persisted repo-level setting? *Assumption: env switch, default OFF, distinct from `HGTRAN_AI_RDD_SHADOW` and from the user-owned RDD kill switch — three switches with three meanings, never overloaded.*
 5. **Gate scope in this wave.** Do all five gates gain the new-lineage branch now, or only the two needed to prove a journey (`pre-commit`, `pre-pr`)? *Assumption: all five, because the exit evidence names all five and a partial set would leave a new-lineage candidate undeliverable at `release`.*
 6. **Wave-4 API surface now or later.** Should the post-verify offer entry point ship in Wave 3 (unwired) or wait? *Assumption: ship the API shape unwired behind the deadcode ratchet, so Wave 4 is a consumer change only — but no SDD call site in this wave.*

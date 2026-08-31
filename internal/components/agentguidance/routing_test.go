@@ -31,7 +31,7 @@ var retiredRemoteControlPlaneVocabulary = []string{
 	"work-verification-decide",
 	"workrun",
 	"connector",
-	"GENTLE_AI_PRODUCTIVE_RUNTIME",
+	"HGTRAN_AI_PRODUCTIVE_RUNTIME",
 	"dormant",
 	"advertised",
 	"exposure",
@@ -136,7 +136,7 @@ func TestRenderRoutingMakesTheReviewKillSwitchDiscoverable(t *testing.T) {
 			}
 
 			for _, want := range []string{
-				"gentle-ai review mode enable|disable|status",
+				"hgtran-ai review mode enable|disable|status",
 				"`status` is read-only",
 				"deciding source and the effective mode",
 			} {

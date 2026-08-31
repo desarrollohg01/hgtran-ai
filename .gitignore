@@ -1,5 +1,5 @@
 # Binaries
-/gentle-ai
+/hgtran-ai
 *.exe
 *.dll
 *.so
@@ -24,8 +24,8 @@ Thumbs.db
 
 # Docker
 *.tar
-cmd/gentle-ai/main
-cmd/gentle-ai/gentle-ai
+cmd/hgtran-ai/main
+cmd/hgtran-ai/hgtran-ai
 dist/
 
 # Agent tooling metadata (generated per-user, not product code)

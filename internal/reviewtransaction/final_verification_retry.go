@@ -20,10 +20,10 @@ import (
 )
 
 const (
-	FinalVerificationIncidentSchema                   = "gentle-ai.review-final-verification-incident/v1"
+	FinalVerificationIncidentSchema                   = "hgtran-ai.review-final-verification-incident/v1"
 	FinalVerificationIncidentProceduralToolingFailure = "procedural_tooling_failure"
-	CompactFinalVerificationRetryProofSchema          = "gentle-ai.review-final-verification-retry-proof/v1"
-	FinalVerificationRetryAuthorizationSchema         = "gentle-ai.review-final-verification-retry-authorization/v1"
+	CompactFinalVerificationRetryProofSchema          = "hgtran-ai.review-final-verification-retry-proof/v1"
+	FinalVerificationRetryAuthorizationSchema         = "hgtran-ai.review-final-verification-retry-authorization/v1"
 	CompactFinalEvidenceDir                           = "final-evidence"
 	CompactFinalEvidenceFile                          = "verification.txt"
 )
@@ -504,7 +504,7 @@ func resolveFinalVerificationRetryStores(ctx context.Context, repo, predecessorL
 	if err != nil {
 		return CompactStore{}, CompactStore{}, "", fmt.Errorf("resolve final-verification retry repository identity: %w", err)
 	}
-	authorityRoot, err := canonicalLocatorDirectory(filepath.Join(identity.GitCommonDir, "gentle-ai", "review-transactions"))
+	authorityRoot, err := canonicalLocatorDirectory(filepath.Join(identity.GitCommonDir, "hgtran-ai", "review-transactions"))
 	if err != nil || !locatorPathWithin(identity.GitCommonDir, authorityRoot) {
 		return CompactStore{}, CompactStore{}, "", errors.New("final-verification retry authority root is unavailable or inconsistent")
 	}

@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	VerificationEvidenceRecordSchema  = "gentle-ai.review-verification-evidence/v2"
+	VerificationEvidenceRecordSchema  = "hgtran-ai.review-verification-evidence/v2"
 	VerificationEvidenceRecordVersion = 2
 	CompactFinalEvidenceRecordFile    = "record.json"
 	verificationEvidenceRecordLimit   = 1 << 20
@@ -103,7 +103,7 @@ func verificationEvidenceRecordDigest(record VerificationEvidenceRecord) string 
 		return ""
 	}
 	hash := sha256.New()
-	_, _ = hash.Write([]byte("gentle-ai.review-verification-evidence-record/v2"))
+	_, _ = hash.Write([]byte("hgtran-ai.review-verification-evidence-record/v2"))
 	_, _ = hash.Write([]byte{0})
 	_, _ = hash.Write(payload)
 	return "sha256:" + hex.EncodeToString(hash.Sum(nil))

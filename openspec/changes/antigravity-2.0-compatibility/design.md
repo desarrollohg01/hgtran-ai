@@ -14,7 +14,7 @@ Use the existing public `antigravity` agent ID for the new Antigravity implement
 | MCP config | `~/.gemini/antigravity-cli/mcp_config.json` |
 | Skills | `~/.gemini/antigravity-cli/skills/` |
 | Shared prompt/persona | `~/.gemini/GEMINI.md` |
-| Engram plugin | `~/.gemini/antigravity-cli/plugins/gentle-ai-engram/` |
+| Engram plugin | `~/.gemini/antigravity-cli/plugins/hgtran-ai-engram/` |
 
 ## Runtime model
 

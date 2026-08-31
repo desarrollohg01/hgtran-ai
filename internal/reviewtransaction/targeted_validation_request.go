@@ -10,8 +10,8 @@ import (
 )
 
 const (
-	TargetedValidationRequestSchema   = "gentle-ai.review-targeted-validation-request/v1"
-	TargetedValidationRequestSchemaID = "https://gentle-ai.dev/contracts/review-integration/v1/schemas/targeted-validation-request.schema.json"
+	TargetedValidationRequestSchema   = "hgtran-ai.review-targeted-validation-request/v1"
+	TargetedValidationRequestSchemaID = "https://hgtran-ai.dev/contracts/review-integration/v1/schemas/targeted-validation-request.schema.json"
 )
 
 // TargetedValidationRequest is the complete provider-owned input for a scoped
@@ -219,6 +219,6 @@ func targetedValidationRequestHash(request TargetedValidationRequest) string {
 		CorrectionPathsDigest: request.CorrectionPathsDigest,
 	}
 	payload, _ := json.Marshal(preimage)
-	sum := sha256.Sum256(append([]byte("gentle-ai.review-targeted-validation-request/v1\x00"), payload...))
+	sum := sha256.Sum256(append([]byte("hgtran-ai.review-targeted-validation-request/v1\x00"), payload...))
 	return "sha256:" + hex.EncodeToString(sum[:])
 }

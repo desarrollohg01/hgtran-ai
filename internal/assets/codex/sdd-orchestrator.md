@@ -27,13 +27,13 @@ When a sub-agent or tool returns a user-facing blocking prompt or menu, preserve
 - Fallback: If a native UI is unavailable, denied, the runtime is noninteractive, or the complete envelope is oversized or otherwise unrepresentable because of question-count, option-count, or text-length limits, emit the COMPLETE choice envelope as a plain chat or terminal response. Include the required answer syntax and why the input blocks progress. Then STOP. Do not choose, default, infer, launch dependent work, or continue.
 - Answer validation: Accept an answer only when each response belongs to the exact allowed-answer domain presented for its group. Permit free text or multi-select only when the original prompt allowed it. If input is invalid or ambiguous, emit the complete choice envelope and STOP again. Return a valid answer to the same blocked actor exactly once.
 
-#### Gentle AI Provider Defect Handoff (MANDATORY)
+#### Hgtran AI Provider Defect Handoff (MANDATORY)
 
-Before losslessly relaying any blocking choice envelope, classify its semantic admissibility. When the consumer workflow appears blocked by a Gentle AI provider or tool defect, never offer to switch to, inspect, modify, or directly repair the Gentle AI repository from that workflow. If an upstream envelope offers direct repair, do not silently mutate it: reject it as semantically inadmissible and issue this separate orchestrator-owned handoff envelope.
+Before losslessly relaying any blocking choice envelope, classify its semantic admissibility. When the consumer workflow appears blocked by a Hgtran AI provider or tool defect, never offer to switch to, inspect, modify, or directly repair the Hgtran AI repository from that workflow. If an upstream envelope offers direct repair, do not silently mutate it: reject it as semantically inadmissible and issue this separate orchestrator-owned handoff envelope.
 
 - Ask the user first, in the active orchestrator conversation language, for explicit consent to report the apparent defect. Present one single-select blocking envelope with exactly two semantic choices. Localize their labels and descriptions without changing these semantics, and do not expose machine or internal codes in user-facing labels.
 - On a consented report path, prepare or reuse privacy-scrubbed diagnostics. Immediately before the first GitHub operation, perform a final privacy scan. This scan precedes the duplicate search, report creation, and occurrence comment. Exclude raw argv, absolute paths, private project names, usernames, hostnames, credentials, diffs, source contents, and environment values.
-  1. **Report the Gentle AI defect**: Only after explicit consent and that final privacy scan, search open and closed issues in `Gentleman-Programming/gentle-ai`.
+  1. **Report the Hgtran AI defect**: Only after explicit consent and that final privacy scan, search open and closed issues in `Gentleman-Programming/hgtran-ai`.
      - Only a completed duplicate lookup with a definitive result may branch to a write. If it fails, is ambiguous, incomplete, times out, lacks permission, or has an unknown outcome, STOP with all consumer state preserved. Do not create, comment, update, or label any issue.
      - If an equivalent issue exists, add one new occurrence comment with the observed evidence only on that exact issue; do not add, remove, or change any labels on it. If no equivalent issue exists, create a new automated provider-defect report. Do not apply `gentle-report` to manual issues, #2211, historical issues, pull requests, or reports created by unrelated workflows.
      - Confirmed creation is a HARD precondition for labeling: apply `gentle-report` only when the GitHub create operation confirms a newly-created issue identity/URL. Never infer creation from output text alone. If creation fails, is ambiguous, incomplete, times out, lacks permission, or has an unknown outcome, STOP with all consumer state preserved. Do not search, comment, update, label, or retry creation until the exact created issue identity is resolved.
@@ -105,7 +105,7 @@ session exposes the Codex multi-agent v2 collaboration surface:
   below.
 - Otherwise → use the **Graceful Degradation Path** below.
 
-`features.multi_agent` is enabled by default (gentle-ai writes `multi_agent = true` during installation) so SDD delegates phases and the per-phase reasoning_effort table applies. Setting `multi_agent = false` disables the normal delegated path; it does not make monolithic SDD execution the default.
+`features.multi_agent` is enabled by default (hgtran-ai writes `multi_agent = true` during installation) so SDD delegates phases and the per-phase reasoning_effort table applies. Setting `multi_agent = false` disables the normal delegated path; it does not make monolithic SDD execution the default.
 
 ---
 
@@ -135,7 +135,7 @@ explicitly requested background execution.
 ### Phase delegation pattern
 
 For each phase:
-1. Look up the phase's `reasoning_effort` **AND** `model` values in the **Model Profiles** table below (the values are preset-driven and written by gentle-ai — do not assume fixed tiers). This applies both for preset (per-carril) tables and Custom (per-phase) tables — always pass the model and effort shown in the table for that phase.
+1. Look up the phase's `reasoning_effort` **AND** `model` values in the **Model Profiles** table below (the values are preset-driven and written by hgtran-ai — do not assume fixed tiers). This applies both for preset (per-carril) tables and Custom (per-phase) tables — always pass the model and effort shown in the table for that phase.
 2. `spawn_agent` with `task_name`, the phase prompt as `message`, `reasoning_effort` set to the tier value, and `model` set to the table's Model value for that phase. The `spawn_agent` tool has NO `profile` parameter — tier selection is the `reasoning_effort` argument, not a profile name.
 3. Set `fork_turns: "none"` whenever you override `reasoning_effort` or `model`. A full-history fork (the default) REJECTS these overrides, so the override is silently ignored unless `fork_turns` is `"none"`.
 4. Repeat `wait_agent(timeout_ms=<bounded timeout>)` and `list_agents()` until the target agent reaches a terminal state.
@@ -243,7 +243,7 @@ Meta-commands (type directly — orchestrator handles them, won't appear in auto
 
 ### Native SDD Dispatcher Guard
 
-Before routing, continuing, applying, verifying, or archiving an SDD change, **first determine this session's artifact store** from the cached Session Preflight / Artifact Store Mode choice. If the store is not yet established, resolve it before continuing — check `sdd-init/{project}` in Engram and treat the change as `engram`-backed when no OpenSpec store was selected. **Then scope the native dispatcher by artifact store.** The native dispatcher (`gentle-ai sdd-continue [change] --cwd <repo>` or `gentle-ai sdd-status [change] --cwd <repo> --json --instructions`) reads ONLY OpenSpec file artifacts under `openspec/changes/` and always emits `artifactStore: openspec`; it cannot observe Engram-backed changes. **When the session artifact store is `engram`, do NOT invoke the dispatcher at all** — it is blind to the change and its `blocked`, `Active OpenSpec change not found`, or `nextRecommended: sdd-new` output is meaningless; resolve status entirely from Engram (`mem_search` + `mem_get_observation` on the change's topic keys such as `sdd/{change-name}/tasks`) using the manual status schema. Only when the session artifact store is `openspec` or `hybrid` should you run the dispatcher when `gentle-ai` is available and treat its native status JSON as authoritative over prompt inference. Route only by `nextRecommended` and dependency states; never infer from free text. If `blockedReasons` is non-empty, do not proceed to apply, archive, or terminal work. If `nextRecommended` is `verify`, verification/remediation may run only to refresh evidence; if `nextRecommended` is `resolve-blockers`, report `blockedReasons` and stop; if `nextRecommended` is a planning token (`propose`, `spec`, `design`, or `tasks`), launch the corresponding planning phase. If the binary is unavailable, fall back to the existing prompt contract and manual status schema.
+Before routing, continuing, applying, verifying, or archiving an SDD change, **first determine this session's artifact store** from the cached Session Preflight / Artifact Store Mode choice. If the store is not yet established, resolve it before continuing — check `sdd-init/{project}` in Engram and treat the change as `engram`-backed when no OpenSpec store was selected. **Then scope the native dispatcher by artifact store.** The native dispatcher (`hgtran-ai sdd-continue [change] --cwd <repo>` or `hgtran-ai sdd-status [change] --cwd <repo> --json --instructions`) reads ONLY OpenSpec file artifacts under `openspec/changes/` and always emits `artifactStore: openspec`; it cannot observe Engram-backed changes. **When the session artifact store is `engram`, do NOT invoke the dispatcher at all** — it is blind to the change and its `blocked`, `Active OpenSpec change not found`, or `nextRecommended: sdd-new` output is meaningless; resolve status entirely from Engram (`mem_search` + `mem_get_observation` on the change's topic keys such as `sdd/{change-name}/tasks`) using the manual status schema. Only when the session artifact store is `openspec` or `hybrid` should you run the dispatcher when `hgtran-ai` is available and treat its native status JSON as authoritative over prompt inference. Route only by `nextRecommended` and dependency states; never infer from free text. If `blockedReasons` is non-empty, do not proceed to apply, archive, or terminal work. If `nextRecommended` is `verify`, verification/remediation may run only to refresh evidence; if `nextRecommended` is `resolve-blockers`, report `blockedReasons` and stop; if `nextRecommended` is a planning token (`propose`, `spec`, `design`, or `tasks`), launch the corresponding planning phase. If the binary is unavailable, fall back to the existing prompt contract and manual status schema.
 
 ### SDD Init Guard (MANDATORY)
 
@@ -307,9 +307,9 @@ The gatekeeper runs in addition to the Review Workload Guard and the Mandatory D
 
 Use the provider-owned Git-common-dir runtime ledger for every runtime-bearing `sdd-apply`, `sdd-verify`, or remediation continuation. It is the single attempt/budget authority for both OpenSpec and Engram; never persist caller-authored counters in OpenSpec files, Engram topics, prompts, or Pi state.
 
-1. Before an actor or harness launch, call `gentle-ai sdd-attempt acquire --cwd <repo> --change <change> --request-id <id> --work-unit <label> --evidence-goal <goal> --max-attempts <count> --max-changed-lines <count>`.
+1. Before an actor or harness launch, call `hgtran-ai sdd-attempt acquire --cwd <repo> --change <change> --request-id <id> --work-unit <label> --evidence-goal <goal> --max-attempts <count> --max-changed-lines <count>`.
 2. Launch only when acquire returns `state: proceed`, and retain its opaque `token`. `blocked` or `complete` stops the launch.
-3. After the external run, call `gentle-ai sdd-attempt settle --cwd <repo> --change <change> --token <token> --request-id <settle-id> ...` with a request ID distinct from the acquire operation's request ID, outcome, and bounded evidence. Reuse each operation's own ID only for its idempotent replay. Settle derives native binding/remediation inputs; pass `--successor-lineage` only for a distinct approved successor, otherwise the bound lineage remains its own successor.
+3. After the external run, call `hgtran-ai sdd-attempt settle --cwd <repo> --change <change> --token <token> --request-id <settle-id> ...` with a request ID distinct from the acquire operation's request ID, outcome, and bounded evidence. Reuse each operation's own ID only for its idempotent replay. Settle derives native binding/remediation inputs; pass `--successor-lineage` only for a distinct approved successor, otherwise the bound lineage remains its own successor.
 4. Route only from settle's `proceed`, `blocked`, or `complete` state. Full `status|begin|finish|reset` operations are diagnostic/compatibility surfaces; reset requires an explicit maintainer scope decision and is never automatic.
 
 ### Artifact Store Mode
@@ -335,7 +335,7 @@ When `delivery_strategy` results in chained PRs (either by user choice via `ask-
 
 Cache the chain strategy for the session. Pass it as `chain_strategy` to `sdd-tasks` and `sdd-apply` prompts alongside `delivery_strategy`. Do not ask again unless the user changes scope.
 
-When delivery planning yields chained PRs, treat `chained-pr` (registry skill `gentle-ai-chained-pr`) as a required skill match: resolve it by registry name through this template's existing skill-resolution mechanism (the same one it already uses to pass skills to phases) and ensure the `sdd-tasks` and `sdd-apply` phases load and follow it BEFORE planning or creating any PR. Do not hardcode the skill path; defer resolution to that mechanism.
+When delivery planning yields chained PRs, treat `chained-pr` (registry skill `hgtran-ai-chained-pr`) as a required skill match: resolve it by registry name through this template's existing skill-resolution mechanism (the same one it already uses to pass skills to phases) and ensure the `sdd-tasks` and `sdd-apply` phases load and follow it BEFORE planning or creating any PR. Do not hardcode the skill path; defer resolution to that mechanism.
 
 ### Review Workload Guard (MANDATORY)
 
@@ -391,7 +391,7 @@ Each phase returns: `status`, `executive_summary`, `artifacts`, `next_recommende
 
 ## Model Profiles
 
-gentle-ai writes three SDD model-selection profile files into `~/.codex/` during installation. Each profile pins both a `model` and a `model_reasoning_effort` so Codex picks the right tier for each carril.
+hgtran-ai writes three SDD model-selection profile files into `~/.codex/` during installation. Each profile pins both a `model` and a `model_reasoning_effort` so Codex picks the right tier for each carril.
 
 These profile files apply to whole CLI sessions: `codex --profile <name> "<prompt>"`. They do NOT apply to spawned sub-agents. When delegating a phase via `spawn_agent`, pass the tier's effort directly as `reasoning_effort` (with `fork_turns: "none"`), using the same tier values below.
 

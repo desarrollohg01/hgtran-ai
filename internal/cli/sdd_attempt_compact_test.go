@@ -81,7 +81,7 @@ func TestRunSDDAttemptLegacyStatusJSONIsUnchanged(t *testing.T) {
 		t.Fatal(err)
 	}
 	want := `{
-  "schema": "gentle-ai.sdd-runtime-status/v1",
+  "schema": "hgtran-ai.sdd-runtime-status/v1",
   "change": "legacy-json",
   "revision": "",
   "attempts": [],

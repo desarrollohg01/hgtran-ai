@@ -2,7 +2,7 @@
 
 **Pre-archive note**: `rdd-shadow-evaluation` exists only under `openspec/changes/rdd-root-simplification-wave1/specs/rdd-shadow-evaluation/spec.md` — Wave 1 has not archived to `openspec/specs/` yet. This delta is written against that Wave 1 filesystem copy, following the same pattern Wave 2 used for `rdd-authority-graph-classification`. If Wave 1 archives before this delta is applied, re-base this MODIFIED block against `openspec/specs/rdd-shadow-evaluation/spec.md` instead.
 
-Wave 3 lifts the resolver and relation algebra out of shadow-only gating so `ReviewCore` can call the same functions live for new lineages (`GENTLE_AI_RDD_SHADOW` remains a distinct switch, per `rdd-new-lineage-activation`). The shadow harness's own disable switch must therefore scope to its *observer* — the agreement/divergence-recording code — not to the resolver/relation functions it shares with the live facade. Wave 2's health classifier stays read-only-consumed, not extended, and is unaffected by this delta.
+Wave 3 lifts the resolver and relation algebra out of shadow-only gating so `ReviewCore` can call the same functions live for new lineages (`HGTRAN_AI_RDD_SHADOW` remains a distinct switch, per `rdd-new-lineage-activation`). The shadow harness's own disable switch must therefore scope to its *observer* — the agreement/divergence-recording code — not to the resolver/relation functions it shares with the live facade. Wave 2's health classifier stays read-only-consumed, not extended, and is unaffected by this delta.
 
 ## MODIFIED Requirements
 

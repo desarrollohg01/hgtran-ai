@@ -61,7 +61,7 @@ func followOrganicGuardRailContinuation(t *testing.T, harness *organicHarness, a
 	t.Helper()
 	changeOrganicHealthyCandidate(harness)
 	if stdout, stderr, err := harness.gentleAllowFailure(arguments...); err != nil {
-		t.Fatalf("the continuation the refusal named failed: gentle-ai %v: %v\nstdout:\n%s\nstderr:\n%s",
+		t.Fatalf("the continuation the refusal named failed: hgtran-ai %v: %v\nstdout:\n%s\nstderr:\n%s",
 			arguments, err, stdout, stderr)
 	}
 	harness.finalize(successor)
@@ -149,7 +149,7 @@ func TestOrganicInvalidatedDispositionRefusalNamesTheDispositionThatWorks(t *tes
 	// completes the reported deadlock. The verb is checked, not the whole
 	// argv, because a lineage identifier may legitimately carry the word.
 	if len(arguments) < 2 || arguments[0] != "review" || arguments[1] == "invalidate" {
-		t.Fatalf("invalidated-disposition refusal routed back into the reported loop: gentle-ai %v\n%s",
+		t.Fatalf("invalidated-disposition refusal routed back into the reported loop: hgtran-ai %v\n%s",
 			arguments, message)
 	}
 

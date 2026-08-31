@@ -5,7 +5,7 @@ Use non-interactive mode for CI, scripts, or reproducible local setup.
 ## Command
 
 ```bash
-go run ./cmd/gentle-ai install [flags]
+go run ./cmd/hgtran-ai install [flags]
 ```
 
 ## Supported flags
@@ -23,7 +23,7 @@ go run ./cmd/gentle-ai install [flags]
 
 | Variable | Values | Description |
 |----------|--------|-------------|
-| `GENTLE_AI_INSTALL_SCOPE` | `global` \| `workspace` | Sets the install scope without a flag. Useful in CI. Equivalent to `--scope`. Default: `global`. |
+| `HGTRAN_AI_INSTALL_SCOPE` | `global` \| `workspace` | Sets the install scope without a flag. Useful in CI. Equivalent to `--scope`. Default: `global`. |
 
 `workspace` scope is not Claude-only: it applies to the selected agents' agent-scoped files such as system prompts, skills, SDD agents, and persona files. Global-only integrations, like package installs or agent settings that must live in the tool's global config, remain global.
 
@@ -45,12 +45,12 @@ The `--dry-run` output includes a `Platform decision` line showing `os`, `distro
 macOS (or any supported platform — same flags, platform is auto-detected):
 
 ```bash
-go run ./cmd/gentle-ai install \
+go run ./cmd/hgtran-ai install \
   --agent claude-code,opencode \
   --component engram,sdd,skills \
   --skill sdd-apply \
-  --persona gentleman \
-  --preset full-gentleman \
+  --persona hgtran \
+  --preset full-hgtran \
   --dry-run
 ```
 

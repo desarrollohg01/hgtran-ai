@@ -16,14 +16,14 @@ import (
 // suffix the caller-side pointer to that status route.
 //
 // The pointer names `--cwd <repo> --change <change>` because the bare
-// `gentle-ai sdd-attempt status` command is rejected by the CLI for missing
+// `hgtran-ai sdd-attempt status` command is rejected by the CLI for missing
 // required flags (internal/cli/sdd_attempt.go requires --cwd and --change).
 // A continuation that fails when pasted is worse than none: it costs a round
 // trip to discover. `<repo>`/`<change>` mirrors the exact placeholder
 // convention already used for this same command in the SDD orchestrator
 // prompt assets (e.g. internal/assets/generic/sdd-orchestrator.md).
 func TestRuntimeLedgerErrorsNameTheStatusRoute(t *testing.T) {
-	const pointer = "run `gentle-ai sdd-attempt status --cwd <repo> --change <change>` — its next_action names the continuation"
+	const pointer = "run `hgtran-ai sdd-attempt status --cwd <repo> --change <change>` — its next_action names the continuation"
 	for _, sentinel := range []error{
 		ErrRuntimeBudgetExhausted,
 		ErrRuntimeAttemptActive,

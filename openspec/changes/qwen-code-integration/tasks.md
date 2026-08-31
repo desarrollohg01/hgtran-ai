@@ -29,7 +29,7 @@
 ## Phase 3: Registration & Wiring
 
 - [ ] T-07 Modify `internal/agents/factory.go`:
-  - Import `github.com/gentleman-programming/gentle-ai/internal/agents/qwen`
+  - Import `github.com/gentleman-programming/hgtran-ai/internal/agents/qwen`
   - Add `case model.AgentQwenCode: return qwen.NewAdapter(), nil` in `NewAdapter()`
   - Add `model.AgentQwenCode` to `NewDefaultRegistry()` agent list
   - Update registry capacity from 8 to 9
@@ -83,4 +83,4 @@
 - [ ] T-27 Run `go test ./internal/cli/...` — install validation tests pass
 - [ ] T-28 Run `go test ./internal/agents/...` — registry test passes
 - [ ] T-29 Run `go test ./internal/tui/...` — TUI tests pass
-- [ ] T-30 Verify `gentle-ai install --agent qwen-code --dry-run` shows correct plan
+- [ ] T-30 Verify `hgtran-ai install --agent qwen-code --dry-run` shows correct plan

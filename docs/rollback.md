@@ -4,7 +4,7 @@ The backup system automatically snapshots your configuration files before every 
 
 ## How it works
 
-Every time you run `gentle-ai install`, `sync`, or `upgrade`, the system:
+Every time you run `hgtran-ai install`, `sync`, or `upgrade`, the system:
 
 1. **Computes a checksum** of all files that will be backed up
 2. **Skips the backup** if it would be identical to the most recent one (dedup)
@@ -17,7 +17,7 @@ Every time you run `gentle-ai install`, `sync`, or `upgrade`, the system:
 - `snapshot.tar.gz` — compressed archive of all backed-up files
 - For paths that did not exist before the operation, the manifest tracks `existed=false`
 
-> **Backup scope**: pre-upgrade and pre-sync snapshots cover only the agents listed in `state.InstalledAgents` (`~/.gentle-ai/state.json`). Config directories for agents you installed outside of gentle-ai are not included in the snapshot.
+> **Backup scope**: pre-upgrade and pre-sync snapshots cover only the agents listed in `state.InstalledAgents` (`~/.hgtran-ai/state.json`). Config directories for agents you installed outside of hgtran-ai are not included in the snapshot.
 
 Legacy (pre-v1.16) backups use a `files/` directory with plain copies instead of a tar.gz archive. Both formats are fully supported for restore.
 
@@ -34,7 +34,7 @@ Legacy (pre-v1.16) backups use a `files/` directory with plain copies instead of
 
 You can mark any backup as "pinned" in the TUI to protect it from automatic pruning:
 
-1. Run `gentle-ai` and navigate to the **Backups** screen
+1. Run `hgtran-ai` and navigate to the **Backups** screen
 2. Use `j`/`k` to select a backup
 3. Press **`p`** to toggle pin/unpin
 4. Pinned backups show a `[pinned]` indicator
@@ -62,7 +62,7 @@ Pinned backups are never automatically deleted, even when the retention limit is
 ## If verification fails
 
 1. Review failed checks in verification report
-2. Restore from latest snapshot via the TUI or `gentle-ai restore latest`
+2. Restore from latest snapshot via the TUI or `hgtran-ai restore latest`
 3. Re-run install with `--dry-run` to validate plan
 4. Re-run install after fixing external dependencies
 

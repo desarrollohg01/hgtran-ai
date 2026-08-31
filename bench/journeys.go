@@ -11,7 +11,7 @@ import (
 
 // reviewContract is the negotiated integration contract the status envelope
 // needs before it will emit next_transition.
-const reviewContract = "gentle-ai.review-integration/v1"
+const reviewContract = "hgtran-ai.review-integration/v1"
 
 // statusEnvelope is the subset of `review status --next-transition` this
 // benchmark reads. Unknown fields are ignored so older and newer envelopes
@@ -663,7 +663,7 @@ func abandonPristineLineage(r *journeyRun) error {
 	}, false)
 
 	authorization := strings.Join([]string{
-		"gentle-ai.review-abandon-authorization/v1",
+		"hgtran-ai.review-abandon-authorization/v1",
 		"lineage=" + lineage,
 		"revision=" + revision,
 		"snapshot_identity=" + target,

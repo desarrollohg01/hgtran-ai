@@ -2,13 +2,13 @@
 
 **Change**: contextual-skill-loading
 **Branch**: feat/claude-contextual-skill-loading
-**Worktree**: /Users/alanbuscaglia/work/gentle-ai-claude-skills
+**Worktree**: /Users/alanbuscaglia/work/hgtran-ai-claude-skills
 **Date**: 2026-05-05
 **Status**: SHIPPED — 6 commits, all tests green (reconciled post-apply)
 
 ## Summary
 
-Root cause: all six persona assets across `claude/`, `opencode/`, `generic/`, `kiro/`, and `kimi/` contained a hardcoded "Skills (Auto-load based on context)" table that names only two skills, narrowing the model's motivated universe and competing with the native `<available_skills>` block. No generic mandatory directive existed telling any agent to consult `<available_skills>` before responding. Result: skills installed by gentle-ai were listed in `<available_skills>` but not invoked proactively by users who install gentle-ai without the maintainer's personal CLAUDE.md.
+Root cause: all six persona assets across `claude/`, `opencode/`, `generic/`, `kiro/`, and `kimi/` contained a hardcoded "Skills (Auto-load based on context)" table that names only two skills, narrowing the model's motivated universe and competing with the native `<available_skills>` block. No generic mandatory directive existed telling any agent to consult `<available_skills>` before responding. Result: skills installed by hgtran-ai were listed in `<available_skills>` but not invoked proactively by users who install hgtran-ai without the maintainer's personal CLAUDE.md.
 
 ## Scope — 6 persona files (shipped)
 

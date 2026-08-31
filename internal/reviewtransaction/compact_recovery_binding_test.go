@@ -12,7 +12,7 @@ import (
 	"testing"
 )
 
-// chainedRecoveryFixture reproduces gentle-ai issue #1422: a corrected and
+// chainedRecoveryFixture reproduces hgtran-ai issue #1422: a corrected and
 // approved current-changes review (non-empty fix delta) is delivered as one
 // commit, and its scope_changed recovery successor is created from the live
 // repository after the delivery. The successor's pristine snapshot degenerates

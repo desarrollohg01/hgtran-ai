@@ -33,20 +33,20 @@ func TestEffectiveMethodWindowsPrecedenceIsUnchanged(t *testing.T) {
 		},
 		{
 			name:          "brew-owned package wins over go-install on Windows",
-			tool:          update.ToolInfo{Name: "gentle-ai", InstallMethod: update.InstallBinary, GoImportPath: "bitbucket.org/hgt_development/hgtran-ai/v2/cmd/gentle-ai"},
+			tool:          update.ToolInfo{Name: "hgtran-ai", InstallMethod: update.InstallBinary, GoImportPath: "bitbucket.org/hgt_development/hgtran-ai/v2/cmd/hgtran-ai"},
 			profile:       system.PlatformProfile{OS: "windows", PackageManager: "brew", GoAvailable: true},
 			brewInstalled: true,
 			want:          update.InstallBrew,
 		},
 		{
 			name:    "no Go on Windows keeps the declared method",
-			tool:    update.ToolInfo{Name: "gentle-ai", InstallMethod: update.InstallBinary, GoImportPath: "bitbucket.org/hgt_development/hgtran-ai/v2/cmd/gentle-ai"},
+			tool:    update.ToolInfo{Name: "hgtran-ai", InstallMethod: update.InstallBinary, GoImportPath: "bitbucket.org/hgt_development/hgtran-ai/v2/cmd/hgtran-ai"},
 			profile: system.PlatformProfile{OS: "windows", PackageManager: "winget", GoAvailable: false},
 			want:    update.InstallBinary,
 		},
 		{
 			name:    "no import path on Windows keeps the declared method",
-			tool:    update.ToolInfo{Name: "gentle-ai", InstallMethod: update.InstallBinary},
+			tool:    update.ToolInfo{Name: "hgtran-ai", InstallMethod: update.InstallBinary},
 			profile: system.PlatformProfile{OS: "windows", PackageManager: "winget", GoAvailable: true},
 			want:    update.InstallBinary,
 		},
@@ -62,22 +62,22 @@ func TestEffectiveMethodWindowsPrecedenceIsUnchanged(t *testing.T) {
 	}
 }
 
-// gentleAIImportPath is the module path gentle-ai publishes its command under.
+// gentleAIImportPath is the module path hgtran-ai publishes its command under.
 // It is asserted against the registry below so the tests and the shipped
 // declaration cannot drift apart.
-const gentleAIImportPath = "bitbucket.org/hgt_development/hgtran-ai/v2/cmd/gentle-ai"
+const gentleAIImportPath = "bitbucket.org/hgt_development/hgtran-ai/v2/cmd/hgtran-ai"
 
-// registryGentleAI returns the shipped gentle-ai registry entry. Routing tests
+// registryGentleAI returns the shipped hgtran-ai registry entry. Routing tests
 // use the real declaration rather than a hand-built ToolInfo so a regression in
 // registry.go cannot hide behind a synthetic fixture.
 func registryGentleAI(t *testing.T) update.ToolInfo {
 	t.Helper()
 	for _, tool := range update.Tools {
-		if tool.Name == "gentle-ai" {
+		if tool.Name == "hgtran-ai" {
 			return tool
 		}
 	}
-	t.Fatal("gentle-ai is missing from the tool registry")
+	t.Fatal("hgtran-ai is missing from the tool registry")
 	return update.ToolInfo{}
 }
 
@@ -86,7 +86,7 @@ func registryGentleAI(t *testing.T) update.ToolInfo {
 // install from and falls back to the source-install refusal.
 func TestRegistryDeclaresGentleAIGoImportPath(t *testing.T) {
 	if got := registryGentleAI(t).GoImportPath; got != gentleAIImportPath {
-		t.Fatalf("gentle-ai GoImportPath = %q, want %q", got, gentleAIImportPath)
+		t.Fatalf("hgtran-ai GoImportPath = %q, want %q", got, gentleAIImportPath)
 	}
 }
 
@@ -162,9 +162,9 @@ func TestGentleAILegacyScriptDeclarationNeverReachesScriptUpgradeOnWindows(t *te
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			tool := update.ToolInfo{
-				Name:          "gentle-ai",
+				Name:          "hgtran-ai",
 				Owner:         "Gentleman-Programming",
-				Repo:          "gentle-ai",
+				Repo:          "hgtran-ai",
 				InstallMethod: update.InstallScript,
 				GoImportPath:  tc.goImportPath,
 			}
@@ -196,8 +196,8 @@ func TestGentleAIWindowsGoInstallVerifiesDestination(t *testing.T) {
 
 	gobin := t.TempDir()
 	stale := t.TempDir()
-	installed := writeFakeBinary(t, gobin, "gentle-ai.exe")
-	shadowing := writeFakeBinary(t, stale, "gentle-ai.exe")
+	installed := writeFakeBinary(t, gobin, "hgtran-ai.exe")
+	shadowing := writeFakeBinary(t, stale, "hgtran-ai.exe")
 
 	var installTarget string
 	origExecCommand := execCommand
@@ -263,11 +263,11 @@ func TestGentleAIWindowsWithoutGoNamesRunnableSourceInstall(t *testing.T) {
 
 	r := update.UpdateResult{
 		Tool: update.ToolInfo{
-			Name:          "gentle-ai",
+			Name:          "hgtran-ai",
 			Owner:         "desarrollohg01",
 			Repo:          "hgtran-ai",
 			InstallMethod: update.InstallBinary,
-			GoImportPath:  "bitbucket.org/hgt_development/hgtran-ai/v2/cmd/gentle-ai",
+			GoImportPath:  "bitbucket.org/hgt_development/hgtran-ai/v2/cmd/hgtran-ai",
 		},
 		LatestVersion: "2.2.0",
 		Status:        update.UpdateAvailable,
@@ -284,7 +284,7 @@ func TestGentleAIWindowsWithoutGoNamesRunnableSourceInstall(t *testing.T) {
 	}
 	for _, required := range []string{
 		"Windows binary distribution and Scoop are temporarily unavailable",
-		"go install bitbucket.org/hgt_development/hgtran-ai/v2/cmd/gentle-ai@v2.2.0",
+		"go install bitbucket.org/hgt_development/hgtran-ai/v2/cmd/hgtran-ai@v2.2.0",
 	} {
 		if !strings.Contains(result.ManualHint, required) {
 			t.Errorf("manual hint is missing %q: %s", required, result.ManualHint)

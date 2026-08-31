@@ -1,5 +1,5 @@
 ```yaml
-schema: gentle-ai.verify-result/v1
+schema: hgtran-ai.verify-result/v1
 evidence_revision: sha256:57a714f4f69f66ab539a84f3b97f8352bc301225a1457e5b3a9a9d6082b468a3
 verdict: pass
 blockers: 0
@@ -20,7 +20,7 @@ build_output_hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca49599
 **Version**: N/A (new capabilities, no prior spec version)
 **Mode**: Strict TDD (project `strict_tdd: true`; design-declared mechanical assertion-recipe layer per `design.md:134-145`)
 **Verified at**: 2026-08-02
-**Deliverable chain**: worktree `/home/gentleman/work/gentle-ai-worktrees/rdd-wave0`, tracker `feature/rdd-root-simplification`@`ece470da` → `a635c221` → `57fab9d8` → `452dce21` → `92a444bc`
+**Deliverable chain**: worktree `/home/gentleman/work/hgtran-ai-worktrees/rdd-wave0`, tracker `feature/rdd-root-simplification`@`ece470da` → `a635c221` → `57fab9d8` → `452dce21` → `92a444bc`
 
 All checks below were re-executed independently in this phase against the committed branch bytes (`git show <branch>:<path>`). Apply-phase claims were used to locate evidence, never as substitutes for it.
 

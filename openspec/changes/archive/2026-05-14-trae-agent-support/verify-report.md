@@ -30,7 +30,7 @@
 | REQ-2: Detection — stat error | Error bubbles up | `TestDetect/stat_error_bubbles_up` | ✅ PASS |
 | REQ-3: GlobalConfigDir | ~/.trae | `TestConfigPathsCrossPlatform` | ✅ PASS |
 | REQ-3: SystemPromptDir | ~/.trae/user_rules | `TestConfigPathsCrossPlatform` | ✅ PASS |
-| REQ-3: SystemPromptFile | ~/.trae/user_rules/gentle-ai.md | `TestConfigPathsCrossPlatform` | ✅ PASS |
+| REQ-3: SystemPromptFile | ~/.trae/user_rules/hgtran-ai.md | `TestConfigPathsCrossPlatform` | ✅ PASS |
 | REQ-3: SkillsDir | ~/.trae/skills | `TestConfigPathsCrossPlatform` | ✅ PASS |
 | REQ-3: MCPConfigPath | ~/.trae/mcp.json | `TestConfigPathsCrossPlatform` + `TestMCPConfigPathIgnoresServerName` | ✅ PASS |
 | REQ-4: SystemPromptStrategy | StrategyMarkdownSections | `TestStrategies` | ✅ PASS |

@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://gentle-ai.dev/contracts/review-integration/v2/schemas/status.schema.json",
-  "title": "Gentle AI Review Integration native Git target status v3",
+  "$id": "https://hgtran-ai.dev/contracts/review-integration/v2/schemas/status.schema.json",
+  "title": "Hgtran AI Review Integration native Git target status v3",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -9,8 +9,8 @@
     "target_identity", "projection", "repair", "candidates"
   ],
   "properties": {
-    "schema": {"const": "gentle-ai.review-integration.status/v3"},
-    "contract": {"const": "gentle-ai.review-integration/v2"},
+    "schema": {"const": "hgtran-ai.review-integration.status/v3"},
+    "contract": {"const": "hgtran-ai.review-integration/v2"},
     "operation": {"const": "review.status"},
     "applicability": {"$ref": "../../v1/schemas/status-v2.schema.json#/properties/applicability"},
     "authority": {"$ref": "../../v1/schemas/status-v2.schema.json#/properties/authority"},
@@ -72,14 +72,14 @@
       "allOf": [
         {
           "if": {"properties": {"capture_operation": {"const": "external.run_targeted_validation"}}, "required": ["capture_operation"]},
-          "then": {"required": ["validation_request"], "properties": {"schema": {"const": "gentle-ai.review-targeted-validation-request/v1"}}},
+          "then": {"required": ["validation_request"], "properties": {"schema": {"const": "hgtran-ai.review-targeted-validation-request/v1"}}},
           "else": {"not": {"required": ["validation_request"]}}
         },
         {
           "if": {"properties": {"capture_operation": {"const": "review.capture-result"}}, "required": ["capture_operation"]},
           "then": {
             "required": ["artifact_subject", "base_tree", "candidate_tree", "changed_path_manifest"],
-            "properties": {"schema": {"const": "https://gentle-ai.dev/schema/review/reviewer/v1"}}
+            "properties": {"schema": {"const": "https://hgtran-ai.dev/schema/review/reviewer/v1"}}
           },
           "else": {
             "allOf": [

@@ -1,6 +1,6 @@
-# Gentle-AI Codebase Guide
+# Hgtran-AI Codebase Guide
 
-This guide helps maintainers find the right code path before changing Gentle-AI. It is an index, not a full API reference.
+This guide helps maintainers find the right code path before changing Hgtran-AI. It is an index, not a full API reference.
 
 ## Who this is for
 
@@ -13,13 +13,13 @@ This guide helps maintainers find the right code path before changing Gentle-AI.
 
 ## 90-second mental model
 
-Gentle-AI is a Go CLI/TUI that configures AI coding agents. It installs and syncs managed assets such as SDD prompts, skills, MCP entries, permissions, personas, GGA support, Engram wiring, skill registries, and community tool/plugin helpers.
+Hgtran-AI is a Go CLI/TUI that configures AI coding agents. It installs and syncs managed assets such as SDD prompts, skills, MCP entries, permissions, personas, GGA support, Engram wiring, skill registries, and community tool/plugin helpers.
 
 ```text
 User
   |
   v
-gentle-ai CLI / Bubbletea TUI
+hgtran-ai CLI / Bubbletea TUI
   |
   +--> detection + flag normalization
   +--> planner resolves components and dependencies
@@ -43,7 +43,7 @@ Golden rule: **agent-specific paths belong in adapters; reusable behavior belong
 | [Repository map](codebase/repository-map.md) | Find package ownership and placement rules. |
 | [Memory core](codebase/memory-core.md) | Understand the Engram boundary and what this repo wires vs owns. |
 | [Interfaces](codebase/interfaces.md) | Compare CLI, MCP, local HTTP API boundary, and TUI surfaces. |
-| [Sync and cloud](codebase/sync-and-cloud.md) | Separate Gentle-AI config sync from Engram memory/cloud sync. |
+| [Sync and cloud](codebase/sync-and-cloud.md) | Separate Hgtran-AI config sync from Engram memory/cloud sync. |
 | [Dashboard](codebase/dashboard.md) | Know what dashboard code is absent from this repo and how to avoid inventing it. |
 | [Integrations](codebase/integrations.md) | Change agent adapters, plugins, and setup boundaries safely. |
 | [Maintainer playbook](codebase/maintainer-playbook.md) | Use checklists by change type and PR review guardrails. |

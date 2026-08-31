@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://gentle-ai.dev/contracts/review-integration/v1/schemas/failure.schema.json",
-  "title": "Gentle AI negotiated review failure",
+  "$id": "https://hgtran-ai.dev/contracts/review-integration/v1/schemas/failure.schema.json",
+  "title": "Hgtran AI negotiated review failure",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -19,8 +19,8 @@
     "next_action"
   ],
   "properties": {
-    "schema": {"const": "gentle-ai.review-integration.failure/v1"},
-    "contract": {"const": "gentle-ai.review-integration/v1"},
+    "schema": {"const": "hgtran-ai.review-integration.failure/v1"},
+    "contract": {"const": "hgtran-ai.review-integration/v1"},
     "operation": {
       "enum": ["review.capabilities", "review.start", "review.status", "review.finalize", "review.repair", "review.retry_final_verification", "review.validate", "review.bind_sdd"]
     },

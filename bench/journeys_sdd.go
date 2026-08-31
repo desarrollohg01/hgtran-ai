@@ -810,7 +810,7 @@ func sddInstallDiscoveryDriftFixture(sandbox *Sandbox) error {
 // writes. Its exact shape matters: a report the product cannot parse routes as
 // "verification is missing", which is a different journey.
 const sddVerifyReport = "```yaml\n" +
-	"schema: gentle-ai.verify-result/v1\n" +
+	"schema: hgtran-ai.verify-result/v1\n" +
 	"evidence_revision: sha256:1111111111111111111111111111111111111111111111111111111111111111\n" +
 	"verdict: pass\n" +
 	"blockers: 0\n" +
@@ -820,7 +820,7 @@ const sddVerifyReport = "```yaml\n" +
 	"test_command: go test ./internal/example\n" +
 	"test_exit_code: 0\n" +
 	"test_output_hash: sha256:2222222222222222222222222222222222222222222222222222222222222222\n" +
-	"build_command: go test ./cmd/gentle-ai\n" +
+	"build_command: go test ./cmd/hgtran-ai\n" +
 	"build_exit_code: 0\n" +
 	"build_output_hash: sha256:3333333333333333333333333333333333333333333333333333333333333333\n" +
 	"```\n"
@@ -972,9 +972,9 @@ func sddPassingFinish(r *journeyRun, requestID string) (Observation, error) {
 }
 
 // sddNamesFinishExit reports whether a refusal named a runnable
-// `gentle-ai sdd-attempt finish`. That is the leaf branch's promise.
+// `hgtran-ai sdd-attempt finish`. That is the leaf branch's promise.
 func sddNamesFinishExit(observation Observation) bool {
-	return strings.Contains(observation.Stdout+observation.Stderr, "`gentle-ai sdd-attempt finish ")
+	return strings.Contains(observation.Stdout+observation.Stderr, "`hgtran-ai sdd-attempt finish ")
 }
 
 // sddNamesReviewRouter reports whether a refusal named the review router
@@ -982,7 +982,7 @@ func sddNamesFinishExit(observation Observation) bool {
 // naming a finish that would be refused one layer deeper is the exact defect
 // shape this branch exists to avoid.
 func sddNamesReviewRouter(observation Observation) bool {
-	return strings.Contains(observation.Stdout+observation.Stderr, "`gentle-ai review status ")
+	return strings.Contains(observation.Stdout+observation.Stderr, "`hgtran-ai review status ")
 }
 
 // sddBlockedLeafFinish drives the block and holds the leaf branch's contract:
@@ -1058,7 +1058,7 @@ func sddTransitionCreatesALineage(r *journeyRun) error {
 // one: prose mentioning a verb is not a named command, and this branch exists
 // precisely because prose was what the operator got.
 func sddNamesAbandonExit(observation Observation) bool {
-	return strings.Contains(observation.Stdout+observation.Stderr, "`gentle-ai review abandon ")
+	return strings.Contains(observation.Stdout+observation.Stderr, "`hgtran-ai review abandon ")
 }
 
 // sddBlockedStrandedFinish holds the contract for the third topology, and it is
@@ -1186,7 +1186,7 @@ func sddAbandonStrandedSuccessor(r *journeyRun) error {
 	const actor = "bench"
 	const reason = "the stranded successor can never be finalized"
 	authorization := strings.Join([]string{
-		"gentle-ai.review-abandon-authorization/v1",
+		"hgtran-ai.review-abandon-authorization/v1",
 		"lineage=" + sddSuccessorLineage,
 		"revision=" + revision,
 		"snapshot_identity=" + snapshot,

@@ -8,7 +8,7 @@ Use this page when you know what you need to change but not where it belongs.
 
 | Path | Owns | Do not put here |
 |---|---|---|
-| `cmd/gentle-ai/` | Binary entrypoint and version handoff. | Business rules or file mutation logic. |
+| `cmd/hgtran-ai/` | Binary entrypoint and version handoff. | Business rules or file mutation logic. |
 | `internal/app/` | Top-level command dispatch, help, version routing. | Component-specific install behavior. |
 | `internal/cli/` | Non-interactive install, sync, uninstall, restore, and flag normalization. | Agent path constants. |
 | `internal/tui/` | Bubbletea model, screen routing, async messages, interactive flows. | CLI-only flag parsing or component internals. |
@@ -23,7 +23,7 @@ Use this page when you know what you need to change but not where it belongs.
 | `internal/agents/` | Adapter strategy, config paths, capability flags per agent. | Shared component behavior. |
 | `internal/assets/` | Embedded prompts, skills, personas, commands, and templates. | Runtime-generated user state. |
 | `internal/skillregistry/` | Skill registry scanning, cache behavior, and markdown generation. | Skill authoring rules or component injection. |
-| `internal/state/` | `~/.gentle-ai/state.json` persisted install selections. | Engram memory state. |
+| `internal/state/` | `~/.hgtran-ai/state.json` persisted install selections. | Engram memory state. |
 | `internal/update/` | Update checks, self-update, and upgrade support. | Config sync semantics. |
 | `internal/update/upgrade/` | External tool upgrade execution and upgrade report rendering. | Install planning or component selection. |
 | `internal/verify/` | Readiness checks and rendered reports. | Mutation side effects. |

@@ -1,6 +1,6 @@
 // Package reviewtransaction — v3 new-lineage authority store (Wave 3 Slice
 // 2, design decision 3). AuthorityStore persists exactly two artifacts per
-// new lineage under <git-common-dir>/gentle-ai/review-transactions/v3/<lineage>/:
+// new lineage under <git-common-dir>/hgtran-ai/review-transactions/v3/<lineage>/:
 // review-state.json (CAS-mutable) and review-receipt.json (immutable
 // terminal). v3/ is a sibling of v1/ and v2/ under the same authority root
 // (reviewAuthorityRoot, store.go:150; the v2/ sibling-version-root layout
@@ -43,16 +43,16 @@ import (
 // Lineage kind is established solely by v3/<lineage> record presence
 // (design decision 4) — this schema string is the record's own assertion of
 // that kind, never an independent marker checked separately from the record.
-const NewLineageAuthoritySchema = "gentle-ai.review-authority/v3"
+const NewLineageAuthoritySchema = "hgtran-ai.review-authority/v3"
 
 // NewLineageReceiptSchema identifies the v3 immutable terminal receipt shape.
-const NewLineageReceiptSchema = "gentle-ai.review-receipt/v3"
+const NewLineageReceiptSchema = "hgtran-ai.review-receipt/v3"
 
 // newLineageReplayDomain namespaces the replay-identity digest so it can
 // never collide with any other content-addressed digest this package
 // produces (the domain-prefix idiom makeCompactRecord already uses,
 // compact_store.go:2008).
-const newLineageReplayDomain = "gentle-ai.review-replay/v3"
+const newLineageReplayDomain = "hgtran-ai.review-replay/v3"
 
 // NewLineageState is the closed five-value persisted-state vocabulary
 // (spec rdd-authority-store, "Five Persisted States, Everything Else

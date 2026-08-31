@@ -12,7 +12,7 @@ import (
 
 // forgedRecoveryPair persists one escalated predecessor with its receipt and a
 // changed-target escalated recovery successor whose recorded maintainer
-// authorization carries the exact gentle-ai.review-recovery-authorization/v1
+// authorization carries the exact hgtran-ai.review-recovery-authorization/v1
 // prefix but binds different content: the reason drifted after the fact. It is
 // therefore neither the unchanged-target class nor the pre-contract free-form
 // class, so reconciliation classifies it as corruption and refuses.
@@ -113,14 +113,14 @@ func TestForgedRecoveryAuthorizationOnNonPristineSuccessorHasSanctionedRepairExi
 		"corruption",
 		"No advertised operation admits this edge",
 		"captured review or correction data",
-		"gentle-ai review inspect-authority",
+		"hgtran-ai review inspect-authority",
 	} {
 		if !strings.Contains(refusal, want) {
 			t.Fatalf("blocked refusal does not name %q:\n%s", want, refusal)
 		}
 	}
 	// The refusal must not advertise an abandonment that would then refuse.
-	if strings.Contains(refusal, "gentle-ai review abandon") {
+	if strings.Contains(refusal, "hgtran-ai review abandon") {
 		t.Fatalf("blocked refusal names an abandonment the gate rejects:\n%s", refusal)
 	}
 	if _, abandonErr := InspectCompactPristineAbandonment(ctx, repo, successor.State.LineageID); abandonErr != nil {
@@ -235,7 +235,7 @@ func TestForgedRecoveryAuthorizationDeadEndHasRunnableExit(t *testing.T) {
 	refusal := err.Error()
 	for _, want := range []string{
 		"corruption",
-		"gentle-ai review abandon",
+		"hgtran-ai review abandon",
 		"--lineage \"" + successorAlpha.State.LineageID + "\"",
 		"--expected-revision \"" + successorAlpha.Revision + "\"",
 		CompactAbandonAuthorizationSchema,

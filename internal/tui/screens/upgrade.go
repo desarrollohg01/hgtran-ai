@@ -185,7 +185,7 @@ func renderUpgradeResult(b *strings.Builder, report *upgrade.UpgradeReport, widt
 
 	if reportUpgradedGentleAI(report) {
 		b.WriteString("\n")
-		b.WriteString(styles.WarningStyle.Render("⚠ gentle-ai was upgraded. Restart gentle-ai before running sync or continuing."))
+		b.WriteString(styles.WarningStyle.Render("⚠ hgtran-ai was upgraded. Restart hgtran-ai before running sync or continuing."))
 	}
 
 	b.WriteString("\n\n")
@@ -228,7 +228,7 @@ func reportUpgradedGentleAI(report *upgrade.UpgradeReport) bool {
 		return false
 	}
 	for _, result := range report.Results {
-		if result.ToolName == "gentle-ai" && result.Status == upgrade.UpgradeSucceeded {
+		if result.ToolName == "hgtran-ai" && result.Status == upgrade.UpgradeSucceeded {
 			return true
 		}
 	}

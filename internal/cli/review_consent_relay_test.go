@@ -41,14 +41,14 @@ func decodeConsentQuestion(t *testing.T, payload []byte) ReviewIntegrationConsen
 	return result
 }
 
-// invocationArgs turns a runnable `gentle-ai review start ...` invocation from
+// invocationArgs turns a runnable `hgtran-ai review start ...` invocation from
 // the consent envelope into router arguments, proving the invocation is
 // literally runnable rather than merely descriptive.
 func invocationArgs(t *testing.T, invocation string) []string {
 	t.Helper()
 	fields := strings.Fields(invocation)
-	if len(fields) < 3 || fields[0] != "gentle-ai" || fields[1] != "review" || fields[2] != "start" {
-		t.Fatalf("consent invocation is not a runnable gentle-ai review start command: %q", invocation)
+	if len(fields) < 3 || fields[0] != "hgtran-ai" || fields[1] != "review" || fields[2] != "start" {
+		t.Fatalf("consent invocation is not a runnable hgtran-ai review start command: %q", invocation)
 	}
 	return fields[2:]
 }
@@ -339,7 +339,7 @@ func TestConsentDeclineOnLowRiskCandidateIsRefused(t *testing.T) {
 		"--lineage", "review-consent-low-decline", "--consent", "declined",
 	}), &output)
 	if err == nil || !strings.Contains(output.String(), "nothing to decline") ||
-		!strings.Contains(output.String(), "rerun gentle-ai review start without --consent") {
+		!strings.Contains(output.String(), "rerun hgtran-ai review start without --consent") {
 		t.Fatalf("low-risk decline must be refused with the reason and rerun: %v\n%s", err, output.String())
 	}
 }
@@ -383,7 +383,7 @@ func TestHeadlessSkipNoticeNamesDefaultProvenance(t *testing.T) {
 	if !strings.Contains(notice, reviewConsentSkippedNotice) {
 		t.Fatalf("headless start lost the skip notice:\n%s", notice)
 	}
-	for _, want := range []string{"on by default", "never", "gentle-ai review mode enable", "gentle-ai review mode disable"} {
+	for _, want := range []string{"on by default", "never", "hgtran-ai review mode enable", "hgtran-ai review mode disable"} {
 		if !strings.Contains(notice, want) {
 			t.Fatalf("default-source notice missing %q:\n%s", want, notice)
 		}
@@ -449,7 +449,7 @@ func TestConsentQuestionMatchesVersionedFixture(t *testing.T) {
 			}
 			normalized := bytes.ReplaceAll(output.Bytes(), encodedRoot[1:len(encodedRoot)-1], []byte("/repo"))
 			fixturePath := filepath.Join("..", "..", "contracts", "review-integration", tt.fixture)
-			if os.Getenv("GENTLE_AI_CONSENT_FIXTURE_UPDATE") == "1" {
+			if os.Getenv("HGTRAN_AI_CONSENT_FIXTURE_UPDATE") == "1" {
 				if err := os.WriteFile(fixturePath, normalized, 0o644); err != nil {
 					t.Fatal(err)
 				}

@@ -2,11 +2,11 @@
 
 ## Intent
 
-Claude Code v2.x indexes both `~/.claude/skills/` and `~/.claude/commands/` into the same `/` slash-command picker, so every SDD phase that gentle-ai installs in BOTH directories shows up TWICE in the picker (`sdd-apply`, `sdd-archive`, `sdd-explore`, `sdd-init`, `sdd-onboard`, `sdd-verify`). That duplication is confusing — users see two visually identical entries for the same workflow and don't know which to pick.
+Claude Code v2.x indexes both `~/.claude/skills/` and `~/.claude/commands/` into the same `/` slash-command picker, so every SDD phase that hgtran-ai installs in BOTH directories shows up TWICE in the picker (`sdd-apply`, `sdd-archive`, `sdd-explore`, `sdd-init`, `sdd-onboard`, `sdd-verify`). That duplication is confusing — users see two visually identical entries for the same workflow and don't know which to pick.
 
 This change hides the SDD `SKILL.md` files from the user-facing picker (and from the model's auto-invocation) by adding two YAML frontmatter flags. Agents and commands that read those files via `Read` keep working unchanged, because the path doesn't move.
 
-Success looks like: in Claude Code v2.1.131 with the next gentle-ai sync, each `sdd-*` slash command appears EXACTLY ONCE in `/`, and that single entry comes from `~/.claude/commands/sdd-*.md`. No path migration, no orphan files, no cross-adapter ripple.
+Success looks like: in Claude Code v2.1.131 with the next hgtran-ai sync, each `sdd-*` slash command appears EXACTLY ONCE in `/`, and that single entry comes from `~/.claude/commands/sdd-*.md`. No path migration, no orphan files, no cross-adapter ripple.
 
 ## Scope
 
@@ -25,7 +25,7 @@ Success looks like: in Claude Code v2.1.131 with the next gentle-ai sync, each `
 - Path relocation to `~/.claude/sdd-lib/` (Option C in the exploration). Rejected — see "Why Option A over Option C" below.
 - Cross-adapter changes for Cursor, Kiro, OpenCode, Windsurf, etc. None of them have the duplication.
 - Changes to `internal/components/sdd/inject.go` write paths. The destination is unchanged; only the file CONTENT picks up two new frontmatter fields.
-- Migration logic. Existing installs pick up the new frontmatter automatically on the next `gentle-ai sync` — same path, new content.
+- Migration logic. Existing installs pick up the new frontmatter automatically on the next `hgtran-ai sync` — same path, new content.
 - Uninstall path changes. None needed.
 - Frontmatter changes to non-SDD skills (`judgment-day`, `branch-pr`, `chained-pr`, `cognitive-doc-design`, etc.). Those are intentionally user-invocable.
 
@@ -99,7 +99,7 @@ Option A is **~10x less code surface**, has **zero migration risk**, leaves cros
 1. **Frontmatter linter**: `internal/assets/skills_frontmatter_test.go` must pass with the two new fields present on all 10 SDD `SKILL.md` files. Decision in `sdd-spec`: widen the top-level allowlist OR require both fields nested under `metadata:`.
 2. **Golden tests**: regenerate affected goldens; review the diff is byte-for-byte the two added lines (no incidental changes).
 3. **Docs check**: confirm Claude Code's official skill schema docs document `user-invocable` and `disable-model-invocation` as supported v2.x fields. The exploration referenced this; `sdd-spec` will lock in the canonical doc URL with a context7 lookup. If the docs don't confirm both flags, fall back to `sdd-design` to pick a verified-supported alternative (e.g. only `user-invocable: false`, or relocate path).
-4. **Smoke test on a real install**: after `gentle-ai sync` against a Claude Code v2.1.131 install, type `/` and verify each of `sdd-apply`, `sdd-archive`, `sdd-explore`, `sdd-init`, `sdd-onboard`, `sdd-verify` appears exactly once. Capture in the verify phase.
+4. **Smoke test on a real install**: after `hgtran-ai sync` against a Claude Code v2.1.131 install, type `/` and verify each of `sdd-apply`, `sdd-archive`, `sdd-explore`, `sdd-init`, `sdd-onboard`, `sdd-verify` appears exactly once. Capture in the verify phase.
 5. **Functional test**: invoke `/sdd-apply` in a real Claude Code session and confirm the orchestrator still launches the executor sub-agent, which still reads `~/.claude/skills/sdd-apply/SKILL.md` successfully.
 
 ## Risks

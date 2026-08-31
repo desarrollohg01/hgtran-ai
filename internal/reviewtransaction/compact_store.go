@@ -17,7 +17,7 @@ import (
 	"time"
 )
 
-const compactRecordSchema = "gentle-ai.review-state-record/v2"
+const compactRecordSchema = "hgtran-ai.review-state-record/v2"
 
 // Compact store entry artifact names. Every file the compact store writes
 // under a lineage directory must be named here so the reclaim authority
@@ -29,7 +29,7 @@ const (
 	// CompactReviewerResultsDir holds captured reviewer result artifacts.
 	CompactReviewerResultsDir = "reviewer-results"
 )
-const CompactTransportSchema = "gentle-ai.review-transport/v2"
+const CompactTransportSchema = "hgtran-ai.review-transport/v2"
 const LegacyReadOnlyErrorCode = "legacy_v1_read_only"
 
 var compactStartLockTimeout = 2 * time.Second
@@ -87,7 +87,7 @@ var errCompactRecoveryAuthorizationInexact = errors.New("escalated recovery requ
 
 // compactRecoveryAuthorizationSchema is the first line of the exact six-line
 // escalated-recovery maintainer authorization binding.
-const compactRecoveryAuthorizationSchema = "gentle-ai.review-recovery-authorization/v1"
+const compactRecoveryAuthorizationSchema = "hgtran-ai.review-recovery-authorization/v1"
 
 // ErrHistoricalCompatReadOnly denies ordinary mutation of authority loaded
 // through the retired-field compatibility path.
@@ -197,7 +197,7 @@ type CompactRecoveryRequest struct {
 	MaintainerAuthorization     string
 }
 
-const ReleaseScopeRecoveryAuthorization = "gentle-ai.release-scope-recovery/v1"
+const ReleaseScopeRecoveryAuthorization = "hgtran-ai.release-scope-recovery/v1"
 
 func BuildReleaseScopeSnapshot(ctx context.Context, repo string) (Snapshot, error) {
 	builder := SnapshotBuilder{Repo: repo}
@@ -2005,7 +2005,7 @@ func makeCompactRecord(state CompactState) (CompactRecord, []byte, error) {
 	if err != nil {
 		return CompactRecord{}, nil, err
 	}
-	sum := sha256.Sum256(append([]byte("gentle-ai.review-state/v2\x00"), statePayload...))
+	sum := sha256.Sum256(append([]byte("hgtran-ai.review-state/v2\x00"), statePayload...))
 	record := CompactRecord{Schema: compactRecordSchema, Revision: "sha256:" + hex.EncodeToString(sum[:]), State: state}
 	payload, err := json.MarshalIndent(record, "", "  ")
 	if err != nil {
@@ -2403,6 +2403,6 @@ func compactTransportDigest(transport CompactTransport) string {
 	copy := transport
 	copy.BundleDigest = ""
 	payload, _ := json.Marshal(copy)
-	sum := sha256.Sum256(append([]byte("gentle-ai.review-transport/v2\x00"), payload...))
+	sum := sha256.Sum256(append([]byte("hgtran-ai.review-transport/v2\x00"), payload...))
 	return "sha256:" + hex.EncodeToString(sum[:])
 }

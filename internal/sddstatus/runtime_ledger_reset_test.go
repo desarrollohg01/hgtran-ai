@@ -160,7 +160,7 @@ func TestRuntimeLedgerReplaysPreGenerationBeginRecords(t *testing.T) {
 	}
 	record := runtimeRecord{
 		Schema: runtimeRecordSchema, Change: store.Change, Operation: runtimeOperationBegin,
-		RequestID: request.RequestID, RequestDigest: runtimeValueHash("gentle-ai.sdd-runtime-begin-request/v1", request),
+		RequestID: request.RequestID, RequestDigest: runtimeValueHash("hgtran-ai.sdd-runtime-begin-request/v1", request),
 		Begin: &runtimeBeginEvent{
 			ObjectiveID: legacyRuntimeObjectiveID(store.Change, request.EvidenceGoal), WorkUnit: request.WorkUnit,
 			EvidenceGoal: request.EvidenceGoal, MaxAttempts: request.MaxAttempts, MaxChangedLines: request.MaxChangedLines,

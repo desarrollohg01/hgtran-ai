@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-const compactReconcileAuthorizationSchema = "gentle-ai.review-reconcile-authorization/v1"
+const compactReconcileAuthorizationSchema = "hgtran-ai.review-reconcile-authorization/v1"
 const compactRecoveryEdgeUnchangedTarget = "unchanged_target"
 const compactRecoveryEdgeMalformedAuthorization = "malformed_recovery_authorization"
 const compactCombinedRecoveryAnomalies = compactRecoveryEdgeUnchangedTarget + "," + compactRecoveryEdgeMalformedAuthorization
@@ -170,7 +170,7 @@ func compactNonReconcilableContinuation(ctx context.Context, repo string, succes
 	}
 	return fmt.Sprintf(" No advertised operation admits this edge: reconciliation refuses it as corruption, and `review abandon` refuses successor %q because %s."+
 		" Nothing quarantines this shape today, so no command here will clear it; the entry and its recorded authorization stay exactly as persisted."+
-		" Capture the complete machine-readable diagnosis for every affected lineage with `gentle-ai review inspect-authority --cwd %q` and escalate that report — it is the artifact a maintainer needs to decide whether this corruption class becomes admissible.",
+		" Capture the complete machine-readable diagnosis for every affected lineage with `hgtran-ai review inspect-authority --cwd %q` and escalate that report — it is the artifact a maintainer needs to decide whether this corruption class becomes admissible.",
 		lineage, compactAbandonBlockerText(successor.State), repo)
 }
 
@@ -180,7 +180,7 @@ func compactNonReconcilableContinuation(ctx context.Context, repo string, succes
 // read-only prediction (InspectCompactPristineAbandonment) accepted the
 // lineage may render this, so the command printed is the command that runs.
 func compactAbandonCommandText(repo, lineage string, eligibility CompactAbandonEligibility) string {
-	return fmt.Sprintf("`gentle-ai review abandon --cwd %q --lineage %q --expected-revision %q --reason \"<why-it-is-abandoned>\" --actor \"<actor>\" --maintainer-authorization \"<maintainer-authorization>\"`;"+
+	return fmt.Sprintf("`hgtran-ai review abandon --cwd %q --lineage %q --expected-revision %q --reason \"<why-it-is-abandoned>\" --actor \"<actor>\" --maintainer-authorization \"<maintainer-authorization>\"`;"+
 		" the abandonment moves the entry into the audited quarantine and rewrites nothing, so the recorded authorization bytes survive exactly as persisted."+
 		" --maintainer-authorization is exactly these six lines, joined by LF, with no trailing newline, using the same --actor and --reason with surrounding whitespace trimmed:\n%s",
 		repo, lineage, eligibility.Revision,
@@ -212,7 +212,7 @@ func compactReconcileCommandText(repo, predecessorLineage, predecessorRevision, 
 			predecessorLineage, predecessorRevision, successorLineage, successorRevision, "<actor>", "<why-it-is-reconciled>")
 		lineCount = "eight"
 	}
-	return fmt.Sprintf("`gentle-ai review reconcile-authority --cwd %q --predecessor-lineage %q --expected-predecessor-revision %q --successor-lineage %q --expected-successor-revision %q --reason \"<why-it-is-reconciled>\" --actor \"<actor>\" --maintainer-authorization \"<maintainer-authorization>\"`;"+
+	return fmt.Sprintf("`hgtran-ai review reconcile-authority --cwd %q --predecessor-lineage %q --expected-predecessor-revision %q --successor-lineage %q --expected-successor-revision %q --reason \"<why-it-is-reconciled>\" --actor \"<actor>\" --maintainer-authorization \"<maintainer-authorization>\"`;"+
 		" the reconciliation moves the successor whole — never deleted — into the audited quarantine together with the natively re-derived proof."+
 		" --maintainer-authorization is exactly these %s lines, joined by LF, with no trailing newline, using the same --actor and --reason with surrounding whitespace trimmed:\n%s",
 		repo, predecessorLineage, predecessorRevision, successorLineage, successorRevision, lineCount, binding)
@@ -223,7 +223,7 @@ func compactReconcileCommandText(repo, predecessorLineage, predecessorRevision, 
 // supported classes: the unchanged-target class, and the pre-contract malformed-
 // recovery-authorization class in which a historical free-form maintainer
 // authorization predates the exact
-// gentle-ai.review-recovery-authorization/v1 binding while the edge is
+// hgtran-ai.review-recovery-authorization/v1 binding while the edge is
 // otherwise structurally consistent. The predecessor and every unrelated
 // authority stay untouched; the successor entry moves whole — never deleted —
 // into the audited quarantine together with the re-derived proof. Valid
@@ -273,7 +273,7 @@ func ReconcileInvalidRecoveryEdge(ctx context.Context, repo string, request Comp
 		return CompactReclaimRecord{}, fmt.Errorf("review reconcile-authority refused: successor %q holds a compact state record that cannot be loaded (%v);"+
 			" inspection classifies it %s. Reconciliation quarantines only a recovery edge it can natively re-derive from readable state, so it cannot admit this record,"+
 			" and admitting the damage class is a maintainer policy decision, not a repair."+
-			" Capture the complete machine-readable diagnosis with `gentle-ai review inspect-authority --cwd %q` and escalate that report — it is the artifact a maintainer needs to decide whether this class becomes admissible",
+			" Capture the complete machine-readable diagnosis with `hgtran-ai review inspect-authority --cwd %q` and escalate that report — it is the artifact a maintainer needs to decide whether this class becomes admissible",
 			request.SuccessorLineageID, err, compactRecoveryEntryProblem(err), root)
 	}
 	recovery := successor.State.Recovery

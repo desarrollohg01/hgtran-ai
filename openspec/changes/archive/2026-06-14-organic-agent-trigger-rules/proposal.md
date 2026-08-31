@@ -1,17 +1,17 @@
 # Proposal: Organic Agent Trigger Rules
 
-Give gentle-ai a declarative way to express WHEN each supported agent (the 4R review lenses, judgment-day judges, sdd-* phases, and any future agent) should run during the everyday dev lifecycle, then INJECT those rules into the assets gentle-ai already installs so every AI tool's orchestrator picks them up and follows them organically. Today there is no declarative trigger layer at all: users must remember to invoke agents by hand, so the agents gentle-ai installs sit idle until someone thinks to call them. This change makes them integrate into the daily workflow as a natural, recommended part of the flow — without turning gentle-ai into a runtime that executes anything.
+Give hgtran-ai a declarative way to express WHEN each supported agent (the 4R review lenses, judgment-day judges, sdd-* phases, and any future agent) should run during the everyday dev lifecycle, then INJECT those rules into the assets hgtran-ai already installs so every AI tool's orchestrator picks them up and follows them organically. Today there is no declarative trigger layer at all: users must remember to invoke agents by hand, so the agents hgtran-ai installs sit idle until someone thinks to call them. This change makes them integrate into the daily workflow as a natural, recommended part of the flow — without turning hgtran-ai into a runtime that executes anything.
 
 ## Why
 
-- **No declarative "when" exists.** gentle-ai installs powerful agents (review-risk, review-readability, review-reliability, review-resilience, judgment-day judges, sdd phases) but ships zero guidance on the lifecycle moments at which each should run. The value of an installed agent that nobody remembers to invoke is near zero.
+- **No declarative "when" exists.** hgtran-ai installs powerful agents (review-risk, review-readability, review-reliability, review-resilience, judgment-day judges, sdd phases) but ships zero guidance on the lifecycle moments at which each should run. The value of an installed agent that nobody remembers to invoke is near zero.
 - **Manual invocation does not scale across a team or a workflow.** A reviewer agent is only useful if it fires at the right moment (before a commit, before a PR). Relying on human memory means the most valuable lenses run least often — exactly when fatigue is highest and stakes are highest.
 - **Token cost is unmanaged.** The 4R as a fan-out costs ~4x fresh context versus ~1x for a classic single-context reviewer; adversarial verification scales as roughly `4 + 3 * findings`. With no declarative filter, the only two states are "never run them" or "run everything everywhere and burn tokens until users disable the feature." A `when` condition is the missing token-budget controller.
-- **gentle-ai is an installer, and should stay one.** The product already injects system-prompt sections, AGENTS.md sections, and per-agent `.md` files. Trigger rules belong in that same injected layer — declarative text the orchestrator reads — not in a new execution engine.
+- **hgtran-ai is an installer, and should stay one.** The product already injects system-prompt sections, AGENTS.md sections, and per-agent `.md` files. Trigger rules belong in that same injected layer — declarative text the orchestrator reads — not in a new execution engine.
 
 ## What changes
 
-Introduce a **declarative trigger-rules system** that gentle-ai installs (not executes) into every supported agent. The system has three conceptual pieces and one hard constraint.
+Introduce a **declarative trigger-rules system** that hgtran-ai installs (not executes) into every supported agent. The system has three conceptual pieces and one hard constraint.
 
 ### Conceptual model
 
@@ -53,7 +53,7 @@ The default rule set MUST be tuned so a normal day costs a small, predictable to
 
 ### Organic injection across all supported agents
 
-Rules are injected through the existing installer path — the same mechanism that already writes `<!-- gentle-ai:... -->` marker sections into system prompts and SDD orchestrator assets (`internal/components/sdd/inject.go`). Natural injection points, in priority order:
+Rules are injected through the existing installer path — the same mechanism that already writes `<!-- hgtran-ai:... -->` marker sections into system prompts and SDD orchestrator assets (`internal/components/sdd/inject.go`). Natural injection points, in priority order:
 
 1. **Per-agent system-prompt / orchestrator section** (primary) — guaranteed loaded every session.
 2. **AGENTS.md section** — alongside the existing skill index + trigger table.
@@ -76,19 +76,19 @@ Rules MUST be rendered for ALL supported agents: claude, opencode, cursor, codex
 
 | Non-goal | Reason |
 |----------|--------|
-| **Executing agents** | gentle-ai stays an installer/injector. It renders rules; the AI tool's orchestrator runs them. |
+| **Executing agents** | hgtran-ai stays an installer/injector. It renders rules; the AI tool's orchestrator runs them. |
 | **Generating git hooks** | Events are semantic moments honored by the orchestrator, not OS-level hooks. |
 | **Event bus / runtime dispatch** | No runtime layer is added; no daemon, no listener, no scheduler. |
 | **Deterministic / hard gates** | Organic-only by decision. No blocking. `mode: strong` is the strongest level — a strong recommendation, not a gate. |
 | **Deterministic or hybrid execution model** | Explicitly deferred. May come LATER as a separate change; the organic cut is the deliberate first slice. |
-| **A `when` expression engine that gentle-ai evaluates** | gentle-ai does not evaluate `when`; it renders the condition as instruction text for the orchestrator to interpret. |
+| **A `when` expression engine that hgtran-ai evaluates** | hgtran-ai does not evaluate `when`; it renders the condition as instruction text for the orchestrator to interpret. |
 
 ## How it integrates (high-level approach)
 
 1. **Define the schema and events catalog** as data structures (`encoding/json`-friendly, no new parse dependency) plus a documented authoring format.
 2. **Ship a built-in default rule set** in the catalog layer alongside the existing skills catalog (`internal/catalog/`), token-tuned per the budget requirement.
 3. **Render rules to instructional text** — a renderer turns the rule set into per-agent directive blocks (human-readable, marker-wrapped).
-4. **Inject via the existing path** — extend the current SDD/AGENTS.md section injection (`internal/components/sdd/inject.go`, `internal/filemerge/section.go`) to write a `<!-- gentle-ai:trigger-rules -->` section into each agent's system prompt / AGENTS.md, idempotently, for every supported adapter.
+4. **Inject via the existing path** — extend the current SDD/AGENTS.md section injection (`internal/components/sdd/inject.go`, `internal/filemerge/section.go`) to write a `<!-- hgtran-ai:trigger-rules -->` section into each agent's system prompt / AGENTS.md, idempotently, for every supported adapter.
 5. **No execution code anywhere** — the entire change is schema + defaults + renderer + injection wiring + tests + docs.
 
 ## Affected Areas
@@ -98,7 +98,7 @@ Rules MUST be rendered for ALL supported agents: claude, opencode, cursor, codex
 | `internal/model/types.go` | Modified | Trigger-rule, event, binding, and mode types |
 | `internal/catalog/` (new file, e.g. `triggers.go`) | New | Built-in default rule set + supported events catalog |
 | `internal/components/sdd/inject.go` | Modified | Render + inject the trigger-rules section per agent |
-| `internal/filemerge/section.go` | Possibly modified | Marker section for `gentle-ai:trigger-rules` if a new marker is needed |
+| `internal/filemerge/section.go` | Possibly modified | Marker section for `hgtran-ai:trigger-rules` if a new marker is needed |
 | `internal/assets/{agent}/...` | Modified | Per-agent rendered directive blocks where agent-specific phrasing is required |
 | AGENTS.md (rendered output) | Modified | Trigger-rules section alongside the skill index/trigger table |
 | Tests across `internal/{catalog,components,model}` | New/Modified | Schema, default-set, renderer, and per-agent injection tests (strict TDD active) |
@@ -116,12 +116,12 @@ Rules MUST be rendered for ALL supported agents: claude, opencode, cursor, codex
 
 ## Rollback Plan
 
-The change is additive and injection-based. Rollback is removing the `<!-- gentle-ai:trigger-rules -->` section from the installed assets (the next sync/install with the feature reverted strips it via the marker), plus reverting the catalog/types/renderer additions. No runtime state, no migrations, no executed side effects to unwind.
+The change is additive and injection-based. Rollback is removing the `<!-- hgtran-ai:trigger-rules -->` section from the installed assets (the next sync/install with the feature reverted strips it via the marker), plus reverting the catalog/types/renderer additions. No runtime state, no migrations, no executed side effects to unwind.
 
 ## Delivery context
 
 - Single PR, `size:exception` (line count is not a constraint for this change).
-- Work happens in worktree `/Users/alanbuscaglia/work/gentle-ai-wt-organic-triggers` on branch `feat/organic-agent-trigger-rules`; closes via issue -> PR -> main.
+- Work happens in worktree `/Users/alanbuscaglia/work/hgtran-ai-wt-organic-triggers` on branch `feat/organic-agent-trigger-rules`; closes via issue -> PR -> main.
 - Strict TDD is active (`go test ./...`); every new schema/renderer/injection unit lands test-first.
 
 ## Success Criteria
@@ -131,5 +131,5 @@ The change is additive and injection-based. Rollback is removing the `<!-- gentl
 - [x] A token-aware built-in default rule set ships covering the 4R, judgment-day, and sdd phases.
 - [x] Default bindings demonstrably scale by blast radius: cheap advisory lens on everyday events; full 4R only on hot paths / large diffs; judgment-day only at high-stakes moments.
 - [x] Rules are rendered and injected into the installed assets for ALL supported agents (claude, opencode, cursor, codex, gemini, vscode, windsurf, antigravity), idempotently.
-- [x] gentle-ai adds NO execution, NO git hooks, NO event bus, NO deterministic gate — verified by the absence of any runtime dispatch code.
+- [x] hgtran-ai adds NO execution, NO git hooks, NO event bus, NO deterministic gate — verified by the absence of any runtime dispatch code.
 - [x] `go build ./...`, `go vet ./...`, and `go test ./...` pass clean.

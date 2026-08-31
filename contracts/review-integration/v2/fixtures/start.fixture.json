@@ -1,6 +1,6 @@
 {
-  "schema": "gentle-ai.review-integration.start/v3",
-  "contract": "gentle-ai.review-integration/v2",
+  "schema": "hgtran-ai.review-integration.start/v3",
+  "contract": "hgtran-ai.review-integration/v2",
   "operation": "review.start",
   "action": "created",
   "lenses_required": true,
@@ -24,7 +24,7 @@
   ],
   "artifact_subjects": [
     {
-      "schema": "gentle-ai.review-artifact-subject/v2",
+      "schema": "hgtran-ai.review-artifact-subject/v2",
       "subject_hash": "sha256:2ec775b2a519da488fd76212470e9e42160179e394cfae2819f1f8ac3c7842e0",
       "lineage_id": "review-start-fixture",
       "authority_revision": "sha256:3411d049f39e891b50adfc76473199b473927d10245a227a3bc967eae0caf68c",
@@ -36,7 +36,7 @@
       "selected_order": 0
     },
     {
-      "schema": "gentle-ai.review-artifact-subject/v2",
+      "schema": "hgtran-ai.review-artifact-subject/v2",
       "subject_hash": "sha256:1800117ac48276e0039e3791287aed7af08ee65112476f9f0cbe5d11ca1044fe",
       "lineage_id": "review-start-fixture",
       "authority_revision": "sha256:3411d049f39e891b50adfc76473199b473927d10245a227a3bc967eae0caf68c",
@@ -48,7 +48,7 @@
       "selected_order": 1
     },
     {
-      "schema": "gentle-ai.review-artifact-subject/v2",
+      "schema": "hgtran-ai.review-artifact-subject/v2",
       "subject_hash": "sha256:b426bc54f5f4f3ea446a84b7957e14492c803e8748f07425cd2e0652b485d7a5",
       "lineage_id": "review-start-fixture",
       "authority_revision": "sha256:3411d049f39e891b50adfc76473199b473927d10245a227a3bc967eae0caf68c",
@@ -60,7 +60,7 @@
       "selected_order": 2
     },
     {
-      "schema": "gentle-ai.review-artifact-subject/v2",
+      "schema": "hgtran-ai.review-artifact-subject/v2",
       "subject_hash": "sha256:1b43f90a9391e996e28d478c0aef85b1fd26229c1ccb2ef8bc56b418ab0b4a7f",
       "lineage_id": "review-start-fixture",
       "authority_revision": "sha256:3411d049f39e891b50adfc76473199b473927d10245a227a3bc967eae0caf68c",

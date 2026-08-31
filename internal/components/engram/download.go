@@ -135,7 +135,7 @@ const engramCoreTagPattern = `^v[0-9]+\.[0-9]+\.[0-9]+$`
 //
 // When isBeta is true, engram is installed from source via `go install @main`
 // instead of downloading a release archive. This mirrors the install-time beta
-// path used by the CLI and ensures the upgrade executor honors GENTLE_AI_CHANNEL.
+// path used by the CLI and ensures the upgrade executor honors HGTRAN_AI_CHANNEL.
 //
 // Checksum verification is mandatory for the stable (release) path: the install
 // fails if checksums.txt is unavailable, if the archive is not listed, or if
@@ -180,7 +180,7 @@ func DownloadLatestBinary(profile system.PlatformProfile, isBeta bool) (string, 
 	}
 	outPath := filepath.Join(installDir, binaryName)
 
-	tmpDir, err := os.MkdirTemp("", "gentle-ai-engram-*")
+	tmpDir, err := os.MkdirTemp("", "hgtran-ai-engram-*")
 	if err != nil {
 		return "", fmt.Errorf("create temp dir: %w", err)
 	}
@@ -644,7 +644,7 @@ func stopEngramProcessesWith(runner system.PowerShellRunner) error {
 	msg := strings.TrimSpace(string(out))
 	if strings.HasPrefix(msg, "WARNING:") {
 		// Non-fatal: log to stderr so operators can diagnose, but return nil.
-		fmt.Fprintf(os.Stderr, "gentle-ai: engram stop: %s\n", msg)
+		fmt.Fprintf(os.Stderr, "hgtran-ai: engram stop: %s\n", msg)
 	}
 	return nil
 }

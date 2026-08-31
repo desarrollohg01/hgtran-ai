@@ -109,7 +109,7 @@ func TestStatusRenderersEmbedOnlyStatusV1Projection(t *testing.T) {
 					t.Fatalf("%s leaked %q:\n%s", name, forbidden, output)
 				}
 			}
-			if !strings.Contains(output, `"schemaName": "gentle-ai.sdd-status"`) {
+			if !strings.Contains(output, `"schemaName": "hgtran-ai.sdd-status"`) {
 				t.Fatalf("%s omitted projected SDD status:\n%s", name, output)
 			}
 		})
@@ -146,7 +146,7 @@ func TestParseCommandArgsRejectsUnsupportedContractReadOnly(t *testing.T) {
 		want string
 	}{
 		{name: "explicit empty", args: []string{"change", "--contract="}, want: `unsupported sdd-status contract ""`},
-		{name: "unknown", args: []string{"change", "--contract", "gentle-ai.work-status/v1"}, want: `unsupported sdd-status contract "gentle-ai.work-status/v1"`},
+		{name: "unknown", args: []string{"change", "--contract", "hgtran-ai.work-status/v1"}, want: `unsupported sdd-status contract "hgtran-ai.work-status/v1"`},
 		{name: "missing value", args: []string{"change", "--contract"}, want: "--contract requires a value"},
 	}
 	for _, tt := range tests {

@@ -29,7 +29,7 @@ func TestSDDAttemptBeginNamesTheResetThatClearsDrift(t *testing.T) {
 	message := driftedBeginRefusal(t, fixture, "drifted-begin-2", fixture.objective)
 
 	arguments := namedRunnableGentleCommand(t, message)
-	if len(arguments) < 3 || arguments[0] != "gentle-ai" || arguments[1] != "sdd-attempt" || arguments[2] != "reset" {
+	if len(arguments) < 3 || arguments[0] != "hgtran-ai" || arguments[1] != "sdd-attempt" || arguments[2] != "reset" {
 		t.Fatalf("refusal names %v, not a runnable sdd-attempt reset:\n%s", arguments, message)
 	}
 	arguments = arguments[2:]
@@ -92,10 +92,10 @@ func TestSDDAttemptBeginNamesTheObjectiveItAlreadyHolds(t *testing.T) {
 	message := driftedBeginRefusal(t, fixture, "changed-begin-2", changed)
 
 	arguments := namedRunnableGentleCommand(t, message)
-	if len(arguments) < 3 || arguments[0] != "gentle-ai" || arguments[1] != "sdd-attempt" || arguments[2] != "begin" {
+	if len(arguments) < 3 || arguments[0] != "hgtran-ai" || arguments[1] != "sdd-attempt" || arguments[2] != "begin" {
 		t.Fatalf("refusal names %v, not the begin the ledger already accepts:\n%s", arguments, message)
 	}
-	if strings.Contains(message, "gentle-ai sdd-attempt reset") {
+	if strings.Contains(message, "hgtran-ai sdd-attempt reset") {
 		t.Fatalf("refusal names a reset that is refused one layer deeper:\n%s", message)
 	}
 	arguments = arguments[2:]

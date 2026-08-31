@@ -4,7 +4,7 @@
 
 Make the output-style asset the single canonical channel for tone/language/philosophy on the two adapters that inject it every session (Claude Code via `~/.claude/output-styles/*.md`; Kimi via the unconditional `{% include "output-style.md" %}` in `KIMI.md:3`). Slim those two adapters' system-prompt persona section to an action/tooling residual plus a one-line pointer, and reconcile the drifted tone wording once, into the output-style asset (union of both copies — nothing lost). All 14 other adapters keep the full persona section unchanged because they have no redundant output-style channel.
 
-Static per-adapter dispatch, no runtime detection (matches proposal Approach). Idempotent by construction: `InjectMarkdownSection` does marker-delimited full-replace (`filemerge/section.go:33-75`), so existing users' full `<!-- gentle-ai:persona -->` section converges to slim on re-inject with no orphan.
+Static per-adapter dispatch, no runtime detection (matches proposal Approach). Idempotent by construction: `InjectMarkdownSection` does marker-delimited full-replace (`filemerge/section.go:33-75`), so existing users' full `<!-- hgtran-ai:persona -->` section converges to slim on re-inject with no orphan.
 
 ## Decision 1 — Redundant-channel predicate and residual dispatch
 
@@ -114,7 +114,7 @@ The `banned` lists in `inject_test.go:94-98,146-150` (Rioplatense example snippe
 
 Both fingerprint sets inspect the **pre-marker legacy zone** — historical free text written by pre-marker installers — NOT the current asset's marker-section content.
 
-- `filemerge/section.go:17-21` (`StripLegacyPersonaBlock`) checks `content[:firstMarkerIdx]` (`:44-62`) against all three fingerprint literals in the `legacyPersonaFingerprints` array: "## Personality", "Senior Architect", "## Rules". Slimming changes only the content INSIDE `<!-- gentle-ai:persona -->`; the pre-marker zone an upgrading user carries still holds the old full text (all three literals). Fingerprints still match → legacy still stripped. **KEEP unchanged.**
+- `filemerge/section.go:17-21` (`StripLegacyPersonaBlock`) checks `content[:firstMarkerIdx]` (`:44-62`) against all three fingerprint literals in the `legacyPersonaFingerprints` array: "## Personality", "Senior Architect", "## Rules". Slimming changes only the content INSIDE `<!-- hgtran-ai:persona -->`; the pre-marker zone an upgrading user carries still holds the old full text (all three literals). Fingerprints still match → legacy still stripped. **KEEP unchanged.**
 - `uninstall/cleaners.go:18-22` (`looksLikeManagedPersonaPrefix`, `:60-72`) checks the prefix before the first marker. Slim installs are removed via the marker path (`removeMarkdownSections("persona")`, `:24-35`), not this fingerprint, so no orphan. **KEEP unchanged.**
 
 Verified the fingerprint tests are literal, not asset-derived: `section_test.go:333,351,368,385,609` build synthetic `"## Personality\n\nSenior Architect…"` fixtures. They keep passing after slimming (they assert migration of historical content). Add ONE regression test per file asserting a slim on-disk file is still fully removed / not falsely stripped.

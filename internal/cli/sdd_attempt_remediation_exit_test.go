@@ -13,7 +13,7 @@ import (
 )
 
 // namedRunnableGentleCommand extracts the first backtick-delimited
-// `gentle-ai ...` command a refusal names. A refusal that names an internal
+// `hgtran-ai ...` command a refusal names. A refusal that names an internal
 // operation identifier, or names nothing at all, is the defect this file
 // exists to catch: the operator is left with a non-zero exit and no door.
 func namedRunnableGentleCommand(t *testing.T, message string) []string {
@@ -30,12 +30,12 @@ func namedRunnableGentleCommand(t *testing.T, message string) []string {
 			break
 		}
 		span := remainder[:closing]
-		if strings.HasPrefix(span, "gentle-ai ") {
+		if strings.HasPrefix(span, "hgtran-ai ") {
 			return splitNamedCommand(t, span)
 		}
 		rest = remainder[closing+1:]
 	}
-	t.Fatalf("refusal names no runnable `gentle-ai ...` command:\n%s", message)
+	t.Fatalf("refusal names no runnable `hgtran-ai ...` command:\n%s", message)
 	return nil
 }
 
@@ -132,7 +132,7 @@ func TestSDDAttemptBoundFinishNamesTheExitThatWorks(t *testing.T) {
 	}
 
 	arguments := namedRunnableGentleCommand(t, message)
-	if len(arguments) < 3 || arguments[0] != "gentle-ai" || arguments[1] != "sdd-attempt" || arguments[2] != "finish" {
+	if len(arguments) < 3 || arguments[0] != "hgtran-ai" || arguments[1] != "sdd-attempt" || arguments[2] != "finish" {
 		t.Fatalf("refusal names %v, not a runnable sdd-attempt finish:\n%s", arguments, message)
 	}
 	arguments = arguments[2:]
@@ -192,7 +192,7 @@ func TestSDDAttemptBoundFinishRefusesToNameAnExitThatWouldFail(t *testing.T) {
 	createCLIRecoverySuccessor(t, fixture.repo, fixture.lineage, fixture.lineage+"-successor")
 
 	message := boundPassingFinishRefusal(t, fixture, "nonleaf-finish-2")
-	if strings.Contains(message, "gentle-ai sdd-attempt finish") {
+	if strings.Contains(message, "hgtran-ai sdd-attempt finish") {
 		t.Fatalf("refusal names the self-successor finish in a state where it is refused:\n%s", message)
 	}
 	if !strings.Contains(message, fixture.lineage) {
@@ -205,7 +205,7 @@ func TestSDDAttemptBoundFinishRefusesToNameAnExitThatWouldFail(t *testing.T) {
 	}
 
 	arguments := namedRunnableGentleCommand(t, message)
-	if len(arguments) < 3 || arguments[0] != "gentle-ai" || arguments[1] != "review" || arguments[2] != "status" {
+	if len(arguments) < 3 || arguments[0] != "hgtran-ai" || arguments[1] != "review" || arguments[2] != "status" {
 		t.Fatalf("refusal names %v, not the review router:\n%s", arguments, message)
 	}
 	if placeholders := namedCommandPlaceholders(arguments); len(placeholders) != 0 {

@@ -1,12 +1,12 @@
 {
-  "schema": "gentle-ai.review-integration.capabilities/v1",
-  "contract": "gentle-ai.review-integration/v1",
+  "schema": "hgtran-ai.review-integration.capabilities/v1",
+  "contract": "hgtran-ai.review-integration/v1",
   "protocol": {
     "major": 1,
     "minor": 0
   },
   "package": {
-    "name": "gentle-ai",
+    "name": "hgtran-ai",
     "version": "2.1.7-test",
     "release_channel": "prerelease"
   },
@@ -44,20 +44,20 @@
     "workspace"
   ],
   "schemas": [
-    "gentle-ai.review-authority-status/v1",
-    "gentle-ai.review-gate-request/v1",
-    "gentle-ai.review-integration.capabilities/v1",
-    "gentle-ai.review-integration.failure/v1",
-    "gentle-ai.review-integration.operation/v1",
-    "gentle-ai.review-integration.projection/v1",
-    "gentle-ai.review-integration.start/v1",
-    "gentle-ai.review-integration.status/v1",
-    "gentle-ai.review-receipt/v1",
-    "gentle-ai.review-receipt/v2",
-    "gentle-ai.review-result-artifact/v1",
-    "https://gentle-ai.dev/schema/review/refuter/v1",
-    "https://gentle-ai.dev/schema/review/reviewer/v1",
-    "https://gentle-ai.dev/schema/review/validator/v1"
+    "hgtran-ai.review-authority-status/v1",
+    "hgtran-ai.review-gate-request/v1",
+    "hgtran-ai.review-integration.capabilities/v1",
+    "hgtran-ai.review-integration.failure/v1",
+    "hgtran-ai.review-integration.operation/v1",
+    "hgtran-ai.review-integration.projection/v1",
+    "hgtran-ai.review-integration.start/v1",
+    "hgtran-ai.review-integration.status/v1",
+    "hgtran-ai.review-receipt/v1",
+    "hgtran-ai.review-receipt/v2",
+    "hgtran-ai.review-result-artifact/v1",
+    "https://hgtran-ai.dev/schema/review/refuter/v1",
+    "https://hgtran-ai.dev/schema/review/reviewer/v1",
+    "https://hgtran-ai.dev/schema/review/validator/v1"
   ],
   "features": {
     "mandatory": [

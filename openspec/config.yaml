@@ -2,9 +2,9 @@
 schema: spec-driven
 
 context: |
-  Repo: desarrollohg01/hgtran-ai — HG Transportaciones fork of Gentleman-Programming/gentle-ai
+  Repo: desarrollohg01/hgtran-ai — HG Transportaciones fork of Gentleman-Programming/hgtran-ai
   Tech stack: Go (go.mod 1.25.10, local toolchain 1.26.2), Bubbletea TUI v1.3.10, bubbles v1.0.0, lipgloss v1.1.0
-  Architecture: cmd/gentle-ai is the product entrypoint, but NOT the only main package — go list reports three in the root module: cmd/gentle-ai, internal/gofmtcheck and internal/releasepolicycmd. There are NO .go files at the repo root, so CONTRIBUTING.md:98 "go build -o gga ." fails with "no Go files" — use go build ./cmd/gentle-ai. 29 top-level internal/ directories holding 64 Go packages per go list ./internal/... (agentbuilder, agents, app, assets, backup, catalog, cli, components, doctor, gofmtcheck, installcmd, model, opencode, pathidentity, pipeline, planner, recoverytrace, releasepolicy, releasepolicycmd, reviewtransaction, sddstatus, skillregistry, state, storage, system, tui, update, verify, versions)
+  Architecture: cmd/hgtran-ai is the product entrypoint, but NOT the only main package — go list reports three in the root module: cmd/hgtran-ai, internal/gofmtcheck and internal/releasepolicycmd. There are NO .go files at the repo root, so CONTRIBUTING.md:98 "go build -o gga ." fails with "no Go files" — use go build ./cmd/hgtran-ai. 29 top-level internal/ directories holding 64 Go packages per go list ./internal/... (agentbuilder, agents, app, assets, backup, catalog, cli, components, doctor, gofmtcheck, installcmd, model, opencode, pathidentity, pipeline, planner, recoverytrace, releasepolicy, releasepolicycmd, reviewtransaction, sddstatus, skillregistry, state, storage, system, tui, update, verify, versions)
   Domain: RDD (receipt-driven development) — review authority, receipts/lineage, delivery gates, kill switches
   Agents: multi-agent support (claude, opencode, cursor, codex, gemini, vscode, windsurf, antigravity)
   Skills: AGENTS.md is the index; .atl/skill-registry.md is the generated delegator registry; internal/catalog/skills.go is the in-code known-skill registry; project skills in skills/
@@ -70,8 +70,8 @@ testing:
         activation expression in ci.yml:342-343 — push or schedule events only — so pull_request
         runs are Tier 1. Two other E2E jobs are gated by neither variable and both run on every
         trigger: claude-network-none (ci.yml:109), and organic-runtime-e2e (ci.yml:237) — the
-        latter has no job-level condition. GENTLE_AI_REAL_AGENT_E2E is hardcoded to "1"
-        (ci.yml:286) and GENTLE_AI_LARGE_WORKSPACE_E2E varies only by matrix OS (ci.yml:291);
+        latter has no job-level condition. HGTRAN_AI_REAL_AGENT_E2E is hardcoded to "1"
+        (ci.yml:286) and HGTRAN_AI_LARGE_WORKSPACE_E2E varies only by matrix OS (ci.yml:291);
         they select which journeys self-skip inside the test binary, they do not gate the job.
     tui:
       available: true

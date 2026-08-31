@@ -135,7 +135,7 @@ func TestBindApprovedReviewRejectsOpenSpecSymlinkEscape(t *testing.T) {
 	if _, err := BindApprovedReview(context.Background(), planningRoot, "thin", "approved-thin", ""); err == nil || !strings.Contains(err.Error(), "outside repository") {
 		t.Fatalf("OpenSpec symlink escape error = %v", err)
 	}
-	if _, err := os.Stat(filepath.Join(root, ".git", "gentle-ai")); !os.IsNotExist(err) {
+	if _, err := os.Stat(filepath.Join(root, ".git", "hgtran-ai")); !os.IsNotExist(err) {
 		t.Fatalf("symlink escape created runtime authority: %v", err)
 	}
 }
@@ -218,7 +218,7 @@ func TestBindApprovedReviewRejectsSuccessfulGitDiagnosticsBeforeRuntimeMutation(
 	if err == nil || !strings.Contains(err.Error(), "diagnostics") {
 		t.Fatalf("BindApprovedReview() diagnostic error = %v", err)
 	}
-	if _, statErr := os.Stat(filepath.Join(root, ".git", "gentle-ai")); !os.IsNotExist(statErr) {
+	if _, statErr := os.Stat(filepath.Join(root, ".git", "hgtran-ai")); !os.IsNotExist(statErr) {
 		t.Fatalf("Git diagnostic created runtime authority: %v", statErr)
 	}
 }
@@ -236,7 +236,7 @@ func TestBindApprovedReviewPreflightsGitInventoryBeforeRuntimeMutation(t *testin
 	if !errors.As(err, &commandErr) {
 		t.Fatalf("BindApprovedReview() error = %T %v, want typed Git failure", err, err)
 	}
-	if _, statErr := os.Stat(filepath.Join(root, ".git", "gentle-ai")); !os.IsNotExist(statErr) {
+	if _, statErr := os.Stat(filepath.Join(root, ".git", "hgtran-ai")); !os.IsNotExist(statErr) {
 		t.Fatalf("Git inventory failure created runtime authority: %v", statErr)
 	}
 }
@@ -258,7 +258,7 @@ func TestBindApprovedReviewChecksNestedPlanningLedger(t *testing.T) {
 	planningRoot := filepath.Join(root, "packages", "app")
 	changeRoot := seedReadyChange(t, planningRoot, "thin", "- [x] 1.1 Done\n")
 	writeApprovedCompactAuthorityForChange(t, root, changeRoot, "approved-thin")
-	write(t, filepath.Join(changeRoot, "reviews", "ledger.json"), `{"schema":"gentle-ai.review-ledger/v1","findings":[{"id":"wrong"}]}`)
+	write(t, filepath.Join(changeRoot, "reviews", "ledger.json"), `{"schema":"hgtran-ai.review-ledger/v1","findings":[{"id":"wrong"}]}`)
 
 	if _, err := BindApprovedReview(context.Background(), planningRoot, "thin", "approved-thin", ""); err == nil || !strings.Contains(err.Error(), "ledger does not equal") {
 		t.Fatalf("nested planning ledger error = %v", err)
@@ -392,7 +392,7 @@ func TestBindingFailsClosedForLedgerDriftAndChangedLiveEvidence(t *testing.T) {
 			if err := os.MkdirAll(filepath.Join(changeRoot, "reviews"), 0o755); err != nil {
 				t.Fatal(err)
 			}
-			if err := os.WriteFile(filepath.Join(changeRoot, "reviews", "ledger.json"), []byte(`{"schema":"gentle-ai.review-ledger/v1","findings":[{"id":"wrong"}]}`), 0o644); err != nil {
+			if err := os.WriteFile(filepath.Join(changeRoot, "reviews", "ledger.json"), []byte(`{"schema":"hgtran-ai.review-ledger/v1","findings":[{"id":"wrong"}]}`), 0o644); err != nil {
 				t.Fatal(err)
 			}
 		}},
@@ -635,7 +635,7 @@ func assertNativeBinding(t *testing.T, store RuntimeStore, want string) {
 	if err != nil || status.Binding == nil || status.Binding.Revision != want || status.BindingRevision != want {
 		t.Fatalf("native binding status = %#v, err=%v, want=%q", status, err, want)
 	}
-	legacyPath := filepath.Join(store.commonDir, "gentle-ai", "sdd-review-bindings", "v1", store.Change, "binding.json")
+	legacyPath := filepath.Join(store.commonDir, "hgtran-ai", "sdd-review-bindings", "v1", store.Change, "binding.json")
 	if _, statErr := os.Stat(legacyPath); !os.IsNotExist(statErr) {
 		t.Fatalf("native bind unexpectedly dual-wrote legacy compatibility artifact: %v", statErr)
 	}

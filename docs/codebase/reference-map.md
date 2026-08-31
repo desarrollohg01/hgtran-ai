@@ -25,7 +25,7 @@ This appendix maps main docs and source files to responsibilities. Use it to mak
 
 | Source path | Responsibility |
 |---|---|
-| `cmd/gentle-ai/main.go` | Binary entrypoint and version handoff. |
+| `cmd/hgtran-ai/main.go` | Binary entrypoint and version handoff. |
 | `internal/app/` | Command dispatch, help, app-level version/update routing. |
 | `internal/cli/run.go` | Install flow orchestration. |
 | `internal/cli/sync.go` | Managed config sync flow and SDD profile flags. |
@@ -40,11 +40,11 @@ This appendix maps main docs and source files to responsibilities. Use it to mak
 | `internal/components/engram/` | Engram install, setup, MCP injection, and verification wiring. |
 | `internal/components/sdd/` | SDD prompt/profile generation and injection. |
 | `internal/components/communitytool/` | Community tool installation orchestration plus managed guidance/config/MCP reconciliation, including CodeGraph. |
-| `internal/components/opencodeplugin/` | Optional OpenCode TUI plugin registration, including external package names and the managed Gentle Logo local plugin. |
+| `internal/components/opencodeplugin/` | Optional OpenCode TUI plugin registration, including external package names and the managed Hgtran Logo local plugin. |
 | `internal/components/uninstall/` | Managed component cleanup services for uninstall flows. |
 | `internal/skillregistry/` | Skill registry scanning, cache behavior, and markdown generation. |
 | `internal/agents/` | Per-agent adapter strategies and paths. |
-| `internal/state/state.go` | Persisted install state in `~/.gentle-ai/state.json`. |
+| `internal/state/state.go` | Persisted install state in `~/.hgtran-ai/state.json`. |
 | `internal/update/` | Update checks and upgrade routing. |
 | `internal/update/upgrade/` | Upgrade execution and report rendering. |
 | `internal/verify/` | Post-apply readiness reporting. |
@@ -57,7 +57,7 @@ This appendix maps main docs and source files to responsibilities. Use it to mak
 |---|---|
 | Dashboard | No dashboard, HTMX, or HTTP server package was found in this repository. |
 | Cloud sync | No cloud server/cloud store implementation was found in this repository. |
-| Engram store schema | Sessions, observations, prompts, relations, and sync mutations are external Engram runtime concepts, not Gentle-AI source files. |
+| Engram store schema | Sessions, observations, prompts, relations, and sync mutations are external Engram runtime concepts, not hgtran-ai source files. |
 | Full API reference | No `DOCS.md` exists in this repository; use existing focused docs and external Engram docs when needed. |
 
 ## Review checklist

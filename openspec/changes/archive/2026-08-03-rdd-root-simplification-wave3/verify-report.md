@@ -1,5 +1,5 @@
 ```yaml
-schema: gentle-ai.verify-result/v1
+schema: hgtran-ai.verify-result/v1
 evidence_revision: sha256:7cd9bd227f8fc2491b336690121f6c17cce29449ea8ef88f60ed9d15f873eb83
 verdict: pass
 blockers: 0
@@ -17,7 +17,7 @@ build_output_hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca49599
 ## Verification Report — Cycle-3 close-out, coverage complete (FINAL)
 
 **Change**: rdd-root-simplification-wave3
-**Candidate**: worktree `/home/gentleman/work/gentle-ai-worktrees/rdd-wave0`, branch `feat/rdd-wave3-s5-taxonomy-offer-bench`, tip **`67be4867`**; `git status --porcelain` empty
+**Candidate**: worktree `/home/gentleman/work/hgtran-ai-worktrees/rdd-wave0`, branch `feat/rdd-wave3-s5-taxonomy-offer-bench`, tip **`67be4867`**; `git status --porcelain` empty
 **Scope of this pass**: envelope re-admission only. The C5/C6/W11/W14 remediation evidence at tip `157ab9fd` (section below) was not re-derived; `67be4867` changes no production byte, so it cannot invalidate it.
 **Attempt authority (echoed, not settled)**: `sha256:0040067d0fe91ff022afd673e94d5cbd771d3af4224a0d1bf7409edf74b36297`
 
@@ -43,14 +43,14 @@ $ git diff --stat 157ab9fd..67be4867
 Each spec scenario is quoted verbatim from `openspec/changes/rdd-root-simplification-wave3/specs/`, then matched to the test that now covers it.
 
 **1. `rdd-new-lineage-activation` → "Distinct Env Switch, Default Off, Legacy Path When Disabled" → "Switch identity never overloads another switch"**
-> GIVEN the activation switch, `GENTLE_AI_RDD_SHADOW`, and the RDD kill switch / WHEN any one of the three is toggled / THEN only its own scoped behavior changes; the other two are unaffected
+> GIVEN the activation switch, `HGTRAN_AI_RDD_SHADOW`, and the RDD kill switch / WHEN any one of the three is toggled / THEN only its own scoped behavior changes; the other two are unaffected
 
 Covered by `internal/reviewtransaction/new_lineage_switch_identity_test.go`. `TestNewLineageActivationSwitchIdentityNeverOverloadsAnotherSwitch` drives the switches' own single readers — `NewLineageActivationEnabled()` and `shadowObservationEnabled()` — across all four env combinations, asserting each reader answers for its own variable alone. `TestNewLineageActivationSwitchIndependentOfKillSwitch` proves the third pairing in **both** directions: the activation env var never influences `ResolveRDDMode`, and recording the kill switch off via `SetCloneLocalRDDMode(RDDModeOff)` never flips the activation reading on or off. UNTESTED → **COMPLIANT**.
 
 **2. `rdd-new-lineage-activation` → "Kill-Switch-Off Is Structurally Unfailable and Creates Nothing" → "Kill switch off produces no side effect"**
 > GIVEN the RDD kill switch is off / WHEN the facade is invoked at any observed call site / THEN no artifact is created, and no error path is reachable
 
-Covered by `internal/cli/review_new_lineage_kill_switch_test.go`. With the kill switch off **and** `GENTLE_AI_RDD_NEW_LINEAGE=1`, it drives all five `review validate` gates plus `OfferReviewAfterVerify`, twice against the identical fixture, and asserts on each pass: zero error from every call, `Delivery == disabled/unmanaged`, no fabricated approval (`Allowed` false and `Result != allow`), and — the strong assertion — the **entire `.git/gentle-ai` subtree byte-identical** before and after, via a `WalkDir` snapshot comparing every relative path plus exact file content. This is what upgrades the requirement: prior coverage attested only the unwired `OfferReviewAfterVerify` guard, never the facade at its five observed gate call sites. PARTIAL → **COMPLIANT**.
+Covered by `internal/cli/review_new_lineage_kill_switch_test.go`. With the kill switch off **and** `HGTRAN_AI_RDD_NEW_LINEAGE=1`, it drives all five `review validate` gates plus `OfferReviewAfterVerify`, twice against the identical fixture, and asserts on each pass: zero error from every call, `Delivery == disabled/unmanaged`, no fabricated approval (`Allowed` false and `Result != allow`), and — the strong assertion — the **entire `.git/hgtran-ai` subtree byte-identical** before and after, via a `WalkDir` snapshot comparing every relative path plus exact file content. This is what upgrades the requirement: prior coverage attested only the unwired `OfferReviewAfterVerify` guard, never the facade at its five observed gate call sites. PARTIAL → **COMPLIANT**.
 
 **3. `rdd-review-core-transitions` → "Consent-Gated Freeze With Immutable Tier, Lenses, and Budget" → "Frozen tier is never recomputed"**
 > GIVEN a frozen tier-4 lineage mid-review / WHEN a later transition re-evaluates risk inputs / THEN the persisted tier, lens set, and budget remain exactly as frozen at `start`
@@ -69,11 +69,11 @@ Verbatim run (`-count=1`):
     --- PASS: TestNewLineageActivationSwitchIndependentOfKillSwitch/kill-switch-resolution-with-activation= (0.00s)
     --- PASS: TestNewLineageActivationSwitchIndependentOfKillSwitch/kill-switch-resolution-with-activation=1 (0.00s)
 PASS
-ok  	github.com/gentleman-programming/gentle-ai/v2/internal/reviewtransaction	0.105s
+ok  	github.com/gentleman-programming/hgtran-ai/v2/internal/reviewtransaction	0.105s
 --- PASS: TestNewLineageFrozenTierIsNeverRecomputedAfterFreeze (0.16s)
 --- PASS: TestNewLineageKillSwitchOffProducesZeroSideEffectsAcrossEntrySurfaces (0.20s)
 PASS
-ok  	github.com/gentleman-programming/gentle-ai/v2/internal/cli	0.384s
+ok  	github.com/gentleman-programming/hgtran-ai/v2/internal/cli	0.384s
 ```
 
 ### Coverage
@@ -93,7 +93,7 @@ ok  	github.com/gentleman-programming/gentle-ai/v2/internal/cli	0.384s
 |---|---|---|---|
 | Root tests | `go test ./... -count=1` | 0 | 63 packages `ok`, 0 FAIL |
 | Root build | `go build ./...` | 0 | empty output |
-| Bench module tests | `cd bench && go test ./... -count=1` | 0 | `ok github.com/gentleman-programming/gentle-ai/bench 0.156s` |
+| Bench module tests | `cd bench && go test ./... -count=1` | 0 | `ok github.com/gentleman-programming/hgtran-ai/bench 0.156s` |
 | Deadcode ratchet | `bash scripts/deadcode-ratchet.sh` | 0 | `no new unreachable functions` |
 | Formatter | `gofmt -l .` | 0 | 0 files |
 | Vet | `go vet ./...` | 0 | clean |
@@ -104,7 +104,7 @@ These are honest notes about how the three fixtures instantiate their scenarios.
 
 - **N7 — SUGGESTION.** The frozen-tier fixture freezes `RiskLow` and drifts toward high, rather than the scenario's literal "frozen **tier-4** lineage". The property under test — a later transition never recomputes the persisted tier, lens set, budget or revision — is asserted directly and proved non-vacuous by the `ClassifyRisk` sanity check, and the drift-upward direction is the dangerous one. A tier-4 freeze is reachable through `review start`, so a second table row would make the fixture literal.
 - **N8 — SUGGESTION.** The kill-switch fixture deliberately drives the no-`--lineage` hook shape, matching the scenario's "observed call site". Its comment asserts the explicit-`--lineage` maintainer-diagnostic shape is "proven identical whether the kill switch is on or off" — that claim is stated in the comment but not exercised by this test. Either drop the claim or add the case.
-- **N9 — SUGGESTION.** The switch-identity fixture covers both activation-centric pairings in both directions, which is this requirement's subject. The `GENTLE_AI_RDD_SHADOW` ↔ kill-switch pairing is not exercised here; it belongs to Wave 1's shadow scope, not to the activation switch's distinctness.
+- **N9 — SUGGESTION.** The switch-identity fixture covers both activation-centric pairings in both directions, which is this requirement's subject. The `HGTRAN_AI_RDD_SHADOW` ↔ kill-switch pairing is not exercised here; it belongs to Wave 1's shadow scope, not to the activation switch's distinctness.
 
 ### Carried forward, unchanged by `67be4867`
 
@@ -124,7 +124,7 @@ N1 and N2 (WARNING) remain open and remain Wave 4/5 entry conditions: new-lineag
 **Change**: rdd-root-simplification-wave3
 **Version**: 3 NEW + 3 MODIFIED capability specs — 19 requirements / 32 scenarios (counted from `openspec/changes/rdd-root-simplification-wave3/specs/*/spec.md`)
 **Mode**: Strict TDD
-**Candidate**: worktree `/home/gentleman/work/gentle-ai-worktrees/rdd-wave0`, branch `feat/rdd-wave3-s5-taxonomy-offer-bench`, tip `157ab9fd`; `git status --porcelain` empty before and after every probe
+**Candidate**: worktree `/home/gentleman/work/hgtran-ai-worktrees/rdd-wave0`, branch `feat/rdd-wave3-s5-taxonomy-offer-bench`, tip `157ab9fd`; `git status --porcelain` empty before and after every probe
 **Prior report**: FAIL at tip `413d3967` — 2 CRITICAL (C5, C6), 14 WARNING, 5 SUGGESTION (preserved verbatim below)
 **Verified by**: independent re-execution. Two binaries were built from source — tip `157ab9fd` (`sha256:db909d38…`) and base `413d3967` (`sha256:9aca0e00…`, from `git archive`) — so every behavioural claim is a measured tip-vs-base delta, not an environment artifact. Nothing in `apply-progress` (#10151) was trusted.
 **Attempt authority (echoed, not settled)**: `sha256:0040067d0fe91ff022afd673e94d5cbd771d3af4224a0d1bf7409edf74b36297`
@@ -133,7 +133,7 @@ N1 and N2 (WARNING) remain open and remain Wave 4/5 entry conditions: new-lineag
 
 **Remediation verdict (this cycle's scope): PASS** — 0 CRITICAL, 2 WARNING (new), 4 SUGGESTION (new). Both cycle-2 blockers are genuinely closed, mutation- and runtime-proven. No new CRITICAL was confirmed. Every new finding below was reproduced identically against the **base** binary `413d3967`, so none is introduced by the 718-line diff under review.
 
-**Envelope verdict: `fail`** — and this is *not* a defect verdict. `gentle-ai sdd-verify-validate` refuses admission for any non-`fail` verdict whose requirement/scenario coverage is incomplete, and coverage is genuinely incomplete: **3 of 32 spec scenarios still have no passing covering test**, unchanged from cycle 2 and untouched by `157ab9fd`, which added no test for any of them:
+**Envelope verdict: `fail`** — and this is *not* a defect verdict. `hgtran-ai sdd-verify-validate` refuses admission for any non-`fail` verdict whose requirement/scenario coverage is incomplete, and coverage is genuinely incomplete: **3 of 32 spec scenarios still have no passing covering test**, unchanged from cycle 2 and untouched by `157ab9fd`, which added no test for any of them:
 
 | Requirement | Uncovered scenario | Status |
 |---|---|---|
@@ -145,7 +145,7 @@ N1 and N2 (WARNING) remain open and remain Wave 4/5 entry conditions: new-lineag
 
 ### C5 — default-deny at all five gates: **RESOLVED (runtime-proven, tip-vs-base delta)**
 
-Exact cycle-2 attack, isolated `HOME`/`XDG_*`/`TMPDIR`, `GENTLE_AI_RDD_NEW_LINEAGE=1`, throwaway git repo, one staged edit, `review start --lineage inflight` (exit 0, `state: reviewing`, only `v3/inflight/review-state.json` on disk — no receipt), then `review validate --gate <g> --lineage inflight` at all five gates:
+Exact cycle-2 attack, isolated `HOME`/`XDG_*`/`TMPDIR`, `HGTRAN_AI_RDD_NEW_LINEAGE=1`, throwaway git repo, one staged edit, `review start --lineage inflight` (exit 0, `state: reviewing`, only `v3/inflight/review-state.json` on disk — no receipt), then `review validate --gate <g> --lineage inflight` at all five gates:
 
 | Gate | base `413d3967` | tip `157ab9fd` |
 |---|---|---|
@@ -158,7 +158,7 @@ Exact cycle-2 attack, isolated `HOME`/`XDG_*`/`TMPDIR`, `GENTLE_AI_RDD_NEW_LINEA
 Tip denial message, verbatim and identical at all five gates, with the executable next step and a state-naming denial code:
 
 ```
-Error: review lifecycle gate denied: invalidated: facade review receipt is not available; run gentle-ai review finalize --lineage inflight to produce one
+Error: review lifecycle gate denied: invalidated: facade review receipt is not available; run hgtran-ai review finalize --lineage inflight to produce one
       "denial": { "stage": "new-lineage-validate", "code": "reviewing" }
 ```
 
@@ -194,7 +194,7 @@ Baseline `TestDerivedObservationWriteGuardHoldsForProductionFiles` → `ok`. App
 --- FAIL: TestDerivedObservationWriteGuardHoldsForProductionFiles/authority_store.go
     authority_store.go marshals or writes a DeriveObservation result:
     [authority_store.go:519:9: writeAtomic is called with a DeriveObservation-derived value (observation)]
-FAIL	github.com/gentleman-programming/gentle-ai/v2/internal/reviewtransaction
+FAIL	github.com/gentleman-programming/hgtran-ai/v2/internal/reviewtransaction
 ```
 
 Reverted byte-identically: file sha256 returned to `ff0663e8a81c710d896ff02122c9ea13002b824ed8d5d57dd73d51d7f677a1ef`, `git status --porcelain` empty, `git diff` 0 lines, HEAD still `157ab9fd`. The old selector-only resolution provably could not match this shape: `writeAtomic(...)` is a bare `*ast.Ident`, and `shadowCallExprName` only resolves `*ast.SelectorExpr`.
@@ -209,7 +209,7 @@ Reverted byte-identically: file sha256 returned to `ff0663e8a81c710d896ff02122c9
 |---|---|---|---|
 | Root tests | `go test ./... -count=1` | 0 | 63 packages `ok`, 0 FAIL |
 | Root build | `go build ./...` | 0 | empty output |
-| Bench module tests | `cd bench && go test ./... -count=1` | 0 | `ok github.com/gentleman-programming/gentle-ai/bench 0.176s` |
+| Bench module tests | `cd bench && go test ./... -count=1` | 0 | `ok github.com/gentleman-programming/hgtran-ai/bench 0.176s` |
 | Targeted C1–C6/W11/W14 suite | `go test ./internal/cli ./internal/reviewtransaction -run '<12 names>' -v` | 0 | 35 PASS, 0 FAIL |
 | Deadcode ratchet | `bash scripts/deadcode-ratchet.sh` | 0 | `no new unreachable functions` |
 | Refusal-resolution ratchet | `TestEveryProductionRefusalNamesResolutionOrDeclaresByDesign` | 0 | PASS |
@@ -220,19 +220,19 @@ Reverted byte-identically: file sha256 returned to `ff0663e8a81c710d896ff02122c9
 Root test tail (verbatim):
 
 ```
-ok  	github.com/gentleman-programming/gentle-ai/v2/internal/reviewtransaction	123.618s
-ok  	github.com/gentleman-programming/gentle-ai/v2/internal/sddstatus	25.088s
-ok  	github.com/gentleman-programming/gentle-ai/v2/internal/skillregistry	0.120s
-ok  	github.com/gentleman-programming/gentle-ai/v2/internal/state	0.102s
-ok  	github.com/gentleman-programming/gentle-ai/v2/internal/storage	0.002s
-ok  	github.com/gentleman-programming/gentle-ai/v2/internal/system	0.010s
-ok  	github.com/gentleman-programming/gentle-ai/v2/internal/tui	2.052s
-ok  	github.com/gentleman-programming/gentle-ai/v2/internal/tui/screens	0.060s
-?   	github.com/gentleman-programming/gentle-ai/v2/internal/tui/styles	[no test files]
-ok  	github.com/gentleman-programming/gentle-ai/v2/internal/update	8.657s
-ok  	github.com/gentleman-programming/gentle-ai/v2/internal/update/upgrade	6.931s
-ok  	github.com/gentleman-programming/gentle-ai/v2/internal/verify	0.002s
-ok  	github.com/gentleman-programming/gentle-ai/v2/internal/versions	0.002s
+ok  	github.com/gentleman-programming/hgtran-ai/v2/internal/reviewtransaction	123.618s
+ok  	github.com/gentleman-programming/hgtran-ai/v2/internal/sddstatus	25.088s
+ok  	github.com/gentleman-programming/hgtran-ai/v2/internal/skillregistry	0.120s
+ok  	github.com/gentleman-programming/hgtran-ai/v2/internal/state	0.102s
+ok  	github.com/gentleman-programming/hgtran-ai/v2/internal/storage	0.002s
+ok  	github.com/gentleman-programming/hgtran-ai/v2/internal/system	0.010s
+ok  	github.com/gentleman-programming/hgtran-ai/v2/internal/tui	2.052s
+ok  	github.com/gentleman-programming/hgtran-ai/v2/internal/tui/screens	0.060s
+?   	github.com/gentleman-programming/hgtran-ai/v2/internal/tui/styles	[no test files]
+ok  	github.com/gentleman-programming/hgtran-ai/v2/internal/update	8.657s
+ok  	github.com/gentleman-programming/hgtran-ai/v2/internal/update/upgrade	6.931s
+ok  	github.com/gentleman-programming/hgtran-ai/v2/internal/verify	0.002s
+ok  	github.com/gentleman-programming/hgtran-ai/v2/internal/versions	0.002s
 ```
 
 Named tests re-run individually, all PASS: `TestResolveGoverningAuthorityInFlightDeniesEveryGate`, `TestResolveGoverningAuthorityApprovedWithoutReceiptDenies`, `TestResolveGoverningAuthorityApprovedWithValidReceiptAllowsExactCandidate`, `TestReviewCoreFinalizeRequiresTerminalState`, `TestReviewCoreFinalizeAdvancesNonTerminalWithAdvanceRequest`, `TestReviewCoreFinalizeAdvanceEscalatesOnFailedOrAdmittedFindings`, `TestReviewCoreFinalizeRefusesNonTerminalWithoutAdvanceRequest`, `TestReviewFacadeFinalizeNewLineageCorrectingStateReachesReceipt`, plus the C1–C4 closure set (`TestNewLineageReasonTaxonomyCoversLegacyRefusalsClosedMatrix`, `TestAdmitCandidateCausalFindingsBlocksOnlyCandidateCaused`, `TestNewLineageFivePersistedStatesLifecycleNeverPersistsDerivedCategory`, `TestDerivedObservationWriteGuardCatchesMarshalShapes`, `TestDerivedObservationWriteGuardHoldsForProductionFiles`) — C1–C4 remain closed.
@@ -256,7 +256,7 @@ All other 26 rows from the cycle-2 matrix carry forward COMPLIANT (their files w
 
 None is a new CRITICAL: every one reproduces identically on the base binary `413d3967`, so none was introduced by `157ab9fd`. Severity reflects Wave-5 cutover risk, not Wave-3 archive risk — the activation switch is off by default and this wave is explicitly additive, not a cutover.
 
-- **N1 — WARNING (CONFIRMED, pre-existing).** New-lineage `review finalize` issues an `approved` terminal receipt with **zero captured reviewer lens results at any tier**, not only tier 0 as the function's own doc comment claims. Repro: 902-line staged candidate → `review start --lineage bigt` reports `"risk_level":"medium"`, `"selected_lenses":["review-reliability"]`, `"correction_budget":200`; `review finalize --lineage bigt` (no result flags) → `"state":"approved"` + receipt; `review validate --gate release --lineage bigt` → `"result":"allow"`, exit 0. The legacy path in the same repo refuses the equivalent: `Error: review finalize requires all 1 original reviewer result(s); capture each missing one with 'gentle-ai review capture-result'…`. Base `413d3967` behaves identically. Mitigating: `review_facade.go:2192-2196` explicitly **refuses** `--result`, `--result-artifact`, `--result-artifact-file`, `--captured-results`, `--captured-evidence`, `--validation`, `--refuter`, `--evidence` with a named next step, so the gap is declared at the product surface rather than silently ignored. Blocks the Wave 5 cutover; must be closed before the new path can ever become the default.
+- **N1 — WARNING (CONFIRMED, pre-existing).** New-lineage `review finalize` issues an `approved` terminal receipt with **zero captured reviewer lens results at any tier**, not only tier 0 as the function's own doc comment claims. Repro: 902-line staged candidate → `review start --lineage bigt` reports `"risk_level":"medium"`, `"selected_lenses":["review-reliability"]`, `"correction_budget":200`; `review finalize --lineage bigt` (no result flags) → `"state":"approved"` + receipt; `review validate --gate release --lineage bigt` → `"result":"allow"`, exit 0. The legacy path in the same repo refuses the equivalent: `Error: review finalize requires all 1 original reviewer result(s); capture each missing one with 'hgtran-ai review capture-result'…`. Base `413d3967` behaves identically. Mitigating: `review_facade.go:2192-2196` explicitly **refuses** `--result`, `--result-artifact`, `--result-artifact-file`, `--captured-results`, `--captured-evidence`, `--validation`, `--refuter`, `--evidence` with a named next step, so the gap is declared at the product surface rather than silently ignored. Blocks the Wave 5 cutover; must be closed before the new path can ever become the default.
 - **N2 — WARNING (CONFIRMED, pre-existing).** The new-lineage gate branch enforces **no gate-specific precondition**. `newLineageGateEvaluation` (`review_governing_authority.go:246-261`) maps `CoreTransitionContinue → GateAllow` identically for all five gates, while legacy `validateDerivedGate` (`receipt.go:279-321`) additionally requires release evidence at `release`, `BaseRelationshipValid` at `pre-pr`/`release`, and a matching `Generation`. Repro: an approved new lineage allows at `--gate release` with no release evidence supplied at all (exit 0); the emitted context carries `"base_relationship_valid": false`. Base identical. Same Wave-5 cutover blocker class as N1.
 - **N3 — SUGGESTION (CONFIRMED).** The gate's receipt cross-check (`review_governing_authority.go:104-105`) compares `LineageID`, `AuthorityRevision` and `TerminalState`, but not `CandidateIdentity` — even though `WriteReceipt` (`authority_store.go:484`) performs exactly that check at issuance. Repro: tamper `review-receipt.json`'s `candidate_identity.CandidateTree` to all zeros, leaving lineage/revision/state intact → `--gate release` still returns `"result":"allow"`, exit 0. Inert today (no production code reads `NewLineageReceipt.CandidateIdentity` after issuance, and the relation check uses the content-verified state record), but the receipt is the artifact an external consumer would trust. One-line fix: reuse the `WriteReceipt` equality check at the gate.
 - **N4 — SUGGESTION.** `CoreRequest.AdvanceRequest` converts the `ErrFinalizeRequiresTerminalState` invariant into an opt-out: any caller that sets the field advances a non-terminal authority to a terminal state. Only `runReviewFacadeFinalizeNewLineage` does today, and the nil-default pinning test guards the omission, but nothing structurally prevents a second caller. Consider a guard test asserting the single call site, mirroring the `DeriveObservation` write-guard precedent.
@@ -293,7 +293,7 @@ Archive remains gated on the 3 carried-over uncovered spec scenarios listed abov
 **Change**: rdd-root-simplification-wave3
 **Version**: 3 NEW + 3 MODIFIED capability specs — 19 requirements / 32 scenarios (counted from `openspec/changes/rdd-root-simplification-wave3/specs/*/spec.md`)
 **Mode**: Strict TDD
-**Candidate**: worktree `/home/gentleman/work/gentle-ai-worktrees/rdd-wave0`, branch `feat/rdd-wave3-s5-taxonomy-offer-bench`, tip `413d3967`, working tree clean before and after every mutation probe (`git status --porcelain` empty)
+**Candidate**: worktree `/home/gentleman/work/hgtran-ai-worktrees/rdd-wave0`, branch `feat/rdd-wave3-s5-taxonomy-offer-bench`, tip `413d3967`, working tree clean before and after every mutation probe (`git status --porcelain` empty)
 **Prior report**: FAIL at tip `ebe26c9c` — 4 CRITICAL (C1–C4), 10 WARNING, 4 SUGGESTION (preserved verbatim below)
 **Verified by**: independent re-execution against a freshly built tip binary. Every remediation claim in `413d3967` and in `apply-progress` (#10151) was re-derived from source and runtime; nothing was trusted.
 **Attempt authority (echoed, not settled)**: `sha256:a6de7b19f50b9d351833c3f0e9cdc417c7aab9e5e4103030bc5111b9bb6c9f47`
@@ -344,7 +344,7 @@ Task state matches code state: every `[x]` phase in `tasks.md` has its named com
 
 **Ratchets**: `scripts/deadcode-ratchet.sh` → "no new unreachable functions"; baseline 236 → 233. `TestEveryProductionRefusalNamesResolutionOrDeclaresByDesign` → PASS.
 
-**Deadcode ratchet, receipt-path entries**: `AuthorityStore.ReceiptPath`, `AuthorityStore.WriteReceipt`, and `NewLineageReceipt.Validate` are ABSENT from `.deadcode-baseline.txt` and the ratchet is clean — independent structural confirmation that C1's fix is genuinely production-reachable from `./cmd/gentle-ai`, not dead code.
+**Deadcode ratchet, receipt-path entries**: `AuthorityStore.ReceiptPath`, `AuthorityStore.WriteReceipt`, and `NewLineageReceipt.Validate` are ABSENT from `.deadcode-baseline.txt` and the ratchet is clean — independent structural confirmation that C1's fix is genuinely production-reachable from `./cmd/hgtran-ai`, not dead code.
 
 **Bench journeys** re-executed against the freshly built tip binary: `j59` and `j60` both `completed`, 2/2, 0 failed. `bench/results.json` was dirtied by the run and restored (pre-existing S4 issue).
 
@@ -353,9 +353,9 @@ Task state matches code state: every `[x]` phase in `tasks.md` has its named com
 ### Independent Re-Execution (nothing trusted)
 
 1. **C1 — the prior report's exact repro, freshly built tip binary, isolated `HOME`.**
-   `GENTLE_AI_RDD_NEW_LINEAGE=1 gentle-ai review start --lineage vthree-check` → exit 0, `state: reviewing`, `v3/vthree-check/review-state.json` only.
-   `gentle-ai review finalize --lineage vthree-check` (activation switch OFF — i.e. the rollback path too) → exit 0, `state: approved`, `receipt.authority_revision: sha256:8deb50c1…`, and `v3/vthree-check/review-receipt.json` published with `terminal_state: approved`.
-   **Zero defect reports** anywhere under `.git/gentle-ai/defect-reports/`. The prior report's `operation-outcome-unknown` failure is gone.
+   `HGTRAN_AI_RDD_NEW_LINEAGE=1 hgtran-ai review start --lineage vthree-check` → exit 0, `state: reviewing`, `v3/vthree-check/review-state.json` only.
+   `hgtran-ai review finalize --lineage vthree-check` (activation switch OFF — i.e. the rollback path too) → exit 0, `state: approved`, `receipt.authority_revision: sha256:8deb50c1…`, and `v3/vthree-check/review-receipt.json` published with `terminal_state: approved`.
+   **Zero defect reports** anywhere under `.git/hgtran-ai/defect-reports/`. The prior report's `operation-outcome-unknown` failure is gone.
 2. **C1 escalated route.** `review finalize --lineage esc --failed` → `state: escalated`, receipt with `terminal_state: escalated`. Both terminal routes reach a real on-disk receipt.
 3. **C2 admission in a real run.** A four-finding file (`introduced`, `pre-existing`, `base-only`, `unknown`) through `--admission-findings` → `state: escalated`, and `review-state.json` `admitted_finding_ids` = `["F-CAUSAL"]` **only**. A non-causal-only file → `state: approved`, `admitted_finding_ids` absent entirely. Non-causal findings neither block nor admit, exactly as the spec requires.
 4. **C3 mutation.** Flipped `legacyReasonTaxonomyGateResult`'s `ReviewReceiptScopeChanged` arm to `GateAllow`. `TestNewLineageReasonTaxonomyCoversLegacyRefusalsClosedMatrix` **FAILED** on 2 of its 24 cells (`receipt_scope_changed/allow` and `/scope-changed`). Reverted; `cmp` byte-identical to the pre-mutation file, `git status --porcelain` empty, both taxonomy tests PASS. The tautology is genuinely gone.
@@ -364,11 +364,11 @@ Task state matches code state: every `[x]` phase in `tasks.md` has its named com
    - Added `writeAtomic("…", []byte(observation.Relation), 0o644)` — and separately `publishImmutable(…)` — to `authority_store.go` → the guard **PASSED both times**. See W11.
    - Both mutants reverted byte-identically.
 6. **Escalated-deny pinning test is non-vacuous.** Disabled the short-circuit (`if false && …`) → all five subtests FAILED with `Result:"allow", Reason:"exact"`. Reverted; PASS.
-7. **Escalated denial at the product surface.** Drove the escalated `esc` lineage through `review validate` at all five gates with the tip binary: every gate returned `"result": "escalated"`, `"allowed": false`, reason `authority already escalated: escalated is a terminal non-approval`, plus a runnable `gentle-ai review recover …` continuation. State stayed `escalated`; neither artifact gained a derived-category word.
+7. **Escalated denial at the product surface.** Drove the escalated `esc` lineage through `review validate` at all five gates with the tip binary: every gate returned `"result": "escalated"`, `"allowed": false`, reason `authority already escalated: escalated is a terminal non-approval`, plus a runnable `hgtran-ai review recover …` continuation. State stayed `escalated`; neither artifact gained a derived-category word.
 8. **C4 "no gate writes a derived category", runtime.** Ten real gate evaluations across two v3 lineages (approved + escalated), then a byte scan of `review-state.json` and `review-receipt.json` for `invalidated` / `scope_changed` / `scope-changed` / `ambiguous` / `repairable` / `corrupted`: none present, states unchanged. This is the runtime gate evidence the AST guard alone could not supply.
 9. **Receipt exactly once, product surface.** A second `review finalize` on the already-approved lineage returned the identical receipt and left `review-receipt.json` byte-identical (`sha256:3cdba257…` before and after). Exactly one receipt exists.
 10. **Regression spot-checks all green:** five switch-off byte-equivalence goldens (`…SwitchOffByteEquivalence{PostApply,PreCommit,PrePush,PrePR,Release}`), `TestReviewStartNewLineageSwitchOffCreatesNoV3Entries`, `TestReviewValidateDiscoveryIntegrityMarkerCorruptedDeniesNeverLegacy`, `TestDiscoverNewLineageMarkerPresentRecordRemovedDenies`, `TestReviewCoreStartFreezesOnlyAfterConsentGranted`, `TestReviewCoreConsentBlockedStartPersistsNothing`, the full `TestAuthorityStore*` suite, `TestNewLineageRollbackSafetyStaysReadableAndFinalizableWhileSwitchIsOff`, `TestResolveGoverningAuthorityFullMatrix`.
-11. **NEW — non-terminal authority reaches `allow` at every gate (C5).** Started `inflight` with the switch on and never finalized (`state: reviewing`, no receipt). `review validate --gate <g> --lineage inflight` returned `"result":"allow","allowed":true` at **post-apply, pre-commit, pre-push, pre-pr, and release**. The identical situation on the legacy path denies: `review validate --gate release --lineage legflight` returns `Error: facade review receipt is not available; run gentle-ai review finalize --lineage legflight to produce one`. Without an explicit `--lineage` both paths correctly deny with `no terminal review receipt exists for gate validation`, so the divergence is confined to — and complete at — the explicit-marker gate shape the negotiated delivery lifecycle uses.
+11. **NEW — non-terminal authority reaches `allow` at every gate (C5).** Started `inflight` with the switch on and never finalized (`state: reviewing`, no receipt). `review validate --gate <g> --lineage inflight` returned `"result":"allow","allowed":true` at **post-apply, pre-commit, pre-push, pre-pr, and release**. The identical situation on the legacy path denies: `review validate --gate release --lineage legflight` returns `Error: facade review receipt is not available; run hgtran-ai review finalize --lineage legflight to produce one`. Without an explicit `--lineage` both paths correctly deny with `no terminal review receipt exists for gate validation`, so the divergence is confined to — and complete at — the explicit-marker gate shape the negotiated delivery lifecycle uses.
 
 ### Spec Compliance Matrix
 
@@ -403,7 +403,7 @@ Task state matches code state: every `[x]` phase in `tasks.md` has its named com
 | review-core / One Bounded Correction | Exact replay costs nothing | `TestAuthorityStoreResolveReplayReturnsStoredTransitionWithoutMutation` | COMPLIANT |
 | review-core / Terminal Receipt Exactly Once | Finalize issues one receipt | `TestReviewCoreFinalizeApprovedIssuesReceiptRef` + `…ReachesReceiptNoBlocker` + repeat-finalize byte-identity | COMPLIANT |
 | shadow-evaluation / Disable Switch Is Observer Boundary | Disabling removes shadow observer execution only | Wave 1 `shadow_observer_test.go` | COMPLIANT |
-| shadow-evaluation / Disable Switch Is Observer Boundary | Resolver and relation stay live-callable independent of the shadow switch | `TestReviewCoreValidate*` with `GENTLE_AI_RDD_SHADOW` unset | COMPLIANT |
+| shadow-evaluation / Disable Switch Is Observer Boundary | Resolver and relation stay live-callable independent of the shadow switch | `TestReviewCoreValidate*` with `HGTRAN_AI_RDD_SHADOW` unset | COMPLIANT |
 | shadow-evaluation / Off by Default in Live Paths | Default configuration produces no live Git cost from the observer | Wave 1 suite | COMPLIANT |
 | shadow-evaluation / Off by Default in Live Paths | New-lineage live cost is not observer cost | `governingAuthorityLiveEvidence` builds its own snapshot outside the observer | COMPLIANT |
 
@@ -486,7 +486,7 @@ No tautologies, no ghost loops, no production-call-free assertions, no smoke-onl
 
 **CRITICAL**
 
-- **C5 — a new-lineage authority that was never approved authorizes delivery at all five gates.** `resolveGoverningAuthority` (`internal/cli/review_governing_authority.go:80-108`) consults `record.Authority.State` for exactly one value, `escalated`. Every other state falls through to `ReviewCore.Next(validate)`, whose relation-based switch returns `CoreTransitionContinue` for an exact relation, which `newLineageGateEvaluation` maps to `GateAllow`. Reproduced with the tip binary: `GENTLE_AI_RDD_NEW_LINEAGE=1 review start --lineage inflight`, nothing else — no reviewer, no finalize, no `review-receipt.json` — then `review validate --gate {post-apply,pre-commit,pre-push,pre-pr,release} --lineage inflight` returns `"result":"allow","allowed":true` at **all five**, including `release`. The legacy path denies the identical situation (`facade review receipt is not available; run gentle-ai review finalize …`), and the no-`--lineage` hook shape denies on both paths with `no terminal review receipt exists for gate validation` — so this is a genuine, one-sided authorization divergence at the explicit-marker gate shape the negotiated delivery lifecycle uses. Breaks spec `rdd-new-lineage-activation` → "Coexistence Precedence Matrix (Amendment C)" scenario "New-lineage receipt authorizes a new-lineage candidate": authorization is decided by candidate relation alone and never consults the receipt or the terminal state. Corroborating evidence from the wave's own code: the remediation's `TestReviewFacadeFinalizeNewLineageEscalatedReceiptDeniesEveryGate` sanity check (`review_facade_finalize_new_lineage_test.go:292`) *asserts* that a `reviewing` authority with an exact live candidate must `GateAllow` — the bypass is currently pinned as expected behavior. The remediation's own commit message states the correct principle ("silently authorizing delivery from a lineage that was never approved") and then applies it to one state out of four. Fix: deny unless `record.Authority.State == approved` and a terminal receipt exists, and re-point that sanity assertion at an approved fixture.
+- **C5 — a new-lineage authority that was never approved authorizes delivery at all five gates.** `resolveGoverningAuthority` (`internal/cli/review_governing_authority.go:80-108`) consults `record.Authority.State` for exactly one value, `escalated`. Every other state falls through to `ReviewCore.Next(validate)`, whose relation-based switch returns `CoreTransitionContinue` for an exact relation, which `newLineageGateEvaluation` maps to `GateAllow`. Reproduced with the tip binary: `HGTRAN_AI_RDD_NEW_LINEAGE=1 review start --lineage inflight`, nothing else — no reviewer, no finalize, no `review-receipt.json` — then `review validate --gate {post-apply,pre-commit,pre-push,pre-pr,release} --lineage inflight` returns `"result":"allow","allowed":true` at **all five**, including `release`. The legacy path denies the identical situation (`facade review receipt is not available; run hgtran-ai review finalize …`), and the no-`--lineage` hook shape denies on both paths with `no terminal review receipt exists for gate validation` — so this is a genuine, one-sided authorization divergence at the explicit-marker gate shape the negotiated delivery lifecycle uses. Breaks spec `rdd-new-lineage-activation` → "Coexistence Precedence Matrix (Amendment C)" scenario "New-lineage receipt authorizes a new-lineage candidate": authorization is decided by candidate relation alone and never consults the receipt or the terminal state. Corroborating evidence from the wave's own code: the remediation's `TestReviewFacadeFinalizeNewLineageEscalatedReceiptDeniesEveryGate` sanity check (`review_facade_finalize_new_lineage_test.go:292`) *asserts* that a `reviewing` authority with an exact live candidate must `GateAllow` — the bypass is currently pinned as expected behavior. The remediation's own commit message states the correct principle ("silently authorizing delivery from a lineage that was never approved") and then applies it to one state out of four. Fix: deny unless `record.Authority.State == approved` and a terminal receipt exists, and re-point that sanity assertion at an approved fixture.
 - **C6 — `internal/cli` now mutates new-lineage state directly, contradicting the domain's first requirement.** `runReviewFacadeFinalizeNewLineage` (`internal/cli/review_facade_finalize_new_lineage.go:78-91`) calls `AuthorityStore.Mutate` twice, itself setting `next.State = validating` and then `next.State = approved|escalated` and appending `AdmittedFindingIDs`. `ReviewCore.Next(finalize)` is consulted only *after* the CLI has already decided and persisted the terminal state. Breaks spec `rdd-review-core-transitions` → "Sole Transition Owner for New Lineages": "`ReviewCore` MUST be the only component that performs `start`, `finalize`, or `validate` for a new-lineage candidate. No other package, adapter, or gate MAY mutate new-lineage state directly." This is not the START precedent: `runReviewFacadeStartNewLineage` (`review_facade_new_lineage.go:73-78`) persists `*next = *transition.Authority` — ReviewCore decides, the CLI stores. Finalize inverts that. `apply-progress` records the reasoning (`TestReviewCoreFinalizeRequiresTerminalState` locks `ReviewCore.finalize` to an already-terminal authority, and `validate()` never returns `approve`, so ReviewCore as shipped cannot perform this advance) — which is itself the finding: Wave 3's own `ReviewCore` API cannot satisfy Wave 3's own sole-owner requirement. Resolve by either moving the advance inside `ReviewCore` (a new request kind or a relaxed `finalize`) or recording an explicit spec amendment narrowing "sole transition owner" to decision authority, with a guard test pinning whichever is chosen. Left as-is, Wave 4's "thin consumers move to opaque transitions" rests on an invariant that production already violates.
 
 **WARNING**
@@ -525,7 +525,7 @@ All four prior blockers are genuinely and independently closed: `review finalize
 ## Superseded — original FAIL verification report (tip `ebe26c9c`)
 
 ```text
-schema: gentle-ai.verify-result/v1
+schema: hgtran-ai.verify-result/v1
 evidence_revision: sha256:fa137f801501031b152347dc6442cc991cc0c62c647e5926cfe4cf3122af8a35
 verdict: fail
 blockers: 4
@@ -545,7 +545,7 @@ build_output_hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca49599
 **Change**: rdd-root-simplification-wave3
 **Version**: N/A (unarchived change)
 **Mode**: Strict TDD
-**Scope**: whole Wave 3 chain, worktree `/home/gentleman/work/gentle-ai-worktrees/rdd-wave0`, tip `ebe26c9c`
+**Scope**: whole Wave 3 chain, worktree `/home/gentleman/work/hgtran-ai-worktrees/rdd-wave0`, tip `ebe26c9c`
 
 ### Chain Integrity
 
@@ -578,22 +578,22 @@ No slice breaches the design's 1000-authored-line hard budget. S2/S4/S5 each exc
 
 **Tests**: PASSED — `go test ./... -count=1`, exit 0, 63 packages ok, 0 FAIL, output `sha256:486cce84…`. Slowest: `internal/cli` 162.8s, `internal/reviewtransaction` 123.9s.
 
-**Bench module** (separate Go module `github.com/gentleman-programming/gentle-ai/bench`, own `go.mod`; NOT covered by root `go test ./...`): `go build ./...` clean, `gofmt -l .` clean, `go vet ./...` clean, `go test ./... -count=1` ok (`sha256:728e517c…`).
+**Bench module** (separate Go module `github.com/gentleman-programming/hgtran-ai/bench`, own `go.mod`; NOT covered by root `go test ./...`): `go build ./...` clean, `gofmt -l .` clean, `go vet ./...` clean, `go test ./... -count=1` ok (`sha256:728e517c…`).
 
 **Ratchets**: `scripts/deadcode-ratchet.sh` → "no new unreachable functions". `TestEveryProductionRefusalNamesResolutionOrDeclaresByDesign` → ok.
 
-**Bench journeys, re-executed independently against a freshly built `cmd/gentle-ai` binary at the tip**: `j59-new-lineage-exact-candidate-allows-post-apply-and-pre-commit` and `j60-new-lineage-unstaged-drift-denies-post-apply-allows-pre-commit` — both `completed`, 2/2, 0 failed.
+**Bench journeys, re-executed independently against a freshly built `cmd/hgtran-ai` binary at the tip**: `j59-new-lineage-exact-candidate-allows-post-apply-and-pre-commit` and `j60-new-lineage-unstaged-drift-denies-post-apply-allows-pre-commit` — both `completed`, 2/2, 0 failed.
 
 **Coverage**: skipped — no coverage tool configured for this repository.
 
 ### Independent Re-Execution (not trusting the apply report)
 
-1. **Switch-off byte-equivalence, proven against the real pre-change binary.** Built `cmd/gentle-ai` at both `cb5ade42` (W2 tip) and `ebe26c9c` (S5 tip), ran `review validate` over identical fixture repositories at all five gates, with isolated `HOME`. Output byte-identical at `post-apply`, `pre-commit`, `pre-push`, `pre-pr`, `release`. Repeated with an explicit `--lineage` marker naming a lineage with no v3 record: byte-identical at all five gates after normalizing only the fixture path. This is stronger evidence than the shipped goldens, which are self-captured post-change (see W4).
+1. **Switch-off byte-equivalence, proven against the real pre-change binary.** Built `cmd/hgtran-ai` at both `cb5ade42` (W2 tip) and `ebe26c9c` (S5 tip), ran `review validate` over identical fixture repositories at all five gates, with isolated `HOME`. Output byte-identical at `post-apply`, `pre-commit`, `pre-push`, `pre-pr`, `release`. Repeated with an explicit `--lineage` marker naming a lineage with no v3 record: byte-identical at all five gates after normalizing only the fixture path. This is stronger evidence than the shipped goldens, which are self-captured post-change (see W4).
 2. **Discovery-integrity denial (task 5.2), branch-strip mutation.** Collapsed `DiscoverNewLineage`'s marker check (`if os.IsNotExist(loadErr) && !marker` → `if os.IsNotExist(loadErr)`): `TestDiscoverNewLineageMarkerPresentRecordRemovedDenies` FAILED. Separately disabled the CLI corruption branch (`if errors.As(err, &corrupted)` → `if false && …`): `TestReviewValidateDiscoveryIntegrityMarkerCorruptedDeniesNeverLegacy` FAILED, and the failure output showed the candidate falling through to a legacy gate context — exactly the "never falls through to legacy" property under test. RED claim genuine. Both mutations reverted; worktree clean at `ebe26c9c`.
 3. **Pre-commit projection fix (task 6.7), branch-strip mutation.** Disabled the `GatePreCommit → ProjectionStaged` branch: `TestGoverningAuthorityLiveEvidenceUses*` FAILED. RED claim genuine.
 4. **Reason-taxonomy matrix, mutation.** Flipped one arm of `legacyReasonTaxonomyGateResult` (`GateScopeChanged` → `GateAllow`). The 24-cell `…ClosedMatrix` test still PASSED; only the companion `…CoversLegacyRefusals` FAILED. See CRITICAL C3.
 5. **Promoted files are a pure rename.** Filtered every non-comment changed line in `shadow_relation.go`→`candidate_relation.go` and `shadow_identity.go`→`candidate_identity.go` across `cb5ade42..ebe26c9c`: only the type/const/function renames plus `type ShadowRelation = CandidateRelation`. Zero logic delta in `candidate_identity.go`.
-6. **New-lineage lifecycle driven through the shipped binary.** `GENTLE_AI_RDD_NEW_LINEAGE=1 gentle-ai review start --lineage vthree-check` → exit 0, `state: reviewing`, and `v3/vthree-check/` containing exactly `review-state.json` (`v3/LOCK` sits at the version root, not inside the lineage, so the two-artifact claim holds by directory inspection). `gentle-ai review finalize --lineage vthree-check` → see CRITICAL C1.
+6. **New-lineage lifecycle driven through the shipped binary.** `HGTRAN_AI_RDD_NEW_LINEAGE=1 hgtran-ai review start --lineage vthree-check` → exit 0, `state: reviewing`, and `v3/vthree-check/` containing exactly `review-state.json` (`v3/LOCK` sits at the version root, not inside the lineage, so the two-artifact claim holds by directory inspection). `hgtran-ai review finalize --lineage vthree-check` → see CRITICAL C1.
 
 ### Spec Compliance Matrix
 
@@ -628,7 +628,7 @@ No slice breaches the design's 1000-authored-line hard budget. S2/S4/S5 each exc
 | review-core / One Bounded Correction | Exact replay costs nothing | `TestAuthorityStoreResolveReplayReturnsStoredTransitionWithoutMutation` (asserts state bytes unchanged) | COMPLIANT |
 | review-core / Terminal Receipt Exactly Once | Finalize issues one receipt | `TestReviewCoreFinalizeApprovedIssuesReceiptRef` + `TestAuthorityStoreReceiptImmutableAfterIssuance` | COMPLIANT |
 | shadow-evaluation / Disable Switch Is Observer Boundary | Disabling removes shadow observer execution only | Wave 1 `shadow_observer_test.go`; `shadowObservationEnabled()` confirmed to gate only `ObserveShadowRelation` and the pre-existing `gate.go:361` site | COMPLIANT |
-| shadow-evaluation / Disable Switch Is Observer Boundary | Resolver and relation stay live-callable independent of the shadow switch | `TestReviewCoreValidate*` execute with `GENTLE_AI_RDD_SHADOW` unset | COMPLIANT |
+| shadow-evaluation / Disable Switch Is Observer Boundary | Resolver and relation stay live-callable independent of the shadow switch | `TestReviewCoreValidate*` execute with `HGTRAN_AI_RDD_SHADOW` unset | COMPLIANT |
 | shadow-evaluation / Off by Default in Live Paths | Default configuration produces no live Git cost from the observer | Wave 1 suite | COMPLIANT |
 | shadow-evaluation / Off by Default in Live Paths | New-lineage live cost is not observer cost | `governingAuthorityLiveEvidence` builds its own snapshot outside the observer | COMPLIANT |
 
@@ -723,7 +723,7 @@ Verdict: not sufficient. This is CRITICAL C1 and blocks archive.
 
 **CRITICAL**
 
-- **C1 — `review finalize` is not routed by lineage kind; a v3 lineage created by the shipped `review start` can never be finalized through the product.** Reproduced end-to-end with the tip binary: `GENTLE_AI_RDD_NEW_LINEAGE=1 gentle-ai review start --lineage vthree-check` exits 0 and writes `v3/vthree-check/review-state.json`; `gentle-ai review finalize --lineage vthree-check --captured-results=true` then exits 1 with `load compact facade review lineage: open …/review-transactions/v2/vthree-check/review-state.json: no such file or directory` and emits `.git/gentle-ai/defect-reports/operation-outcome-unknown-*.md`. Breaks spec `rdd-new-lineage-activation` → "In-flight new lineage still finalizes after rollback" at the product surface, and inverts design decision 5's own stated rationale (finalize was left ungated specifically so an in-flight lineage is never stranded — it is stranded anyway, because the routing was never added). Fix: add the lineage-kind branch to `runReviewFacadeFinalize` mirroring the `start` (`review_facade.go:1618`) and `validate` (`:2893`) branches, plus a black-box journey reaching receipt issuance.
+- **C1 — `review finalize` is not routed by lineage kind; a v3 lineage created by the shipped `review start` can never be finalized through the product.** Reproduced end-to-end with the tip binary: `HGTRAN_AI_RDD_NEW_LINEAGE=1 hgtran-ai review start --lineage vthree-check` exits 0 and writes `v3/vthree-check/review-state.json`; `hgtran-ai review finalize --lineage vthree-check --captured-results=true` then exits 1 with `load compact facade review lineage: open …/review-transactions/v2/vthree-check/review-state.json: no such file or directory` and emits `.git/hgtran-ai/defect-reports/operation-outcome-unknown-*.md`. Breaks spec `rdd-new-lineage-activation` → "In-flight new lineage still finalizes after rollback" at the product surface, and inverts design decision 5's own stated rationale (finalize was left ungated specifically so an in-flight lineage is never stranded — it is stranded anyway, because the routing was never added). Fix: add the lineage-kind branch to `runReviewFacadeFinalize` mirroring the `start` (`review_facade.go:1618`) and `validate` (`:2893`) branches, plus a black-box journey reaching receipt issuance.
 - **C2 — spec `rdd-review-core-transitions` → "Candidate-Causal Admission Only" is unimplemented and untested (2 scenarios).** `ReviewCore.validate` performs relation classification only; no finding admission exists. `NewLineageAuthority.AdmittedFindingIDs` is declared and structurally validated (`authority_store.go:96,135`) but is never written by any production path — the only non-test references are its own declaration and validator. `tasks.md` Phase 4 (4.1–4.7) never decomposed this requirement, so the gap originates in planning and was faithfully carried through apply. Requires either implementation + tests, or an explicit spec amendment moving the requirement to a later wave.
 - **C3 — `TestNewLineageReasonTaxonomyCoversLegacyRefusalsClosedMatrix` is a 24-cell tautology.** It computes `want := legacyReasonTaxonomyGateResult(kind)` and then asserts `legacyReasonTaxonomyGateResult(kind) == result` equals `want == result` — the same pure call on both sides, so no cell can ever disagree. Proven by mutation: changing `ReviewReceiptScopeChanged` to return `GateAllow` left this test green across all 24 cells while the companion `TestNewLineageReasonTaxonomyCoversLegacyRefusals` correctly failed. Task 6.1's headline artifact ("the literal 6×4=24-cell closed matrix") proves nothing. Mitigating: the substantive spec requirement is genuinely covered by the companion test against real production functions, so this is a test-quality blocker, not a coverage hole.
 - **C4 — spec `rdd-authority-store` → "Five Persisted States, Everything Else Derived" has no covering test (2 scenarios), and the design's planned guard was never built.** The design's Testing Strategy Unit row promised "AST guard proves no `DeriveObservation` result is persisted"; no such guard exists. No test asserts that `invalidated`/`scope_changed`/`ambiguous`/`repairable`/`corrupted` are rejected as persisted state, nor that no gate writes one. The structural argument is strong (`NewLineageState.valid()` is a closed switch; `DerivedObservation` lives outside `NewLineageAuthority`), but a structural argument is not runtime scenario evidence, and both scenarios are unattested.

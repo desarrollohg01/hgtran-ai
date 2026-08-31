@@ -15,7 +15,7 @@ import (
 	"time"
 )
 
-const CompactBatchReconcileJournalSchema = "gentle-ai.review-batch-reconcile-journal/v1"
+const CompactBatchReconcileJournalSchema = "hgtran-ai.review-batch-reconcile-journal/v1"
 
 const (
 	CompactBatchReconcilePrepared  = "prepared"

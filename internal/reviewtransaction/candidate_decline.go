@@ -16,13 +16,13 @@ import (
 )
 
 const (
-	CandidateDeclineAuthorizationSchema = "gentle-ai.rdd-candidate-decline/v1"
+	CandidateDeclineAuthorizationSchema = "hgtran-ai.rdd-candidate-decline/v1"
 
 	candidateDeclineDirectory    = "candidate-declines"
 	candidateDeclineLockName     = "LOCK"
 	candidateDeclineRecordPrefix = "candidate-"
 	candidateDeclineRecordSuffix = ".json"
-	candidateDeclineDigestDomain = "gentle-ai.rdd-candidate-decline-digest/v1"
+	candidateDeclineDigestDomain = "hgtran-ai.rdd-candidate-decline-digest/v1"
 )
 
 var (
@@ -237,7 +237,7 @@ func candidateDeclineRoot(ctx context.Context, repo string, create bool) (string
 		return "", nil, fmt.Errorf("resolve candidate decline repository identity: %w", err)
 	}
 	identity := reviewRepositoryIdentityRecordFromLease(lease)
-	base := filepath.Join(identity.GitCommonDir, "gentle-ai", "review-transactions", rarAuthorityDirectory, rarAuthorityVersion)
+	base := filepath.Join(identity.GitCommonDir, "hgtran-ai", "review-transactions", rarAuthorityDirectory, rarAuthorityVersion)
 	if err := ensureRARRepositoryRoot(identity.GitCommonDir, base, create); err != nil {
 		return "", nil, err
 	}

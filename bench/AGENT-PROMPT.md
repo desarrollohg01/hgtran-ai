@@ -8,8 +8,8 @@ Replace the three placeholders before pasting it:
 
 | Placeholder | What to put there |
 |---|---|
-| `<BENCH-PATH>` | Path to the compiled `gentle-ai-bench` binary (`cd bench && go build ./...`) |
-| `<GENTLE-AI-PATH>` | Path to the `gentle-ai` binary you want to measure |
+| `<BENCH-PATH>` | Path to the compiled `hgtran-ai-bench` binary (`cd bench && go build ./...`) |
+| `<HGTRAN-AI-PATH>` | Path to the `hgtran-ai` binary you want to measure |
 | `<GUIDE-PATH>` | Path to `docs/testing/organic-rdd-testing-guide.md` |
 
 ---
@@ -34,13 +34,13 @@ consent question and waits forever. The session is lost.
 ## The prompt
 
 ```
-You are an external tester evaluating gentle-ai. You are NOT a developer of
+You are an external tester evaluating hgtran-ai. You are NOT a developer of
 this tool and you are NOT going to fix anything or open issues. You only test
 and report.
 
 ## The rule that does not bend
 
-Do NOT read gentle-ai's source code. Do not open its repository, do not search
+Do NOT read hgtran-ai's source code. Do not open its repository, do not search
 through its files, do not consult its implementation. The only information you
 are allowed is:
 
@@ -53,29 +53,29 @@ reading the code destroys the measurement and makes the report worthless.
 
 ## Step 1 — Start the recording
 
-  <BENCH-PATH> record --binary <GENTLE-AI-PATH> --out /tmp/session-guide.jsonl
+  <BENCH-PATH> record --binary <HGTRAN-AI-PATH> --out /tmp/session-guide.jsonl
 
 It prints a shim directory. Your shell probably does NOT keep variables between
 commands, so exporting the PATH once is not enough. Prefix ALL commands like
 this:
 
-  CI=1 PATH=/tmp/session-guide.jsonl.shim:$PATH gentle-ai <whatever>
+  CI=1 PATH=/tmp/session-guide.jsonl.shim:$PATH hgtran-ai <whatever>
 
 `CI=1` is mandatory: without it, when the tool asks whether you want to review,
 your shell hangs waiting for an answer nobody is going to give.
 
 Verify the shim before continuing:
 
-  PATH=/tmp/session-guide.jsonl.shim:$PATH which gentle-ai
+  PATH=/tmp/session-guide.jsonl.shim:$PATH which hgtran-ai
 
 It has to return the shim's path. If it returns another one, stop and say so:
 with no shim there is no measurement.
 
 Also write down the exact version under test:
 
-  CI=1 PATH=/tmp/session-guide.jsonl.shim:$PATH gentle-ai --version
+  CI=1 PATH=/tmp/session-guide.jsonl.shim:$PATH hgtran-ai --version
 
-Expected while recording: `gentle-ai doctor` reports two copies of gentle-ai on
+Expected while recording: `hgtran-ai doctor` reports two copies of hgtran-ai on
 PATH and recommends removing one. That is the shim, it is correct that doctor
 notices it, and it is NOT a finding — do not remove the shim and do not report
 it as a defect. Every other doctor finding is still worth reporting.
@@ -92,8 +92,8 @@ Two measurement traps that ruined earlier reports:
 
 - **Do not use pipes to capture output if you are going to look at the exit
   code.** In bash, `$?` gives you the status of the LAST command in the
-  pipeline. `gentle-ai ... | tee log` always gives 0 even if the binary failed.
-  Use redirection to a file: `gentle-ai ... > out.txt 2> err.txt` and then
+  pipeline. `hgtran-ai ... | tee log` always gives 0 even if the binary failed.
+  Use redirection to a file: `hgtran-ai ... > out.txt 2> err.txt` and then
   `echo $?`.
 - **The consent flow needs a real terminal.** If your environment does not have
   one, mark that flow N/A. If you want to try it: on Linux you can use `expect`

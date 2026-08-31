@@ -439,13 +439,13 @@ func TestReviewRepairHelpRecommendsGenericClassifiedFlow(t *testing.T) {
 }
 
 // authorityDispositionAuthorization manually renders the exact
-// gentle-ai.review-disposition-authorization/v1 binding
+// hgtran-ai.review-disposition-authorization/v1 binding
 // authorityDispositionAuthorizationBinding (authority_disposition_plan.go)
 // computes internally — mirroring how classifiedRepairAuthorization above
 // replicates the legacy binding rather than exporting a production helper
 // whose only caller would be test code.
 func authorityDispositionAuthorization(plan reviewtransaction.AuthorityDispositionPlan) string {
-	return "gentle-ai.review-disposition-authorization/v1" +
+	return "hgtran-ai.review-disposition-authorization/v1" +
 		"\nschema=" + plan.Schema +
 		"\nrepository=" + plan.RepositoryBinding +
 		"\nclass=" + plan.AnomalyClass +
@@ -456,12 +456,12 @@ func authorityDispositionAuthorization(plan reviewtransaction.AuthorityDispositi
 }
 
 // dispositionForgedAuthorization is schema-prefixed
-// (gentle-ai.review-recovery-authorization/v1) but bound to content that can
+// (hgtran-ai.review-recovery-authorization/v1) but bound to content that can
 // never match a real exact binding, so classifyCompactRecoveryEdgeAnomalies
 // (compact_reconcile.go) always classifies it into the closed
 // content_mismatched_recovery_authorization class rather than the
 // pre-contract malformed_recovery_authorization AnomalyClasses class.
-const dispositionForgedAuthorization = "gentle-ai.review-recovery-authorization/v1\npredecessor_lineage=impossible-mismatch\npredecessor_revision=impossible\ntarget_identity=impossible\nactor=maintainer@example.com\nreason=impossible"
+const dispositionForgedAuthorization = "hgtran-ai.review-recovery-authorization/v1\npredecessor_lineage=impossible-mismatch\npredecessor_revision=impossible\ntarget_identity=impossible\nactor=maintainer@example.com\nreason=impossible"
 
 // TestReviewRepairPreflightSurfacesAuthorityDispositionPlanForEligibleLeaf
 // satisfies tasks.md 3.1: review repair --preflight emits the derived plan's
@@ -770,12 +770,12 @@ func TestReviewRepairSchemasRejectShortContractArrays(t *testing.T) {
 			if decodeErr := json.Unmarshal(payload, &resource); decodeErr != nil {
 				t.Fatalf("decode %s: %v", resourceName, decodeErr)
 			}
-			location := "https://gentle-ai.dev/contracts/review-integration/v1/schemas/" + resourceName
+			location := "https://hgtran-ai.dev/contracts/review-integration/v1/schemas/" + resourceName
 			if addErr := compiler.AddResource(location, resource); addErr != nil {
 				t.Fatalf("add %s: %v", resourceName, addErr)
 			}
 		}
-		location := "https://gentle-ai.dev/contracts/review-integration/v1/schemas/" + name
+		location := "https://hgtran-ai.dev/contracts/review-integration/v1/schemas/" + name
 		schema, compileErr := compiler.Compile(location)
 		if compileErr != nil {
 			t.Fatalf("compile %s: %v", name, compileErr)

@@ -309,7 +309,7 @@ func TestReviewFacadeStartLensesRequiredHintsNegotiatedContract(t *testing.T) {
 	if !started.LensesRequired || len(started.SelectedLenses) == 0 {
 		t.Fatalf("service-token start lenses_required = %v, selected_lenses = %v, want lenses selected", started.LensesRequired, started.SelectedLenses)
 	}
-	wantCommand := fmt.Sprintf("gentle-ai review start --contract %s --agent %s --target %s --projection %s", ReviewIntegrationContractV2, model.AgentClaudeCode, started.TargetIdentity, started.Projection)
+	wantCommand := fmt.Sprintf("hgtran-ai review start --contract %s --agent %s --target %s --projection %s", ReviewIntegrationContractV2, model.AgentClaudeCode, started.TargetIdentity, started.Projection)
 	if !strings.Contains(started.Hint, wantCommand) {
 		t.Fatalf("lenses-required start hint = %q, want it to contain %q", started.Hint, wantCommand)
 	}
@@ -354,7 +354,7 @@ func TestReviewFacadeStartBaseDiffHintReplaysFrozenSelector(t *testing.T) {
 		t.Fatalf("hint has no executable command: %q", started.Hint)
 	}
 	command := strings.Fields(started.Hint[opening+1 : opening+1+closing])
-	if len(command) < 4 || !reflect.DeepEqual(command[:3], []string{"gentle-ai", "review", "start"}) {
+	if len(command) < 4 || !reflect.DeepEqual(command[:3], []string{"hgtran-ai", "review", "start"}) {
 		t.Fatalf("hint command = %v", command)
 	}
 	args := append([]string{"start", "--cwd", repo}, command[3:]...)

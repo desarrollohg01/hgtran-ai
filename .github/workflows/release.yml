@@ -58,7 +58,7 @@ jobs:
         run: |
           set -euo pipefail
           run_id="${GITHUB_RUN_ID}:${GITHUB_RUN_ATTEMPT}:${GITHUB_JOB}"
-          marker="$RUNNER_TEMP/gentle-ai-release-policy-snapshot-start"
+          marker="$RUNNER_TEMP/hgtran-ai-release-policy-snapshot-start"
           rm -f -- "$marker"
           umask 077
           printf '%s\n' "$run_id" >"$marker"
@@ -133,8 +133,8 @@ jobs:
 
       - name: Configure ephemeral signing paths
         run: |
-          printf 'MINISIGN_SECRET_KEY_FILE=%s/gentle-ai-release.key\n' "$RUNNER_TEMP" >>"$GITHUB_ENV"
-          printf 'MINISIGN_SIGNING_PUBLIC_KEY_FILE=%s/gentle-ai-release-signing.pub\n' "$RUNNER_TEMP" >>"$GITHUB_ENV"
+          printf 'MINISIGN_SECRET_KEY_FILE=%s/hgtran-ai-release.key\n' "$RUNNER_TEMP" >>"$GITHUB_ENV"
+          printf 'MINISIGN_SIGNING_PUBLIC_KEY_FILE=%s/hgtran-ai-release-signing.pub\n' "$RUNNER_TEMP" >>"$GITHUB_ENV"
 
       - name: Install Minisign
         run: |

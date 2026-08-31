@@ -1243,7 +1243,7 @@ func edgeJourneys() []Journey {
 				{Name: "fixture: repo", Fixture: baseRepo},
 				{Name: "fixture: stage docs", Fixture: stageProse("", "contract")},
 				{Name: "review start with contract version v2", Requires: startContractCapability,
-					Args:         productArgs("review", "start", "--contract", "gentle-ai.review-integration/v2"),
+					Args:         productArgs("review", "start", "--contract", "hgtran-ai.review-integration/v2"),
 					AbortOnBlock: true},
 			},
 		},

@@ -97,7 +97,7 @@ func captureValidResult(t *testing.T, store CompactStore, lens string, order int
 // disposeAuthorization renders the binding literally rather than through the
 // production builder, so the exact wire format stays pinned by the tests.
 func disposeAuthorization(repository, lineage, revision, target, lens string, order int, digest, class, actor, reason string) string {
-	return "gentle-ai.review-result-disposition-authorization/v1" +
+	return "hgtran-ai.review-result-disposition-authorization/v1" +
 		"\nrepository=" + repository +
 		"\nlineage=" + lineage +
 		"\nrevision=" + revision +

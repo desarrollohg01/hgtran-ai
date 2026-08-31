@@ -525,7 +525,7 @@ func TestRuntimeLedgerPrivateRootCannotBeRedirectedThroughSymlink(t *testing.T) 
 	if err != nil {
 		t.Fatal(err)
 	}
-	gentleRoot := filepath.Join(store.commonDir, "gentle-ai")
+	gentleRoot := filepath.Join(store.commonDir, "hgtran-ai")
 	if err := os.MkdirAll(gentleRoot, 0o755); err != nil {
 		t.Fatal(err)
 	}

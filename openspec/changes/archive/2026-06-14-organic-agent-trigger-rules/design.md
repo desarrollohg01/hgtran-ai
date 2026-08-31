@@ -2,7 +2,7 @@
 
 ## Technical Approach
 
-Add a declarative trigger-rules layer as **data + pure renderer + one injection step**, reusing the exact pattern the `strict-tdd-mode` marker section already uses (`internal/components/sdd/inject.go:274-314`). Rules are authored as Go structs (no parser, no new dependency), shipped as a built-in default set in a new `internal/catalog/triggers.go`, rendered by a pure function into a short, scannable instructional block, and injected idempotently into every supported agent through the existing `filemerge.InjectMarkdownSection` marker engine under a new section ID `trigger-rules`. gentle-ai stays an installer: it renders the `when` condition as plain instruction text; it never evaluates it. ZERO runtime, ZERO execution, ZERO new package, ZERO new third-party dependency.
+Add a declarative trigger-rules layer as **data + pure renderer + one injection step**, reusing the exact pattern the `strict-tdd-mode` marker section already uses (`internal/components/sdd/inject.go:274-314`). Rules are authored as Go structs (no parser, no new dependency), shipped as a built-in default set in a new `internal/catalog/triggers.go`, rendered by a pure function into a short, scannable instructional block, and injected idempotently into every supported agent through the existing `filemerge.InjectMarkdownSection` marker engine under a new section ID `trigger-rules`. hgtran-ai stays an installer: it renders the `when` condition as plain instruction text; it never evaluates it. ZERO runtime, ZERO execution, ZERO new package, ZERO new third-party dependency.
 
 The injection reuses `filemerge` unchanged. Markers are derived from the section ID string (`openMarker`/`closeMarker` in `section.go:198-205`), so a new section ID needs **no new marker constant** and **no edit to `section.go`** — the proposal's note that `internal/filemerge/section.go` may need a marker is incorrect on two counts: the real path is `internal/components/filemerge/section.go`, and the marker mechanism is already generic.
 
@@ -50,7 +50,7 @@ func ValidateTriggerRuleSet(set model.TriggerRuleSet) error // rejects unknown o
 func RenderTriggerRules(set model.TriggerRuleSet) string
 
 // internal/components/sdd/inject.go — injected section identifier
-const sectionTriggerRules = "trigger-rules" // -> <!-- gentle-ai:trigger-rules -->
+const sectionTriggerRules = "trigger-rules" // -> <!-- hgtran-ai:trigger-rules -->
 ```
 
 ## Data Flow

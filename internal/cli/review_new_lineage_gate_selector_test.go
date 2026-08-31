@@ -33,7 +33,7 @@ import (
 func TestGoverningAuthorityLiveEvidenceUsesStagedProjectionAtPreCommit(t *testing.T) {
 	reviewModeHome(t)
 	repo := initReviewCLIRepo(t)
-	t.Setenv("GENTLE_AI_RDD_NEW_LINEAGE", "1")
+	t.Setenv("HGTRAN_AI_RDD_NEW_LINEAGE", "1")
 
 	trackedPath := filepath.Join(repo, "tracked.txt")
 	if err := os.WriteFile(trackedPath, []byte("frozen staged content\n"), 0o644); err != nil {
@@ -73,7 +73,7 @@ func TestGoverningAuthorityLiveEvidenceUsesStagedProjectionAtPreCommit(t *testin
 func TestGoverningAuthorityLiveEvidenceUsesWorkspaceProjectionAtPostApply(t *testing.T) {
 	reviewModeHome(t)
 	repo := initReviewCLIRepo(t)
-	t.Setenv("GENTLE_AI_RDD_NEW_LINEAGE", "1")
+	t.Setenv("HGTRAN_AI_RDD_NEW_LINEAGE", "1")
 
 	trackedPath := filepath.Join(repo, "tracked.txt")
 	if err := os.WriteFile(trackedPath, []byte("frozen staged content\n"), 0o644); err != nil {

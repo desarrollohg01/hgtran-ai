@@ -2,24 +2,24 @@
 
 ## Purpose
 
-Define how SDD consumes RDD review outcomes as a pure consumer: it persists nothing but a terminal `ReceiptRef` plus its own work-unit attempts, never re-derives gate meaning, and never mirrors review-authority state (`gentle-ai.sdd-review-binding/v1` retires as a write target).
+Define how SDD consumes RDD review outcomes as a pure consumer: it persists nothing but a terminal `ReceiptRef` plus its own work-unit attempts, never re-derives gate meaning, and never mirrors review-authority state (`hgtran-ai.sdd-review-binding/v1` retires as a write target).
 
 ## Requirements
 
 ### Requirement: ReceiptRef-Only Persistence
 
-SDD MUST persist, per lineage attempt, only a terminal `ReceiptRef` as its review-state footprint. SDD MUST NOT write new `gentle-ai.sdd-review-binding/v1` records. (Issue #1013)
+SDD MUST persist, per lineage attempt, only a terminal `ReceiptRef` as its review-state footprint. SDD MUST NOT write new `hgtran-ai.sdd-review-binding/v1` records. (Issue #1013)
 
 #### Scenario: Approved lineage persists only a ReceiptRef
 
 - GIVEN a lineage that finalized with an approved receipt
 - WHEN SDD records the outcome
 - THEN SDD's runtime ledger holds a `ReceiptRef` for that attempt
-- AND no `gentle-ai.sdd-review-binding/v1` file is created or updated
+- AND no `hgtran-ai.sdd-review-binding/v1` file is created or updated
 
 #### Scenario: Existing binding files remain read-only
 
-- GIVEN a pre-Wave-4 `gentle-ai.sdd-review-binding/v1` file from an in-flight change
+- GIVEN a pre-Wave-4 `hgtran-ai.sdd-review-binding/v1` file from an in-flight change
 - WHEN SDD loads status for that change
 - THEN SDD parses the file read-only for compatibility
 - AND SDD never writes to that file again

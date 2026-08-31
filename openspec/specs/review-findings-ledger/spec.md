@@ -171,7 +171,7 @@ Unrelated content/path scope change MUST require a different lineage ID. No gene
 
 ### Requirement: Exact persistence references
 
-All artifact modes MUST use the repository-derived authoritative append-only CAS store at `<git-common-dir>/gentle-ai/review-transactions/v1/{lineage-id}/`. The lineage ID MUST be canonical lowercase kebab-case and MUST NOT permit path traversal or aliases. OpenSpec `transaction.json`, frozen `ledger.json`, `receipt.json`, `chain-bundle.json`, and `gate-context.json` artifacts and Engram `sdd/{change-name}/review/{transaction,ledger,receipt,chain-bundle,gate-context}` topics are non-authoritative mirrors. Each append MUST require the expected revision and one legal semantic successor. Each load MUST prove the complete content-addressed predecessor chain from exact HEAD to one valid `review/start` genesis, rejecting missing predecessors, cycles, hash or schema mismatches, immutable-field changes, illegal or reordered transitions, semantically incomplete finding routing, and incoherent counters. Archive readiness MUST cross-check the trusted terminal revision and complete chain against the transaction mirror, frozen ledger, verify evidence, receipt, portable bundle, gate identity, and current repository target; missing, stale, or mismatched artifacts block archive.
+All artifact modes MUST use the repository-derived authoritative append-only CAS store at `<git-common-dir>/hgtran-ai/review-transactions/v1/{lineage-id}/`. The lineage ID MUST be canonical lowercase kebab-case and MUST NOT permit path traversal or aliases. OpenSpec `transaction.json`, frozen `ledger.json`, `receipt.json`, `chain-bundle.json`, and `gate-context.json` artifacts and Engram `sdd/{change-name}/review/{transaction,ledger,receipt,chain-bundle,gate-context}` topics are non-authoritative mirrors. Each append MUST require the expected revision and one legal semantic successor. Each load MUST prove the complete content-addressed predecessor chain from exact HEAD to one valid `review/start` genesis, rejecting missing predecessors, cycles, hash or schema mismatches, immutable-field changes, illegal or reordered transitions, semantically incomplete finding routing, and incoherent counters. Archive readiness MUST cross-check the trusted terminal revision and complete chain against the transaction mirror, frozen ledger, verify evidence, receipt, portable bundle, gate identity, and current repository target; missing, stale, or mismatched artifacts block archive.
 
 #### Scenario: Archive sees pending receipt
 
@@ -236,7 +236,7 @@ The CLI MUST expose `review-start` for current-changes, base-diff, exact commit/
 
 #### Scenario: Native start preserves index
 
-- GIVEN `gentle-ai review-start` receives an intended-untracked manifest
+- GIVEN `hgtran-ai review-start` receives an intended-untracked manifest
 - WHEN it writes transaction output
 - THEN the transaction is strict-parseable
 - AND the user's real Git index is byte-identical

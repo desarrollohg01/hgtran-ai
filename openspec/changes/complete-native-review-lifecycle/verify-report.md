@@ -1,15 +1,15 @@
 ```yaml
-schema: gentle-ai.verify-result/v1
+schema: hgtran-ai.verify-result/v1
 evidence_revision: sha256:a89ebe61af681e13f2bdc55f2466dde7282a79c571a46f96c6d7da9980b4b5ea
 verdict: pass_with_warnings
 blockers: 0
 critical_findings: 0
 requirements: 6/6
 scenarios: 6/6
-test_command: env -u GENTLE_AI_CHANNEL PATH=/home/linuxbrew/.linuxbrew/bin:/usr/local/bin:/usr/bin:/bin go test ./...
+test_command: env -u HGTRAN_AI_CHANNEL PATH=/home/linuxbrew/.linuxbrew/bin:/usr/local/bin:/usr/bin:/bin go test ./...
 test_exit_code: 0
 test_output_hash: sha256:96fb4fbfda83a20af009f7eba8355ca4a7414964dfb30e42f37667c5cbd94a5d
-build_command: env -u GENTLE_AI_CHANNEL PATH=/home/linuxbrew/.linuxbrew/bin:/usr/local/bin:/usr/bin:/bin go vet ./...
+build_command: env -u HGTRAN_AI_CHANNEL PATH=/home/linuxbrew/.linuxbrew/bin:/usr/local/bin:/usr/bin:/bin go vet ./...
 build_exit_code: 0
 build_output_hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
 ```
@@ -38,11 +38,11 @@ The filesystem and Engram `apply-progress` artifacts agree that all 14 tasks are
 
 | Check | Exact command | Exit | Output SHA-256 | Result |
 |---|---|---:|---|---|
-| Scenario/public-boundary | `env -u GENTLE_AI_CHANNEL PATH=/home/linuxbrew/.linuxbrew/bin:/usr/local/bin:/usr/bin:/bin go test -count=1 -v ./internal/reviewtransaction ./internal/cli ./internal/components/sdd -run 'TestCompleteFixEnforcesImmutableGenesisPathSubsetBeforeMutation\|TestValidateSuccessorRejectsTamperedOutOfScopeFixSnapshot\|TestBoundedReviewContractRendersForEverySupportedAgent\|TestRenderTriggerRules_TriageTiers\|TestOrdinaryTransactionIsOneBoundedNonIterativeFlow\|TestMultipleFrozenFindingsShareOneFixBatch\|TestScopedValidationRejectsIncompleteOrStaleEvidenceAndEscalatesRegression\|TestFinalVerificationContradictionEscalatesWithoutReopeningReviewBudgets\|TestRunReviewStepAppendsTargetedValidationAndResumeReemitsIt'` | 0 | `186224df0d986aa0e873f1de71251e75815c90cf37a4e7287e18f97c078ecec6` | ✅ Passed |
-| Focused, uncached | `env -u GENTLE_AI_CHANNEL PATH=/home/linuxbrew/.linuxbrew/bin:/usr/local/bin:/usr/bin:/bin go test -count=1 ./internal/reviewtransaction ./internal/cli ./internal/components/sdd ./internal/assets` | 0 | `15eddd125b0429cec9e31c81bd718f024c6e44474b5da0d8557d4032051dc65d` | ✅ Passed |
-| Full | `env -u GENTLE_AI_CHANNEL PATH=/home/linuxbrew/.linuxbrew/bin:/usr/local/bin:/usr/bin:/bin go test ./...` | 0 | `96fb4fbfda83a20af009f7eba8355ca4a7414964dfb30e42f37667c5cbd94a5d` | ✅ Passed |
-| Vet | `env -u GENTLE_AI_CHANNEL PATH=/home/linuxbrew/.linuxbrew/bin:/usr/local/bin:/usr/bin:/bin go vet ./...` | 0 | `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855` | ✅ Passed |
-| Coverage | `env -u GENTLE_AI_CHANNEL PATH=/home/linuxbrew/.linuxbrew/bin:/usr/local/bin:/usr/bin:/bin go test -count=1 -coverprofile=/tmp/opencode/issue-1104-finalize.cover ./internal/reviewtransaction ./internal/cli ./internal/components/sdd ./internal/assets` | 0 | `0c3dcc653f68489e0a770b2927962edc324e7d012c8e2f08b9fd4a6ed5f55354` | ✅ Passed |
+| Scenario/public-boundary | `env -u HGTRAN_AI_CHANNEL PATH=/home/linuxbrew/.linuxbrew/bin:/usr/local/bin:/usr/bin:/bin go test -count=1 -v ./internal/reviewtransaction ./internal/cli ./internal/components/sdd -run 'TestCompleteFixEnforcesImmutableGenesisPathSubsetBeforeMutation\|TestValidateSuccessorRejectsTamperedOutOfScopeFixSnapshot\|TestBoundedReviewContractRendersForEverySupportedAgent\|TestRenderTriggerRules_TriageTiers\|TestOrdinaryTransactionIsOneBoundedNonIterativeFlow\|TestMultipleFrozenFindingsShareOneFixBatch\|TestScopedValidationRejectsIncompleteOrStaleEvidenceAndEscalatesRegression\|TestFinalVerificationContradictionEscalatesWithoutReopeningReviewBudgets\|TestRunReviewStepAppendsTargetedValidationAndResumeReemitsIt'` | 0 | `186224df0d986aa0e873f1de71251e75815c90cf37a4e7287e18f97c078ecec6` | ✅ Passed |
+| Focused, uncached | `env -u HGTRAN_AI_CHANNEL PATH=/home/linuxbrew/.linuxbrew/bin:/usr/local/bin:/usr/bin:/bin go test -count=1 ./internal/reviewtransaction ./internal/cli ./internal/components/sdd ./internal/assets` | 0 | `15eddd125b0429cec9e31c81bd718f024c6e44474b5da0d8557d4032051dc65d` | ✅ Passed |
+| Full | `env -u HGTRAN_AI_CHANNEL PATH=/home/linuxbrew/.linuxbrew/bin:/usr/local/bin:/usr/bin:/bin go test ./...` | 0 | `96fb4fbfda83a20af009f7eba8355ca4a7414964dfb30e42f37667c5cbd94a5d` | ✅ Passed |
+| Vet | `env -u HGTRAN_AI_CHANNEL PATH=/home/linuxbrew/.linuxbrew/bin:/usr/local/bin:/usr/bin:/bin go vet ./...` | 0 | `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855` | ✅ Passed |
+| Coverage | `env -u HGTRAN_AI_CHANNEL PATH=/home/linuxbrew/.linuxbrew/bin:/usr/local/bin:/usr/bin:/bin go test -count=1 -coverprofile=/tmp/opencode/issue-1104-finalize.cover ./internal/reviewtransaction ./internal/cli ./internal/components/sdd ./internal/assets` | 0 | `0c3dcc653f68489e0a770b2927962edc324e7d012c8e2f08b9fd4a6ed5f55354` | ✅ Passed |
 
 ### Spec Compliance Matrix
 

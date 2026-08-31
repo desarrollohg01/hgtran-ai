@@ -16,7 +16,7 @@ import (
 	"strings"
 )
 
-const GateRequestSchema = "gentle-ai.review-gate-request/v1"
+const GateRequestSchema = "hgtran-ai.review-gate-request/v1"
 
 type GateRequest struct {
 	Schema           string                      `json:"schema"`
@@ -343,7 +343,7 @@ func EvaluateNativeGate(ctx context.Context, repo string, receipt Receipt, reque
 		}
 	}
 	// Wave 1 shadow observation (rdd-shadow-evaluation): outcome-neutral,
-	// advisory-only, and a true no-op unless GENTLE_AI_RDD_SHADOW is set —
+	// advisory-only, and a true no-op unless HGTRAN_AI_RDD_SHADOW is set —
 	// see shadow_observer.go. shadowDeriveBaseAdvance is called here (rather
 	// than reusing gateContext.BaseAdvance) specifically to exercise
 	// Amendment A's delegation seam from a live call site — but only when

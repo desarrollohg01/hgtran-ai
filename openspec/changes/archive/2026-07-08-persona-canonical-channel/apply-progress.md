@@ -95,8 +95,8 @@ verbatim line — no normative content was lost, confirmed by
 
 ```
 $ go vet ./internal/components/persona/...
-# github.com/gentleman-programming/gentle-ai/internal/components/persona
-# [github.com/gentleman-programming/gentle-ai/internal/components/persona]
+# github.com/gentleman-programming/hgtran-ai/internal/components/persona
+# [github.com/gentleman-programming/hgtran-ai/internal/components/persona]
 vet: internal/components/persona/inject_test.go:2031:61: too many arguments in call to personaContent
 	have (model.AgentID, model.PersonaID, bool)
 	want (model.AgentID, model.PersonaID)

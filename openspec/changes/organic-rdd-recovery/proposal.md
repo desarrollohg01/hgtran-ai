@@ -2,7 +2,7 @@
 
 ## Intent
 
-Keep Gentle AI an ecosystem configurator: agents implement organically; RDD begins after a candidate exists. Remove the unreleased control plane without losing invariants, contributions, or safe shutdown.
+Keep Hgtran AI an ecosystem configurator: agents implement organically; RDD begins after a candidate exists. Remove the unreleased control plane without losing invariants, contributions, or safe shutdown.
 
 ## Scope
 

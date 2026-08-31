@@ -64,7 +64,7 @@ func TestCompactStatusLoadContextCancelsUnderExclusiveMaintenance(t *testing.T) 
 }
 
 func TestMaintenanceLockModesAndRelease(t *testing.T) {
-	path := filepath.Join(t.TempDir(), "gentle-ai", "review-transactions", "MAINTENANCE.lock")
+	path := filepath.Join(t.TempDir(), "hgtran-ai", "review-transactions", "MAINTENANCE.lock")
 	shared, err := acquireMaintenanceLock(context.Background(), path, maintenanceShared)
 	if err != nil {
 		t.Fatal(err)
@@ -106,7 +106,7 @@ func TestMaintenanceLockModesAndRelease(t *testing.T) {
 
 func TestMaintenanceLockRejectsSymlinksAndStaleBytesAreNotOwnership(t *testing.T) {
 	dir := t.TempDir()
-	path := filepath.Join(dir, "gentle-ai", "review-transactions", "MAINTENANCE.lock")
+	path := filepath.Join(dir, "hgtran-ai", "review-transactions", "MAINTENANCE.lock")
 	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
 		t.Fatal(err)
 	}
@@ -146,7 +146,7 @@ func TestEnsureMaintenanceLockPathRejectsRelativePaths(t *testing.T) {
 }
 
 func TestEnsureMaintenanceLockPathAcceptsCanonicalAbsolutePath(t *testing.T) {
-	path := filepath.Join(t.TempDir(), "gentle-ai", "REVIEW-MAINTENANCE.lock")
+	path := filepath.Join(t.TempDir(), "hgtran-ai", "REVIEW-MAINTENANCE.lock")
 	if err := ensureMaintenanceLockPath(path); err != nil {
 		t.Fatalf("canonical absolute maintenance lock path was rejected: %v", err)
 	}
@@ -170,8 +170,8 @@ func TestMaintenanceLockHonorsCancellation(t *testing.T) {
 }
 
 func TestMaintenanceLockIsReleasedWhenOwnerProcessExits(t *testing.T) {
-	if os.Getenv("GENTLE_AI_MAINTENANCE_LOCK_EXIT_HELPER") == "1" {
-		lock, err := acquireMaintenanceLock(context.Background(), os.Getenv("GENTLE_AI_MAINTENANCE_LOCK_EXIT_PATH"), maintenanceExclusive)
+	if os.Getenv("HGTRAN_AI_MAINTENANCE_LOCK_EXIT_HELPER") == "1" {
+		lock, err := acquireMaintenanceLock(context.Background(), os.Getenv("HGTRAN_AI_MAINTENANCE_LOCK_EXIT_PATH"), maintenanceExclusive)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -180,7 +180,7 @@ func TestMaintenanceLockIsReleasedWhenOwnerProcessExits(t *testing.T) {
 	}
 	path := filepath.Join(t.TempDir(), "MAINTENANCE.lock")
 	command := exec.Command(os.Args[0], "-test.run=^TestMaintenanceLockIsReleasedWhenOwnerProcessExits$")
-	command.Env = append(os.Environ(), "GENTLE_AI_MAINTENANCE_LOCK_EXIT_HELPER=1", "GENTLE_AI_MAINTENANCE_LOCK_EXIT_PATH="+path)
+	command.Env = append(os.Environ(), "HGTRAN_AI_MAINTENANCE_LOCK_EXIT_HELPER=1", "HGTRAN_AI_MAINTENANCE_LOCK_EXIT_PATH="+path)
 	if output, err := command.CombinedOutput(); err != nil {
 		t.Fatalf("maintenance lock owner helper: %v\n%s", err, output)
 	}
@@ -327,10 +327,10 @@ func TestMaintenanceLockUsesGitCommonDirAcrossWorktrees(t *testing.T) {
 func TestMaintenanceLockRejectsSymlinkedAuthorityComponent(t *testing.T) {
 	dir := t.TempDir()
 	outside := t.TempDir()
-	if err := os.Symlink(outside, filepath.Join(dir, "gentle-ai")); err != nil {
+	if err := os.Symlink(outside, filepath.Join(dir, "hgtran-ai")); err != nil {
 		t.Fatal(err)
 	}
-	path := filepath.Join(dir, "gentle-ai", "review-transactions", "MAINTENANCE.lock")
+	path := filepath.Join(dir, "hgtran-ai", "review-transactions", "MAINTENANCE.lock")
 	if _, err := acquireMaintenanceLock(context.Background(), path, maintenanceShared); err == nil {
 		t.Fatal("symlinked authority root was accepted")
 	}

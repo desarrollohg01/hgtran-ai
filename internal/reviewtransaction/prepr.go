@@ -14,7 +14,7 @@ import (
 	"strings"
 )
 
-const prePRCIAttestationSchema = "gentle-ai.pre-pr-ci-attestation/v1"
+const prePRCIAttestationSchema = "hgtran-ai.pre-pr-ci-attestation/v1"
 
 // BaseAdvanceCompatibility is derived gate evidence. It never mutates or
 // extends the review receipt.
@@ -257,7 +257,7 @@ func patchIdentity(ctx context.Context, repo, baseTree, candidateTree string) (s
 		return "", err
 	}
 	hash := sha256.New()
-	hash.Write([]byte("gentle-ai.delivered-patch/v1\x00"))
+	hash.Write([]byte("hgtran-ai.delivered-patch/v1\x00"))
 	hash.Write(payload)
 	return "sha256:" + hex.EncodeToString(hash.Sum(nil)), nil
 }

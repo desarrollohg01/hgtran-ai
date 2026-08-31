@@ -284,7 +284,7 @@ func TestRunInstallOmitsProtocolFlagWhenProbeFails(t *testing.T) {
 }
 
 // TestRunInstallSkipsProtocolProbeWhenSetupModeOff pins JD-013: under
-// GENTLE_AI_ENGRAM_SETUP_MODE=off no adapter will ever attempt `engram
+// HGTRAN_AI_ENGRAM_SETUP_MODE=off no adapter will ever attempt `engram
 // setup` (engram.ShouldAttemptSetup returns false for every agent), so the
 // --protocol probe (up to a 5s deadline in production) must not run either
 // — its result would never be used. verifyEngramVersion stays unconditional
@@ -332,7 +332,7 @@ func TestRunInstallSkipsProtocolProbeWhenSetupModeOff(t *testing.T) {
 	}
 
 	if probeCalls != 0 {
-		t.Fatalf("probeEngramProtocolFlag call count = %d, want 0 under GENTLE_AI_ENGRAM_SETUP_MODE=off", probeCalls)
+		t.Fatalf("probeEngramProtocolFlag call count = %d, want 0 under HGTRAN_AI_ENGRAM_SETUP_MODE=off", probeCalls)
 	}
 }
 

@@ -27,7 +27,7 @@ func TestRenderUpgrade_CheckingState(t *testing.T) {
 func TestRenderUpgrade_AllUpToDate(t *testing.T) {
 	results := []update.UpdateResult{
 		{
-			Tool:             update.ToolInfo{Name: "gentle-ai"},
+			Tool:             update.ToolInfo{Name: "hgtran-ai"},
 			InstalledVersion: "v1.0.0",
 			LatestVersion:    "v1.0.0",
 			Status:           update.UpToDate,
@@ -47,7 +47,7 @@ func TestRenderUpgrade_AllUpToDate(t *testing.T) {
 func TestRenderUpgrade_UpdatesAvailable(t *testing.T) {
 	results := []update.UpdateResult{
 		{
-			Tool:             update.ToolInfo{Name: "gentle-ai"},
+			Tool:             update.ToolInfo{Name: "hgtran-ai"},
 			InstalledVersion: "v1.0.0",
 			LatestVersion:    "v2.0.0",
 			Status:           update.UpdateAvailable,
@@ -56,8 +56,8 @@ func TestRenderUpgrade_UpdatesAvailable(t *testing.T) {
 
 	out := RenderUpgrade(results, nil, nil, false, true /*updateCheckDone*/, 0, 0)
 
-	if !strings.Contains(out, "gentle-ai") {
-		t.Errorf("RenderUpgrade(updates available) should contain tool name 'gentle-ai'; got:\n%s", out)
+	if !strings.Contains(out, "hgtran-ai") {
+		t.Errorf("RenderUpgrade(updates available) should contain tool name 'hgtran-ai'; got:\n%s", out)
 	}
 	if !strings.Contains(out, "v1.0.0") || !strings.Contains(out, "v2.0.0") {
 		t.Errorf("RenderUpgrade(updates available) should contain version info; got:\n%s", out)
@@ -70,7 +70,7 @@ func TestRenderUpgrade_ResultState(t *testing.T) {
 	report := &upgrade.UpgradeReport{
 		Results: []upgrade.ToolUpgradeResult{
 			{
-				ToolName:   "gentle-ai",
+				ToolName:   "hgtran-ai",
 				OldVersion: "v1.0.0",
 				NewVersion: "v2.0.0",
 				Status:     upgrade.UpgradeSucceeded,
@@ -82,7 +82,7 @@ func TestRenderUpgrade_ResultState(t *testing.T) {
 
 	lower := strings.ToLower(out)
 	if !strings.Contains(lower, "upgraded") && !strings.Contains(lower, "summary") &&
-		!strings.Contains(out, "gentle-ai") {
+		!strings.Contains(out, "hgtran-ai") {
 		t.Errorf("RenderUpgrade(report) should show upgrade results; got:\n%s", out)
 	}
 }
@@ -132,11 +132,11 @@ func TestRenderUpgrade_ErrorState(t *testing.T) {
 // containing ": " is split so the command appears on its own line and is not clipped
 // by BubbleTea at the terminal width.
 func TestRenderUpgrade_LongManualHintSplitsAcrossLines(t *testing.T) {
-	longHint := "Windows binary distribution is temporarily unavailable. Install/update from source with Go 1.25.10+:\n  go install bitbucket.org/hgt_development/hgtran-ai/v2/cmd/gentle-ai@v1.1.0"
+	longHint := "Windows binary distribution is temporarily unavailable. Install/update from source with Go 1.25.10+:\n  go install bitbucket.org/hgt_development/hgtran-ai/v2/cmd/hgtran-ai@v1.1.0"
 	report := &upgrade.UpgradeReport{
 		Results: []upgrade.ToolUpgradeResult{
 			{
-				ToolName:   "gentle-ai",
+				ToolName:   "hgtran-ai",
 				OldVersion: "v1.0.0",
 				NewVersion: "v1.1.0",
 				Status:     upgrade.UpgradeSkipped,
@@ -158,7 +158,7 @@ func TestRenderUpgrade_LongManualHintSplitsAcrossLines(t *testing.T) {
 	if preambleIndex == -1 {
 		t.Fatalf("hint preamble should appear in output; got:\n%s", out)
 	}
-	if !strings.Contains(out, "go install") || !strings.Contains(out, "hgtran-ai/v2/cmd/gentle-ai@v1.1.0") {
+	if !strings.Contains(out, "go install") || !strings.Contains(out, "hgtran-ai/v2/cmd/hgtran-ai@v1.1.0") {
 		t.Fatalf("full manual command should remain visible; got:\n%s", out)
 	}
 	for _, line := range lines[preambleIndex+1:] {

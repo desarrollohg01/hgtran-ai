@@ -58,7 +58,7 @@ Source specs copied from `openspec/changes/rdd-root-simplification-wave0/specs/{
 
 ## Archive Contents
 
-**Archived to**: `/home/gentleman/work/gentle-ai/openspec/changes/archive/2026-08-02-rdd-root-simplification-wave0/`
+**Archived to**: `/home/gentleman/work/hgtran-ai/openspec/changes/archive/2026-08-02-rdd-root-simplification-wave0/`
 
 | Artifact | Status | Notes |
 |----------|--------|-------|

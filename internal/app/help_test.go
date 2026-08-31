@@ -104,7 +104,7 @@ func TestHelpDocumentsUserControlledReviewModeKillSwitch(t *testing.T) {
 		"status never mutates",
 		"asks once per clone",
 		"'not now' applies to that candidate only",
-		"gentle-ai review mode disable",
+		"hgtran-ai review mode disable",
 	} {
 		if !strings.Contains(output, want) {
 			t.Fatalf("help output missing review mode documentation %q:\n%s", want, output)

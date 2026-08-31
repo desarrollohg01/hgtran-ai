@@ -88,16 +88,16 @@ Tests: unit table on `discoverCompactFacadeGateReview` classification per produc
 | Issue | Seam | Contract |
 |---|---|---|
 | 1745 | `internal/cli/review_next_transition.go:133`, `:157` | Two defects on one line: the emitted name is `captured_results` (underscore) while the flag is `--captured-results`, and the boolean is emitted as a detached value. Add `Token string` to `ReviewTransitionArgument`, carrying the exact literal argv token (`--captured-results=true`). Populate it on `Execute.Arguments` **only** — never on `Preconditions`, which are assertions, not argv. `Name`/`Value` stay byte-identical, so existing consumers do not move. |
-| 1775 | `internal/cli/review_schema.go:12-17`, `:21` | Add the `gentle-ai.review-verification-evidence/v1` entry (key `verification-evidence`) and name it in the usage error. The schema shape must be derived from `readCapturedFinalEvidence` / `review capture-evidence`, not invented. |
+| 1775 | `internal/cli/review_schema.go:12-17`, `:21` | Add the `hgtran-ai.review-verification-evidence/v1` entry (key `verification-evidence`) and name it in the usage error. The schema shape must be derived from `readCapturedFinalEvidence` / `review capture-evidence`, not invented. |
 | 1663 | `review_facade.go:1490-1495` + `:1758` | When `StateValidating` and no evidence was supplied and canonical captured evidence exists for the exact `(store.Dir, state, revision)`, consume it on the identical bytes path `--captured-evidence` uses. |
-| 1788 | `review_facade.go:1758-1759` | Replace the silent `return plan, nil` with a typed `ErrReviewFinalizeNoTransition` naming the exact escape command verbatim: `gentle-ai review capture-evidence` then `gentle-ai review finalize --lineage <id> --captured-evidence`. |
+| 1788 | `review_facade.go:1758-1759` | Replace the silent `return plan, nil` with a typed `ErrReviewFinalizeNoTransition` naming the exact escape command verbatim: `hgtran-ai review capture-evidence` then `hgtran-ai review finalize --lineage <id> --captured-evidence`. |
 | 1800 | `review_next_transition.go:195-196` | Route `StateEscalated` to `reviewRecoveryCollection` with disposition forced to `RecoveryEscalated` (the default at `:371-373` is `RecoveryInvalidated` and would be wrong). Because `validateCompactRecoveryEdge` requires `compactEscalatedRecoveryTargetChanged`, Stop with a new reason code naming the changed-target requirement when `status.TargetIdentity == reviewAuthorityTargetIdentity(status)` — regardless of whether a Selector is present, since the existing `recovery_scope_unchanged` guard (`:376-378`) fires only when one is. |
 
 ### G — Target shapes (1812, 1771, 1641)
 
 | Issue | Seam | Contract |
 |---|---|---|
-| 1812 | `internal/cli/review_facade.go:938-940` (insert between the overlay guard and the dirty-tracked check at `:941`) | Explicit typed refusal for `--projection staged` + `--base-ref` without `--workspace-overlay`. Name the proven escape verbatim: `gentle-ai review start --base-ref <ref> --committed-only`. Do NOT implement index freezing. |
+| 1812 | `internal/cli/review_facade.go:938-940` (insert between the overlay guard and the dirty-tracked check at `:941`) | Explicit typed refusal for `--projection staged` + `--base-ref` without `--workspace-overlay`. Name the proven escape verbatim: `hgtran-ai review start --base-ref <ref> --committed-only`. Do NOT implement index freezing. |
 | 1771 | unpinned — see above | Route selector-free status on unborn HEAD through the same empty-tree projection the staged path already uses (`snapshot.go:798-799`). |
 | 1641 | unborn-HEAD refusal family | Message names the escape verbatim: commit an authorized empty root, then run committed base-diff review. Do NOT implement empty-base publication. |
 
@@ -258,7 +258,7 @@ Each journey builds its fixture once with the existing harness and reuses it acr
 
 ## Migration / rollout
 
-No migration. No schema version bump: `Token` and `Cause` are additive optional JSON fields, and `AuthorityInventoryDiagnostic` already exists. Rollback is `git revert` of the single group commit; the kill switch (`gentle-ai review mode disable`) remains the runtime escape throughout.
+No migration. No schema version bump: `Token` and `Cause` are additive optional JSON fields, and `AuthorityInventoryDiagnostic` already exists. Rollback is `git revert` of the single group commit; the kill switch (`hgtran-ai review mode disable`) remains the runtime escape throughout.
 
 ## Open questions
 

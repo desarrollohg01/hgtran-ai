@@ -50,13 +50,13 @@ When selected, the system MUST install required CodeGraph CLI, MCP, and Pi exten
 
 ### Requirement: Root-scoped lazy initialization
 
-Lazy-init guidance MUST require a child handling structural work to resolve the project root, reject unsafe roots, check `<project-root>/.codegraph/` before broad exploration, and run `gentle-ai codegraph init --cwd <project-root>` once when absent and available. It MUST use CodeGraph after success and explain a failed-init or failed-use fallback.
+Lazy-init guidance MUST require a child handling structural work to resolve the project root, reject unsafe roots, check `<project-root>/.codegraph/` before broad exploration, and run `hgtran-ai codegraph init --cwd <project-root>` once when absent and available. It MUST use CodeGraph after success and explain a failed-init or failed-use fallback.
 
 #### Scenario: Index absent
 
 - GIVEN a compatible child receives structural work in a valid root without `.codegraph/`
 - WHEN it follows its guidance
-- THEN it runs `gentle-ai codegraph init --cwd <project-root>` there before broad exploration
+- THEN it runs `hgtran-ai codegraph init --cwd <project-root>` there before broad exploration
 - AND it uses CodeGraph after initialization succeeds
 
 #### Scenario: Init fails
@@ -91,11 +91,11 @@ The system MUST reconcile after gentle-pi sync, restoring missing or overwritten
 
 ### Requirement: Ownership-safe removal
 
-The system MUST remove only Gentle-AI-owned Pi CodeGraph artifacts during uninstall or deselection. It MUST preserve user-managed and gentle-pi artifacts, restore bounded backups where applicable, and remain idempotent.
+The system MUST remove only hgtran-ai-owned Pi CodeGraph artifacts during uninstall or deselection. It MUST preserve user-managed and gentle-pi artifacts, restore bounded backups where applicable, and remain idempotent.
 
 #### Scenario: User-config uninstall
 
-- GIVEN a child contains both Gentle-AI-owned and user-managed configuration
+- GIVEN a child contains both hgtran-ai-owned and user-managed configuration
 - WHEN the integration is uninstalled
 - THEN only owned artifacts are removed or restored
 - AND user-managed and gentle-pi artifacts remain unchanged

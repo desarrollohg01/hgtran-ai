@@ -65,7 +65,7 @@ const maxScriptSize = 1 * 1024 * 1024 // 1 MB
 //   - brew profile → brewUpgrade (regardless of tool's declared method)
 //   - go-install method + apt/pacman/other → goInstallUpgrade
 //   - binary method + linux/darwin → binaryUpgrade
-//   - binary method + windows → manualFallback (gentle-ai explains the signed-distribution hold)
+//   - binary method + windows → manualFallback (hgtran-ai explains the signed-distribution hold)
 //   - script method + linux/darwin + gga → ggaScriptUpgrade (git clone approach)
 //   - script method + linux/darwin + other → scriptUpgrade (curl | bash install.sh)
 //   - script method + windows → manualFallback
@@ -358,7 +358,7 @@ func brewUpgrade(ctx context.Context, r update.UpdateResult, ownership update.Ho
 	// Non-fatal: brew tap is a no-op when already present; if it fails for any other
 	// reason, the subsequent brew upgrade will surface the real error. See issue #455:
 	// without this, a lost tap (untap, machine swap, brew cleanup) makes upgrades fail
-	// with "No available formula" for engram/gga/gentle-ai.
+	// with "No available formula" for engram/gga/hgtran-ai.
 	tapCmd := execCommand("brew", "tap", "Gentleman-Programming/homebrew-tap")
 	tapCmd.Stdin = nil
 	_ = tapCmd.Run()
@@ -452,7 +452,7 @@ func homebrewFailureAdvice(toolName string, output string, detected ...update.Ho
 			flag = "--formula"
 			artifact = "formula"
 		}
-		return fmt.Sprintf("Homebrew requires explicit trust for external taps. Trust only this Gentle AI %s, then retry:\n  brew trust %s %s\n  brew upgrade %s %s", artifact, flag, ref, flag, toolName)
+		return fmt.Sprintf("Homebrew requires explicit trust for external taps. Trust only this Hgtran AI %s, then retry:\n  brew trust %s %s\n  brew upgrade %s %s", artifact, flag, ref, flag, toolName)
 	}
 
 	if strings.Contains(lower, "bubblewrap is installed but cannot create a rootless sandbox") ||
@@ -495,13 +495,13 @@ func goInstallUpgrade(ctx context.Context, tool update.ToolInfo, latestVersion s
 }
 
 func isBetaGentleAIUpgrade(r update.UpdateResult) bool {
-	return r.Tool.Name == "gentle-ai" &&
+	return r.Tool.Name == "hgtran-ai" &&
 		strings.EqualFold(r.Tool.Owner, "desarrollohg01") &&
 		r.Tool.Repo == "hgtran-ai" &&
 		strings.HasPrefix(strings.TrimSpace(r.LatestVersion), "main@")
 }
 
-// goInstallMainUpgrade installs gentle-ai from HEAD on the beta channel. It runs
+// goInstallMainUpgrade installs hgtran-ai from HEAD on the beta channel. It runs
 // the same `go install` mechanism as goInstallUpgrade and therefore carries the
 // same risk of writing somewhere the shell does not resolve, so it performs the
 // same non-fatal destination verification.
@@ -524,7 +524,7 @@ func goInstallMainUpgrade(tool update.ToolInfo) error {
 
 	destDir, destErr := goInstallDestinationDir()
 
-	target := module + "/cmd/gentle-ai@main"
+	target := module + "/cmd/hgtran-ai@main"
 	cmd := execCommand("go", "install", target)
 	cmd.Stdin = nil
 	cmd.Env = goProxyBypassEnv(cmd.Env, module)
@@ -591,7 +591,7 @@ func prependGoPattern(existing, pattern string) string {
 // works on all platforms including Windows. Other Windows binary upgrades return
 // ManualFallbackError so the executor surfaces them as UpgradeSkipped.
 func binaryUpgrade(ctx context.Context, r update.UpdateResult, profile system.PlatformProfile) error {
-	if profile.OS == "windows" && r.Tool.Name == "gentle-ai" {
+	if profile.OS == "windows" && r.Tool.Name == "hgtran-ai" {
 		return &ManualFallbackError{Hint: gentleAIWindowsSourceInstallHint(r)}
 	}
 
@@ -625,7 +625,7 @@ func gentleAIWindowsSourceInstallHint(r update.UpdateResult) string {
 }
 
 // engramBinaryUpgrade downloads or installs the latest engram binary.
-// It honors GENTLE_AI_CHANNEL: when the channel is beta, engram is installed
+// It honors HGTRAN_AI_CHANNEL: when the channel is beta, engram is installed
 // from source via `go install @main`. For stable (the default when the env var
 // is unset or unknown), the pre-built release binary is downloaded via
 // engramDownloadFn. On Windows, PATH changes are persisted to the user registry
@@ -637,7 +637,7 @@ func engramBinaryUpgrade(profile system.PlatformProfile) error {
 	// misrouted).
 	channel, err := cli.ResolveInstallChannel("")
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "WARNING: unrecognized GENTLE_AI_CHANNEL value (%v); defaulting to stable\n", err)
+		fmt.Fprintf(os.Stderr, "WARNING: unrecognized HGTRAN_AI_CHANNEL value (%v); defaulting to stable\n", err)
 		channel = cli.ChannelStable
 	}
 
@@ -755,7 +755,7 @@ func scriptUpgrade(ctx context.Context, r update.UpdateResult, profile system.Pl
 // ggaMkdirTemp is the function used to create a temporary directory for GGA git clone.
 // Package-level var for testability — swapped in tests to control the temp dir path.
 var ggaMkdirTemp = func() (string, error) {
-	return os.MkdirTemp("", "gentle-ai-gga-*")
+	return os.MkdirTemp("", "hgtran-ai-gga-*")
 }
 
 // ggaScriptUpgrade upgrades GGA by cloning its repository and running install.sh

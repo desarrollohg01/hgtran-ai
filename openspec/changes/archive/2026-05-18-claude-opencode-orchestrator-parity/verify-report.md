@@ -22,22 +22,22 @@ gofmt -l internal/assets/assets_test.go
 <no output>
 
 go test ./internal/assets -run 'TestClaudeEmbeddedAssetLayout|TestClaudeSDDOrchestratorChainStrategy' -count=1
-ok  	github.com/gentleman-programming/gentle-ai/internal/assets	0.004s
+ok  	github.com/gentleman-programming/hgtran-ai/internal/assets	0.004s
 
 go test ./internal/components -run 'TestGoldenSDD_Claude|TestGoldenCombined_Claude' -count=1
-ok  	github.com/gentleman-programming/gentle-ai/internal/components	0.780s
+ok  	github.com/gentleman-programming/hgtran-ai/internal/components	0.780s
 
 go test ./internal/assets ./internal/components -run 'TestClaude|TestGoldenSDD_Claude|TestGoldenCombined_Claude|TestSDDOrchestratorAssetsScopedToDedicatedAgent' -count=1
-ok  	github.com/gentleman-programming/gentle-ai/internal/assets	0.005s
-ok  	github.com/gentleman-programming/gentle-ai/internal/components	1.457s
+ok  	github.com/gentleman-programming/hgtran-ai/internal/assets	0.005s
+ok  	github.com/gentleman-programming/hgtran-ai/internal/components	1.457s
 
 go test ./...
-?   	github.com/gentleman-programming/gentle-ai/cmd/gentle-ai	[no test files]
-ok  	github.com/gentleman-programming/gentle-ai/internal/app	7.492s
-ok  	github.com/gentleman-programming/gentle-ai/internal/assets	0.009s
-ok  	github.com/gentleman-programming/gentle-ai/internal/cli	41.381s
-ok  	github.com/gentleman-programming/gentle-ai/internal/components	10.977s
-ok  	github.com/gentleman-programming/gentle-ai/internal/components/sdd	50.442s
+?   	github.com/gentleman-programming/hgtran-ai/cmd/hgtran-ai	[no test files]
+ok  	github.com/gentleman-programming/hgtran-ai/internal/app	7.492s
+ok  	github.com/gentleman-programming/hgtran-ai/internal/assets	0.009s
+ok  	github.com/gentleman-programming/hgtran-ai/internal/cli	41.381s
+ok  	github.com/gentleman-programming/hgtran-ai/internal/components	10.977s
+ok  	github.com/gentleman-programming/hgtran-ai/internal/components/sdd	50.442s
 ... all remaining packages passed or were cached/no-test packages
 ```
 
@@ -47,13 +47,13 @@ ok  	github.com/gentleman-programming/gentle-ai/internal/components/sdd	50.442s
 
 ```text
 go test ./internal/assets ./internal/components -run 'TestClaude|TestGoldenSDD_Claude|TestGoldenCombined_Claude|TestSDDOrchestratorAssetsScopedToDedicatedAgent' -count=1 -coverprofile=/var/folders/k1/2nnhpdfx0wq8k6w8n2nqx9_h0000gn/T/opencode/claude-opencode-orchestrator-parity-reverify.cover
-ok  	github.com/gentleman-programming/gentle-ai/internal/assets	0.027s	coverage: 27.3% of statements
-ok  	github.com/gentleman-programming/gentle-ai/internal/components	1.450s	coverage: [no statements]
+ok  	github.com/gentleman-programming/hgtran-ai/internal/assets	0.027s	coverage: 27.3% of statements
+ok  	github.com/gentleman-programming/hgtran-ai/internal/components	1.450s	coverage: [no statements]
 
 go tool cover -func=/var/folders/k1/2nnhpdfx0wq8k6w8n2nqx9_h0000gn/T/opencode/claude-opencode-orchestrator-parity-reverify.cover
-github.com/gentleman-programming/gentle-ai/internal/assets/assets.go:9:       MustRead                75.0%
-github.com/gentleman-programming/gentle-ai/internal/assets/assets.go:18:      Read                    0.0%
-github.com/gentleman-programming/gentle-ai/internal/assets/commands.go:8:    SDDCommandsAssetDir     0.0%
+github.com/gentleman-programming/hgtran-ai/internal/assets/assets.go:9:       MustRead                75.0%
+github.com/gentleman-programming/hgtran-ai/internal/assets/assets.go:18:      Read                    0.0%
+github.com/gentleman-programming/hgtran-ai/internal/assets/commands.go:8:    SDDCommandsAssetDir     0.0%
 total:                                                                  27.3%
 ```
 

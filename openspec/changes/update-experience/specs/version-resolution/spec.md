@@ -15,7 +15,7 @@ The system MUST use the same tag-filtered result as both the download source and
 
 Prerelease, release-candidate, and shared-stream tags (e.g., `gentle-engram/v*`, `pi/*`) MUST be invisible to the resolver — they MUST NOT be selected even if they sort higher than the latest stable tag.
 
-(Previously: engram-core and gentle-engram were pinned to a fixed version in `versions.go`; updating either required a new gentle-ai release.)
+(Previously: engram-core and gentle-engram were pinned to a fixed version in `versions.go`; updating either required a new hgtran-ai release.)
 
 #### Scenario: Stable tags present
 

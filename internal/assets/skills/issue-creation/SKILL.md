@@ -84,7 +84,7 @@ Pre-submission privacy review is mandatory. Scan every issue body immediately be
 | API keys, tokens, passwords | `<token>` / `<password>` | `ghp_abc123...` → `<token>` |
 | Internal ports / hostnames | `<host>:<port>` | `10.0.0.42:5432` → `<host>:<port>` |
 
-Do NOT redact intentionally public identifiers: tool names (`gentle-ai`, `engram`, `go`, `node`, `python`), package names, public documentation URLs, generic example domains (`example.com`, `localhost`). Keep reproduction structure with placeholders — never redact an example into nothingness.
+Do NOT redact intentionally public identifiers: tool names (`hgtran-ai`, `engram`, `go`, `node`, `python`), package names, public documentation URLs, generic example domains (`example.com`, `localhost`). Keep reproduction structure with placeholders — never redact an example into nothingness.
 
 **Rule of thumb:** if the reader can run the reproduction step after you replace every identifier with its placeholder, the sanitization is correct. If a step becomes impossible (because the placeholder consumed a needed value), that step needs the value — and you should mark it `<value-required>` and explain in the body what the user should fill in.
 

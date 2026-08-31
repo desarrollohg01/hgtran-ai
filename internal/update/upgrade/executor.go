@@ -46,7 +46,7 @@ var snapshotCreator = func(snapshotDir string, paths []string) (backup.Manifest,
 	return backup.NewSnapshotter().Create(snapshotDir, paths)
 }
 
-// AppVersion is the gentle-ai version written into backup manifests created by
+// AppVersion is the hgtran-ai version written into backup manifests created by
 // the upgrade executor. Set by app.go before calling Execute so that upgrade
 // backups record the version that created them.
 // Default "dev" matches the ldflags default in app.Version.
@@ -117,11 +117,11 @@ var backupExcludeSubdirs = map[string]bool{
 	"tmp":                         true, // Antigravity temporary runtime artifacts
 }
 
-// configPathsForBackup returns the explicit Gentle AI-managed file paths that
+// configPathsForBackup returns the explicit Hgtran AI-managed file paths that
 // the backup snapshot must include before any upgrade execution.
 //
 // This is intentionally NOT a recursive backup of agent config directories.
-// Upgrade backups are rollback artifacts for files Gentle AI may create or
+// Upgrade backups are rollback artifacts for files Hgtran AI may create or
 // modify, not general-purpose backups of conversations, sessions, caches,
 // sockets, package installs, or other runtime state.
 //
@@ -129,7 +129,7 @@ var backupExcludeSubdirs = map[string]bool{
 // only those agents' config paths are backed up — this is the canonical source
 // of truth established at install time. Filesystem detection is used only as a
 // fallback for fresh installs (no state.json yet). This prevents snapshot bloat
-// from agent config dirs that the user never actually installed via gentle-ai
+// from agent config dirs that the user never actually installed via hgtran-ai
 // (issue #354: snapshots could reach ~25 GiB from unmanaged config dirs).
 func configPathsForBackup(homeDir string, diagnostics ...io.Writer) []string {
 	dw := firstWriter(diagnostics...)
@@ -602,12 +602,12 @@ func executeOne(ctx context.Context, r update.UpdateResult, profile system.Platf
 }
 
 // effectiveMethod resolves the actual upgrade strategy for a tool on a given platform.
-// Priority order: plugin → brew-owned package → gentle-ai self-upgrade policy →
+// Priority order: plugin → brew-owned package → hgtran-ai self-upgrade policy →
 // go-install → declared method.
 //
 //  1. OpenCode plugins are always handled by their own method — never overridden.
 //  2. Homebrew is used only when Homebrew confirms it owns this specific tool.
-//  3. gentle-ai's own upgrade never falls through to the generic rules below; it
+//  3. hgtran-ai's own upgrade never falls through to the generic rules below; it
 //     is resolved entirely by gentleAISelfUpgradeMethod, which is what keeps
 //     Linux and macOS on the signed release download.
 //  4. For every other tool: when Go is available on PATH and the tool declares a
@@ -620,7 +620,7 @@ func effectiveMethod(tool update.ToolInfo, profile system.PlatformProfile) updat
 	if profile.PackageManager == "brew" && homebrewPackageInstalled(tool.Name) {
 		return update.InstallBrew
 	}
-	if tool.Name == "gentle-ai" {
+	if tool.Name == "hgtran-ai" {
 		return gentleAISelfUpgradeMethod(tool, profile)
 	}
 	if profile.GoAvailable && tool.GoImportPath != "" {
@@ -629,7 +629,7 @@ func effectiveMethod(tool update.ToolInfo, profile system.PlatformProfile) updat
 	return tool.InstallMethod
 }
 
-// gentleAISelfUpgradeMethod resolves how gentle-ai upgrades itself, once
+// gentleAISelfUpgradeMethod resolves how hgtran-ai upgrades itself, once
 // Homebrew ownership has already been ruled out.
 //
 // Trust anchors differ by platform, and that is the whole point of this
@@ -637,9 +637,9 @@ func effectiveMethod(tool update.ToolInfo, profile system.PlatformProfile) updat
 //
 //   - Linux and macOS publish signed release binaries. Those are downloaded over
 //     an authenticated connection and verified with minisign, so they always
-//     return InstallBinary. This function is the ONLY place gentle-ai's method is
+//     return InstallBinary. This function is the ONLY place hgtran-ai's method is
 //     decided, which is what makes that guarantee structural rather than
-//     incidental: gentle-ai never reaches the generic
+//     incidental: hgtran-ai never reaches the generic
 //     `GoAvailable && GoImportPath != ""` rule, so declaring a GoImportPath for
 //     the Windows path below cannot silently move Linux or macOS off minisign.
 //     Regression guards: TestGentleAIOnLinuxNeverRoutesToGoInstall and

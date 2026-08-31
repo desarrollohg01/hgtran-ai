@@ -30,9 +30,9 @@
 
 | Evidence | Result |
 |---|---|
-| Focused | `env -u GENTLE_AI_CHANNEL PATH=/home/linuxbrew/.linuxbrew/bin:/usr/local/bin:/usr/bin:/bin go test -count=1 ./internal/reviewtransaction ./internal/cli ./internal/components/sdd` — passed. |
-| Full | `env -u GENTLE_AI_CHANNEL PATH=/home/linuxbrew/.linuxbrew/bin:/usr/local/bin:/usr/bin:/bin go test ./...` — passed. |
-| Vet | `env -u GENTLE_AI_CHANNEL PATH=/home/linuxbrew/.linuxbrew/bin:/usr/local/bin:/usr/bin:/bin go vet ./...` — passed. |
+| Focused | `env -u HGTRAN_AI_CHANNEL PATH=/home/linuxbrew/.linuxbrew/bin:/usr/local/bin:/usr/bin:/bin go test -count=1 ./internal/reviewtransaction ./internal/cli ./internal/components/sdd` — passed. |
+| Full | `env -u HGTRAN_AI_CHANNEL PATH=/home/linuxbrew/.linuxbrew/bin:/usr/local/bin:/usr/bin:/bin go test ./...` — passed. |
+| Vet | `env -u HGTRAN_AI_CHANNEL PATH=/home/linuxbrew/.linuxbrew/bin:/usr/local/bin:/usr/bin:/bin go vet ./...` — passed. |
 | Runtime harness | `TestRunReviewStepAppendsTargetedValidationAndResumeReemitsIt` covers complete-fix → validate-fix → review-resume. |
 | Rollback boundary | Revert lifecycle core/CLI, shared contract/assets, generated goldens, and transaction tests together; v1 records remain readable. |
 

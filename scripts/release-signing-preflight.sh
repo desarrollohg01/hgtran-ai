@@ -54,9 +54,9 @@ chmod 600 "$MINISIGN_SIGNING_PUBLIC_KEY_FILE"
 canary=$work/canary.txt
 signature=$work/canary.txt.minisig
 trusted="repo=$GITHUB_REPOSITORY;tag=$GITHUB_REF_NAME"
-printf 'gentle-ai release signing preflight\n' >"$canary"
+printf 'hgtran-ai release signing preflight\n' >"$canary"
 if ! timeout 15s minisign -S -s "$MINISIGN_SECRET_KEY_FILE" -m "$canary" -x "$signature" \
-  -c 'gentle-ai release preflight' -t "$trusted" </dev/null >/dev/null 2>&1; then
+  -c 'hgtran-ai release preflight' -t "$trusted" </dev/null >/dev/null 2>&1; then
   die "signing canary failed"
 fi
 verified=$(minisign -VQ -m "$canary" -x "$signature" -P "$derived") || die "canary verification failed"

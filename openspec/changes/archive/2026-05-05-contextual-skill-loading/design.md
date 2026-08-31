@@ -1,6 +1,6 @@
 # Design: contextual-skill-loading
 
-**Worktree**: /Users/alanbuscaglia/work/gentle-ai-claude-skills
+**Worktree**: /Users/alanbuscaglia/work/hgtran-ai-claude-skills
 **Branch**: feat/claude-contextual-skill-loading
 **Strict TDD**: enabled (`go test ./...`)
 

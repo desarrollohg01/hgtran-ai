@@ -23,7 +23,7 @@ Wave 0 proved the root cause is split ownership: relation logic lives independen
 
 ## Coverage
 
-Wave-1 `absorbed-into-wave-1` backlog (17): gentle-ai #1234, #1453, #1523, #1530, #1531, #1532, #1563, #1590, #1736, #1740, #1758, #1762, #2160, #2169; gentle-pi #194, #197, #204. Wave 1 measures, it does not close them.
+Wave-1 `absorbed-into-wave-1` backlog (17): hgtran-ai #1234, #1453, #1523, #1530, #1531, #1532, #1563, #1590, #1736, #1740, #1758, #1762, #2160, #2169; gentle-pi #194, #197, #204. Wave 1 measures, it does not close them.
 
 ## Capabilities
 
@@ -84,4 +84,4 @@ Auto execution mode — asked here rather than interactively. Assumptions stand 
 1. **Shadow default**: ON in live paths (real-traffic divergence, added Git cost per gate) or OFF with a fixture-driven matrix? *Assumption: OFF in live paths; opt-in sampling.*
 2. **Divergence destination**: test/bench output only, or a written record? A persisted record would add an artifact the design forbids. *Assumption: no persisted artifact.*
 3. **Exit bar**: what divergence blocks Wave 2? *Assumption: any unexplained divergence on `exact`, `compatible_base_advance`, or `provable_contraction` blocks; explained ones are documented.*
-4. **gentle-pi scope**: must the resolver cover Pi protocol-1.1 overlay selectors now (pi#194/#197/#204 are absorbed here)? *Assumption: gentle-ai selectors only; Pi is covered by the same algebra at the consumer wave.*
+4. **gentle-pi scope**: must the resolver cover Pi protocol-1.1 overlay selectors now (pi#194/#197/#204 are absorbed here)? *Assumption: hgtran-ai selectors only; Pi is covered by the same algebra at the consumer wave.*

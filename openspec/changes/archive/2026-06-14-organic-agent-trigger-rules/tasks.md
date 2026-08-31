@@ -4,7 +4,7 @@
 > Test runner: `go test ./...`
 > Delivery: single PR, `size:exception` (line-count limit does NOT apply).
 > Branch: `feat/organic-agent-trigger-rules`
-> Worktree: `/Users/alanbuscaglia/work/gentle-ai-wt-organic-triggers`
+> Worktree: `/Users/alanbuscaglia/work/hgtran-ai-wt-organic-triggers`
 
 ---
 
@@ -51,9 +51,9 @@ Chained PRs recommended: No.
 
 ### Phase 2 — Green (implementation)
 
-- [x] **1.6** `internal/model/types.go` — add `TriggerEvent string` newtype with the six named constants (`EventPreCommit`, `EventPrePush`, `EventPrePR`, `EventPostSDDPhase`, `EventOnCI`, `EventOnSchedule`); add doc comment: "These are SEMANTIC moments honored by the AI orchestrator, not OS-level hooks. gentle-ai never fires them."
+- [x] **1.6** `internal/model/types.go` — add `TriggerEvent string` newtype with the six named constants (`EventPreCommit`, `EventPrePush`, `EventPrePR`, `EventPostSDDPhase`, `EventOnCI`, `EventOnSchedule`); add doc comment: "These are SEMANTIC moments honored by the AI orchestrator, not OS-level hooks. hgtran-ai never fires them."
 - [x] **1.7** `internal/model/types.go` — add `TriggerMode string` newtype with `ModeAdvisory = "advisory"` and `ModeStrong = "strong"`; add doc comment: "advisory: suggestion. strong: firm recommendation. Neither blocks the workflow."
-- [x] **1.8** `internal/model/types.go` — add `TriggerWhen struct` with JSON tags; add doc comment: "A structured, NON-evaluated condition. gentle-ai renders it to plain instruction text; the orchestrator interprets it."
+- [x] **1.8** `internal/model/types.go` — add `TriggerWhen struct` with JSON tags; add doc comment: "A structured, NON-evaluated condition. hgtran-ai renders it to plain instruction text; the orchestrator interprets it."
 - [x] **1.9** `internal/model/types.go` — add `TriggerBinding struct` with JSON tags; `Reason` gets `json:"reason,omitempty"`; doc comment notes `Reason` is the ONLY optional field.
 - [x] **1.10** `internal/model/types.go` — add `TriggerRuleSet struct` with JSON tags.
 
@@ -113,7 +113,7 @@ Chained PRs recommended: No.
 ### Phase 1 — Red (failing tests)
 
 - [x] **3.1** `internal/components/sdd/triggerrules_test.go` — `TestRenderTriggerRules_Deterministic`: call `RenderTriggerRules` twice on the same `TriggerRuleSet`; assert outputs are byte-identical.
-- [x] **3.2** `internal/components/sdd/triggerrules_test.go` — `TestRenderTriggerRules_MarkerFree`: rendered output does NOT contain `<!-- gentle-ai:` or `<!-- /gentle-ai:` (markers are added by the caller via `InjectMarkdownSection`).
+- [x] **3.2** `internal/components/sdd/triggerrules_test.go` — `TestRenderTriggerRules_MarkerFree`: rendered output does NOT contain `<!-- hgtran-ai:` or `<!-- /hgtran-ai:` (markers are added by the caller via `InjectMarkdownSection`).
 - [x] **3.3** `internal/components/sdd/triggerrules_test.go` — `TestRenderTriggerRules_OrganicNote`: rendered output contains language stating these rules are organic recommendations, not hard gates (e.g., the phrase "organic" or "not a gate" or equivalent).
 - [x] **3.4** `internal/components/sdd/triggerrules_test.go` — `TestRenderTriggerRules_ModeWording` (table-driven):
   - Binding with `Mode == ModeAdvisory`: rendered text contains `"consider"` (or equivalent soft language); does NOT contain `"strongly"`, `"must"`, `"required"`, `"critical"`.
@@ -146,15 +146,15 @@ Chained PRs recommended: No.
 
 ## Unit 4 — Injection
 
-**Spec**: F (8-agent coverage, idempotency, `gentle-ai:trigger-rules` section ID, marker-section mechanism, primary placement), H (no exec, no hooks)
+**Spec**: F (8-agent coverage, idempotency, `hgtran-ai:trigger-rules` section ID, marker-section mechanism, primary placement), H (no exec, no hooks)
 **Files**: `internal/components/sdd/inject.go` (modify), `internal/assets/kimi/KIMI.md` (modify), `internal/components/sdd/inject_test.go` (modify)
 
 ### Phase 1 — Red (failing tests)
 
 - [x] **4.1** `internal/components/sdd/inject_test.go` — `TestInjectTriggerRules_SystemPromptAgent` (representative: claude adapter):
   - Call `sdd.Inject(home, claudeAdapter(), "")` in a `t.TempDir()` home.
-  - Assert the resulting CLAUDE.md contains `<!-- gentle-ai:trigger-rules -->` opening marker.
-  - Assert the file contains `<!-- /gentle-ai:trigger-rules -->` closing marker.
+  - Assert the resulting CLAUDE.md contains `<!-- hgtran-ai:trigger-rules -->` opening marker.
+  - Assert the file contains `<!-- /hgtran-ai:trigger-rules -->` closing marker.
   - Assert there is at least one rendered binding line between the markers.
 - [x] **4.2** `internal/components/sdd/inject_test.go` — `TestInjectTriggerRules_Idempotent` (claude adapter):
   - Call `sdd.Inject` twice on the same `t.TempDir()` home.
@@ -165,7 +165,7 @@ Chained PRs recommended: No.
   - Assert `filepath.Join(home, ".kimi", "trigger-rules.md")` exists and contains the rendered block (no markers — the module itself is the content; KIMI.md provides the include wrapper).
 - [x] **4.4** `internal/components/sdd/inject_test.go` — `TestInjectTriggerRules_OpenCodePlacement`:
   - Call `sdd.Inject(home, opencodeAdapter(), "")` in a `t.TempDir()` home.
-  - Assert the gentle-orchestrator agent prompt path (resolved via the adapter or a known constant) contains `<!-- gentle-ai:trigger-rules -->`.
+  - Assert the gentle-orchestrator agent prompt path (resolved via the adapter or a known constant) contains `<!-- hgtran-ai:trigger-rules -->`.
   - (Resolves open question (a): confirm the block lands in the orchestrator prompt, not a separate AGENTS.md section.)
 - [x] **4.5** `internal/components/sdd/inject_test.go` — `TestInjectTriggerRules_KilocodePlacement`:
   - Same as 4.4 but for `kilocodeAdapter()`.
@@ -206,7 +206,7 @@ Chained PRs recommended: No.
 - [x] **5.3** `go test ./...` — full suite must pass; no regressions in existing golden files (the injection of the trigger-rules section changes the rendered content of all agent system-prompt files, so golden files that cover the full CLAUDE.md / GEMINI.md / etc. MUST be regenerated with `-update` and committed alongside the implementation).
 - [x] **5.4** Organic invariant: grep all new and modified files for `exec.Command`, `os/exec`, goroutine launches (`go func`), channel operations (`<-`, `chan `), file-system reads of git diff output, `.git/hooks` path references. Assert none of these are attributable to the trigger-rules feature. Document the clean result as a checklist comment in the PR description.
 - [x] **5.5** `go.mod` diff: confirm no new parse-library entries (YAML, TOML, INI) were added. `encoding/json` tags on structs are not a new dependency.
-- [x] **5.6** Golden file regeneration: after the injection step is wired (Unit 4), run `go test ./internal/components/ -update` to regenerate all golden files that now include the `trigger-rules` section; review the diff to confirm only the expected `<!-- gentle-ai:trigger-rules -->...<!-- /gentle-ai:trigger-rules -->` block was added to each file.
+- [x] **5.6** Golden file regeneration: after the injection step is wired (Unit 4), run `go test ./internal/components/ -update` to regenerate all golden files that now include the `trigger-rules` section; review the diff to confirm only the expected `<!-- hgtran-ai:trigger-rules -->...<!-- /hgtran-ai:trigger-rules -->` block was added to each file.
 
 ---
 
@@ -221,7 +221,7 @@ Chained PRs recommended: No.
   - What the trigger-rules section is (organic recommendations, not gates).
   - Where the injected section appears (system-prompt or orchestrator file for each supported agent).
   - What the three default tiers are (Tier-1 advisory pre-commit/pre-push; Tier-2 4R strong on hot paths; Tier-3 judgment-day on SDD design/apply).
-  - How to re-run `gentle-ai install` or `gentle-ai sync` to refresh the injected section after an update.
+  - How to re-run `hgtran-ai install` or `hgtran-ai sync` to refresh the injected section after an update.
   - Note: `on-ci` and `on-schedule` have no built-in default; users opt in via a future override mechanism.
 - [x] **6.2** Verify the doc is placed alongside existing documentation (check whether the project uses `README.md` sections, a `docs/` directory, or in-source comments as the primary user doc surface; follow the established pattern).
 
@@ -259,6 +259,6 @@ Example ordering:
 ## Cross-Unit Notes
 
 - **Golden file cascade (CRITICAL)**: Wiring the injection in Unit 4 causes ALL existing SDD golden files that cover full agent prompt files (CLAUDE.md, GEMINI.md, AGENTS.md, etc.) to change. Run `go test ./internal/components/ -update` ONCE after Unit 4, review the diff, and commit the regenerated goldens in the same Unit 4 commit or a dedicated Unit 5 commit. Do NOT skip this step — golden mismatches will break CI.
-- **No new marker constants**: `InjectMarkdownSection(existing, "trigger-rules", rendered)` derives `<!-- gentle-ai:trigger-rules -->` automatically. `section.go` stays untouched.
+- **No new marker constants**: `InjectMarkdownSection(existing, "trigger-rules", rendered)` derives `<!-- hgtran-ai:trigger-rules -->` automatically. `section.go` stays untouched.
 - **Kimi KIMI.md static template**: the `{% include "trigger-rules.md" ignore missing %}` line is static (committed to `internal/assets/kimi/KIMI.md`). The rendered content lives in the per-install `trigger-rules.md` module file written by the injector at install/sync time.
 - **Qwen Code**: check if Qwen also uses `StrategyJinjaModules` (task 4.11 covers this). Based on current codebase review, only Kimi uses `StrategyJinjaModules`; Qwen uses a different strategy.

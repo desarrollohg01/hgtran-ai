@@ -25,7 +25,7 @@ func NewAdapter() *Adapter {
 	}
 }
 
-// antigravityVariantDir retains Gentle AI's legacy settings/skills selection.
+// antigravityVariantDir retains Hgtran AI's legacy settings/skills selection.
 func (a *Adapter) antigravityVariantDir(homeDir string) string {
 	desktop := filepath.Join(homeDir, ".gemini", "antigravity-desktop")
 	if stat := a.statPath(desktop); stat.err == nil {

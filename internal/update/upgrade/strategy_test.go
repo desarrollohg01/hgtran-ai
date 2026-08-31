@@ -18,7 +18,7 @@ import (
 )
 
 func TestMain(m *testing.M) {
-	if err := os.Unsetenv("GENTLE_AI_CHANNEL"); err != nil {
+	if err := os.Unsetenv("HGTRAN_AI_CHANNEL"); err != nil {
 		panic(err)
 	}
 
@@ -117,7 +117,7 @@ func TestRunStrategy_BetaGentleAISelfUpgradeUsesGoInstallMain(t *testing.T) {
 
 	r := update.UpdateResult{
 		Tool: update.ToolInfo{
-			Name:          "gentle-ai",
+			Name:          "hgtran-ai",
 			Owner:         "desarrollohg01",
 			Repo:          "hgtran-ai",
 			InstallMethod: update.InstallBinary,
@@ -129,13 +129,13 @@ func TestRunStrategy_BetaGentleAISelfUpgradeUsesGoInstallMain(t *testing.T) {
 
 	_, err := runStrategy(context.Background(), r, profile)
 	if err != nil {
-		t.Fatalf("runStrategy beta gentle-ai: unexpected error: %v", err)
+		t.Fatalf("runStrategy beta hgtran-ai: unexpected error: %v", err)
 	}
 
 	if gotName != "go" {
 		t.Fatalf("exec name = %q, want %q", gotName, "go")
 	}
-	wantArgs := []string{"install", "bitbucket.org/hgt_development/hgtran-ai/v2/cmd/gentle-ai@main"}
+	wantArgs := []string{"install", "bitbucket.org/hgt_development/hgtran-ai/v2/cmd/hgtran-ai@main"}
 	if len(gotArgs) != len(wantArgs) || gotArgs[0] != wantArgs[0] || gotArgs[1] != wantArgs[1] {
 		t.Fatalf("exec args = %v, want %v", gotArgs, wantArgs)
 	}
@@ -270,7 +270,7 @@ func TestRunStrategy_GoInstallFailure(t *testing.T) {
 }
 
 // TestEffectiveMethodGentleAIOnWindowsUsesFailClosedBinaryPolicy verifies that
-// Windows never routes gentle-ai through a remote installer, and that when no
+// Windows never routes hgtran-ai through a remote installer, and that when no
 // usable `go install` target is declared it falls back to the binary strategy —
 // which on Windows is an explicit refusal naming a runnable source-install
 // command, not a download.
@@ -281,11 +281,11 @@ func TestEffectiveMethodGentleAIOnWindowsUsesFailClosedBinaryPolicy(t *testing.T
 	}{
 		{
 			name: "binary remains policy boundary",
-			tool: update.ToolInfo{Name: "gentle-ai", InstallMethod: update.InstallBinary},
+			tool: update.ToolInfo{Name: "hgtran-ai", InstallMethod: update.InstallBinary},
 		},
 		{
 			name: "legacy script declaration is disabled",
-			tool: update.ToolInfo{Name: "gentle-ai", InstallMethod: update.InstallScript},
+			tool: update.ToolInfo{Name: "hgtran-ai", InstallMethod: update.InstallScript},
 		},
 	}
 
@@ -307,7 +307,7 @@ func TestEffectiveMethodGentleAIOnWindowsUsesFailClosedBinaryPolicy(t *testing.T
 	// against the Go checksum database, since goInstallUpgrade does not touch
 	// cmd.Env — is the only automatic upgrade path Windows has.
 	t.Run("Go availability upgrades through a pinned go install", func(t *testing.T) {
-		tool := update.ToolInfo{Name: "gentle-ai", InstallMethod: update.InstallBinary, GoImportPath: "bitbucket.org/hgt_development/hgtran-ai/v2/cmd/gentle-ai"}
+		tool := update.ToolInfo{Name: "hgtran-ai", InstallMethod: update.InstallBinary, GoImportPath: "bitbucket.org/hgt_development/hgtran-ai/v2/cmd/hgtran-ai"}
 		profile := system.PlatformProfile{OS: "windows", PackageManager: "winget", GoAvailable: true}
 		method := effectiveMethod(tool, profile)
 		if method != update.InstallGoInstall {
@@ -319,7 +319,7 @@ func TestEffectiveMethodGentleAIOnWindowsUsesFailClosedBinaryPolicy(t *testing.T
 // --- TestEffectiveMethod_NonGentleAIToolsOnWindowsUseBinary ---
 
 // TestEffectiveMethod_NonGentleAIToolsOnWindowsUseBinary verifies that tools
-// OTHER than gentle-ai on Windows still use their declared install method
+// OTHER than hgtran-ai on Windows still use their declared install method
 // (binary, script, etc.).
 func TestEffectiveMethod_NonGentleAIToolsOnWindowsUseBinary(t *testing.T) {
 	tests := []struct {
@@ -391,7 +391,7 @@ func TestEffectiveMethod(t *testing.T) {
 		},
 		{
 			name:    "brew profile without package ownership respects declared method",
-			tool:    update.ToolInfo{Name: "gentle-ai", InstallMethod: update.InstallBinary},
+			tool:    update.ToolInfo{Name: "hgtran-ai", InstallMethod: update.InstallBinary},
 			profile: system.PlatformProfile{OS: "darwin", PackageManager: "brew"},
 			want:    update.InstallBinary,
 		},
@@ -469,33 +469,33 @@ func TestEffectiveMethod(t *testing.T) {
 }
 
 func TestHomebrewPackageInstalledWithRequiresActiveBrewPath(t *testing.T) {
-	brewPrefix := filepath.Join(t.TempDir(), "opt", "gentle-ai")
-	brewBin := filepath.Join(brewPrefix, "bin", "gentle-ai")
-	nonBrewBin := filepath.Join(t.TempDir(), "gentle-ai")
+	brewPrefix := filepath.Join(t.TempDir(), "opt", "hgtran-ai")
+	brewBin := filepath.Join(brewPrefix, "bin", "hgtran-ai")
+	nonBrewBin := filepath.Join(t.TempDir(), "hgtran-ai")
 
 	run := func(name string, args ...string) *exec.Cmd {
 		if name != "brew" {
 			return mockCmd("false")
 		}
-		if len(args) >= 3 && args[0] == "list" && args[1] == "--formula" && args[2] == "gentle-ai" {
+		if len(args) >= 3 && args[0] == "list" && args[1] == "--formula" && args[2] == "hgtran-ai" {
 			return mockCmd("true")
 		}
-		if len(args) == 2 && args[0] == "--prefix" && args[1] == "gentle-ai" {
+		if len(args) == 2 && args[0] == "--prefix" && args[1] == "hgtran-ai" {
 			return mockCmd("echo", brewPrefix)
 		}
 		return mockCmd("false")
 	}
 
-	if !homebrewPackageInstalledWith(run, func(string) (string, error) { return brewBin, nil }, "gentle-ai") {
+	if !homebrewPackageInstalledWith(run, func(string) (string, error) { return brewBin, nil }, "hgtran-ai") {
 		t.Fatal("expected brew-owned active path to be treated as Homebrew installed")
 	}
-	if homebrewPackageInstalledWith(run, func(string) (string, error) { return nonBrewBin, nil }, "gentle-ai") {
+	if homebrewPackageInstalledWith(run, func(string) (string, error) { return nonBrewBin, nil }, "hgtran-ai") {
 		t.Fatal("expected shadowing non-brew active path to avoid Homebrew")
 	}
-	if homebrewPackageInstalledWith(func(string, ...string) *exec.Cmd { return mockCmd("false") }, func(string) (string, error) { return brewBin, nil }, "gentle-ai") {
+	if homebrewPackageInstalledWith(func(string, ...string) *exec.Cmd { return mockCmd("false") }, func(string) (string, error) { return brewBin, nil }, "hgtran-ai") {
 		t.Fatal("expected brew list failure to avoid Homebrew")
 	}
-	if homebrewPackageInstalledWith(func(string, ...string) *exec.Cmd { return mockCmd("true") }, func(string) (string, error) { return "", errors.New("not found") }, "gentle-ai") {
+	if homebrewPackageInstalledWith(func(string, ...string) *exec.Cmd { return mockCmd("true") }, func(string) (string, error) { return "", errors.New("not found") }, "hgtran-ai") {
 		t.Fatal("expected active path lookup failure to avoid Homebrew")
 	}
 }
@@ -585,8 +585,8 @@ func TestRunStrategyOpenCodePluginUpgradesMaterializedPackage(t *testing.T) {
 		gotArgs = append([]string(nil), args...)
 		cmd := exec.Command(os.Args[0], "-test.run=TestOpenCodePluginUpgradeHelperProcess", "--")
 		cmd.Env = append(os.Environ(),
-			"GENTLE_AI_UPGRADE_HELPER=1",
-			"GENTLE_AI_UPGRADE_HELPER_CWD_FILE="+cwdFile,
+			"HGTRAN_AI_UPGRADE_HELPER=1",
+			"HGTRAN_AI_UPGRADE_HELPER_CWD_FILE="+cwdFile,
 		)
 		return cmd
 	}
@@ -908,7 +908,7 @@ func TestSelectOpenCodePackageManagerPrefersPackageMetadata(t *testing.T) {
 }
 
 func TestOpenCodePluginUpgradeHelperProcess(t *testing.T) {
-	if os.Getenv("GENTLE_AI_UPGRADE_HELPER") != "1" {
+	if os.Getenv("HGTRAN_AI_UPGRADE_HELPER") != "1" {
 		return
 	}
 	cwd, err := os.Getwd()
@@ -916,7 +916,7 @@ func TestOpenCodePluginUpgradeHelperProcess(t *testing.T) {
 		_, _ = os.Stderr.WriteString(err.Error())
 		os.Exit(2)
 	}
-	if err := os.WriteFile(os.Getenv("GENTLE_AI_UPGRADE_HELPER_CWD_FILE"), []byte(cwd), 0o644); err != nil {
+	if err := os.WriteFile(os.Getenv("HGTRAN_AI_UPGRADE_HELPER_CWD_FILE"), []byte(cwd), 0o644); err != nil {
 		_, _ = os.Stderr.WriteString(err.Error())
 		os.Exit(2)
 	}
@@ -952,7 +952,7 @@ func TestBrewUpgrade_RunsUpdateBeforeUpgrade(t *testing.T) {
 		return mockCmd("echo", "ok")
 	}
 
-	err := brewUpgrade(context.Background(), update.UpdateResult{Tool: update.ToolInfo{Name: "gentle-ai"}}, update.HomebrewFormula)
+	err := brewUpgrade(context.Background(), update.UpdateResult{Tool: update.ToolInfo{Name: "hgtran-ai"}}, update.HomebrewFormula)
 	if err != nil {
 		t.Fatalf("brewUpgrade: unexpected error: %v", err)
 	}
@@ -990,10 +990,10 @@ func TestBrewUpgrade_UpdateFailureIsNonFatal(t *testing.T) {
 			}
 		}
 		// brew upgrade succeeds.
-		return mockCmd("echo", "Upgraded gentle-ai")
+		return mockCmd("echo", "Upgraded hgtran-ai")
 	}
 
-	err := brewUpgrade(context.Background(), update.UpdateResult{Tool: update.ToolInfo{Name: "gentle-ai"}}, update.HomebrewFormula)
+	err := brewUpgrade(context.Background(), update.UpdateResult{Tool: update.ToolInfo{Name: "hgtran-ai"}}, update.HomebrewFormula)
 	// brew update failed but brew upgrade succeeded → overall success.
 	if err != nil {
 		t.Errorf("expected success when brew update fails but brew upgrade succeeds, got: %v", err)
@@ -1079,22 +1079,22 @@ func TestBrewUpgrade_FormulaToolUsesFormulaTrust(t *testing.T) {
 		return mockCmd("echo", "ok")
 	}
 
-	if err := brewUpgrade(context.Background(), update.UpdateResult{Tool: update.ToolInfo{Name: "gentle-ai"}}, update.HomebrewFormula); err != nil {
+	if err := brewUpgrade(context.Background(), update.UpdateResult{Tool: update.ToolInfo{Name: "hgtran-ai"}}, update.HomebrewFormula); err != nil {
 		t.Fatalf("brewUpgrade: unexpected error: %v", err)
 	}
 
-	if len(trustArgs) != 2 || trustArgs[0] != "--formula" || trustArgs[1] != "gentleman-programming/tap/gentle-ai" {
-		t.Fatalf("brew trust args = %v, want [--formula gentleman-programming/tap/gentle-ai]", trustArgs)
+	if len(trustArgs) != 2 || trustArgs[0] != "--formula" || trustArgs[1] != "gentleman-programming/tap/hgtran-ai" {
+		t.Fatalf("brew trust args = %v, want [--formula gentleman-programming/tap/hgtran-ai]", trustArgs)
 	}
 }
 
 func TestHomebrewFailureAdviceTapTrust(t *testing.T) {
-	output := `Error: Refusing to load formula gentleman-programming/tap/gentle-ai from untrusted tap.
-Run brew trust --formula gentleman-programming/tap/gentle-ai to trust it.`
-	advice := homebrewFailureAdvice("gentle-ai", output)
+	output := `Error: Refusing to load formula gentleman-programming/tap/hgtran-ai from untrusted tap.
+Run brew trust --formula gentleman-programming/tap/hgtran-ai to trust it.`
+	advice := homebrewFailureAdvice("hgtran-ai", output)
 	for _, want := range []string{
-		"brew trust --formula gentleman-programming/tap/gentle-ai",
-		"brew upgrade --formula gentle-ai",
+		"brew trust --formula gentleman-programming/tap/hgtran-ai",
+		"brew upgrade --formula hgtran-ai",
 	} {
 		if !strings.Contains(advice, want) {
 			t.Fatalf("tap trust advice missing %q:\n%s", want, advice)
@@ -1122,7 +1122,7 @@ Run brew trust --cask gentleman-programming/tap/engram to trust it.`
 func TestHomebrewFailureAdviceBubblewrap(t *testing.T) {
 	output := `Error: Bubblewrap is installed but cannot create a rootless sandbox.
 Homebrew's Linux sandbox requires rootless Bubblewrap and unprivileged user namespaces.`
-	advice := homebrewFailureAdvice("gentle-ai", output)
+	advice := homebrewFailureAdvice("hgtran-ai", output)
 	if strings.Contains(strings.ToLower(advice), "preferred fix") {
 		t.Fatalf("bubblewrap advice must not frame host policy changes as preferred defaults:\n%s", advice)
 	}
@@ -1131,7 +1131,7 @@ Homebrew's Linux sandbox requires rootless Bubblewrap and unprivileged user name
 		"sudo sysctl -w kernel.unprivileged_userns_clone=1",
 		"sudo sysctl -w user.max_user_namespaces=28633",
 		"sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0 || true",
-		"HOMEBREW_NO_SANDBOX_LINUX=1 brew upgrade --formula gentle-ai",
+		"HOMEBREW_NO_SANDBOX_LINUX=1 brew upgrade --formula hgtran-ai",
 	} {
 		if !strings.Contains(advice, want) {
 			t.Fatalf("bubblewrap advice missing %q:\n%s", want, advice)
@@ -1512,21 +1512,21 @@ func TestInstallScriptURL(t *testing.T) {
 		{
 			name:    "empty version returns error",
 			owner:   "Gentleman-Programming",
-			repo:    "gentle-ai",
+			repo:    "hgtran-ai",
 			version: "",
 			wantErr: true,
 		},
 		{
 			name:    "whitespace-only version returns error",
 			owner:   "Gentleman-Programming",
-			repo:    "gentle-ai",
+			repo:    "hgtran-ai",
 			version: "   ",
 			wantErr: true,
 		},
 		{
 			name:        "does not reference main",
 			owner:       "Gentleman-Programming",
-			repo:        "gentle-ai",
+			repo:        "hgtran-ai",
 			version:     "2.0.0",
 			wantContain: "v2.0.0",
 		},
@@ -1700,7 +1700,7 @@ func TestRunStrategy_ScriptUpgradeExecFailure(t *testing.T) {
 // --- TestEngramBinaryUpgrade_ChannelRouting (Slice 3) ---
 
 // TestEngramBinaryUpgrade_StableChannelCallsDownloadFn verifies that when
-// GENTLE_AI_CHANNEL is unset or "stable", engramBinaryUpgrade delegates to
+// HGTRAN_AI_CHANNEL is unset or "stable", engramBinaryUpgrade delegates to
 // engramDownloadFn (the release-download path) and NOT go install @main.
 func TestEngramBinaryUpgrade_StableChannelCallsDownloadFn(t *testing.T) {
 	tests := []struct {
@@ -1713,7 +1713,7 @@ func TestEngramBinaryUpgrade_StableChannelCallsDownloadFn(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			t.Setenv("GENTLE_AI_CHANNEL", tt.envVal)
+			t.Setenv("HGTRAN_AI_CHANNEL", tt.envVal)
 
 			origDownloadFn := engramDownloadFn
 			origExecCommand := execCommand
@@ -1747,12 +1747,12 @@ func TestEngramBinaryUpgrade_StableChannelCallsDownloadFn(t *testing.T) {
 }
 
 // TestEngramBinaryUpgrade_BetaChannelUsesGoInstallMain verifies that when
-// GENTLE_AI_CHANNEL=beta, engramBinaryUpgrade delegates to
+// HGTRAN_AI_CHANNEL=beta, engramBinaryUpgrade delegates to
 // engramBetaInstallFn (the consolidated beta path, backed by
 // engram.DownloadLatestBinary(profile, true) in production). The stable
 // engramDownloadFn must NOT be called.
 func TestEngramBinaryUpgrade_BetaChannelUsesGoInstallMain(t *testing.T) {
-	t.Setenv("GENTLE_AI_CHANNEL", "beta")
+	t.Setenv("HGTRAN_AI_CHANNEL", "beta")
 
 	origDownloadFn := engramDownloadFn
 	origBetaFn := engramBetaInstallFn

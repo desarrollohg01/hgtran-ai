@@ -63,7 +63,7 @@ func Run() error {
 
 func RunArgs(args []string, stdout io.Writer) error {
 	// Propagate the build-time version to the CLI and upgrade layers so backup
-	// manifests record which version of gentle-ai created them.
+	// manifests record which version of hgtran-ai created them.
 	cli.AppVersion = Version
 	upgrade.AppVersion = Version
 
@@ -72,7 +72,7 @@ func RunArgs(args []string, stdout io.Writer) error {
 	// environment, not the result of this command. See legacy_state_notice.go.
 	noticeLegacyState()
 
-	// --yes as a global CLI flag for self-update is handled via GENTLE_AI_YES=1.
+	// --yes as a global CLI flag for self-update is handled via HGTRAN_AI_YES=1.
 	// Per-subcommand --yes flags (e.g. restore --yes) are parsed by each subcommand.
 
 	// Platform-independent commands: no system detection, self-update, or
@@ -80,7 +80,7 @@ func RunArgs(args []string, stdout io.Writer) error {
 	if len(args) > 0 {
 		switch args[0] {
 		case "version", "--version", "-v":
-			_, _ = fmt.Fprintf(stdout, "gentle-ai %s\n", Version)
+			_, _ = fmt.Fprintf(stdout, "hgtran-ai %s\n", Version)
 			return nil
 		case "help", "--help", "-h":
 			printHelp(stdout, Version)
@@ -155,7 +155,7 @@ func RunArgs(args []string, stdout io.Writer) error {
 		return profile
 	}
 
-	// Self-update: check for a newer gentle-ai release and apply it before
+	// Self-update: check for a newer hgtran-ai release and apply it before
 	// CLI/TUI dispatch. Errors are non-fatal — logged and swallowed.
 	// Skip auto-upgrade on TUI entry (len(args) == 0) to avoid silently
 	// replacing the binary while the user expects a clean TUI launch (#696).
@@ -178,7 +178,7 @@ func RunArgs(args []string, stdout io.Writer) error {
 		// back to filesystem detection for first-time installs.
 		installedState, _ := state.Read(homeDir)
 
-		// Deferred sync: if a previous gentle-ai self-upgrade set PendingSync=true,
+		// Deferred sync: if a previous hgtran-ai self-upgrade set PendingSync=true,
 		// run sync now with the new binary before entering the TUI. On success,
 		// clear the flag. On failure, log and leave the flag set for idempotent
 		// retry on the next launch (per spec scenario "deferred sync fails → retry").
@@ -263,7 +263,7 @@ func RunArgs(args []string, stdout io.Writer) error {
 	case "doctor":
 		return cli.RunDoctor(context.Background(), stdout)
 	default:
-		return fmt.Errorf("unknown command %q — run 'gentle-ai help' for available commands", args[0])
+		return fmt.Errorf("unknown command %q — run 'hgtran-ai help' for available commands", args[0])
 	}
 }
 
@@ -301,7 +301,7 @@ func gentleAIUpgradeVersionFromTUI(finalModel tea.Model) (string, bool) {
 
 func runSkillRegistry(args []string, stdout io.Writer) error {
 	if len(args) == 0 {
-		return fmt.Errorf("usage: gentle-ai skill-registry <refresh|list> [flags]")
+		return fmt.Errorf("usage: hgtran-ai skill-registry <refresh|list> [flags]")
 	}
 	switch args[0] {
 	case "refresh":
@@ -439,13 +439,13 @@ func runUpdate(ctx context.Context, currentVersion string, profile system.Platfo
 	return updateCheckError(results)
 }
 
-// runUpgrade handles the `gentle-ai upgrade [--dry-run] [tool...]` command.
+// runUpgrade handles the `hgtran-ai upgrade [--dry-run] [tool...]` command.
 //
 // This command:
-//   - Checks for available updates for managed tools (gentle-ai, engram, gga)
+//   - Checks for available updates for managed tools (hgtran-ai, engram, gga)
 //   - Snapshots agent config paths before execution (config preservation by design)
 //   - Executes binary-only upgrades; does NOT invoke install or sync pipelines
-//   - Skips gentle-ai itself when running as a dev build (version="dev")
+//   - Skips hgtran-ai itself when running as a dev build (version="dev")
 //   - Falls back to source-install guidance where official binaries are unavailable
 func runUpgrade(ctx context.Context, args []string, detection system.DetectionResult, stdout io.Writer) error {
 	dryRun := false
@@ -914,7 +914,7 @@ func claudeAliasesToStrings(m map[string]model.ClaudeModelAlias) map[string]stri
 	out := make(map[string]string, len(m))
 	for k, v := range m {
 		// Claude Code owns the main session/orchestrator model; do not persist it
-		// as a Gentle AI model assignment.
+		// as a Hgtran AI model assignment.
 		if k == "orchestrator" {
 			continue
 		}

@@ -8,7 +8,7 @@ import (
 // TestReviewDefectReportRendersTemplateShapedFields is the RED-first proof
 // for organic-dx Phase 5 task 5.2: reviewDefectReport renders Markdown whose
 // section headers match .github/ISSUE_TEMPLATE/bug_report.yml's field labels,
-// populated from gentle-ai version + commit, OS/arch, the failing operation
+// populated from hgtran-ai version + commit, OS/arch, the failing operation
 // shape (not raw argv), the verbatim reason code, opaque state identifiers,
 // and the stop-code row's terminal precondition.
 func TestReviewDefectReportRendersTemplateShapedFields(t *testing.T) {
@@ -27,7 +27,7 @@ func TestReviewDefectReportRendersTemplateShapedFields(t *testing.T) {
 
 	for _, header := range []string{
 		"# Bug Description", "## Steps to Reproduce", "## Expected Behavior", "## Actual Behavior",
-		"## Gentle AI Version", "## Operating System", "## AI Agent / Client", "## Affected Area", "## Logs / Error Output",
+		"## Hgtran AI Version", "## Operating System", "## AI Agent / Client", "## Affected Area", "## Logs / Error Output",
 	} {
 		if !strings.Contains(rendered, header) {
 			t.Errorf("rendered report missing template-shaped header %q:\n%s", header, rendered)
@@ -64,7 +64,7 @@ func TestReviewDefectReportScrubsPoisonedInput(t *testing.T) {
 			"contact definitely-a-real-user@example.com for access",
 		TerminalPrecondition: "diff:\n--- a/file\n+++ b/file\n@@\n-old line with secret token XYZZY-DO-NOT-LEAK\n+new line",
 		StateIdentifiers: map[string]string{
-			"path":    home + "/.config/gentle-ai/credentials.json",
+			"path":    home + "/.config/hgtran-ai/credentials.json",
 			"env":     "GITHUB_TOKEN=ghp_shouldneverleakshouldneverleakshouldneverleak",
 			"email":   "definitely-a-real-user@example.com",
 			"content": "the quick brown fox file contents should never appear\nsecond line of file content",

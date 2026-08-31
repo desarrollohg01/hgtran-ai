@@ -7,8 +7,8 @@ import (
 
 // This file is coverage closure for spec rdd-new-lineage-activation ->
 // "Distinct Env Switch, Default Off, Legacy Path When Disabled" ->
-// "Switch identity never overloads another switch": GENTLE_AI_RDD_NEW_LINEAGE,
-// GENTLE_AI_RDD_SHADOW, and the user-owned RDD kill switch are three
+// "Switch identity never overloads another switch": HGTRAN_AI_RDD_NEW_LINEAGE,
+// HGTRAN_AI_RDD_SHADOW, and the user-owned RDD kill switch are three
 // independent reads (NewLineageActivationEnabled, shadowObservationEnabled,
 // ResolveRDDMode). No production behavior changes here — these are new
 // tests only.

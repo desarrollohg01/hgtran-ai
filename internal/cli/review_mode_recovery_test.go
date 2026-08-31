@@ -154,7 +154,7 @@ func reviewModeCorruptPaths(t *testing.T, corruption reviewModeCorruption, repo 
 
 func reviewModeCloneRecordPath(t *testing.T, repo string) string {
 	t.Helper()
-	root := filepath.Join(repo, ".git", "gentle-ai", "review-transactions", "rar-authority", "v1", "rdd-mode")
+	root := filepath.Join(repo, ".git", "hgtran-ai", "review-transactions", "rar-authority", "v1", "rdd-mode")
 	entries, err := os.ReadDir(root)
 	if err != nil {
 		t.Fatalf("clone-local override directory: %v", err)
@@ -171,13 +171,13 @@ func reviewModeCloneRecordPath(t *testing.T, repo string) string {
 	return filepath.Join(root, head)
 }
 
-// reviewModeNamedCommands lifts every `gentle-ai review mode ...` invocation the
+// reviewModeNamedCommands lifts every `hgtran-ai review mode ...` invocation the
 // message names, returning the arguments RunReviewMode consumes.
 func reviewModeNamedCommands(message string) [][]string {
 	commands := [][]string{}
 	for _, match := range reviewContinuationPattern.FindAllStringSubmatch(message, -1) {
 		fields := strings.Fields(match[1])
-		if len(fields) < 4 || fields[0] != "gentle-ai" || fields[1] != "review" || fields[2] != "mode" {
+		if len(fields) < 4 || fields[0] != "hgtran-ai" || fields[1] != "review" || fields[2] != "mode" {
 			continue
 		}
 		commands = append(commands, fields[3:])

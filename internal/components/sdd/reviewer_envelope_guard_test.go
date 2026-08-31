@@ -104,7 +104,7 @@ func TestLensAgentPromptsStateTheAdmissionEnvelope(t *testing.T) {
 	// The binding name is derived from the orchestrator contract that issues
 	// it, so renaming the binding forces every lens prompt to follow.
 	contract := assets.MustRead(boundedReviewContractAsset)
-	const bindingToken = "GENTLE_AI_REVIEW_BINDING"
+	const bindingToken = "HGTRAN_AI_REVIEW_BINDING"
 	if !strings.Contains(contract, bindingToken) {
 		t.Fatalf("%s no longer names %s; update the guard's derivation", boundedReviewContractAsset, bindingToken)
 	}
@@ -286,7 +286,7 @@ func TestJudgmentDayPromptsDoNotClaimTheLensEnvelope(t *testing.T) {
 		if field == "findings" || field == "evidence" {
 			continue
 		}
-		if strings.Contains(reference, `"`+field+`"`) && !strings.Contains(reference, "not a `gentle-ai review capture-result`") {
+		if strings.Contains(reference, `"`+field+`"`) && !strings.Contains(reference, "not a `hgtran-ai review capture-result`") {
 			t.Errorf("skills/judgment-day/references/prompts-and-formats.md mentions %q without disclaiming the lens artifact", field)
 		}
 	}

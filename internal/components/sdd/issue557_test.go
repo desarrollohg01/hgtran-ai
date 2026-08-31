@@ -26,7 +26,7 @@ import (
 // Contract under test: for a profile with no explicit assignment for a phase,
 // the overlay should fall back to the global OpenCodeModelAssignments entry
 // for the same phase, so generated agents stay consistent with the rest of
-// the gentle-ai UI.
+// the hgtran-ai UI.
 func TestGenerateProfileOverlay_FallsBackToGlobalAssignments(t *testing.T) {
 	home := t.TempDir()
 
@@ -42,7 +42,7 @@ func TestGenerateProfileOverlay_FallsBackToGlobalAssignments(t *testing.T) {
 	}
 
 	// Global assignments (what ScreenModelConfig → Configure OpenCode Models
-	// populates) — this is the user's source of truth for "what Gentle AI
+	// populates) — this is the user's source of truth for "what Hgtran AI
 	// shows as assigned" in the global view.
 	globalAssignments := map[string]model.ModelAssignment{
 		"gentle-orchestrator": {ProviderID: "openai", ModelID: "gpt-5.1"},
@@ -118,7 +118,7 @@ func TestGenerateProfileOverlay_FallsBackToGlobalAssignments(t *testing.T) {
 //     sdd-onboard (mirrors the user using "Configure Models" in the TUI).
 //  3. After sync, sdd-onboard-homework MUST carry the model from the global
 //     assignment — otherwise OpenCode reports it as "Unassigned" while
-//     gentle-ai's UI shows sdd-onboard as assigned.
+//     hgtran-ai's UI shows sdd-onboard as assigned.
 func TestInjectHomeworkProfileFallsBackToGlobalAssignmentsViaInject(t *testing.T) {
 	home := t.TempDir()
 	mockNoPackageManager(t)

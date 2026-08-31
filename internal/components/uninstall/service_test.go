@@ -99,7 +99,7 @@ func TestExecutePlanPiUninstallPreservesPreexistingMarkedUserChildAndUserMCP(t *
 	svc.snapshotter = stubSnapshotter{}
 	mcpPath := filepath.Join(homeDir, ".pi", "agent", "mcp.json")
 	childPath := filepath.Join(homeDir, ".pi", "agent", "subagents", "worker.md")
-	preexisting := "---\ntools: bash, mcp\n---\nuser instructions\n\n<!-- gentle-ai:pi-codegraph-tool -->\npreexisting tool guidance\n<!-- /gentle-ai:pi-codegraph -->\n\n<!-- gentle-ai:pi-codegraph-guidance -->\npreexisting lazy-init guidance\n<!-- /gentle-ai:pi-codegraph -->\n"
+	preexisting := "---\ntools: bash, mcp\n---\nuser instructions\n\n<!-- hgtran-ai:pi-codegraph-tool -->\npreexisting tool guidance\n<!-- /hgtran-ai:pi-codegraph -->\n\n<!-- hgtran-ai:pi-codegraph-guidance -->\npreexisting lazy-init guidance\n<!-- /hgtran-ai:pi-codegraph -->\n"
 	if err := os.MkdirAll(filepath.Dir(mcpPath), 0o755); err != nil {
 		t.Fatal(err)
 	}
@@ -1133,7 +1133,7 @@ func TestComponentOperationsSDD_ClaudeRemovesSkillRegistryHook(t *testing.T) {
       {
         "matcher": "",
         "hooks": [
-          {"type": "command", "command": "gentle-ai skill-registry refresh --quiet --no-gitignore --cwd \"${CLAUDE_PROJECT_DIR:-$PWD}\" || true"},
+          {"type": "command", "command": "hgtran-ai skill-registry refresh --quiet --no-gitignore --cwd \"${CLAUDE_PROJECT_DIR:-$PWD}\" || true"},
           {"type": "command", "command": "echo keep"}
         ]
       }
@@ -1166,7 +1166,7 @@ func TestComponentOperationsSDD_ClaudeRemovesSkillRegistryHook(t *testing.T) {
 		t.Fatal(err)
 	}
 	text := string(raw)
-	if strings.Contains(text, "gentle-ai skill-registry refresh") {
+	if strings.Contains(text, "hgtran-ai skill-registry refresh") {
 		t.Fatalf("managed hook should be removed:\n%s", text)
 	}
 	if !strings.Contains(text, "echo keep") || !strings.Contains(text, "echo pre") {
@@ -1196,7 +1196,7 @@ func TestComponentOperationsSDD_CodexRemovesSkillRegistryHook(t *testing.T) {
       {
         "matcher": "startup|resume|clear|compact",
         "hooks": [
-          {"type": "command", "command": "gentle-ai skill-registry refresh --quiet --no-gitignore --cwd \"$PWD\" || true"},
+          {"type": "command", "command": "hgtran-ai skill-registry refresh --quiet --no-gitignore --cwd \"$PWD\" || true"},
           {"type": "command", "command": "echo keep"}
         ]
       }
@@ -1229,7 +1229,7 @@ func TestComponentOperationsSDD_CodexRemovesSkillRegistryHook(t *testing.T) {
 		t.Fatal(err)
 	}
 	text := string(raw)
-	if strings.Contains(text, "gentle-ai skill-registry refresh") {
+	if strings.Contains(text, "hgtran-ai skill-registry refresh") {
 		t.Fatalf("managed hook should be removed:\n%s", text)
 	}
 	if !strings.Contains(text, "echo keep") || !strings.Contains(text, "echo pre") {

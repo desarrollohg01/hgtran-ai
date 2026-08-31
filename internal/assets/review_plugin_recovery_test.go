@@ -28,11 +28,11 @@ const opaque = {
 }
 const legacy = { lens: "review-risk", lineage: "trust-check", order: 0, target: "sha256:" + "d".repeat(64) }
 const binding = scenario.endsWith("legacy") ? legacy : opaque
-let prompt = ` + "`" + `GENTLE_AI_REVIEW_BINDING ${JSON.stringify(binding)}\nreview the frozen candidate\n` + "`" + `
+let prompt = ` + "`" + `HGTRAN_AI_REVIEW_BINDING ${JSON.stringify(binding)}\nreview the frozen candidate\n` + "`" + `
 if (scenario === "before-substitute") prompt += ` + "`" + `base_tree=${"9".repeat(40)} candidate_tree=${"8".repeat(40)} changed_path_manifest=[{"path":"caller.txt"}]\n` + "`" + `
 if (scenario === "before-missing") prompt = "review the frozen candidate\n"
-if (scenario === "before-equals") prompt = ` + "`" + `GENTLE_AI_REVIEW_BINDING=${JSON.stringify(binding)}\nreview the frozen candidate\n` + "`" + `
-if (scenario === "before-malformed") prompt = "GENTLE_AI_REVIEW_BINDING {not-json}\nreview the frozen candidate\n"
+if (scenario === "before-equals") prompt = ` + "`" + `HGTRAN_AI_REVIEW_BINDING=${JSON.stringify(binding)}\nreview the frozen candidate\n` + "`" + `
+if (scenario === "before-malformed") prompt = "HGTRAN_AI_REVIEW_BINDING {not-json}\nreview the frozen candidate\n"
 
 const capture = async (activeHooks: typeof hooks, sessionID: string, marker: string, boundPrompt: string = prompt) => {
   const input = { tool: "task", sessionID, callID: "call-" + marker, args: { subagent_type: "review-risk", prompt: boundPrompt } }
@@ -73,7 +73,7 @@ try {
     let perSessionAllowed = 0
     let lastSession = ""
     for (let index = 0; index <= 8; index++) {
-      const variedPrompt = ` + "`" + `GENTLE_AI_REVIEW_BINDING ${JSON.stringify({ ...opaque, order: index })}\nreview\n` + "`" + `
+      const variedPrompt = ` + "`" + `HGTRAN_AI_REVIEW_BINDING ${JSON.stringify({ ...opaque, order: index })}\nreview\n` + "`" + `
       lastSession = await capture(hooks, "session-full", "no-lifecycle", variedPrompt)
       if (lastSession.includes("exactly once")) perSessionAllowed++
     }
@@ -104,10 +104,10 @@ const reviewPluginPayloadMarker = "MARKER-PAYLOAD-9f3a"
 // internal/cli/review_incident.go.
 const reviewPluginNativeTrustFailure = "git_repository_untrusted: provider-issued review repository context operation failed; " +
 	"Git declined to open the bound repository in this process because it is owned by a different account; " +
-	"gentle-ai never provisions a safe.directory exception and never bypasses that protection. " +
+	"hgtran-ai never provisions a safe.directory exception and never bypasses that protection. " +
 	"Restart the host process under a Git context that already trusts that repository, then retry the same exact binding"
 
-// runReviewPluginScenario executes one plugin hook against a stub `gentle-ai`
+// runReviewPluginScenario executes one plugin hook against a stub `hgtran-ai`
 // that always fails with nativeStderr, and returns the thrown error message.
 func runReviewPluginScenario(t *testing.T, scenario, nativeStderr string) string {
 	return runReviewPluginScenarioWithNative(t, scenario, "", nativeStderr)
@@ -140,10 +140,10 @@ func runReviewPluginScenarioWithNativeAndPreservation(t *testing.T, scenario, na
 	}
 	stub := "#!/bin/sh\npayload=$(cat)\n" +
 		"if [ \"$2\" = \"capture-result\" ]; then case \"$payload\" in *capture-success*) printf '%s\\n' 'CAPTURED'; exit 0;; esac; fi\n" +
-		"if [ \"$2\" = \"preserve-result\" ] && [ -n \"$GENTLE_AI_STUB_PRESERVE_STDOUT\" ]; then printf '%s\\n' \"$GENTLE_AI_STUB_PRESERVE_STDOUT\"; exit 0; fi\n" +
-		"if [ -n \"$GENTLE_AI_STUB_STDOUT\" ]; then printf '%s\\n' \"$GENTLE_AI_STUB_STDOUT\"; exit 0; fi\n" +
-		"printf '%s\\n' \"$GENTLE_AI_STUB_STDERR\" >&2\nexit 1\n"
-	if err := os.WriteFile(filepath.Join(binDir, "gentle-ai"), []byte(stub), 0o700); err != nil {
+		"if [ \"$2\" = \"preserve-result\" ] && [ -n \"$HGTRAN_AI_STUB_PRESERVE_STDOUT\" ]; then printf '%s\\n' \"$HGTRAN_AI_STUB_PRESERVE_STDOUT\"; exit 0; fi\n" +
+		"if [ -n \"$HGTRAN_AI_STUB_STDOUT\" ]; then printf '%s\\n' \"$HGTRAN_AI_STUB_STDOUT\"; exit 0; fi\n" +
+		"printf '%s\\n' \"$HGTRAN_AI_STUB_STDERR\" >&2\nexit 1\n"
+	if err := os.WriteFile(filepath.Join(binDir, "hgtran-ai"), []byte(stub), 0o700); err != nil {
 		t.Fatal(err)
 	}
 	if err := os.WriteFile(filepath.Join(root, "plugin.mts"), []byte(source), 0o600); err != nil {
@@ -156,10 +156,10 @@ func runReviewPluginScenarioWithNativeAndPreservation(t *testing.T, scenario, na
 	command.Dir = root
 	command.Env = append(os.Environ(),
 		"PATH="+binDir+string(os.PathListSeparator)+os.Getenv("PATH"),
-		"GENTLE_AI_STUB_STDOUT="+nativeStdout,
-		"GENTLE_AI_STUB_STDERR="+nativeStderr,
-		"GENTLE_AI_STUB_PRESERVE_STDOUT="+preserveStdout,
-		"GENTLE_AI_REVIEW_CWD=",
+		"HGTRAN_AI_STUB_STDOUT="+nativeStdout,
+		"HGTRAN_AI_STUB_STDERR="+nativeStderr,
+		"HGTRAN_AI_STUB_PRESERVE_STDOUT="+preserveStdout,
+		"HGTRAN_AI_REVIEW_CWD=",
 	)
 	output, err := command.CombinedOutput()
 	if err != nil {
@@ -173,8 +173,8 @@ func TestReviewPluginRejectsInvalidBindingBeforeReviewerLaunch(t *testing.T) {
 		name    string
 		wantErr string
 	}{
-		{name: "missing", wantErr: "review task is missing GENTLE_AI_REVIEW_BINDING"},
-		{name: "equals", wantErr: "review task is missing GENTLE_AI_REVIEW_BINDING"},
+		{name: "missing", wantErr: "review task is missing HGTRAN_AI_REVIEW_BINDING"},
+		{name: "equals", wantErr: "review task is missing HGTRAN_AI_REVIEW_BINDING"},
 		{name: "malformed", wantErr: "review task binding is malformed"},
 	}
 	for _, tt := range tests {

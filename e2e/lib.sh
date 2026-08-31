@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# lib.sh — shared test helpers for gentle-ai E2E tests
+# lib.sh — shared test helpers for hgtran-ai E2E tests
 # Sourced by e2e_test.sh; never executed directly.
 set -euo pipefail
 
@@ -31,29 +31,29 @@ log_info()  { printf "${BLUE}[INFO]${NC}  %s\n" "$1"; }
 # ---------------------------------------------------------------------------
 # Binary resolution
 # ---------------------------------------------------------------------------
-# The binary should be built and placed at /usr/local/bin/gentle-ai inside
-# the Docker container. If not found, fall back to $HOME/gentle-ai or the
+# The binary should be built and placed at /usr/local/bin/hgtran-ai inside
+# the Docker container. If not found, fall back to $HOME/hgtran-ai or the
 # current directory.
 # Resolution priority (highest → lowest):
-#   1. ./gentle-ai in the current repo directory (freshly built local binary)
-#   2. ~/gentle-ai (explicit copy in home)
-#   3. gentle-ai on PATH (system-installed, e.g. Homebrew)
-# This ensures `go build ./cmd/gentle-ai && bash e2e/e2e_test.sh` always
+#   1. ./hgtran-ai in the current repo directory (freshly built local binary)
+#   2. ~/hgtran-ai (explicit copy in home)
+#   3. hgtran-ai on PATH (system-installed, e.g. Homebrew)
+# This ensures `go build ./cmd/hgtran-ai && bash e2e/e2e_test.sh` always
 # tests the locally built binary rather than the installed release version.
 resolve_binary() {
-    # Prefer the locally built binary (./gentle-ai) produced by `go build ./cmd/gentle-ai`.
+    # Prefer the locally built binary (./hgtran-ai) produced by `go build ./cmd/hgtran-ai`.
     # We check both the current directory and the script's parent directory so
     # the resolver works whether the test is invoked from the repo root or from e2e/.
     local repo_root
     repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-    if [ -x "$repo_root/gentle-ai" ]; then
-        echo "$repo_root/gentle-ai"
-    elif [ -x "./gentle-ai" ]; then
-        echo "./gentle-ai"
-    elif [ -x "$HOME/gentle-ai" ]; then
-        echo "$HOME/gentle-ai"
-    elif command -v gentle-ai >/dev/null 2>&1; then
-        echo "gentle-ai"
+    if [ -x "$repo_root/hgtran-ai" ]; then
+        echo "$repo_root/hgtran-ai"
+    elif [ -x "./hgtran-ai" ]; then
+        echo "./hgtran-ai"
+    elif [ -x "$HOME/hgtran-ai" ]; then
+        echo "$HOME/hgtran-ai"
+    elif command -v hgtran-ai >/dev/null 2>&1; then
+        echo "hgtran-ai"
     else
         echo ""
     fi
@@ -76,7 +76,7 @@ cleanup_test_env() {
     rm -rf "$HOME/.hgtran-ai" 2>/dev/null || true
     # The pre-rename root is cleaned too: a leftover from an older binary would
     # otherwise survive between runs and let a suite pass on inherited state.
-    rm -rf "$HOME/.gentle-ai" 2>/dev/null || true
+    rm -rf "$HOME/.hgtran-ai" 2>/dev/null || true
     rm -rf "$HOME/.codeium" 2>/dev/null || true
     rm -rf "$HOME/.cursor" 2>/dev/null || true
     rm -rf "$HOME/.qwen" 2>/dev/null || true
@@ -87,19 +87,19 @@ cleanup_test_env() {
 
 # setup_fake_engram_binary — install a deterministic local engram shim for E2E.
 #
-# Full Docker E2E validates gentle-ai's agent/config injection behavior, not the
+# Full Docker E2E validates hgtran-ai's agent/config injection behavior, not the
 # external Engram release CDN. The real installer skips the network download when
 # an `engram` binary already exists on PATH, so this shim keeps coverage of the
 # install pipeline while avoiding flaky GitHub API/rate-limit failures.
 #
-# Set GENTLE_AI_E2E_REAL_ENGRAM=1 to opt out and exercise the live download path.
+# Set HGTRAN_AI_E2E_REAL_ENGRAM=1 to opt out and exercise the live download path.
 setup_fake_engram_binary() {
-    if [ "${GENTLE_AI_E2E_REAL_ENGRAM:-0}" = "1" ]; then
+    if [ "${HGTRAN_AI_E2E_REAL_ENGRAM:-0}" = "1" ]; then
         log_info "Using real Engram binary/download path for E2E"
         return 0
     fi
 
-    local fake_bin_dir="$HOME/.gentle-ai-e2e/bin"
+    local fake_bin_dir="$HOME/.hgtran-ai-e2e/bin"
     local fake_engram="$fake_bin_dir/engram"
 
     mkdir -p "$fake_bin_dir"
@@ -374,7 +374,7 @@ assert_md5_match() {
 }
 
 # assert_no_duplicate_section FILE SECTION_ID LABEL
-# Checks that the gentle-ai section marker appears exactly once (no duplicates).
+# Checks that the hgtran-ai section marker appears exactly once (no duplicates).
 assert_no_duplicate_section() {
     local file="$1"
     local section_id="$2"
@@ -383,7 +383,7 @@ assert_no_duplicate_section() {
         log_fail "Cannot check sections — file not found: $file"
         return 1
     fi
-    local marker="<!-- gentle-ai:${section_id} -->"
+    local marker="<!-- hgtran-ai:${section_id} -->"
     local count
     count=$(grep -c "$marker" "$file" 2>/dev/null || echo "0")
     if [ "$count" -eq 1 ]; then

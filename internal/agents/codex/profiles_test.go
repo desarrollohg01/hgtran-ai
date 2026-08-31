@@ -8,7 +8,7 @@ import (
 )
 
 // TestWriteCodexProfiles_WritesModelAndEffort asserts that WriteCodexProfiles
-// creates the three gentle-ai SDD profile files, each containing BOTH model
+// creates the three hgtran-ai SDD profile files, each containing BOTH model
 // and model_reasoning_effort TOML keys.
 func TestWriteCodexProfiles_WritesModelAndEffort(t *testing.T) {
 	dir := t.TempDir()

@@ -24,7 +24,7 @@ const advisoryMaxBytes = 64 * 1024
 // (fail-open). No launch latency is added regardless.
 //
 // Package-level var so tests can substitute an httptest server URL.
-var advisoryURL = "https://github.com/Gentleman-Programming/gentle-ai/releases/download/advisory/advisory.json"
+var advisoryURL = "https://github.com/desarrollohg01/hgtran-ai/releases/download/advisory/advisory.json"
 
 // advisoryHTTPClient is the HTTP client used exclusively for advisory fetches.
 // Timeout is 2s — intentionally shorter than the general GitHub client (5s)
@@ -60,7 +60,7 @@ func FetchAdvisory(ctx context.Context) (Advisory, bool) {
 	if err != nil {
 		return Advisory{}, false
 	}
-	req.Header.Set("User-Agent", "gentle-ai-advisory-check")
+	req.Header.Set("User-Agent", "hgtran-ai-advisory-check")
 
 	resp, err := advisoryHTTPClient.Do(req)
 	if err != nil {

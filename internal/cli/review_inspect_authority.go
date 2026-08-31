@@ -8,7 +8,7 @@ import (
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/reviewtransaction"
 )
 
-const ReviewInspectAuthoritySchema = "gentle-ai.review-authority-inspection/v1"
+const ReviewInspectAuthoritySchema = "hgtran-ai.review-authority-inspection/v1"
 
 type ReviewInspectAuthorityResult struct {
 	Schema           string                                             `json:"schema"`

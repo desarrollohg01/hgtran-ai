@@ -14,7 +14,7 @@ import (
 var updateChannelEnv = os.Getenv
 
 // CheckAll runs update checks for all registered tools concurrently.
-// currentVersion is the build-time version of gentle-ai (from app.Version).
+// currentVersion is the build-time version of hgtran-ai (from app.Version).
 // profile determines platform-specific update instructions.
 func CheckAll(ctx context.Context, currentVersion string, profile system.PlatformProfile) []UpdateResult {
 	return CheckFiltered(ctx, currentVersion, profile, nil)
@@ -128,7 +128,7 @@ func checkSingleTool(ctx context.Context, tool ToolInfo, currentBuildVersion str
 			return result
 		}
 		if tool.DetectCmd == nil {
-			// gentle-ai with no build version (shouldn't happen, but handle gracefully).
+			// hgtran-ai with no build version (shouldn't happen, but handle gracefully).
 			result.Status = VersionUnknown
 		} else {
 			// Binary not found on PATH.
@@ -164,11 +164,11 @@ func usesBetaMainHeadCheck(tool ToolInfo, currentVersion string) bool {
 }
 
 func isGentleAIRepo(tool ToolInfo) bool {
-	return tool.Name == "gentle-ai" && strings.EqualFold(tool.Owner, "desarrollohg01") && tool.Repo == "hgtran-ai"
+	return tool.Name == "hgtran-ai" && strings.EqualFold(tool.Owner, "desarrollohg01") && tool.Repo == "hgtran-ai"
 }
 
 func isBetaUpdateChannel() bool {
-	switch strings.ToLower(strings.TrimSpace(updateChannelEnv("GENTLE_AI_CHANNEL"))) {
+	switch strings.ToLower(strings.TrimSpace(updateChannelEnv("HGTRAN_AI_CHANNEL"))) {
 	case "beta", "nightly":
 		return true
 	default:

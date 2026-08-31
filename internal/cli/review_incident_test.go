@@ -162,7 +162,7 @@ func TestReviewPreserveResultDurableIncidentArtifact(t *testing.T) {
 		artifact.Lens != record.State.SelectedLenses[0] || artifact.SelectedOrder != 0 {
 		t.Fatalf("incident artifact = %+v", artifact)
 	}
-	if !strings.Contains(artifact.Path, filepath.Join("gentle-ai", "review-transactions", "incidents", started.LineageID)) {
+	if !strings.Contains(artifact.Path, filepath.Join("hgtran-ai", "review-transactions", "incidents", started.LineageID)) {
 		t.Fatalf("incident artifact path %q is outside the durable incidents area", artifact.Path)
 	}
 	preserved, err := os.ReadFile(artifact.Path)
@@ -375,7 +375,7 @@ func TestReviewPreserveResultRecordsIncidentClass(t *testing.T) {
 
 // TestReviewPreserveResultDuplicateRecoveryIsIdempotent pins scenario 6
 // (duplicate recovery): recovery is defined as relaunching the identical
-// GENTLE_AI_REVIEW_BINDING and replaying its capture. A second identical
+// HGTRAN_AI_REVIEW_BINDING and replaying its capture. A second identical
 // recovery capture for the same slot must be idempotent through the existing
 // store-lock + CAS in CaptureReviewerResult, with no new revision minted.
 func TestReviewPreserveResultDuplicateRecoveryIsIdempotent(t *testing.T) {

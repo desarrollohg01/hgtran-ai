@@ -18,7 +18,7 @@ import (
 )
 
 // ReviewModeSchema identifies the user-facing kill-switch projection.
-const ReviewModeSchema = "gentle-ai.review-mode/v1"
+const ReviewModeSchema = "hgtran-ai.review-mode/v1"
 
 const (
 	reviewModeScopeGlobal = "global"
@@ -41,7 +41,7 @@ type ReviewModeResult struct {
 // wins, status never mutates, and re-enabling applies to future candidates only.
 func RunReviewMode(args []string, stdout io.Writer) error {
 	if len(args) == 0 || args[0] == "help" || args[0] == "-h" || args[0] == "--help" {
-		_, _ = fmt.Fprintln(stdout, "Usage: gentle-ai review mode <enable|disable|status> [--cwd <repo>] [--scope <global|clone>] [--expected-revision <revision>] [--json]")
+		_, _ = fmt.Fprintln(stdout, "Usage: hgtran-ai review mode <enable|disable|status> [--cwd <repo>] [--scope <global|clone>] [--expected-revision <revision>] [--json]")
 		_, _ = fmt.Fprintln(stdout, "User-owned kill switch. Any off wins: a repository may disable receipt-driven development for this clone but can never require it, and no other clone inherits the override. status is read-only and reports both sources plus the effective mode. Re-enabling applies to future candidates only.")
 		return nil
 	}
@@ -130,8 +130,8 @@ func (scope ReviewModeUnreadableScope) commands() []string {
 		suffix += " --cwd " + scope.Repo
 	}
 	return []string{
-		"`gentle-ai review mode enable" + suffix + "`",
-		"`gentle-ai review mode disable" + suffix + "`",
+		"`hgtran-ai review mode enable" + suffix + "`",
+		"`hgtran-ai review mode disable" + suffix + "`",
 	}
 }
 
@@ -172,7 +172,7 @@ func (err *ReviewModeUnreadableError) Error() string {
 func reviewModeCommandsByVerb(commands []string, verb string) []string {
 	selected := make([]string, 0, len(commands))
 	for _, command := range commands {
-		if strings.HasPrefix(command, "`gentle-ai review mode "+verb+" ") {
+		if strings.HasPrefix(command, "`hgtran-ai review mode "+verb+" ") {
 			selected = append(selected, command)
 		}
 	}
@@ -394,12 +394,12 @@ const (
 // errReviewConsentQuestionRequired signals internally that a relay-declared
 // START stopped at the consent moment: the typed question is the response, and
 // nothing has been persisted.
-var errReviewConsentQuestionRequired = errors.New("the review consent question awaits a relayed answer; rerun gentle-ai review start with --consent granted or --consent declined for the exact frozen candidate")
+var errReviewConsentQuestionRequired = errors.New("the review consent question awaits a relayed answer; rerun hgtran-ai review start with --consent granted or --consent declined for the exact frozen candidate")
 
 // errReviewConsentDeclineWithoutQuestion refuses a decline for a candidate
 // that asks no question: tier 0 is silent structural readback, so there is no
 // consent moment to answer.
-var errReviewConsentDeclineWithoutQuestion = errors.New("this low-risk candidate asks no consent question, so there is nothing to decline; rerun gentle-ai review start without --consent")
+var errReviewConsentDeclineWithoutQuestion = errors.New("this low-risk candidate asks no consent question, so there is nothing to decline; rerun hgtran-ai review start without --consent")
 
 const (
 	reviewConsentAnswerRun    = "1"
@@ -428,7 +428,7 @@ func normalizeReviewConsentLocale(value string) (reviewConsentLocale, error) {
 }
 
 const (
-	reviewConsentHeadline = "Gentle AI can review this change before you call it done."
+	reviewConsentHeadline = "Hgtran AI can review this change before you call it done."
 	reviewConsentValue    = "Reviewing takes a bit longer, and it makes the result substantially safer."
 
 	// reviewConsentAnswerRunLabel and reviewConsentAnswerNotNowLabel are the
@@ -444,24 +444,24 @@ const (
 	// safety net off for good must cost more than pressing a number in a hurry.
 	// The relayed consent envelope carries the same note as a documented off
 	// path outside the choice set, for exactly the same reason.
-	reviewConsentOffPathCommand = "gentle-ai review mode disable"
+	reviewConsentOffPathCommand = "hgtran-ai review mode disable"
 	reviewConsentOffPathNote    = "To turn reviews off for good, run '" + reviewConsentOffPathCommand + "'."
 	reviewConsentOffPath        = reviewConsentOffPathNote + "\n"
 	reviewConsentQuestion       = "Choose 1 or 2 [1]: "
 
 	// reviewConsentSkippedNotice keeps the fail-safe default discoverable: an
 	// unanswerable question must never look like a silent yes.
-	reviewConsentSkippedNotice = "Gentle AI reviewed this change without asking, because this session has no terminal to answer on. " +
-		"Run 'gentle-ai review mode disable' to turn reviews off, or 'gentle-ai review mode status' to see the current setting."
+	reviewConsentSkippedNotice = "Hgtran AI reviewed this change without asking, because this session has no terminal to answer on. " +
+		"Run 'hgtran-ai review mode disable' to turn reviews off, or 'hgtran-ai review mode status' to see the current setting."
 
 	// reviewConsentSkippedDefaultProvenance rides with the skip notice only
 	// when the resolved mode source is `default`: reviews are on because
 	// nobody chose anything, and the operator deserves to know the switch was
 	// never explicitly set, with both commands that make it a real choice.
 	reviewConsentSkippedDefaultProvenance = "Reviews are on by default; this was never explicitly chosen. " +
-		"Run 'gentle-ai review mode enable' to make reviews an explicit choice, or 'gentle-ai review mode disable' to turn them off."
-	reviewConsentUnreadableNotice = "Gentle AI could not read an answer, so it reviewed this change and will ask again next time."
-	reviewConsentUnknownNotice    = "Gentle AI did not recognize that answer, so it reviewed this change and will ask again next time."
+		"Run 'hgtran-ai review mode enable' to make reviews an explicit choice, or 'hgtran-ai review mode disable' to turn them off."
+	reviewConsentUnreadableNotice = "Hgtran AI could not read an answer, so it reviewed this change and will ask again next time."
+	reviewConsentUnknownNotice    = "Hgtran AI did not recognize that answer, so it reviewed this change and will ask again next time."
 
 	// reviewConsentDeclinedNotice confirms a decline in the user's own terms.
 	// It goes to the console stream, never stdout: stdout stays pure JSON.
@@ -470,7 +470,7 @@ const (
 
 // reviewConsentNoticeDirName and reviewConsentNoticeMarkerFile locate the
 // once-per-clone marker for reviewConsentSkippedNotice, mirroring the
-// existing <GitCommonDir>/gentle-ai/<subdir> convention this package already
+// existing <GitCommonDir>/hgtran-ai/<subdir> convention this package already
 // uses for clone-local, uncommitted state (see writeReviewDefectReport).
 const (
 	reviewConsentNoticeDirName    = "review-mode"
@@ -514,7 +514,7 @@ func reviewConsentNoticeMarkerPath(ctx context.Context, repo string) (string, er
 	if err != nil {
 		return "", err
 	}
-	return filepath.Join(lease.Identity().GitCommonDir, "gentle-ai", reviewConsentNoticeDirName, reviewConsentNoticeMarkerFile), nil
+	return filepath.Join(lease.Identity().GitCommonDir, "hgtran-ai", reviewConsentNoticeDirName, reviewConsentNoticeMarkerFile), nil
 }
 
 // reviewConsentSession is the console the one-time question uses.
@@ -597,7 +597,7 @@ func authorizeReviewStart(ctx context.Context, repo string, assessment reviewtra
 	if err != nil {
 		// A damaged latch must neither block the review nor silently disable it:
 		// review the candidate, and say why the question was skipped.
-		_, _ = fmt.Fprintf(console.Output, "Gentle AI reviewed this change without asking: %v.\n", err)
+		_, _ = fmt.Fprintf(console.Output, "Hgtran AI reviewed this change without asking: %v.\n", err)
 		return nil
 	}
 	if asked {

@@ -25,7 +25,7 @@ The block MUST be removed from all 6 persona assets and replaced by the directiv
 
 ### Requirement: Hardcoded Skill Trigger Table
 
-(Reason: The table names only `go-testing` and `skill-creator`, limiting the model's motivated universe to two skills. It competes with and overrides the native `<available_skills>` mechanism, which already lists ALL installed skills. Users who install additional skills via `gentle-ai install` will not see them invoked because the hardcoded table anchors model attention to two specific entries. The table is also a maintenance liability — it goes stale when new skills are added.)
+(Reason: The table names only `go-testing` and `skill-creator`, limiting the model's motivated universe to two skills. It competes with and overrides the native `<available_skills>` mechanism, which already lists ALL installed skills. Users who install additional skills via `hgtran-ai install` will not see them invoked because the hardcoded table anchors model attention to two specific entries. The table is also a maintenance liability — it goes stale when new skills are added.)
 
 ---
 

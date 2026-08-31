@@ -14,7 +14,7 @@ import (
 	"time"
 )
 
-// SessionRecord is one recorded gentle-ai invocation from a real agent
+// SessionRecord is one recorded hgtran-ai invocation from a real agent
 // session. Timestamps exist only to order the records; no duration is ever
 // reported, because wall-clock is provider-dependent and deliberately not a
 // dimension of this benchmark.
@@ -37,13 +37,13 @@ type SessionRecord struct {
 // knownEnvelopes are the schema identifiers this benchmark recognizes. The
 // list is informational: classification never depends on it.
 var knownEnvelopes = []string{
-	"gentle-ai.review-gate-result/v1",
-	"gentle-ai.review-integration.status/v2",
-	"gentle-ai.review-capture-preflight/v1",
-	"gentle-ai.review-result-artifact/v2",
-	"gentle-ai.review-verification-evidence/v2",
-	"gentle-ai.review-mode/v1",
-	"gentle-ai.rdd-mode-status/v1",
+	"hgtran-ai.review-gate-result/v1",
+	"hgtran-ai.review-integration.status/v2",
+	"hgtran-ai.review-capture-preflight/v1",
+	"hgtran-ai.review-result-artifact/v2",
+	"hgtran-ai.review-verification-evidence/v2",
+	"hgtran-ai.review-mode/v1",
+	"hgtran-ai.rdd-mode-status/v1",
 }
 
 func envelopeName(stdout string) string {
@@ -90,7 +90,7 @@ func setupRecording(realBinary, outPath string) error {
 	if err := os.MkdirAll(shimDir, 0o755); err != nil {
 		return err
 	}
-	shim := filepath.Join(shimDir, "gentle-ai")
+	shim := filepath.Join(shimDir, "hgtran-ai")
 	script := "#!/bin/sh\n" +
 		"exec " + shellQuote(self) + " __shim --real " + shellQuote(real) +
 		" --log " + shellQuote(out) + " -- \"$@\"\n"
@@ -109,7 +109,7 @@ func setupRecording(realBinary, outPath string) error {
 	fmt.Printf("1. Put the shim first on PATH in the shell your agent runs in:\n\n")
 	fmt.Printf("   export PATH=%s:$PATH\n\n", shimDir)
 	fmt.Printf("   (fish: set -gx PATH %s $PATH)\n\n", shimDir)
-	fmt.Printf("2. Run your agent through the testing guide as usual. Every gentle-ai\n")
+	fmt.Printf("2. Run your agent through the testing guide as usual. Every hgtran-ai\n")
 	fmt.Printf("   invocation is appended to:\n\n   %s\n\n", out)
 	fmt.Printf("3. When the session is over, compute the friction dimensions:\n\n")
 	fmt.Printf("   %s analyze --session %s --out results-observed.json\n\n", self, out)
@@ -167,7 +167,7 @@ func runShim(real, logPath string, args []string) int {
 		// The real binary could not be executed at all. Say so on stderr and
 		// use the shell's conventional "command not executable" code, rather
 		// than silently swallowing the failure.
-		fmt.Fprintf(os.Stderr, "gentle-ai-bench shim: %v\n", err)
+		fmt.Fprintf(os.Stderr, "hgtran-ai-bench shim: %v\n", err)
 		exitCode = 126
 	}
 

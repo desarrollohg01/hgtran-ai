@@ -16,14 +16,14 @@ import (
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/sddstatus"
 )
 
-const ReviewIntegrationOperationSchema = "gentle-ai.review-integration.operation/v1"
-const ReviewIntegrationOperationSchemaID = "https://gentle-ai.dev/contracts/review-integration/v1/schemas/operation.schema.json"
-const ReviewIntegrationOperationSchemaV2 = "gentle-ai.review-integration.operation/v2"
-const ReviewIntegrationOperationSchemaIDV2 = "https://gentle-ai.dev/contracts/review-integration/v2/schemas/operation.schema.json"
-const ReviewIntegrationFailureSchema = "gentle-ai.review-integration.failure/v1"
-const ReviewIntegrationFailureSchemaID = "https://gentle-ai.dev/contracts/review-integration/v1/schemas/failure.schema.json"
-const ReviewIntegrationFailureSchemaV2 = "gentle-ai.review-integration.failure/v2"
-const ReviewIntegrationFailureSchemaIDV2 = "https://gentle-ai.dev/contracts/review-integration/v2/schemas/failure.schema.json"
+const ReviewIntegrationOperationSchema = "hgtran-ai.review-integration.operation/v1"
+const ReviewIntegrationOperationSchemaID = "https://hgtran-ai.dev/contracts/review-integration/v1/schemas/operation.schema.json"
+const ReviewIntegrationOperationSchemaV2 = "hgtran-ai.review-integration.operation/v2"
+const ReviewIntegrationOperationSchemaIDV2 = "https://hgtran-ai.dev/contracts/review-integration/v2/schemas/operation.schema.json"
+const ReviewIntegrationFailureSchema = "hgtran-ai.review-integration.failure/v1"
+const ReviewIntegrationFailureSchemaID = "https://hgtran-ai.dev/contracts/review-integration/v1/schemas/failure.schema.json"
+const ReviewIntegrationFailureSchemaV2 = "hgtran-ai.review-integration.failure/v2"
+const ReviewIntegrationFailureSchemaIDV2 = "https://hgtran-ai.dev/contracts/review-integration/v2/schemas/failure.schema.json"
 
 const (
 	ReviewIntegrationOperationFinalize               = "review.finalize"
@@ -1395,7 +1395,7 @@ func (result ReviewIntegrationOperationResult) Validate() error {
 		if err := decodeStrictReviewIntegrationResult(result.Result, &binding); err != nil {
 			return err
 		}
-		if binding.Schema != "gentle-ai.sdd-review-binding/v1" || strings.TrimSpace(binding.Change) == "" || strings.TrimSpace(binding.Lineage) == "" ||
+		if binding.Schema != "hgtran-ai.sdd-review-binding/v1" || strings.TrimSpace(binding.Change) == "" || strings.TrimSpace(binding.Lineage) == "" ||
 			!validReviewCapabilitySHA256(binding.Revision) || !validReviewCapabilitySHA256(binding.AuthorityRevision) ||
 			!validReviewCapabilitySHA256(binding.ReceiptHash) || binding.GateContext.Gate != reviewtransaction.GatePostApply {
 			return errors.New("negotiated bind-sdd result is incomplete")

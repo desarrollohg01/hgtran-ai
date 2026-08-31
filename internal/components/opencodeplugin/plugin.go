@@ -79,7 +79,7 @@ const roseArt = [
   "               ⠐⠈",
 ]
 
-const compactArt = ["✦ Gentle AI ✦"]
+const compactArt = ["✦ Hgtran AI ✦"]
 
 const Logo = () => {
   const dim = useTerminalDimensions()
@@ -160,7 +160,7 @@ func installGentleLogo(homeDir string) (Result, error) {
 
 	pluginWrite, err := filemerge.WriteFileAtomic(pluginPath, []byte(gentleLogoPluginSource), 0o644)
 	if err != nil {
-		return Result{}, fmt.Errorf("write Gentle Logo TUI plugin: %w", err)
+		return Result{}, fmt.Errorf("write Hgtran Logo TUI plugin: %w", err)
 	}
 	tuiChanged, err := ensureTUIPlugin(tuiPath, pluginPath)
 	if err != nil {

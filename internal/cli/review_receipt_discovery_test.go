@@ -348,7 +348,7 @@ func TestUnqualifiedPrePushDiscoveryKeepsCorruptAuthorityPrecedence(t *testing.T
 	runReviewCLIGit(t, repo, "add", "-A")
 	runReviewCLIGit(t, repo, "commit", "-qm", "deliver reviewed target")
 	commonDir := filepath.Clean(strings.TrimSpace(runReviewCLIGit(t, repo, "rev-parse", "--path-format=absolute", "--git-common-dir")))
-	broken := filepath.Join(commonDir, "gentle-ai", "review-transactions", "v2", "corrupt-target-candidate")
+	broken := filepath.Join(commonDir, "hgtran-ai", "review-transactions", "v2", "corrupt-target-candidate")
 	if err := os.MkdirAll(broken, 0o755); err != nil {
 		t.Fatal(err)
 	}
@@ -654,7 +654,7 @@ func TestUnscopedGateDiscoveryToleratesCorruptedUnrelatedLegacyInventory(t *test
 	repo := initReviewCLIRepo(t)
 	started, _ := approveDiscoveryMarkdown(t, repo, "review-discovery-valid", "docs/valid.md", "valid\n")
 	commonDir := filepath.Clean(string(bytes.TrimSpace([]byte(runReviewCLIGit(t, repo, "rev-parse", "--path-format=absolute", "--git-common-dir")))))
-	broken := filepath.Join(commonDir, "gentle-ai", "review-transactions", "v1", "unrelated-broken")
+	broken := filepath.Join(commonDir, "hgtran-ai", "review-transactions", "v1", "unrelated-broken")
 	if err := os.MkdirAll(broken, 0o755); err != nil {
 		t.Fatal(err)
 	}
@@ -663,7 +663,7 @@ func TestUnscopedGateDiscoveryToleratesCorruptedUnrelatedLegacyInventory(t *test
 	}
 
 	var explicit bytes.Buffer
-	statePath := filepath.Join(commonDir, "gentle-ai", "review-transactions", "v2", started.LineageID, "review-state.json")
+	statePath := filepath.Join(commonDir, "hgtran-ai", "review-transactions", "v2", started.LineageID, "review-state.json")
 	before, err := os.ReadFile(statePath)
 	if err != nil {
 		t.Fatal(err)
@@ -744,7 +744,7 @@ func TestReleaseGateToleratesCorruptionConfinedToLegacyEntriesIncludingLockResid
 	}
 
 	commonDir := filepath.Clean(strings.TrimSpace(runReviewCLIGit(t, repo, "rev-parse", "--path-format=absolute", "--git-common-dir")))
-	legacyBroken := filepath.Join(commonDir, "gentle-ai", "review-transactions", "v1", "legacy-alias-broken")
+	legacyBroken := filepath.Join(commonDir, "hgtran-ai", "review-transactions", "v1", "legacy-alias-broken")
 	if err := os.MkdirAll(legacyBroken, 0o755); err != nil {
 		t.Fatal(err)
 	}
@@ -786,7 +786,7 @@ func TestReleaseGateToleratesCorruptionConfinedToLegacyEntriesIncludingLockResid
 	if !result.Allowed || result.Context.LineageID != started.LineageID {
 		t.Fatalf("release gate across legacy-confined corruption = %#v", result)
 	}
-	incompleteCompact := filepath.Join(commonDir, "gentle-ai", "review-transactions", "v2", "compact-incomplete")
+	incompleteCompact := filepath.Join(commonDir, "hgtran-ai", "review-transactions", "v2", "compact-incomplete")
 	if err := os.MkdirAll(incompleteCompact, 0o755); err != nil {
 		t.Fatal(err)
 	}
@@ -806,7 +806,7 @@ func TestReleaseGateToleratesCorruptionConfinedToLegacyEntriesIncludingLockResid
 		t.Fatalf("release validation mutated legacy lock residue: %v", err)
 	}
 
-	sharedLock := filepath.Join(commonDir, "gentle-ai", "review-transactions", "v2", "LOCK")
+	sharedLock := filepath.Join(commonDir, "hgtran-ai", "review-transactions", "v2", "LOCK")
 	originalSharedLock, err := os.ReadFile(sharedLock)
 	if err != nil {
 		t.Fatal(err)
@@ -826,7 +826,7 @@ func TestReleaseGateToleratesCorruptionConfinedToLegacyEntriesIncludingLockResid
 		t.Fatal(err)
 	}
 
-	compactBroken := filepath.Join(commonDir, "gentle-ai", "review-transactions", "v2", "compact-broken")
+	compactBroken := filepath.Join(commonDir, "hgtran-ai", "review-transactions", "v2", "compact-broken")
 	if err := os.MkdirAll(compactBroken, 0o755); err != nil {
 		t.Fatal(err)
 	}
@@ -965,7 +965,7 @@ func TestUnscopedGateDiscoveryFailsClosedOnCorruptedCompactLeaf(t *testing.T) {
 	repo := initReviewCLIRepo(t)
 	approveDiscoveryMarkdown(t, repo, "review-discovery-valid", "docs/valid.md", "valid\n")
 	commonDir := filepath.Clean(string(bytes.TrimSpace([]byte(runReviewCLIGit(t, repo, "rev-parse", "--path-format=absolute", "--git-common-dir")))))
-	broken := filepath.Join(commonDir, "gentle-ai", "review-transactions", "v2", "unrelated-broken")
+	broken := filepath.Join(commonDir, "hgtran-ai", "review-transactions", "v2", "unrelated-broken")
 	if err := os.MkdirAll(broken, 0o755); err != nil {
 		t.Fatal(err)
 	}

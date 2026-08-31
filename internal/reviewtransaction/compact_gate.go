@@ -198,7 +198,7 @@ func evaluateCompactGate(ctx context.Context, repo string, receipt CompactReceip
 			return invalid("repository empty tree cannot be derived: "+emptyTreeErr.Error(), emptyTreeErr)
 		}
 		if record.State.InitialSnapshot.UnbornHead && record.State.InitialSnapshot.BaseTree == emptyTree {
-			return invalid("first publication cannot be derived from an empty-base review receipt; commit an authorized empty root, then run gentle-ai review start --committed-only with --base-ref set to that commit's SHA")
+			return invalid("first publication cannot be derived from an empty-base review receipt; commit an authorized empty root, then run hgtran-ai review start --committed-only with --base-ref set to that commit's SHA")
 		}
 	}
 	request, nextSliceIntended, err := buildCompactGateRequest(ctx, repo, record.State, input)
@@ -519,7 +519,7 @@ func evaluateCompactGate(ctx context.Context, repo string, receipt CompactReceip
 		}
 	}
 	// Wave 1 shadow observation (rdd-shadow-evaluation): outcome-neutral,
-	// advisory-only, and a true no-op unless GENTLE_AI_RDD_SHADOW is set —
+	// advisory-only, and a true no-op unless HGTRAN_AI_RDD_SHADOW is set —
 	// see shadow_observer.go. compatibility is already-derived Amendment A
 	// evidence for this exact allow, reused rather than re-derived.
 	ObserveShadowRelation(ctx, repo, request.Gate,

@@ -174,12 +174,12 @@ var shadowMatrixSelectors = []shadowSelectorKind{
 var shadowMatrixUnknownFlavors = []string{"unresolvable", "unborn-head", "empty-paths", "unresolvable"}
 
 func shadowMatrixTree(seed string) string {
-	sum := sha256.Sum256([]byte("gentle-ai.shadow-matrix-tree/v1\x00" + seed))
+	sum := sha256.Sum256([]byte("hgtran-ai.shadow-matrix-tree/v1\x00" + seed))
 	return hex.EncodeToString(sum[:20]) // 40 lowercase hex chars: gitTreePattern's short form
 }
 
 func shadowMatrixDigest(seed string) string {
-	sum := sha256.Sum256([]byte("gentle-ai.shadow-matrix-digest/v1\x00" + seed))
+	sum := sha256.Sum256([]byte("hgtran-ai.shadow-matrix-digest/v1\x00" + seed))
 	return "sha256:" + hex.EncodeToString(sum[:])
 }
 

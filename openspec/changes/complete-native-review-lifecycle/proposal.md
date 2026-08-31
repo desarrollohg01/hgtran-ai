@@ -2,7 +2,7 @@
 
 ## Intent
 
-Replace #1104's broad v2 platform with one low-token frozen-ledger lifecycle for every catalog-supported Gentle AI agent/runtime: one finite correction set, never an iterative loop.
+Replace #1104's broad v2 platform with one low-token frozen-ledger lifecycle for every catalog-supported Hgtran AI agent/runtime: one finite correction set, never an iterative loop.
 
 ## Scope
 

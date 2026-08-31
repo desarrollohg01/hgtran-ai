@@ -1,10 +1,10 @@
 #Requires -Version 5.1
 <#
 .SYNOPSIS
-    Gentle-AI source installer for Windows.
+    hgtran-ai source installer for Windows.
 
 .DESCRIPTION
-    Installs Gentle AI from source with Go. Official Windows binary distribution
+    Installs Hgtran AI from source with Go. Official Windows binary distribution
     and Scoop are temporarily unavailable until public-trust Authenticode signing
     is enforced. Accepted channels: stable (default), beta, nightly.
 
@@ -26,10 +26,10 @@ $null = & chcp 65001 2>$null
 try { [Console]::OutputEncoding = [System.Text.Encoding]::UTF8 } catch {}
 
 $GITHUB_OWNER = "Gentleman-Programming"
-$GITHUB_REPO = "gentle-ai"
-$BINARY_NAME = "gentle-ai"
+$GITHUB_REPO = "hgtran-ai"
+$BINARY_NAME = "hgtran-ai"
 $WINDOWS_DISTRIBUTION_HOLD = "Windows binary distribution and Scoop are temporarily unavailable until publicly trusted Authenticode signing is enforced."
-$STABLE_SOURCE_COMMAND = "go install bitbucket.org/hgt_development/hgtran-ai/v2/cmd/gentle-ai@latest"
+$STABLE_SOURCE_COMMAND = "go install bitbucket.org/hgt_development/hgtran-ai/v2/cmd/hgtran-ai@latest"
 
 function Write-Info    { param([string]$Message) Write-Host "[info]    $Message" -ForegroundColor Blue }
 function Write-Success { param([string]$Message) Write-Host "[ok]      $Message" -ForegroundColor Green }
@@ -45,13 +45,16 @@ function Stop-WithError {
 
 function Show-Banner {
     Write-Host ""
-    Write-Host "   ____            _   _              _    ___ " -ForegroundColor Cyan
-    Write-Host "  / ___| ___ _ __ | |_| | ___        / \  |_ _|" -ForegroundColor Cyan
-    Write-Host " | |  _ / _ \ '_ \| __| |/ _ \_____ / _ \  | | " -ForegroundColor Cyan
-    Write-Host " | |_| |  __/ | | | |_| |  __/_____/ ___ \ | | " -ForegroundColor Cyan
-    Write-Host "  \____|\___|_| |_|\__|_|\___|    /_/   \_\___|" -ForegroundColor Cyan
+    # Single-quoted: the art contains backticks, which PowerShell would treat
+    # as escape characters inside a double-quoted string.
+    Write-Host '  _   _       _                           _    ___ ' -ForegroundColor Cyan
+    Write-Host ' | | | | __ _| |_ _ __ __ _ _ __         / \  |_ _|' -ForegroundColor Cyan
+    Write-Host ' | |_| |/ _` | __| ''__/ _` | ''_ \ _____ / _ \  | | ' -ForegroundColor Cyan
+    Write-Host ' |  _  | (_| | |_| | | (_| | | | |_____/ ___ \ | | ' -ForegroundColor Cyan
+    Write-Host ' |_| |_|\__, |\__|_|  \__,_|_| |_|    /_/   \_\___|' -ForegroundColor Cyan
+    Write-Host '        |___/                                      ' -ForegroundColor Cyan
     Write-Host ""
-    Write-Host "  Gentle-AI - Ecosystem, Frameworks, Workflows" -ForegroundColor DarkGray
+    Write-Host "  hgtran-ai - Ecosystem, Frameworks, Workflows" -ForegroundColor DarkGray
     Write-Host ""
 }
 
@@ -150,9 +153,9 @@ function Test-Installation {
         return
     }
 
-    $env:GENTLE_AI_NO_SELF_UPDATE = "1"
+    $env:HGTRAN_AI_NO_SELF_UPDATE = "1"
     $versionOutput = & $binaryPath --version 2>&1
-    Remove-Item Env:GENTLE_AI_NO_SELF_UPDATE -ErrorAction SilentlyContinue
+    Remove-Item Env:HGTRAN_AI_NO_SELF_UPDATE -ErrorAction SilentlyContinue
     Write-Success "$BINARY_NAME installed at $binaryPath`: $versionOutput"
 }
 
@@ -163,7 +166,7 @@ function Show-NextSteps {
     Write-Host "Installation complete!" -ForegroundColor Green
     Write-Host ""
     if ($Channel -eq "beta") {
-        Write-Host ('  Run ''$env:GENTLE_AI_CHANNEL = "beta"; {0} install'' to keep using the beta channel' -f $BINARY_NAME) -ForegroundColor Cyan
+        Write-Host ('  Run ''$env:HGTRAN_AI_CHANNEL = "beta"; {0} install'' to keep using the beta channel' -f $BINARY_NAME) -ForegroundColor Cyan
     } else {
         Write-Host "  Run '$BINARY_NAME' to start the TUI installer" -ForegroundColor Cyan
     }
@@ -178,7 +181,7 @@ function Main {
         [string]$Method = "auto",
 
         [ValidateSet("stable", "beta", "nightly")]
-        [string]$Channel = $(if ($env:GENTLE_AI_CHANNEL) { $env:GENTLE_AI_CHANNEL } else { "stable" }),
+        [string]$Channel = $(if ($env:HGTRAN_AI_CHANNEL) { $env:HGTRAN_AI_CHANNEL } else { "stable" }),
 
         [string]$InstallDir = "",
 

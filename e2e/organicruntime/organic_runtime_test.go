@@ -1,8 +1,8 @@
 // Package organicruntime_test proves the journeys a configured agent actually
-// performs once Gentle AI stopped owning implementation: the agent implements
-// organically, and Gentle AI's authority begins only after a candidate exists.
+// performs once Hgtran AI stopped owning implementation: the agent implements
+// organically, and Hgtran AI's authority begins only after a candidate exists.
 //
-// Every assertion here is driven through the real gentle-ai binary and the real
+// Every assertion here is driven through the real hgtran-ai binary and the real
 // `review` command surface against real Git repositories and a real bare remote.
 // There is no runtime fixture, no TLS control plane, and no bearer session: the
 // retired control plane cannot be proven, only the shipped product can.
@@ -34,7 +34,7 @@ import (
 const (
 	// realAgentE2EEnvironment gates the pinned real-agent journeys, which need a
 	// pinned OpenCode plus network access to the pinned plugin package.
-	realAgentE2EEnvironment = "GENTLE_AI_REAL_AGENT_E2E"
+	realAgentE2EEnvironment = "HGTRAN_AI_REAL_AGENT_E2E"
 	pinnedOpenCodeVersion   = versions.OpenCode
 
 	organicLocalTimeout     = 90 * time.Second
@@ -56,12 +56,12 @@ const (
 // never escalates its own route. Re-executing the compiled test binary keeps
 // that real without adding a language runtime dependency to the suite.
 const (
-	organicActorRoleEnvironment    = "GENTLE_AI_ORGANIC_ACTOR_ROLE"
-	organicActorRepoEnvironment    = "GENTLE_AI_ORGANIC_ACTOR_REPO"
-	organicActorPathEnvironment    = "GENTLE_AI_ORGANIC_ACTOR_PATH"
-	organicActorBodyEnvironment    = "GENTLE_AI_ORGANIC_ACTOR_BODY"
-	organicActorMessageEnvironment = "GENTLE_AI_ORGANIC_ACTOR_MESSAGE"
-	organicActorBinaryEnvironment  = "GENTLE_AI_ORGANIC_ACTOR_BINARY"
+	organicActorRoleEnvironment    = "HGTRAN_AI_ORGANIC_ACTOR_ROLE"
+	organicActorRepoEnvironment    = "HGTRAN_AI_ORGANIC_ACTOR_REPO"
+	organicActorPathEnvironment    = "HGTRAN_AI_ORGANIC_ACTOR_PATH"
+	organicActorBodyEnvironment    = "HGTRAN_AI_ORGANIC_ACTOR_BODY"
+	organicActorMessageEnvironment = "HGTRAN_AI_ORGANIC_ACTOR_MESSAGE"
+	organicActorBinaryEnvironment  = "HGTRAN_AI_ORGANIC_ACTOR_BINARY"
 
 	organicActorRoleDirect    = "direct"
 	organicActorRoleDelegated = "delegated"
@@ -82,8 +82,8 @@ const (
 	organicStateValidating         = "validating"
 	organicStateCorrectionRequired = "correction_required"
 
-	organicGateSchema = "gentle-ai.review-gate-result/v1"
-	organicModeSchema = "gentle-ai.review-mode/v1"
+	organicGateSchema = "hgtran-ai.review-gate-result/v1"
+	organicModeSchema = "hgtran-ai.review-mode/v1"
 
 	organicGateAllow = "allow"
 	organicModeOff   = "off"
@@ -162,7 +162,7 @@ func runOrganicActor(role string) int {
 func assertOrganicDelegatedWorkerStaysInRoute(repo string) error {
 	binary := os.Getenv(organicActorBinaryEnvironment)
 	if binary == "" {
-		return errors.New("delegated actor has no gentle-ai binary to observe authority with")
+		return errors.New("delegated actor has no hgtran-ai binary to observe authority with")
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), organicLocalTimeout)
 	defer cancel()
@@ -252,7 +252,7 @@ func TestOrganicConfiguredAgentReceivesRoutingGuidance(t *testing.T) {
 	}{
 		{name: "markdown section", agentID: "claude-code", path: ".claude/CLAUDE.md"},
 		{name: "orchestrator prompt", agentID: "opencode", path: ".config/opencode/opencode.json", inHome: true},
-		{name: "markdown rules", agentID: "cursor", path: ".cursor/rules/gentle-ai.mdc"},
+		{name: "markdown rules", agentID: "cursor", path: ".cursor/rules/hgtran-ai.mdc"},
 	}
 	required := []string{
 		"Direct inline",
@@ -260,7 +260,7 @@ func TestOrganicConfiguredAgentReceivesRoutingGuidance(t *testing.T) {
 		"Optional SDD",
 		"never selects SDD",
 		"never create SDD artifacts",
-		"gentle-ai review mode enable|disable|status",
+		"hgtran-ai review mode enable|disable|status",
 		"disabled/unmanaged",
 	}
 	for _, agent := range agents {
@@ -650,7 +650,7 @@ func TestOrganicFlexibleDeliveryReusesOneReceipt(t *testing.T) {
 
 	// Routes 3 and 4: a pull request with and without an issue reference. The two
 	// branches carry the same tree under different commits, which is the point:
-	// Gentle AI binds content, so neither the delivery route nor the commit
+	// Hgtran AI binds content, so neither the delivery route nor the commit
 	// identity reopens review, and the issue reference is repository policy that
 	// the receipt neither requires nor records. Both run before publication,
 	// because the pull-request boundary is the unpublished remote base.
@@ -734,7 +734,7 @@ func TestOrganicKillSwitchStopsAtTheDeliveryBoundary(t *testing.T) {
 
 	// Zero effects: no review authority, no additional compare-and-swap
 	// generation, and a remote that never moved.
-	if _, err := os.Stat(filepath.Join(harness.commonDir(), "gentle-ai", "review-transactions", "v2")); !os.IsNotExist(err) {
+	if _, err := os.Stat(filepath.Join(harness.commonDir(), "hgtran-ai", "review-transactions", "v2")); !os.IsNotExist(err) {
 		t.Fatalf("a disabled start still created review authority: %v", err)
 	}
 	if after := harness.reviewModeGenerations(); !equalOrganicStrings(after, generationsAfterDisable) {
@@ -1118,7 +1118,7 @@ func (harness *organicHarness) gentle(arguments ...string) []byte {
 	harness.t.Helper()
 	stdout, stderr, err := runOrganicCommand(harness.t, organicBinary, harness.repo.worktree, harness.environment(), arguments...)
 	if err != nil {
-		harness.t.Fatalf("gentle-ai %v: %v\nstdout:\n%s\nstderr:\n%s", arguments, err, stdout, stderr)
+		harness.t.Fatalf("hgtran-ai %v: %v\nstdout:\n%s\nstderr:\n%s", arguments, err, stdout, stderr)
 	}
 	return []byte(stdout)
 }
@@ -1325,15 +1325,15 @@ func (harness *organicHarness) sddStatus(change string) organicSDDStatus {
 }
 
 // organicNamedContinuation returns the argument tokens of the first
-// `gentle-ai ...` command a product message names, read exactly as an operator
+// `hgtran-ai ...` command a product message names, read exactly as an operator
 // would: to the end of the line, stopping at the first `<placeholder>` whose
 // value the operator supplies.
 func organicNamedContinuation(t *testing.T, message string) []string {
 	t.Helper()
-	const product = "gentle-ai "
+	const product = "hgtran-ai "
 	index := strings.Index(message, product)
 	if index < 0 {
-		t.Fatalf("message names no runnable gentle-ai command: %q", message)
+		t.Fatalf("message names no runnable hgtran-ai command: %q", message)
 	}
 	tail := message[index+len(product):]
 	if cut := strings.IndexAny(tail, "\n"); cut >= 0 {
@@ -1348,19 +1348,19 @@ func organicNamedContinuation(t *testing.T, message string) []string {
 		tokens = append(tokens, token)
 	}
 	if len(tokens) == 0 {
-		t.Fatalf("message names no runnable gentle-ai command: %q", message)
+		t.Fatalf("message names no runnable hgtran-ai command: %q", message)
 	}
 	return tokens
 }
 
-// runNamedReviewStart dispatches a `gentle-ai review start ...` continuation
+// runNamedReviewStart dispatches a `hgtran-ai review start ...` continuation
 // read out of a product message, with the working directory already at the
 // repository so the invocation runs exactly as printed. extra carries only an
 // operator-supplied placeholder value the message asked for.
 func (harness *organicHarness) runNamedReviewStart(tokens []string, extra ...string) organicStartResult {
 	harness.t.Helper()
 	if len(tokens) < 2 || tokens[0] != "review" || tokens[1] != "start" {
-		harness.t.Fatalf("named continuation is %v, want gentle-ai review start", tokens)
+		harness.t.Fatalf("named continuation is %v, want hgtran-ai review start", tokens)
 	}
 	payload := harness.gentle(append(append([]string{}, tokens...), extra...)...)
 	var started organicStartResult
@@ -1374,7 +1374,7 @@ func (harness *organicHarness) runNamedReviewStart(tokens []string, extra ...str
 // verification writes. Its exact shape matters: a report the product cannot
 // parse routes as "verification is missing", which is a different journey.
 const organicSDDVerifyReport = "```yaml\n" +
-	"schema: gentle-ai.verify-result/v1\n" +
+	"schema: hgtran-ai.verify-result/v1\n" +
 	"evidence_revision: sha256:1111111111111111111111111111111111111111111111111111111111111111\n" +
 	"verdict: pass\n" +
 	"blockers: 0\n" +
@@ -1384,7 +1384,7 @@ const organicSDDVerifyReport = "```yaml\n" +
 	"test_command: go test ./internal/example\n" +
 	"test_exit_code: 0\n" +
 	"test_output_hash: sha256:2222222222222222222222222222222222222222222222222222222222222222\n" +
-	"build_command: go test ./cmd/gentle-ai\n" +
+	"build_command: go test ./cmd/hgtran-ai\n" +
 	"build_exit_code: 0\n" +
 	"build_output_hash: sha256:3333333333333333333333333333333333333333333333333333333333333333\n" +
 	"```\n"
@@ -1411,7 +1411,7 @@ func (harness *organicHarness) seedOrganicSDDChange(change string) {
 // records. Their count is how a rejected operation proves it wrote nothing.
 func (harness *organicHarness) reviewModeGenerations() []string {
 	harness.t.Helper()
-	root := filepath.Join(harness.commonDir(), "gentle-ai", "review-transactions", "rar-authority", "v1", "rdd-mode")
+	root := filepath.Join(harness.commonDir(), "hgtran-ai", "review-transactions", "rar-authority", "v1", "rdd-mode")
 	entries, err := os.ReadDir(root)
 	if os.IsNotExist(err) {
 		return nil
@@ -1433,7 +1433,7 @@ func (harness *organicHarness) reviewModeGenerations() []string {
 // prove it changed nothing at all, not merely that it reported the same state.
 func (harness *organicHarness) lineageDigest(lineage string) string {
 	harness.t.Helper()
-	root := filepath.Join(harness.commonDir(), "gentle-ai", "review-transactions", "v2", lineage)
+	root := filepath.Join(harness.commonDir(), "hgtran-ai", "review-transactions", "v2", lineage)
 	var builder strings.Builder
 	err := filepath.WalkDir(root, func(path string, entry os.DirEntry, err error) error {
 		if err != nil {
@@ -1461,7 +1461,7 @@ func (harness *organicHarness) lineageDigest(lineage string) string {
 
 func (harness *organicHarness) assertSingleReviewLineage(expected string) {
 	harness.t.Helper()
-	root := filepath.Join(harness.commonDir(), "gentle-ai", "review-transactions", "v2")
+	root := filepath.Join(harness.commonDir(), "hgtran-ai", "review-transactions", "v2")
 	entries, err := os.ReadDir(root)
 	if err != nil {
 		harness.t.Fatalf("read review authority: %v", err)
@@ -1494,7 +1494,7 @@ func (harness *organicHarness) hasSDDArtifacts() bool {
 
 func (harness *organicHarness) sddArtifact() (string, bool) {
 	harness.t.Helper()
-	root := filepath.Join(harness.commonDir(), "gentle-ai")
+	root := filepath.Join(harness.commonDir(), "hgtran-ai")
 	entries, err := os.ReadDir(root)
 	if os.IsNotExist(err) {
 		return "", false
@@ -1817,7 +1817,7 @@ func harnessCorrectionStatus(t *testing.T, harness *organicHarness, lineage stri
 	t.Helper()
 	payload := harness.gentle(
 		"review", "status", "--cwd", harness.repo.worktree, "--lineage", lineage,
-		"--contract", "gentle-ai.review-integration/v1", "--next-transition",
+		"--contract", "hgtran-ai.review-integration/v1", "--next-transition",
 	)
 	var status organicCorrectionStatus
 	if err := json.Unmarshal(payload, &status); err != nil {
@@ -1938,22 +1938,22 @@ func buildOrganicBinary(workspace string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	name := "gentle-ai"
+	name := "hgtran-ai"
 	if runtime.GOOS == "windows" {
 		name += ".exe"
 	}
 	path := filepath.Join(workspace, name)
 	ctx, cancel := context.WithTimeout(context.Background(), organicSetupTimeout)
 	defer cancel()
-	command := organicCommandContext(ctx, "go", "build", "-trimpath", "-o", path, "./cmd/gentle-ai")
+	command := organicCommandContext(ctx, "go", "build", "-trimpath", "-o", path, "./cmd/hgtran-ai")
 	command.Dir = moduleRoot
 	command.Env = os.Environ()
 	if output, err := command.CombinedOutput(); err != nil {
-		return "", fmt.Errorf("build the gentle-ai test binary: %w\n%s", err, output)
+		return "", fmt.Errorf("build the hgtran-ai test binary: %w\n%s", err, output)
 	}
 	info, err := os.Stat(path)
 	if err != nil || !info.Mode().IsRegular() {
-		return "", fmt.Errorf("built gentle-ai binary %q is unusable: %v", path, err)
+		return "", fmt.Errorf("built hgtran-ai binary %q is unusable: %v", path, err)
 	}
 	return path, nil
 }
@@ -2012,11 +2012,11 @@ func equalOrganicStrings(left, right []string) bool {
 
 // TestRealAgentOrganicJourneys runs the same organic journeys through a real
 // configured agent. The agent runtime, its sub-agent mechanism, its tool calls,
-// the gentle-ai binary, and the repository are all real; only the model is a
+// the hgtran-ai binary, and the repository are all real; only the model is a
 // fixture, because a scripted model is what makes an agent journey repeatable.
 func TestRealAgentOrganicJourneys(t *testing.T) {
 	if os.Getenv(realAgentE2EEnvironment) != "1" {
-		t.Skip("set GENTLE_AI_REAL_AGENT_E2E=1 to run the pinned real-agent journeys")
+		t.Skip("set HGTRAN_AI_REAL_AGENT_E2E=1 to run the pinned real-agent journeys")
 	}
 	requireOrganicExecutableVersion(t, "opencode", pinnedOpenCodeVersion)
 	sharedConfig := prepareOpenCodeConfig(t)
@@ -2108,8 +2108,8 @@ func TestRealAgentOrganicJourneys(t *testing.T) {
 				organicActorBodyEnvironment+"="+body,
 				organicActorMessageEnvironment+"=docs: implement the real-agent outcome",
 				organicActorBinaryEnvironment+"="+organicBinary,
-				"GENTLE_AI_ORGANIC_ACTOR_EXECUTABLE="+os.Args[0],
-				"GENTLE_AI_ORGANIC_BINARY="+organicBinary,
+				"HGTRAN_AI_ORGANIC_ACTOR_EXECUTABLE="+os.Args[0],
+				"HGTRAN_AI_ORGANIC_BINARY="+organicBinary,
 			)
 
 			ctx, cancel := context.WithTimeout(context.Background(), organicAgentTimeout)
@@ -2150,12 +2150,12 @@ func TestRealAgentOrganicJourneys(t *testing.T) {
 // bash tool, so the implementation step is a real child process of a real agent.
 func organicActorToolCommand(t *testing.T) string {
 	t.Helper()
-	return organicToolCommand(t, "GENTLE_AI_ORGANIC_ACTOR_EXECUTABLE")
+	return organicToolCommand(t, "HGTRAN_AI_ORGANIC_ACTOR_EXECUTABLE")
 }
 
 func organicReviewToolCommand(t *testing.T, arguments ...string) string {
 	t.Helper()
-	return organicToolCommand(t, "GENTLE_AI_ORGANIC_BINARY", arguments...)
+	return organicToolCommand(t, "HGTRAN_AI_ORGANIC_BINARY", arguments...)
 }
 
 // organicToolCommand turns one fixture-authored argv into the string the

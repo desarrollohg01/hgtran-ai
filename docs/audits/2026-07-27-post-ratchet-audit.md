@@ -29,7 +29,7 @@ evidence, not as escapes.
 | A zero-byte review governed an archive: an approved receipt whose base tree equals its candidate tree covers no content, and read as allow over unmanaged history | `56370f34` | maintainer, driving #1877 at HEAD | the disable → deliver → re-enable → archive sequence, never chained before |
 | `sdd-status` stale/missing-receipt stops ended in a maintainer demand with no runnable command, one of them blocking the disabled window itself | `56370f34` | same sequence | — |
 | Darwin ancestry walk opened components with `O_EVTONLY`, whose implicit read authorization refuses a `0111` search-only ancestor — the exact managed-profile shape #1781 exists to support | `3d5fb836` | the new Darwin CI lane, first run | a platform CI had never executed |
-| Windows: a normal `.git\gentle-ai` owned by `BUILTIN\Administrators` refused as an unsafe RAR authority path, naming neither path nor owner | `fc72f66d` | community, elevated Windows shell | an ownership every elevated token produces |
+| Windows: a normal `.git\hgtran-ai` owned by `BUILTIN\Administrators` refused as an unsafe RAR authority path, naming neither path nor owner | `fc72f66d` | community, elevated Windows shell | an ownership every elevated token produces |
 | The required-checks meta-test sliced `ci.yml` with a hardcoded job list; the new `darwin-runtime` job was swallowed into `windows-runtime`'s section, so Darwin's own format gate read as Windows satisfying it | `a4fc2fd7` | internal, immediately after `8b62f106` | adding a job the guard did not know about |
 | Twenty concurrent exact-replay publishers of identical RAR plan authority: waiters exhausted the bounded lock wait and failed typed, with the identical immutable content already on disk | `6457a4a8` | maintainer, Darwin investigation, #1872 | Darwin filesystem timing; Linux at ~40ms/iteration never reached the window |
 | A concurrent finalize loser reaching post-terminal receipt publication met a milliseconds-held lock and got `receipt_publication_pending`, not retry safe. Nothing was pending in any durable sense | `83586ed7` | CI | timing again |
@@ -143,7 +143,7 @@ a population.
 
 The first audit's fix #1 was built as `d06c1db3`: an AST ratchet over
 `internal/cli`, `internal/reviewtransaction` and `internal/sddstatus` requiring every
-production `errors.New` / `fmt.Errorf` origin site to name a runnable `gentle-ai`
+production `errors.New` / `fmt.Errorf` origin site to name a runnable `hgtran-ai`
 invocation, carry a `// refusal:by-design <shape>: <reason>` marker from the closed
 vocabulary the bench classifier already uses, or sit in a frozen baseline that may only
 shrink. It runs inside `go test ./...` — the one required check — in 0.08s.
@@ -155,8 +155,8 @@ sites: 2602 total = 1814 violations + 17 named + 15 annotated + 734 exempt wraps
 ```
 
 At birth, exactly **7** sites named a paste-able continuation, and one of those seven is
-arguably a regex artifact (`errors.New("gentle-ai package version is unavailable")` matches
-`gentle-ai` without naming a command). Six or seven, out of roughly 1,850 non-wrap origin
+arguably a regex artifact (`errors.New("hgtran-ai package version is unavailable")` matches
+`hgtran-ai` without naming a command). Six or seven, out of roughly 1,850 non-wrap origin
 sites. The audit's claim that the norm did not exist was not rhetoric; it was, if anything,
 generous — a rate of 0.4%.
 
@@ -250,7 +250,7 @@ because nothing catches it.
 - `8b62f106`'s subject is *"ci: run the Darwin release-blocker manifest natively, **required
   for merge**."* The job exists, runs `macos-latest`, and executes a 46-entry manifest. It
   is **not a required status check.** Verified against the live ruleset
-  (`repos/Gentleman-Programming/gentle-ai/rulesets/13932547`), the complete required set is:
+  (`repos/Gentleman-Programming/hgtran-ai/rulesets/13932547`), the complete required set is:
   `Check Issue Has status:approved`, `Check Issue Reference`, `Check PR Has type:* Label`,
   `Unit Tests`, `E2E Tests (ubuntu)`, `E2E Tests (arch)`, `E2E Tests (fedora)`. Neither
   Darwin Runtime nor Windows Runtime nor Organic Runtime E2E can block a merge; `main` has

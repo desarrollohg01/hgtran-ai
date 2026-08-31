@@ -35,7 +35,7 @@ func TestReviewStartTargetRequiresContractNamesValue(t *testing.T) {
 // unsupported --contract on review repair names both exact supported values.
 func TestReviewRepairRequiresContractNamesValue(t *testing.T) {
 	repo := initReviewCLIRepo(t)
-	err := RunReviewRepair([]string{"--cwd", repo, "--contract", "gentle-ai.review-integration/v3"}, io.Discard)
+	err := RunReviewRepair([]string{"--cwd", repo, "--contract", "hgtran-ai.review-integration/v3"}, io.Discard)
 	if err == nil || !strings.Contains(err.Error(), ReviewIntegrationContractV1) || !strings.Contains(err.Error(), ReviewIntegrationContractV2) {
 		t.Fatalf("review repair contract error = %v, want it to name %s and %s", err, ReviewIntegrationContractV1, ReviewIntegrationContractV2)
 	}
@@ -87,8 +87,8 @@ func TestReviewValidateCompactReceiptRequiresNativeAuthorityFlagsNamesThem(t *te
 func TestReviewFinalizeNoDiscoverableLineageNamesStartCommand(t *testing.T) {
 	repo := initReviewCLIRepo(t)
 	err := RunReviewFacadeFinalize([]string{"--cwd", repo}, io.Discard)
-	if err == nil || !strings.Contains(err.Error(), "gentle-ai review start") || !strings.Contains(err.Error(), "--cwd") {
-		t.Fatalf("finalize with no discoverable lineage error = %v, want it to name gentle-ai review start and --cwd", err)
+	if err == nil || !strings.Contains(err.Error(), "hgtran-ai review start") || !strings.Contains(err.Error(), "--cwd") {
+		t.Fatalf("finalize with no discoverable lineage error = %v, want it to name hgtran-ai review start and --cwd", err)
 	}
 }
 
@@ -103,7 +103,7 @@ func TestReviewValidateReceiptNotAvailableNamesFinalizeCommandWithLineage(t *tes
 		t.Fatal(err)
 	}
 	err := RunReviewFacadeValidate([]string{"--cwd", repo, "--lineage", lineage, "--gate", "pre-commit"}, io.Discard)
-	want := "gentle-ai review finalize --lineage " + lineage
+	want := "hgtran-ai review finalize --lineage " + lineage
 	if err == nil || !strings.Contains(err.Error(), want) {
 		t.Fatalf("validate before finalize error = %v, want it to contain %q", err, want)
 	}

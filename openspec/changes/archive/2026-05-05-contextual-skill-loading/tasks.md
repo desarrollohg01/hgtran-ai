@@ -45,7 +45,7 @@ T6 = A+B atomic (removal + injection in same commit — not independently testab
 
 ## Phase 2 — Frontmatter Hygiene (C-1 and C-2)
 
-- [x] **T2** `[GREEN]` Fix `name:` field in `internal/assets/skills/chained-pr/SKILL.md`: change `name: gentle-ai-chained-pr` to `name: chained-pr`.
+- [x] **T2** `[GREEN]` Fix `name:` field in `internal/assets/skills/chained-pr/SKILL.md`: change `name: hgtran-ai-chained-pr` to `name: chained-pr`.
   - Commit: `fix(skills): align chained-pr SKILL.md name with directory` — DONE 1b2b374
 
 - [x] **T3** `[GREEN]` Remove `allowed-tools:` top-level key from `internal/assets/skills/skill-creator/SKILL.md` frontmatter. Regenerate 4 affected goldens:

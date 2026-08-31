@@ -99,9 +99,9 @@ var (
 	probeEngramProtocolFlag        = engram.ProbeProtocolFlag
 	probeEngramProtocolFlagCommand = engram.ProbeProtocolFlagCommand
 
-	// AppVersion is the gentle-ai version that will be written into backup manifests.
+	// AppVersion is the hgtran-ai version that will be written into backup manifests.
 	// It is set by app.go before any CLI operation so that every backup created during
-	// an install or sync records which version of gentle-ai made it.
+	// an install or sync records which version of hgtran-ai made it.
 	// Default "dev" matches the ldflags default in app.Version.
 	AppVersion = "dev"
 )
@@ -206,7 +206,7 @@ func RunInstall(args []string, detection system.DetectionResult) (InstallResult,
 		agentIDs = append(agentIDs, string(a))
 	}
 
-	// When the user ran `gentle-ai install --agent X` (explicit agent flag),
+	// When the user ran `hgtran-ai install --agent X` (explicit agent flag),
 	// merge into the existing state so that previously installed agents and
 	// model assignments are preserved. A full install (no --agent flag) keeps
 	// overwrite semantics so the TUI selection is the source of truth.
@@ -241,7 +241,7 @@ func RunInstall(args []string, detection system.DetectionResult) (InstallResult,
 }
 
 // mergeExplicitAgentInstallState merges a fresh single-agent install's state
-// into the previously persisted ~/.gentle-ai/state.json (so `install --agent
+// into the previously persisted ~/.hgtran-ai/state.json (so `install --agent
 // X` preserves other previously installed agents and model assignments).
 //
 // When the existing state file is simply absent (first install, or an agent
@@ -349,7 +349,7 @@ func withReadyAgentRunNote(report verify.Report, resolved planner.ResolvedPlan) 
 
 // withFailedVerificationNote replaces the generic verify.VerificationIssuesMessage
 // with one naming the concrete command that retries the install for the
-// agents that were actually resolved this run: `gentle-ai install --agent
+// agents that were actually resolved this run: `hgtran-ai install --agent
 // <agent1>,<agent2>`. There is no `repair` case in the CLI dispatcher
 // (internal/app/app.go), so the old generic text named a command that could
 // never succeed -- a false continuation worse than no note at all.
@@ -368,7 +368,7 @@ func withFailedVerificationNote(report verify.Report, resolved planner.ResolvedP
 	for i, agent := range resolved.Agents {
 		names[i] = string(agent)
 	}
-	report.FinalNote = verify.VerificationIssuesMessageForCommand("gentle-ai install --agent " + strings.Join(names, ","))
+	report.FinalNote = verify.VerificationIssuesMessageForCommand("hgtran-ai install --agent " + strings.Join(names, ","))
 	return report
 }
 
@@ -911,7 +911,7 @@ type prepareBackupStep struct {
 	source      backup.BackupSource
 	description string
 
-	// appVersion is the gentle-ai version that created this backup.
+	// appVersion is the hgtran-ai version that created this backup.
 	// When set, it is written into the manifest as CreatedByVersion.
 	appVersion string
 }
@@ -929,7 +929,7 @@ func (s prepareBackupStep) Run() error {
 			if dup, dupErr := backup.IsDuplicate(s.backupRoot, checksum); dupErr != nil {
 				log.Printf("backup: check duplicate: %v", dupErr)
 			} else if dup {
-				rollbackDir, err := os.MkdirTemp("", "gentle-ai-rollback-*")
+				rollbackDir, err := os.MkdirTemp("", "hgtran-ai-rollback-*")
 				if err != nil {
 					return fmt.Errorf("create transaction snapshot directory: %w", err)
 				}
@@ -1301,7 +1301,7 @@ func (s componentApplyStep) Run() error {
 		// Probe --protocol support once before the adapter loop (Decision 4),
 		// but only when at least one selected adapter will actually attempt
 		// `engram setup` under setupMode (JD-013): under
-		// GENTLE_AI_ENGRAM_SETUP_MODE=off, ShouldAttemptSetup is false for
+		// HGTRAN_AI_ENGRAM_SETUP_MODE=off, ShouldAttemptSetup is false for
 		// every adapter, no setup invocation ever happens, and the probe's
 		// result would never be used — so skip the (up to 5s) probe
 		// entirely rather than run it unconditionally.
@@ -1497,7 +1497,7 @@ func (s componentApplyStep) Run() error {
 		return nil
 	case model.ComponentOpenCodeGentleLogo:
 		if _, err := opencodeplugin.Install(s.homeDir, model.OpenCodePluginGentleLogo); err != nil {
-			return fmt.Errorf("install OpenCode Gentle Logo plugin: %w", err)
+			return fmt.Errorf("install OpenCode Hgtran Logo plugin: %w", err)
 		}
 		return nil
 	default:
@@ -1798,7 +1798,7 @@ func componentPathsWithWorkspaceScoped(homeDir, workspaceDir string, scope Insta
 			case model.StrategyTOMLFile:
 				if p := adapter.MCPConfigPath(targetDir, "engram"); p != "" {
 					paths = append(paths, p)
-					// Track the gentle-ai SDD profile files written alongside
+					// Track the hgtran-ai SDD profile files written alongside
 					// the Codex config.toml so they are removed on uninstall.
 					codexHomeDir := filepath.Dir(p)
 					paths = append(paths, codexagent.SddProfilePaths(codexHomeDir)...)
@@ -2231,7 +2231,7 @@ func engramHealthChecks(state *runtimeState) []verify.Check {
 // when Antigravity and Gemini CLI are selected together. These agents
 // intentionally share ~/.gemini/GEMINI.md because Antigravity uses a
 // Gemini-compatible prompt surface; the last synced SDD orchestrator owns the
-// shared gentle-ai:sdd-orchestrator section.
+// shared hgtran-ai:sdd-orchestrator section.
 func antigravityCollisionCheck(agents []model.AgentID) []verify.Check {
 	hasAntigravitySurface := false
 	hasGemini := false
@@ -2254,7 +2254,7 @@ func antigravityCollisionCheck(agents []model.AgentID) []verify.Check {
 			Run: func(context.Context) error {
 				return fmt.Errorf(
 					"Antigravity and Gemini CLI write rules to ~/.gemini/GEMINI.md\n" +
-						"Antigravity intentionally uses the Gemini-compatible global prompt surface; the last synced SDD orchestrator owns the shared gentle-ai:sdd-orchestrator section.\n" +
+						"Antigravity intentionally uses the Gemini-compatible global prompt surface; the last synced SDD orchestrator owns the shared hgtran-ai:sdd-orchestrator section.\n" +
 						"Prefer Antigravity for new installs; keep Gemini CLI selected only when you intentionally want that legacy prompt to be the active one.",
 				)
 			},
@@ -2361,7 +2361,7 @@ func claudeAliasesToStrings(m map[string]model.ClaudeModelAlias) map[string]stri
 	out := make(map[string]string, len(m))
 	for k, v := range m {
 		// Claude Code owns the main session/orchestrator model; do not persist it
-		// as a Gentle AI model assignment.
+		// as a Hgtran AI model assignment.
 		if k == "orchestrator" {
 			continue
 		}

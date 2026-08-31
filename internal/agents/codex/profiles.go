@@ -52,7 +52,7 @@ func readProfileFileOrEmpty(path string) (string, error) {
 	return string(data), nil
 }
 
-// SddProfilePaths returns the absolute paths of all gentle-ai SDD profile
+// SddProfilePaths returns the absolute paths of all hgtran-ai SDD profile
 // files that WriteCodexProfiles would write into codexHomeDir. Useful for
 // uninstall path tracking without re-running the write.
 func SddProfilePaths(codexHomeDir string) []string {
@@ -64,7 +64,7 @@ func SddProfilePaths(codexHomeDir string) []string {
 	return paths
 }
 
-// WriteCodexProfiles writes the three gentle-ai SDD profile files into the
+// WriteCodexProfiles writes the three hgtran-ai SDD profile files into the
 // given Codex home directory (~/.codex). Each profile file contains both a
 // model key and a model_reasoning_effort key set to the resolved tier values.
 //

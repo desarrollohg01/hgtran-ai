@@ -1,5 +1,5 @@
 {
-  "schema": "gentle-ai.review-gate-result/v1",
+  "schema": "hgtran-ai.review-gate-result/v1",
   "result": "invalidated",
   "allowed": false,
   "action": "explicit-maintainer-action",

@@ -18,7 +18,7 @@ func analyzeSession(records []SessionRecord) JourneyResult {
 	result := JourneyResult{
 		ID:     "observed-session",
 		Title:  "Observed agent session",
-		Source: "recorded through the gentle-ai-bench shim",
+		Source: "recorded through the hgtran-ai-bench shim",
 		Status: StatusCompleted,
 	}
 

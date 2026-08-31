@@ -129,7 +129,7 @@ func ValidateAgentInstallPreflight(profile system.PlatformProfile, agent model.A
 
 func validatePiInstallPreflight() error {
 	if _, err := cmdLookPath("pi"); err != nil {
-		return fmt.Errorf("Pi requires the `pi` executable in PATH before installing Gentle AI Pi packages")
+		return fmt.Errorf("Pi requires the `pi` executable in PATH before installing Hgtran AI Pi packages")
 	}
 
 	return nil

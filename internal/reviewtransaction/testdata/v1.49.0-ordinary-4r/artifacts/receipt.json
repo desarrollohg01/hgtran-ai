@@ -1,5 +1,5 @@
 {
-  "schema": "gentle-ai.review-receipt/v1",
+  "schema": "hgtran-ai.review-receipt/v1",
   "lineage_id": "legacy-valid",
   "mode": "ordinary_4r",
   "generation": 1,

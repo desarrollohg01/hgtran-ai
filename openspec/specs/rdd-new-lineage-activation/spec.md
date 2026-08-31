@@ -8,7 +8,7 @@ Define the activation switch that gates new-lineage transitions, the coexistence
 
 ### Requirement: Distinct Env Switch, Default Off, Legacy Path When Disabled
 
-The activation switch MUST be a dedicated environment variable, default OFF, distinct in identity and meaning from `GENTLE_AI_RDD_SHADOW` and from the user-owned RDD kill switch (adopted default). When off, every `start` MUST take the legacy path and create no new-lineage artifact.
+The activation switch MUST be a dedicated environment variable, default OFF, distinct in identity and meaning from `HGTRAN_AI_RDD_SHADOW` and from the user-owned RDD kill switch (adopted default). When off, every `start` MUST take the legacy path and create no new-lineage artifact.
 
 #### Scenario: Default configuration takes the legacy path
 
@@ -18,7 +18,7 @@ The activation switch MUST be a dedicated environment variable, default OFF, dis
 
 #### Scenario: Switch identity never overloads another switch
 
-- GIVEN the activation switch, `GENTLE_AI_RDD_SHADOW`, and the RDD kill switch
+- GIVEN the activation switch, `HGTRAN_AI_RDD_SHADOW`, and the RDD kill switch
 - WHEN any one of the three is toggled
 - THEN only its own scoped behavior changes; the other two are unaffected
 

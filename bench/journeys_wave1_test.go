@@ -7,14 +7,14 @@ import (
 )
 
 func TestWaveReviewInvocationArgs(t *testing.T) {
-	got, err := waveReviewInvocationArgs("gentle-ai review start --contract=gentle-ai.review-integration/v2 --consent=relay")
+	got, err := waveReviewInvocationArgs("hgtran-ai review start --contract=hgtran-ai.review-integration/v2 --consent=relay")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if joined := strings.Join(got, "\x00"); joined != "review\x00start\x00--contract=gentle-ai.review-integration/v2\x00--consent=relay" {
+	if joined := strings.Join(got, "\x00"); joined != "review\x00start\x00--contract=hgtran-ai.review-integration/v2\x00--consent=relay" {
 		t.Fatalf("review invocation args = %q", joined)
 	}
-	for _, invalid := range []string{"", "other review start", "gentle-ai status"} {
+	for _, invalid := range []string{"", "other review start", "hgtran-ai status"} {
 		if _, err := waveReviewInvocationArgs(invalid); err == nil {
 			t.Fatalf("accepted invalid review invocation %q", invalid)
 		}
@@ -33,7 +33,7 @@ func TestCorrectionSubmissionArgumentsRejectsShortDescriptor(t *testing.T) {
       "submission": {
         "operation_token": "finalize",
         "argument_tokens": [
-          "--contract=gentle-ai.review-integration/v2",
+          "--contract=hgtran-ai.review-integration/v2",
           "--lineage=lineage",
           "--expected-revision=sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
           "--target=sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"

@@ -10,7 +10,7 @@
 
 - `go test ./internal/tui/...` — ✅ PASS (fresh run, green).
 - `go vet ./internal/tui/...` — ✅ clean, zero issues.
-- `go test ./...` — `internal/tui` ✅ PASS. The unrelated `internal/cli`, `internal/update`, and `internal/update/upgrade` env-driven cases (`GENTLE_AI_CHANNEL=beta`, platform install/engram download) are pre-existing and outside this change's scope; this change does not touch them.
+- `go test ./...` — `internal/tui` ✅ PASS. The unrelated `internal/cli`, `internal/update`, and `internal/update/upgrade` env-driven cases (`HGTRAN_AI_CHANNEL=beta`, platform install/engram download) are pre-existing and outside this change's scope; this change does not touch them.
 
 ## 2. Behavior Preservation
 

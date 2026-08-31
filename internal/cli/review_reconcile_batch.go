@@ -10,8 +10,8 @@ import (
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/reviewtransaction"
 )
 
-const ReviewReconcileAuthorityBatchPreparationInputSchema = "gentle-ai.review-batch-reconcile-preparation-input/v1"
-const ReviewReconcileAuthorityBatchResultSchema = "gentle-ai.review-batch-reconcile-result/v1"
+const ReviewReconcileAuthorityBatchPreparationInputSchema = "hgtran-ai.review-batch-reconcile-preparation-input/v1"
+const ReviewReconcileAuthorityBatchResultSchema = "hgtran-ai.review-batch-reconcile-result/v1"
 
 // ReviewReconcileAuthorityBatchPreparationInput declares the complete invalid
 // edge set and the maintainer identity used to derive an exact authorization.

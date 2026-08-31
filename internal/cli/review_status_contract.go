@@ -12,16 +12,16 @@ import (
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/reviewtransaction"
 )
 
-const ReviewIntegrationStatusSchemaV1 = "gentle-ai.review-integration.status/v1"
-const ReviewIntegrationStatusSchemaIDV1 = "https://gentle-ai.dev/contracts/review-integration/v1/schemas/status.schema.json"
-const ReviewIntegrationStatusSchemaV2 = "gentle-ai.review-integration.status/v2"
-const ReviewIntegrationStatusSchemaIDV2 = "https://gentle-ai.dev/contracts/review-integration/v1/schemas/status-v2.schema.json"
-const ReviewIntegrationStatusSchemaV3 = "gentle-ai.review-integration.status/v3"
-const ReviewIntegrationStatusSchemaIDV3 = "https://gentle-ai.dev/contracts/review-integration/v2/schemas/status.schema.json"
-const ReviewIntegrationStatusSchema = "gentle-ai.review-integration.status/v4"
-const ReviewIntegrationStatusSchemaID = "https://gentle-ai.dev/contracts/review-integration/v2/schemas/status-v4.schema.json"
-const ReviewIntegrationProjectionSchema = "gentle-ai.review-integration.projection/v1"
-const ReviewIntegrationProjectionSchemaID = "https://gentle-ai.dev/contracts/review-integration/v1/schemas/projection.schema.json"
+const ReviewIntegrationStatusSchemaV1 = "hgtran-ai.review-integration.status/v1"
+const ReviewIntegrationStatusSchemaIDV1 = "https://hgtran-ai.dev/contracts/review-integration/v1/schemas/status.schema.json"
+const ReviewIntegrationStatusSchemaV2 = "hgtran-ai.review-integration.status/v2"
+const ReviewIntegrationStatusSchemaIDV2 = "https://hgtran-ai.dev/contracts/review-integration/v1/schemas/status-v2.schema.json"
+const ReviewIntegrationStatusSchemaV3 = "hgtran-ai.review-integration.status/v3"
+const ReviewIntegrationStatusSchemaIDV3 = "https://hgtran-ai.dev/contracts/review-integration/v2/schemas/status.schema.json"
+const ReviewIntegrationStatusSchema = "hgtran-ai.review-integration.status/v4"
+const ReviewIntegrationStatusSchemaID = "https://hgtran-ai.dev/contracts/review-integration/v2/schemas/status-v4.schema.json"
+const ReviewIntegrationProjectionSchema = "hgtran-ai.review-integration.projection/v1"
+const ReviewIntegrationProjectionSchemaID = "https://hgtran-ai.dev/contracts/review-integration/v1/schemas/projection.schema.json"
 
 type ReviewReceiptStatus string
 

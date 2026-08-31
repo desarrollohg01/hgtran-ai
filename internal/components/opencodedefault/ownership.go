@@ -14,7 +14,7 @@ import (
 
 const (
 	ManagedAgent = "gentle-orchestrator"
-	schema       = "gentle-ai.opencode-default-agent"
+	schema       = "hgtran-ai.opencode-default-agent"
 	version      = 1
 )
 
@@ -42,7 +42,7 @@ type UninstallPlan struct {
 }
 
 func OwnershipPath(settingsPath string) string {
-	return filepath.Join(filepath.Dir(settingsPath), ".gentle-ai-default-agent.json")
+	return filepath.Join(filepath.Dir(settingsPath), ".hgtran-ai-default-agent.json")
 }
 func PrepareInstall(settingsPath string) (*InstallPlan, error) {
 	root, _, exists, _, err := readSettings(settingsPath)

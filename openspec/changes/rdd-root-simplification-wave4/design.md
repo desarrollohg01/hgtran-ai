@@ -14,7 +14,7 @@ Invert the dependency. SDD stops holding review truth and stops being supervised
 |---|---|---|---|
 | CON-09 OpenCode | `internal/agents/opencode/adapter.go` — zero review references | `internal/assets/opencode/plugins/review-result-artifacts.ts` | **Violates**: declares its own `ReviewBinding` type, composes `admissionRecoveryKey` from lineage/target/revision/context/lens/order/subject_hash, and holds a session-scoped recovery budget (`claimAdmissionRecovery`, `MAX_ADMISSION_RECOVERIES_PER_SESSION`). Consumer-side recovery state — in scope. |
 | CON-10 Pi | `internal/agents/pi/adapter.go` — zero review references | gentle-pi host repo | **Out of repo**; in-repo surface is clean. Gated by its declared capability only. |
-| CON-11 Claude | `internal/agents/claude/adapter.go` — zero review references | `internal/assets/claude/commands/sdd-apply.md:51` | **Violates**: hardcodes contract `gentle-ai.review-integration/v1` and keys routing off `nextRecommended: review` — the pre-verify control this wave removes. |
+| CON-11 Claude | `internal/agents/claude/adapter.go` — zero review references | `internal/assets/claude/commands/sdd-apply.md:51` | **Violates**: hardcodes contract `hgtran-ai.review-integration/v1` and keys routing off `nextRecommended: review` — the pre-verify control this wave removes. |
 
 Evidence: `rg "review|Review" internal/agents` returns exactly one hit, in `capabilitymanifest/manifest.go` (unrelated). The Go adapters are already thin; the payload they install is not.
 
@@ -25,7 +25,7 @@ Evidence: `rg "review|Review" internal/agents` returns exactly one hit, in `capa
 | # | Choice | Rejected | Rationale |
 |---|---|---|---|
 | 1 | `ReceiptRef{Lineage, ReceiptHash}` — exactly two fields — persisted in the SDD runtime ledger as `RuntimeStatus.Receipt *ReceiptRef`, appended by a new `runtimeReceiptEvent` (operation `receipt`), replacing `BindingRevision`/`Binding *ReviewBinding`. Validity is one call: `reviewtransaction.ValidateReceiptRef(ctx, repo, ref)` | A new OpenSpec artifact file (`changes/<c>/reviews/receipt-ref.json`); keeping `AuthorityRevision`/`GateContext` on the ref | Two fields answer "what do I ask about" and "which bytes did I see"; any third field is a value SDD would have to keep in sync — the mirror. An OpenSpec file is a second store *and* human-editable, so it is forgeable. `GateContext` on the ref **is** the re-derivation (CON-06) |
-| 2 | Delete the writer half: `BindApprovedReview`, `prepareApproved*Binding`, `bindingBytes`/`bindingDigest`/`bindingPath`, `bindingExists`, `validateBoundReview`, `verifyBindingLedger`, `runtimeSelfSuccessorAvailable`, `RuntimeStrandedSuccessor`. Delegate the reader half: `resolveReviewAuthority` + `resolveCompactRemediationAuthority` collapse into one provider call whose `result`+`reason` `sddstatus` stores verbatim. Migration: `parseBinding` survives as read-only `parseLegacyBinding`; an existing `gentle-ai.sdd-review-binding/v1` file projects **in memory** to a `ReceiptRef` and is never rewritten and never deleted by gentle-ai | A one-shot migration that writes the ref then unlinks `binding.json` | Read-only compat matches the freeze policy and keeps rollback available; deletion is Wave 7's destructive step, and doing it here removes the rollback path inside the wave that needs it most |
+| 2 | Delete the writer half: `BindApprovedReview`, `prepareApproved*Binding`, `bindingBytes`/`bindingDigest`/`bindingPath`, `bindingExists`, `validateBoundReview`, `verifyBindingLedger`, `runtimeSelfSuccessorAvailable`, `RuntimeStrandedSuccessor`. Delegate the reader half: `resolveReviewAuthority` + `resolveCompactRemediationAuthority` collapse into one provider call whose `result`+`reason` `sddstatus` stores verbatim. Migration: `parseBinding` survives as read-only `parseLegacyBinding`; an existing `hgtran-ai.sdd-review-binding/v1` file projects **in memory** to a `ReceiptRef` and is never rewritten and never deleted by hgtran-ai | A one-shot migration that writes the ref then unlinks `binding.json` | Read-only compat matches the freeze policy and keeps rollback available; deletion is Wave 7's destructive step, and doing it here removes the rollback path inside the wave that needs it most |
 | 3 | **SUPERSEDED, see the two amendments below** ("decision 3 call site" and "corrective verify cycle 4: BLOCKER-1"). Original text, kept for the decision's own history: One call site: `internal/cli`'s SDD verify success exit — after verify-report admission, before archive eligibility. **Not** in `sddstatus.Resolve` (status stays a pure read). Decline = unmanaged proceed: nothing recorded, archive under ordinary policy, `reviewGate.delivery: disabled/unmanaged` — byte-identical to the kill-switch-off path. **Both claims are now wrong**: the call site moved INTO `sddstatus.Resolve()` (decision-3 amendment), and decline is realized as `reviewGate` structural absence, never a populated `delivery: disabled/unmanaged` value (BLOCKER-1 amendment) — emitting that literal string would be the same ceremony CRITICAL-1 already removed from the kill-switch-off path. Targeted re-verify scope = correction changed paths ∩ verify evidence scope; empty intersection ⇒ re-run the objective's evidence goal; changed-path set not reliably derivable ⇒ **FULL re-verify** of the objective's evidence goal (a distinct branch from empty intersection, and from empty-index/unborn-HEAD ⇒ fail closed). "Recorded as a new `RuntimeAttempt`..." — also superseded, see the "re-verify archive-gating deferred to Wave 5" amendment | Offer inside status resolution; a persisted "declined" record | An offer inside `Resolve` makes RDD a supervisor again through the back door — every status read would run it. A declined record is a mirror: it turns a human "no" into lifecycle state, which is the defect class this wave closes. Reusing the consent decline semantics keeps one meaning of "no". Reconciled 2026-08-02: `rdd-post-verify-review-offer` and `rdd-review-core-transitions` spec deltas amended from "SDD status path" to this exact call site, using this same rationale, so spec and design agree |
 | 4 | Primary proof = AST/call-graph guard asserting **zero** call edges into offer/`ReviewCore` symbols from any SDD apply/verify/archive path, across **both** `internal/sddstatus` (its one door: `var reviewEntryHook = func() {}` in `review_door.go`, precedent `finalGateAuthorizationHook`/`artifactPreimagesReadHook` in `gate.go`) **and** `internal/cli` (a new, explicit door: `var offerEntryHook = func() {}` in `review_offer_door.go`, scoped to the verify-success-exit path only — the other ~30 non-test `internal/cli` files that import `reviewtransaction` for explicit `review` subcommands are out of this guard's scope, since they are user-invoked, not automatic apply/verify/archive paths). Corroborating = call-absence counter over an OFF-mode bench journey apply→verify→archive, asserting zero on the executed path | Bench counter as primary proof; AST guard scoped to `internal/sddstatus` alone | Static primacy is the spec's own requirement: "a passing unit test of the disabled branch alone is explicitly NOT acceptable evidence" (`rdd-post-verify-review-offer` spec). A counter only proves behavior on the one executed path; a call-graph guard proves absence across every path. Since decision 3 moved the call site to `internal/cli`, the guard must cover both packages' doors — `internal/sddstatus` alone no longer bounds the full reachable surface |
 | 5 | Extend `internal/agents/capabilitymanifest`: add `ContractReviewTransportV1` to `ContractClaims`, reusing the existing `dormant\|advertised` exposure vocabulary, canonical registry, `Validate()`, and digest. Adapter declares; provider never probes. Checked in `review start` **before** risk/tier/lens/budget/consent/freeze. Absent or unrecognised ⇒ fail closed using the plugin's existing `unsupported-capability` outcome, with zero authority artifacts created | A new capability schema/file; provider-side probing of the host runtime | The manifest already is the canonical provider-neutral capability surface with validation and drift detection — a second one splits ownership again. Probing a host runtime is CON-12, explicitly out of repo. This is not hypothetical: Pi declares only `AutoInstall\|SystemPrompt\|MCP` today (no `FileSubAgents`, no `Skills`), so its lens transport is genuinely unavailable |
@@ -73,7 +73,7 @@ Evidence: `rg "review|Review" internal/agents` returns exactly one hit, in `capa
 type ReceiptRef struct { Lineage string `json:"lineage"`; ReceiptHash string `json:"receipt_hash"` }
 func ValidateReceiptRef(ctx context.Context, repo string, ref ReceiptRef) (GateResult, string, error)
 func OfferReviewAfterVerify(ctx context.Context, repo string, request OfferRequest) (Offer, error) // Wave 3 shape, now wired
-const ContractReviewTransportV1 ContractID = "gentle-ai.review-transport/v1"
+const ContractReviewTransportV1 ContractID = "hgtran-ai.review-transport/v1"
 ```
 
 ## Testing Strategy
@@ -100,7 +100,7 @@ const ContractReviewTransportV1 ContractID = "gentle-ai.review-transport/v1"
 
 ## Migration / Rollout
 
-No data migration. Existing `gentle-ai.sdd-review-binding/v1` files stay on disk, parse read-only, project to a `ReceiptRef` in memory, and are never rewritten — Wave 7 deletes them. Rollback is per-slice and non-destructive: revert the offer call site and restore the pre-verify routing (slice 3); an adapter without the capability claim degrades to unavailable mode, never to a self-constructed transition. No authority is rewritten and no receipt is invalidated.
+No data migration. Existing `hgtran-ai.sdd-review-binding/v1` files stay on disk, parse read-only, project to a `ReceiptRef` in memory, and are never rewritten — Wave 7 deletes them. Rollback is per-slice and non-destructive: revert the offer call site and restore the pre-verify routing (slice 3); an adapter without the capability claim degrades to unavailable mode, never to a self-constructed transition. No authority is rewritten and no receipt is invalidated.
 
 ## PR Slicing Preview (for sdd-tasks)
 
@@ -122,7 +122,7 @@ Chained on the Wave 3 branch (`auto-chain`, feature-branch chain); ≤1000 autho
 
 - [ ] Wave 3 is **not yet on `main`** — `internal/reviewtransaction/review_offer.go`, `review_core.go`, and `authority_store.go` do not exist at `d591f4cf`. Wave 4 cannot start until Wave 3's branch lands; confirm the chain base before `sdd-tasks` forecasts.
 - [x] The OpenCode plugin's session-scoped admission-recovery budget (CON-09) is consumer-owned recovery state. **Resolved (coordinator ruling, 2026-08-03, task 8.5)**: the provider-side replacement is DEFERRED, not built this wave — either to Wave 5's entry (the gates-cutover work owns the admission flow) or to Wave 7 (if the plugin's whole legacy consumption retires there instead). Recorded explicitly rather than silently dropped; see the Wave 7 deletion-inventory Engram note for the exact loss being deferred.
-- [x] `internal/assets/*/commands/sdd-apply.md` pins contract `gentle-ai.review-integration/v1` while the orchestrator contract is `/v2`. Resolved: corrected in S1 (cross-slice fix, CI-exact-head rule), not S7.
+- [x] `internal/assets/*/commands/sdd-apply.md` pins contract `hgtran-ai.review-integration/v1` while the orchestrator contract is `/v2`. Resolved: corrected in S1 (cross-slice fix, CI-exact-head rule), not S7.
 - [ ] Whether `SDDReceiptRef`/the compact receipt schema should carry correction-path data, so targeted re-verify's branch 7.2 ("not reliably derivable") stops being the general case, is left open for Wave 5 or Wave 7 — explicitly out of scope for this amendment (see "Amendment (coordinator-resolved): targeted re-verify call site").
 
 ## Amendment (orchestrator-resolved): decision 3 call site (2026-08-03)
@@ -153,7 +153,7 @@ repo and change context on every call:
    `OfferReviewAfterVerify`'s own composed decision is available yet
    (conservatively `false` until S4/S5 compose the receipt/lens/tier
    evidence it needs — matching `review_offer.go`'s own documented Wave 3
-   shape), the lineage identifier, and the exact `gentle-ai review start`
+   shape), the lineage identifier, and the exact `hgtran-ai review start`
    invocation to run. This is `OfferReviewAfterVerify`'s first real caller.
 2. Switch off is structural absence at BOTH the Go-value level (`Status.
    ReviewOffer` stays `nil`) and the serialized-output level (`omitempty`
@@ -201,7 +201,7 @@ compile-safe as an atomic field removal, for two reasons neither decision 1
 nor decision 2 accounted for:
 
 1. `internal/cli/review_facade.go` calls `sddstatus.BindApprovedReview` as the
-   live `gentle-ai review bind-sdd` command — a production surface, not
+   live `hgtran-ai review bind-sdd` command — a production surface, not
    scheduled for retirement by any Wave 4 task — which reads
    `RuntimeStatus.Binding` through `bindPreparedReview`'s return value.
 2. `runtime_ledger.go`'s `Finish()` remediation-successor CAS and
@@ -326,7 +326,7 @@ the live verify-report's evidence revision on every `Resolve()`) and
    re-verify recording `--remediates-evidence-revision sha256:R1`, cycle 2
    blocked again naming `sha256:R2`.
 2. **Unrunnable continuation.** The blocked reason named
-   `gentle-ai sdd-attempt finish --remediates-evidence-revision <rev>`, but
+   `hgtran-ai sdd-attempt finish --remediates-evidence-revision <rev>`, but
    `sdd-attempt finish` refuses that flag unless `--expected-binding-revision`
    and `--successor-lineage` are ALSO given, together
    (`internal/cli/sdd_attempt.go:94-96`) — and `--successor-lineage` requires

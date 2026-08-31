@@ -6,7 +6,7 @@
 
 Receipt-Driven Development (RDD) should be a thin, provider-owned, content-bound approval and delivery-control plane. It must not be the implementation workflow, an adapter-owned state machine, or an SDD lifecycle engine.
 
-For new review lineages, Gentle AI should consolidate RDD behind one native transition owner, one candidate relation algebra, and two active authority artifacts:
+For new review lineages, Hgtran AI should consolidate RDD behind one native transition owner, one candidate relation algebra, and two active authority artifacts:
 
 1. A mutable CAS authority record.
 2. An immutable terminal receipt.

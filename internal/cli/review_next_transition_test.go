@@ -297,7 +297,7 @@ func historicalConsumedCorrectionRoutingFixture(t *testing.T, proposed *int) (st
 		t.Fatal(err)
 	}
 	record.Revision, _ = reviewtransaction.CompactRevisionForState(record.State)
-	record.Schema = "gentle-ai.review-state-record/v2"
+	record.Schema = "hgtran-ai.review-state-record/v2"
 	payload, _ := json.MarshalIndent(record, "", "  ")
 	payload = append(payload, '\n')
 	if err := os.WriteFile(store.StatePath(), payload, 0o644); err != nil {
@@ -411,7 +411,7 @@ func TestReviewNextTransitionStateTable(t *testing.T) {
 			}
 			if tt.status.Action == reviewtransaction.TargetStatusActionRecover {
 				input = reviewNextTransitionInput{Successor: "review-next-successor", Reason: "authorized recovery", Actor: "maintainer"}
-				input.Authorization = "gentle-ai.review-recovery-authorization/v1\npredecessor_lineage=" + tt.status.Authority.LineageID + "\npredecessor_revision=" + tt.status.Authority.Revision + "\ntarget_identity=" + tt.status.TargetIdentity + "\nactor=" + input.Actor + "\nreason=" + input.Reason
+				input.Authorization = "hgtran-ai.review-recovery-authorization/v1\npredecessor_lineage=" + tt.status.Authority.LineageID + "\npredecessor_revision=" + tt.status.Authority.Revision + "\ntarget_identity=" + tt.status.TargetIdentity + "\nactor=" + input.Actor + "\nreason=" + input.Reason
 			}
 			got := newReviewNextTransition(tt.status, tt.lenses, tt.artifacts, nil, nil, input)
 			if got.Kind != tt.wantKind || got.Execute != nil && got.Execute.Operation != tt.wantOperation {
@@ -466,7 +466,7 @@ func TestReviewTransitionArgumentToken(t *testing.T) {
 			status: status(reviewtransaction.TargetApplicabilityCurrent, reviewtransaction.StateInvalidated, reviewtransaction.TargetStatusActionRecover, reviewtransaction.ReplayabilityManualActionRequired),
 			input: reviewNextTransitionInput{
 				Successor: "review-token-successor", Reason: "authorized recovery", Actor: "maintainer",
-				Authorization: "gentle-ai.review-recovery-authorization/v1\npredecessor_lineage=review-token\npredecessor_revision=sha256:" + strings.Repeat("a", 64) + "\ntarget_identity=sha256:" + strings.Repeat("b", 64) + "\nactor=maintainer\nreason=authorized recovery",
+				Authorization: "hgtran-ai.review-recovery-authorization/v1\npredecessor_lineage=review-token\npredecessor_revision=sha256:" + strings.Repeat("a", 64) + "\ntarget_identity=sha256:" + strings.Repeat("b", 64) + "\nactor=maintainer\nreason=authorized recovery",
 			},
 			wantTokens: map[string]string{"predecessor-lineage": "--predecessor-lineage=review-token", "successor-lineage": "--successor-lineage=review-token-successor"},
 		},
@@ -547,7 +547,7 @@ func TestNewReviewNextTransitionEscalatedRouting(t *testing.T) {
 		status := baseStatus(changedTarget, unchangedTarget)
 		input := reviewNextTransitionInput{
 			Successor: "review-escalated-successor", Reason: "authorized recovery", Actor: "maintainer",
-			Authorization: "gentle-ai.review-recovery-authorization/v1\npredecessor_lineage=review-escalated\npredecessor_revision=sha256:" + strings.Repeat("a", 64) + "\ntarget_identity=" + changedTarget + "\nactor=maintainer\nreason=authorized recovery",
+			Authorization: "hgtran-ai.review-recovery-authorization/v1\npredecessor_lineage=review-escalated\npredecessor_revision=sha256:" + strings.Repeat("a", 64) + "\ntarget_identity=" + changedTarget + "\nactor=maintainer\nreason=authorized recovery",
 		}
 		got := newReviewNextTransition(status, nil, nil, nil, nil, input)
 		if got.Kind != reviewNextTransitionExecute || got.Execute == nil || got.Execute.Operation != "review.recover" {
@@ -569,7 +569,7 @@ func TestNewReviewNextTransitionEscalatedRouting(t *testing.T) {
 		status := baseStatus(unchangedTarget, unchangedTarget)
 		input := reviewNextTransitionInput{
 			Successor: "review-escalated-successor", Reason: "authorized recovery", Actor: "maintainer",
-			Authorization: "gentle-ai.review-recovery-authorization/v1\npredecessor_lineage=review-escalated\npredecessor_revision=sha256:" + strings.Repeat("a", 64) + "\ntarget_identity=" + unchangedTarget + "\nactor=maintainer\nreason=authorized recovery",
+			Authorization: "hgtran-ai.review-recovery-authorization/v1\npredecessor_lineage=review-escalated\npredecessor_revision=sha256:" + strings.Repeat("a", 64) + "\ntarget_identity=" + unchangedTarget + "\nactor=maintainer\nreason=authorized recovery",
 		}
 		got := newReviewNextTransition(status, nil, nil, nil, nil, input)
 		if got.Kind != reviewNextTransitionExecute || got.Execute == nil || got.Execute.Operation != "review.recover" {
@@ -807,7 +807,7 @@ func validateAgainstPublishedStatusNextTransitionSchema(t *testing.T, version, s
 		t.Fatalf("%s $defs.next_transition is missing or not an object: %#v", schemaFile, defs["next_transition"])
 	}
 
-	location := "https://gentle-ai.dev/contracts/review-integration/" + version + "/schemas/_test-next-transition.schema.json"
+	location := "https://hgtran-ai.dev/contracts/review-integration/" + version + "/schemas/_test-next-transition.schema.json"
 	synthetic := map[string]any{"$schema": statusSchema["$schema"], "$id": location, "$defs": defs}
 	for key, value := range nextTransition {
 		synthetic[key] = value
@@ -840,7 +840,7 @@ func validateAgainstPublishedStatusNextTransitionSchema(t *testing.T, version, s
 			document := refSchema.(map[string]any)
 			refSchema = map[string]any{"$schema": document["$schema"], "$id": document["$id"], "$defs": document["$defs"]}
 		}
-		if err := compiler.AddResource("https://gentle-ai.dev/contracts/review-integration/"+resource.version+"/schemas/"+resource.name, refSchema); err != nil {
+		if err := compiler.AddResource("https://hgtran-ai.dev/contracts/review-integration/"+resource.version+"/schemas/"+resource.name, refSchema); err != nil {
 			t.Fatal(err)
 		}
 	}

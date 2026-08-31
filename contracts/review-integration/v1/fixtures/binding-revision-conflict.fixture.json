@@ -1,6 +1,6 @@
 {
-  "schema": "gentle-ai.review-integration.failure/v1",
-  "contract": "gentle-ai.review-integration/v1",
+  "schema": "hgtran-ai.review-integration.failure/v1",
+  "contract": "hgtran-ai.review-integration/v1",
   "operation": "review.bind_sdd",
   "phase": "pre_native",
   "code": "binding_revision_conflict",

@@ -22,7 +22,7 @@ import (
 )
 
 func TestMain(m *testing.M) {
-	if os.Getenv("GENTLE_AI_FAKE_GO") == "1" {
+	if os.Getenv("HGTRAN_AI_FAKE_GO") == "1" {
 		data := fmt.Sprintf("GONOSUMDB=%s\nGOPRIVATE=%s\nGONOPROXY=%s\n", os.Getenv("GONOSUMDB"), os.Getenv("GOPRIVATE"), os.Getenv("GONOPROXY"))
 		_ = os.WriteFile(os.Getenv("GO_ENV_RECORD"), []byte(data), 0o600)
 		os.Exit(0)
@@ -707,11 +707,11 @@ func TestDownloadLatestBinaryWindowsStopNilProceedsToInstall(t *testing.T) {
 	}
 }
 
-// TestDownloadLatestBinaryIgnoresGentleEngramAndPiTags asserts the CORRECTNESS
+// TestDownloadLatestBinaryIgnoresHgtranEngramAndPiTags asserts the CORRECTNESS
 // CRUX: when the release list contains a mix of a core engram tag (vX.Y.Z), a
-// gentle-engram tag, and a pi-v* tag, DownloadLatestBinary MUST pick the core
-// engram version and MUST NOT pick the gentle-engram or pi-* tag.
-func TestDownloadLatestBinaryIgnoresGentleEngramAndPiTags(t *testing.T) {
+// hgtran-engram tag, and a pi-v* tag, DownloadLatestBinary MUST pick the core
+// engram version and MUST NOT pick the hgtran-engram or pi-* tag.
+func TestDownloadLatestBinaryIgnoresHgtranEngramAndPiTags(t *testing.T) {
 	const binaryVersion = "1.16.3"
 
 	tarContent := buildFakeTarGz(t, "engram")
@@ -720,16 +720,16 @@ func TestDownloadLatestBinaryIgnoresGentleEngramAndPiTags(t *testing.T) {
 		checksums += makeChecksumsTxt(engramArchiveName(binaryVersion, "linux", goarch), tarContent)
 	}
 
-	// The release list intentionally lists gentle-engram first (highest position)
+	// The release list intentionally lists hgtran-engram first (highest position)
 	// and pi-v* second — both without binary assets — followed by the real core
 	// engram release. The download MUST skip the first two and pick the third.
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch {
 		case strings.Contains(r.URL.Path, "releases/latest"):
-			// /latest points at a gentle-engram tag — the non-core tag that must be skipped.
+			// /latest points at a hgtran-engram tag — the non-core tag that must be skipped.
 			w.Header().Set("Content-Type", "application/json")
 			json.NewEncoder(w).Encode(map[string]any{
-				"tag_name": "gentle-engram v0.1.8",
+				"tag_name": "hgtran-engram v0.1.8",
 				"assets":   []any{},
 			})
 		case strings.Contains(r.URL.Path, "releases") && !strings.Contains(r.URL.Path, "releases/latest") &&
@@ -743,7 +743,7 @@ func TestDownloadLatestBinaryIgnoresGentleEngramAndPiTags(t *testing.T) {
 			}
 			json.NewEncoder(w).Encode([]map[string]any{
 				{
-					"tag_name":   "gentle-engram v0.1.8",
+					"tag_name":   "hgtran-engram v0.1.8",
 					"draft":      false,
 					"prerelease": false,
 					"assets":     []any{},
@@ -911,7 +911,7 @@ func TestEngramChecksumVerification(t *testing.T) {
 
 // TestFetchLatestEngramVersionWithAssetsPaginates asserts that
 // fetchLatestEngramVersionWithAssets paginates beyond the first page when
-// page 1 contains only non-core tags (pi-v* / gentle-engram) and the valid
+// page 1 contains only non-core tags (pi-v* / hgtran-engram) and the valid
 // core vX.Y.Z release with a binary asset is on page 2.
 //
 // Regression test for the issue where per_page=20 capped discovery and returned
@@ -962,7 +962,7 @@ func TestFetchLatestEngramVersionWithAssetsPaginates(t *testing.T) {
 						"assets":     []any{},
 					},
 					{
-						"tag_name":   "gentle-engram v0.2.0",
+						"tag_name":   "hgtran-engram v0.2.0",
 						"draft":      false,
 						"prerelease": false,
 						"assets":     []any{},
@@ -1184,7 +1184,7 @@ func TestCanonicalEngramGoInstallPackagePreservesDeclaredModuleCasing(t *testing
 	}{
 		{
 			name: "lowercase owner is canonicalized",
-			pkg:  "github.com/gentleman-programming/engram/cmd/engram@main",
+			pkg:  "github.com/Gentleman-Programming/engram/cmd/engram@main",
 			want: "github.com/Gentleman-Programming/engram/cmd/engram@main",
 		},
 		{
@@ -1194,8 +1194,8 @@ func TestCanonicalEngramGoInstallPackagePreservesDeclaredModuleCasing(t *testing
 		},
 		{
 			name: "unrelated package remains unchanged",
-			pkg:  "bitbucket.org/hgt_development/hgtran-ai/v2/cmd/gentle-ai@latest",
-			want: "bitbucket.org/hgt_development/hgtran-ai/v2/cmd/gentle-ai@latest",
+			pkg:  "bitbucket.org/hgt_development/hgtran-ai/v2/cmd/hgtran-ai@latest",
+			want: "bitbucket.org/hgt_development/hgtran-ai/v2/cmd/hgtran-ai@latest",
 		},
 	}
 
@@ -1227,7 +1227,7 @@ func TestEngramGoInstallFromMainCanonicalizesModuleCasing(t *testing.T) {
 		return map[string]string{"GOBIN": fakeInstallDir, "GOPATH": ""}, nil
 	}
 
-	_, err := engramGoInstallFromMain("github.com/gentleman-programming/engram/cmd/engram@main")
+	_, err := engramGoInstallFromMain("github.com/Gentleman-Programming/engram/cmd/engram@main")
 	if err != nil {
 		t.Fatalf("engramGoInstallFromMain: unexpected error: %v", err)
 	}
@@ -1302,7 +1302,7 @@ func TestEngramGoInstallFromMain_BypassesPublicGoProxy(t *testing.T) {
 		if err := os.WriteFile(fakeGo, data, 0o755); err != nil {
 			t.Fatal(err)
 		}
-		t.Setenv("GENTLE_AI_FAKE_GO", "1")
+		t.Setenv("HGTRAN_AI_FAKE_GO", "1")
 	} else {
 		script := "#!/usr/bin/env bash\n" +
 			"printf 'GONOSUMDB=%s\\nGOPRIVATE=%s\\nGONOPROXY=%s\\n' \"${GONOSUMDB:-}\" \"${GOPRIVATE:-}\" \"${GONOPROXY:-}\" > \"$GO_ENV_RECORD\"\n"
@@ -1416,7 +1416,7 @@ func TestStopEngramProcessesUsesPowerShellResolver(t *testing.T) {
 // Related: PR #937 (PowerShell 5.1 fallback for SHA256 checksum verification)
 func TestSHA256ChecksumContract(t *testing.T) {
 	// Test data: arbitrary content to hash
-	testData := []byte("Gentle AI SHA256 contract test")
+	testData := []byte("Hgtran AI SHA256 contract test")
 
 	// Calculate hash using Go's crypto/sha256 (same as engramDownloadToFile)
 	h := sha256.Sum256(testData)

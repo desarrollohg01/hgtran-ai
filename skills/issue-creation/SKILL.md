@@ -1,29 +1,29 @@
 ---
-name: gentle-ai-issue-creation
-description: "Create Gentle AI issues with issue-first checks. Trigger: creating GitHub issues, bug reports, or feature requests."
+name: hgtran-ai-issue-creation
+description: "Create Hgtran AI issues with issue-first checks. Trigger: creating GitHub issues, bug reports, or feature requests."
 license: Apache-2.0
 metadata:
   author: gentleman-programming
   version: "1.1"
 ---
 
-# Gentle AI — Issue Creation Skill
+# Hgtran AI — Issue Creation Skill
 
 ## When to Use
 
 Load this skill whenever you need to:
 - Report a bug in `gga`
 - Request a new feature or enhancement
-- Open any GitHub issue on the [Gentleman-Programming/gentle-ai](https://github.com/Gentleman-Programming/gentle-ai) repository
+- Open any GitHub issue on the [Gentleman-Programming/hgtran-ai](https://github.com/Gentleman-Programming/hgtran-ai) repository
 
 ## Critical Rules
 
 1. **Blank issues are DISABLED** — `blank_issues_enabled: false` in `.github/ISSUE_TEMPLATE/config.yml`. You MUST use a template.
 2. **`status:needs-review` is applied automatically** — every new issue gets this label; you do NOT add it manually.
 3. **`status:approved` is REQUIRED before ANY work begins** — a maintainer must label the issue before you or anyone opens a PR.
-4. **Questions go to Discussions** — use [GitHub Discussions](https://github.com/Gentleman-Programming/gentle-ai/discussions), NOT issues, for questions and general conversation.
+4. **Questions go to Discussions** — use [GitHub Discussions](https://github.com/Gentleman-Programming/hgtran-ai/discussions), NOT issues, for questions and general conversation.
 5. **No Co-Authored-By trailers** — never add AI attribution to commits.
-6. **Pre-submission privacy review is MANDATORY** — before `gh issue create`, replace private project names, usernames, home paths, hostnames, secrets/credentials, and environment-specific identifiers with explicit placeholders (`<project-name>`, `<user>`, `<hostname>`, `<token>`). Keep reproduction structure with placeholders — never redact an example into nothingness. Do NOT redact intentionally public identifiers like `gentle-ai`, `engram`, `go`. A final body scan happens immediately before publish.
+6. **Pre-submission privacy review is MANDATORY** — before `gh issue create`, replace private project names, usernames, home paths, hostnames, secrets/credentials, and environment-specific identifiers with explicit placeholders (`<project-name>`, `<user>`, `<hostname>`, `<token>`). Keep reproduction structure with placeholders — never redact an example into nothingness. Do NOT redact intentionally public identifiers like `hgtran-ai`, `engram`, `go`. A final body scan happens immediately before publish.
 
 ## Pre-submission Privacy Review
 
@@ -38,7 +38,7 @@ Every issue body is scanned immediately before `gh issue create`. The scan repla
 | API keys, tokens, passwords | `<token>` / `<password>` | `ghp_abc123...` → `<token>` |
 | Internal ports / hostnames | `<host>:<port>` | `10.0.0.42:5432` → `<host>:<port>` |
 
-Intentionally public identifiers are NOT redacted: tool names (`gentle-ai`, `engram`, `go`, `node`, `python`), package names, public documentation URLs, generic example domains (`example.com`, `localhost`).
+Intentionally public identifiers are NOT redacted: tool names (`hgtran-ai`, `engram`, `go`, `node`, `python`), package names, public documentation URLs, generic example domains (`example.com`, `localhost`).
 
 **Rule of thumb:** if the reader can run the reproduction step after you replace every identifier with its placeholder, the sanitization is correct. If a step becomes impossible (because the placeholder consumed a needed value), that step needs the value — and you should mark it `<value-required>` and explain in the body what the user should fill in.
 
@@ -46,7 +46,7 @@ Intentionally public identifiers are NOT redacted: tool names (`gentle-ai`, `eng
 
 ```
 1. Search existing issues → confirm it's not a duplicate
-   https://github.com/Gentleman-Programming/gentle-ai/issues
+   https://github.com/Gentleman-Programming/hgtran-ai/issues
 
 2. Choose the correct template:
    - Bug   → .github/ISSUE_TEMPLATE/bug_report.yml
@@ -77,7 +77,7 @@ Intentionally public identifiers are NOT redacted: tool names (`gentle-ai`, `eng
 | Steps to Reproduce | Numbered steps to reproduce the behavior |
 | Expected Behavior | What should happen |
 | Actual Behavior | What actually happens |
-| Gentle AI Version | Output of `gga version` |
+| Hgtran AI Version | Output of `gga version` |
 | Operating System | macOS / Linux distro / Windows / WSL |
 | AI Agent / Client | Claude Code / OpenCode / Gemini CLI / Cursor / Windsurf / Other |
 | Affected Area | See area list below |
@@ -90,14 +90,14 @@ Intentionally public identifiers are NOT redacted: tool names (`gentle-ai`, `eng
 
 ```bash
 gh issue create \
-  --repo Gentleman-Programming/gentle-ai \
+  --repo Gentleman-Programming/hgtran-ai \
   --template bug_report.yml \
   --title "fix(agent): Claude Code not detected on Linux Arch"
 ```
 
 Or open the web form directly:
 ```
-https://github.com/Gentleman-Programming/gentle-ai/issues/new?template=bug_report.yml
+https://github.com/Gentleman-Programming/hgtran-ai/issues/new?template=bug_report.yml
 ```
 
 ---
@@ -122,14 +122,14 @@ https://github.com/Gentleman-Programming/gentle-ai/issues/new?template=bug_repor
 
 ```bash
 gh issue create \
-  --repo Gentleman-Programming/gentle-ai \
+  --repo Gentleman-Programming/hgtran-ai \
   --template feature_request.yml \
   --title "feat(tui): add keyboard shortcut help overlay"
 ```
 
 Or open the web form directly:
 ```
-https://github.com/Gentleman-Programming/gentle-ai/issues/new?template=feature_request.yml
+https://github.com/Gentleman-Programming/hgtran-ai/issues/new?template=feature_request.yml
 ```
 
 ---
@@ -204,7 +204,7 @@ PR opened with `Closes #<N>`
 ```
 Do you have a question or idea to discuss?
 ├── YES → GitHub Discussions (NOT issues)
-│         https://github.com/Gentleman-Programming/gentle-ai/discussions
+│         https://github.com/Gentleman-Programming/hgtran-ai/discussions
 └── NO  → Is it a defect in gga?
           ├── YES → Bug Report template
           └── NO  → Feature Request template
@@ -223,17 +223,17 @@ Do you have a question or idea to discuss?
 
 ```bash
 # Search open issues
-gh issue list --repo Gentleman-Programming/gentle-ai --state open --search "your keywords"
+gh issue list --repo Gentleman-Programming/hgtran-ai --state open --search "your keywords"
 
 # Search all issues including closed
-gh issue list --repo Gentleman-Programming/gentle-ai --state all --search "your keywords"
+gh issue list --repo Gentleman-Programming/hgtran-ai --state all --search "your keywords"
 ```
 
 ### Create a Bug Report
 
 ```bash
 gh issue create \
-  --repo Gentleman-Programming/gentle-ai \
+  --repo Gentleman-Programming/hgtran-ai \
   --template bug_report.yml \
   --title "fix(<scope>): <short description>"
 ```
@@ -242,7 +242,7 @@ gh issue create \
 
 ```bash
 gh issue create \
-  --repo Gentleman-Programming/gentle-ai \
+  --repo Gentleman-Programming/hgtran-ai \
   --template feature_request.yml \
   --title "feat(<scope>): <short description>"
 ```
@@ -250,7 +250,7 @@ gh issue create \
 ### Check Issue Status
 
 ```bash
-gh issue view <number> --repo Gentleman-Programming/gentle-ai
+gh issue view <number> --repo Gentleman-Programming/hgtran-ai
 ```
 
 ### Valid Scopes for Issue Titles

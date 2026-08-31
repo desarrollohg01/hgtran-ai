@@ -2,15 +2,15 @@
 
 [Back to Codebase Guide](../CODEBASE-GUIDE.md)
 
-Gentle-AI exposes a CLI and TUI. It configures MCP for agents. It does not expose a local HTTP API in this repository.
+Hgtran-AI exposes a CLI and TUI. It configures MCP for agents. It does not expose a local HTTP API in this repository.
 
 ## Interface map
 
 | Interface | Status in this repo | Primary files | Read for details |
 |---|---|---|---|
-| CLI | Implemented | `cmd/gentle-ai/main.go`, `internal/app/`, `internal/cli/` | [Usage](../usage.md) |
+| CLI | Implemented | `cmd/hgtran-ai/main.go`, `internal/app/`, `internal/cli/` | [Usage](../usage.md) |
 | TUI | Implemented | `internal/tui/model.go`, `internal/tui/router.go`, `internal/tui/screens/` | [Usage](../usage.md) |
-| MCP | Configured, not hosted by Gentle-AI | `internal/components/engram/`, `internal/components/mcp/` | [Engram Commands](../engram.md) |
+| MCP | Configured, not hosted by Hgtran-AI | `internal/components/engram/`, `internal/components/mcp/` | [Engram Commands](../engram.md) |
 | Local HTTP API | Not present in this source tree | No dashboard/server package found | Use external Engram docs if needed |
 
 ## CLI flow
@@ -29,7 +29,7 @@ Use CLI packages for non-interactive behavior such as `install`, `sync`, `uninst
 
 ## MCP flow
 
-Gentle-AI writes agent-specific MCP configuration so agents can call external servers. Engram configuration usually invokes:
+Hgtran-AI writes agent-specific MCP configuration so agents can call external servers. Engram configuration usually invokes:
 
 ```text
 engram mcp --tools=agent

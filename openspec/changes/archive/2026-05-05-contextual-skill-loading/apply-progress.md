@@ -1,6 +1,6 @@
 # Apply Progress — contextual-skill-loading
 
-**Worktree**: /Users/alanbuscaglia/work/gentle-ai-claude-skills
+**Worktree**: /Users/alanbuscaglia/work/hgtran-ai-claude-skills
 **Branch**: feat/claude-contextual-skill-loading
 **Mode**: Strict TDD (`go test ./...`)
 **Delivery strategy**: ask-on-risk — single PR within budget (Low risk per tasks.md forecast)
@@ -47,7 +47,7 @@
 | File | Action | What |
 |------|--------|------|
 | `internal/assets/skills_frontmatter_test.go` | created | new linter (frontmatter parses, name == basename, plain scalar description, Trigger present, whitelist) |
-| `internal/assets/skills/chained-pr/SKILL.md` | modified | `name: gentle-ai-chained-pr` → `name: chained-pr` (T2); description flattened (T4) |
+| `internal/assets/skills/chained-pr/SKILL.md` | modified | `name: hgtran-ai-chained-pr` → `name: chained-pr` (T2); description flattened (T4) |
 | `internal/assets/skills/skill-creator/SKILL.md` | modified | dropped `allowed-tools:` top-level key (T3); description flattened (T4) |
 | `internal/assets/skills/{_shared, branch-pr, cognitive-doc-design, comment-writer, go-testing, issue-creation, judgment-day, sdd-apply, sdd-archive, sdd-design, sdd-explore, sdd-init, sdd-onboard, sdd-propose, sdd-spec, sdd-tasks, sdd-verify, skill-registry, work-unit-commits}/SKILL.md` | modified | description block-scalar → plain double-quoted single-line scalar (T4) |
 | `internal/assets/assets_test.go` | modified | added `TestPersonasContainContextualSkillLoadingDirective` covering 6 personas (T5) |

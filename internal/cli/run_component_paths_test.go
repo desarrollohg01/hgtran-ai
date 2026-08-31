@@ -427,7 +427,7 @@ func TestComponentPathsEngramCodexIncludesConfigTOML(t *testing.T) {
 }
 
 // TestComponentPathsPermissionsCodexContributesNoPaths pins that the
-// Permission component claims nothing under ~/.codex. gentle-ai does not write
+// Permission component claims nothing under ~/.codex. hgtran-ai does not write
 // Codex's permissions config — not a profile, and not the legacy cleanup that
 // used to strip one — so there is no injection target to verify and nothing to
 // snapshot for rollback. A path reappearing here would mean something started
@@ -534,10 +534,10 @@ func containsPath(paths []string, want string) bool {
 // the optional SDD component must still receive it (issue #1794).
 
 const (
-	routingOpenMarker  = "<!-- gentle-ai:" + agentguidance.RoutingSectionID + " -->"
-	routingCloseMarker = "<!-- /gentle-ai:" + agentguidance.RoutingSectionID + " -->"
+	routingOpenMarker  = "<!-- hgtran-ai:" + agentguidance.RoutingSectionID + " -->"
+	routingCloseMarker = "<!-- /hgtran-ai:" + agentguidance.RoutingSectionID + " -->"
 
-	legacyTriggerRulesOpenMarker = "<!-- gentle-ai:trigger-rules -->"
+	legacyTriggerRulesOpenMarker = "<!-- hgtran-ai:trigger-rules -->"
 )
 
 // newTestInstallRuntime builds an install runtime whose resolved plan mirrors
@@ -646,7 +646,7 @@ func TestInstallDeliversRoutingGuidanceWithoutSDDComponent(t *testing.T) {
 }
 
 func TestInstallRoutingGuidanceIsIndependentOfSDDSelection(t *testing.T) {
-	const sddMarker = "<!-- gentle-ai:sdd-orchestrator -->"
+	const sddMarker = "<!-- hgtran-ai:sdd-orchestrator -->"
 
 	withoutSDD := t.TempDir()
 	runInstallInjectionSteps(t, newTestInstallRuntime(t, withoutSDD, model.Selection{

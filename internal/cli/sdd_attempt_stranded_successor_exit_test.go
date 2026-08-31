@@ -54,7 +54,7 @@ func TestSDDAttemptBoundFinishNamesTheExitOutOfAStrandedSuccessor(t *testing.T) 
 	}
 
 	arguments := namedRunnableGentleCommand(t, message)
-	if len(arguments) < 3 || arguments[0] != "gentle-ai" || arguments[1] != "review" || arguments[2] != "abandon" {
+	if len(arguments) < 3 || arguments[0] != "hgtran-ai" || arguments[1] != "review" || arguments[2] != "abandon" {
 		t.Fatalf("refusal names %v, not the abandonment that clears the strand:\n%s", arguments, message)
 	}
 	arguments = arguments[2:]
@@ -129,7 +129,7 @@ func TestSDDAttemptBoundFinishStillRoutesUnstrandedSuccessorsToTheRouter(t *test
 	createCLIRecoverySuccessor(t, fixture.repo, fixture.lineage, fixture.lineage+"-successor")
 
 	message := boundPassingFinishRefusal(t, fixture, "unstranded-finish-2")
-	if strings.Contains(message, "gentle-ai review abandon") {
+	if strings.Contains(message, "hgtran-ai review abandon") {
 		t.Fatalf("refusal names an abandonment for a successor that still governs the candidate:\n%s", message)
 	}
 	arguments := namedRunnableGentleCommand(t, message)

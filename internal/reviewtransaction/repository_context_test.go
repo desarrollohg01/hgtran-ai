@@ -194,7 +194,7 @@ func TestReviewRepositoryContextRejectsMissingMalformedOversizedAndTerminalRecor
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err := os.WriteFile(path, []byte(`{"schema":"gentle-ai.review-repository-context/v1","unknown":true}`), 0o600); err != nil {
+	if err := os.WriteFile(path, []byte(`{"schema":"hgtran-ai.review-repository-context/v1","unknown":true}`), 0o600); err != nil {
 		t.Fatal(err)
 	}
 	if _, err := ResolveReviewRepositoryContext(context.Background(), handle, binding); err == nil {

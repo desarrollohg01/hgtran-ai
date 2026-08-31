@@ -264,7 +264,7 @@ func TestRARResultAuthorityRejectsReplacedGitIdentityWithoutPublishing(t *testin
 	}
 	replacementRoot := filepath.Join(
 		originalGit,
-		"gentle-ai",
+		"hgtran-ai",
 		"review-transactions",
 		rarAuthorityDirectory,
 		rarAuthorityVersion,

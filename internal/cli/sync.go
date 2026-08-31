@@ -118,9 +118,9 @@ func ParseSyncFlags(args []string) (SyncFlags, error) {
 		}
 		usageText = strings.TrimRight(usageText, "\n")
 		if usageText != "" {
-			return SyncFlags{}, fmt.Errorf("%w — run `gentle-ai sync --help` for the supported flags:\n%s", err, usageText)
+			return SyncFlags{}, fmt.Errorf("%w — run `hgtran-ai sync --help` for the supported flags:\n%s", err, usageText)
 		}
-		return SyncFlags{}, fmt.Errorf("%w — run `gentle-ai sync --help` for the supported flags", err)
+		return SyncFlags{}, fmt.Errorf("%w — run `hgtran-ai sync --help` for the supported flags", err)
 	}
 	fs.Visit(func(f *flag.Flag) {
 		switch f.Name {
@@ -309,7 +309,7 @@ func parseModelSpec(spec string) (model.ModelAssignment, error) {
 // Permissions and Theme can be opted-in via flags.
 //
 // Persona is included because its content lives between
-// <!-- gentle-ai:persona --> markers — that block is harness-managed and
+// <!-- hgtran-ai:persona --> markers — that block is harness-managed and
 // must propagate embedded-asset changes across versions. Content outside
 // the markers (user-authored sections) is preserved by InjectMarkdownSection.
 //
@@ -400,7 +400,7 @@ func setSelectionComponent(selection *model.Selection, component model.Component
 // DiscoverAgents returns the agent IDs to sync.
 //
 // Discovery order:
-//  1. Persisted state (~/.gentle-ai/state.json) — written at install time.
+//  1. Persisted state (~/.hgtran-ai/state.json) — written at install time.
 //     When present and non-empty, only the agents the user explicitly installed
 //     are returned. This prevents sync from injecting into every IDE config dir
 //     that happens to exist on the system (issue #107).
@@ -1026,7 +1026,7 @@ func (s componentSyncStep) Run() error {
 
 	case model.ComponentPersona:
 		// Sync regenerates the persona block between
-		// <!-- gentle-ai:persona --> markers and (when supported) refreshes
+		// <!-- hgtran-ai:persona --> markers and (when supported) refreshes
 		// the Gentleman output-style overlay. We deliberately skip the
 		// OpenCode/Kilocode agent definition in opencode.json — that JSON
 		// merge conflicts with SDD's writes to the same settings file and
@@ -1065,7 +1065,7 @@ func (s componentSyncStep) Run() error {
 	case model.ComponentOpenCodeGentleLogo:
 		res, err := opencodeplugin.Install(s.homeDir, model.OpenCodePluginGentleLogo)
 		if err != nil {
-			return fmt.Errorf("sync OpenCode Gentle Logo plugin: %w", err)
+			return fmt.Errorf("sync OpenCode Hgtran Logo plugin: %w", err)
 		}
 		s.countChanged(boolToInt(res.Changed), res.Files...)
 		return nil
@@ -1477,7 +1477,7 @@ func RunSync(args []string) (SyncResult, error) {
 	}
 
 	// Restore Codex effort and carril model assignments from state so that
-	// `gentle-ai sync` preserves the user's per-phase effort and per-carril
+	// `hgtran-ai sync` preserves the user's per-phase effort and per-carril
 	// model choices instead of falling back to canonical defaults every time.
 	// This mirrors the TUI path (loadPersistedAssignments in app.go).
 	if len(selection.CodexModelAssignments) == 0 && len(persistedState.CodexModelAssignments) > 0 {
@@ -1581,7 +1581,7 @@ func RenderSyncReport(result SyncResult) string {
 	var b strings.Builder
 
 	if result.NoOp {
-		fmt.Fprintln(&b, "gentle-ai sync — no managed sync actions needed")
+		fmt.Fprintln(&b, "hgtran-ai sync — no managed sync actions needed")
 		if len(result.Agents) == 0 {
 			fmt.Fprintln(&b, "No agents were discovered or specified. Nothing to sync.")
 		} else {
@@ -1592,7 +1592,7 @@ func RenderSyncReport(result SyncResult) string {
 	}
 
 	if result.DryRun {
-		fmt.Fprintln(&b, "gentle-ai sync — dry-run")
+		fmt.Fprintln(&b, "hgtran-ai sync — dry-run")
 		fmt.Fprintf(&b, "Agents: %s\n", joinAgentIDs(result.Agents))
 
 		compParts := make([]string, 0, len(result.Selection.Components))
@@ -1607,7 +1607,7 @@ func RenderSyncReport(result SyncResult) string {
 		return strings.TrimRight(b.String(), "\n")
 	}
 
-	fmt.Fprintln(&b, "gentle-ai sync — managed sync executed")
+	fmt.Fprintln(&b, "hgtran-ai sync — managed sync executed")
 	fmt.Fprintf(&b, "Agents synced: %s\n", joinAgentIDs(result.Agents))
 
 	compParts := make([]string, 0, len(result.Selection.Components))
@@ -1640,8 +1640,8 @@ func RenderSyncReport(result SyncResult) string {
 
 // withFailedSyncVerificationNote replaces the generic
 // verify.VerificationIssuesMessage with one naming the concrete command that
-// retries a failed sync: `gentle-ai sync`. Unlike the install path, sync has
-// no per-agent retry command -- rerunning `gentle-ai sync` re-applies every
+// retries a failed sync: `hgtran-ai sync`. Unlike the install path, sync has
+// no per-agent retry command -- rerunning `hgtran-ai sync` re-applies every
 // discovered/persisted agent, so no agent list is needed.
 //
 // It is scoped to exactly the generic failure text so it never clobbers a
@@ -1651,7 +1651,7 @@ func withFailedSyncVerificationNote(report verify.Report) verify.Report {
 	if report.Ready || report.FinalNote != verify.VerificationIssuesMessage {
 		return report
 	}
-	report.FinalNote = verify.VerificationIssuesMessageForCommand("gentle-ai sync")
+	report.FinalNote = verify.VerificationIssuesMessageForCommand("hgtran-ai sync")
 	return report
 }
 

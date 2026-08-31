@@ -19,7 +19,7 @@ You change something. The tool looks at **what** you changed, not how much.
 And if you want none of it:
 
 ```
-gentle-ai review mode disable
+hgtran-ai review mode disable
 ```
 
 Done. It is off. **Not "off but still in your way"** — off. Do whatever you want, and if you turn it back on it tells you it is going to re-validate whatever was never reviewed.
@@ -149,7 +149,7 @@ It does not measure speed. Speed depends on the provider and the day; friction i
 And it ships. It is in the repository, it drives a real binary rather than a mock, and you can point it at your own build:
 
 ```
-cd bench && go run . run --binary $(command -v gentle-ai)
+cd bench && go run . run --binary $(command -v hgtran-ai)
 ```
 
 That is deliberate. A number I publish and you cannot reproduce is a claim about my honesty. A number you can run yourself is evidence.

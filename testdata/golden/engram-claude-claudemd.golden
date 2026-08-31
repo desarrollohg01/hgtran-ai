@@ -1,4 +1,4 @@
-<!-- gentle-ai:engram-protocol -->
+<!-- hgtran-ai:engram-protocol -->
 ## Engram Persistent Memory
 
 Engram persistent memory is ACTIVE. The full protocol (save format, lifecycle,
@@ -16,4 +16,4 @@ MCP server instructions and the SessionStart hook. Always-on rules:
   answer into a "saved / done" acknowledgement.
 - If a memory call fails or times out, deliver the answer anyway — memory
   failures never block or replace the reply.
-<!-- /gentle-ai:engram-protocol -->
+<!-- /hgtran-ai:engram-protocol -->

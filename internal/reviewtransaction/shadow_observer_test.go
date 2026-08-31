@@ -13,7 +13,7 @@ import (
 	"testing"
 )
 
-// TestShadowObserverDisabledIsANoOp is 5.2 + 5.3: when GENTLE_AI_RDD_SHADOW
+// TestShadowObserverDisabledIsANoOp is 5.2 + 5.3: when HGTRAN_AI_RDD_SHADOW
 // is unset or empty, ObserveShadowRelation must execute zero shadow work —
 // no in-memory row is recorded and no stderr line is emitted — even though
 // the call itself is reached (proven by the call-count hook, exactly the
@@ -110,7 +110,7 @@ func TestShadowObserverEnabledWritesStderrOnlyNeverStdout(t *testing.T) {
 	if stdoutCapture.Len() != 0 {
 		t.Fatalf("stdout received shadow output: %q", stdoutCapture.String())
 	}
-	if !strings.Contains(stderr.String(), "gentle-ai.rdd-shadow/v1") {
+	if !strings.Contains(stderr.String(), "hgtran-ai.rdd-shadow/v1") {
 		t.Fatalf("stderr = %q, want the structured divergence line", stderr.String())
 	}
 }
@@ -118,7 +118,7 @@ func TestShadowObserverEnabledWritesStderrOnlyNeverStdout(t *testing.T) {
 // TestShadowObservationSwitchIsRollbackBoundaryGateByteIdentical is 5.5: the
 // same candidate evaluated through the real live gate (EvaluateNativeGate,
 // which is wired to call ObserveShadowRelation in production) must produce
-// a byte-identical NativeGateEvaluation whether GENTLE_AI_RDD_SHADOW is
+// a byte-identical NativeGateEvaluation whether HGTRAN_AI_RDD_SHADOW is
 // unset or set — for both a passing and a failing scenario (orchestrator's
 // hard safety requirement).
 func TestShadowObservationSwitchIsRollbackBoundaryGateByteIdentical(t *testing.T) {

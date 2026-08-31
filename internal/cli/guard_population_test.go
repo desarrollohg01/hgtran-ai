@@ -137,7 +137,7 @@ func TestEveryRegisteredGuardPopulationDeclarationMatchesProduction(t *testing.T
 	}
 
 	registryPath := filepath.Join("..", "..", ".guard-population-baseline.txt")
-	if os.Getenv("GENTLE_AI_GUARD_POPULATION_UPDATE") == "1" {
+	if os.Getenv("HGTRAN_AI_GUARD_POPULATION_UPDATE") == "1" {
 		if err := writeGuardPopulationRegistry(registryPath, current); err != nil {
 			t.Fatal(err)
 		}

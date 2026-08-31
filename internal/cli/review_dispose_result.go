@@ -36,7 +36,7 @@ func RunReviewDisposeResult(args []string, stdout io.Writer) error {
 	flags.Var(&absent, "absent-path", "repository-relative path cited by the preserved output and absent from the frozen candidate; required and repeatable for wrong_target")
 	reason := flags.String("reason", "", "non-empty disposition reason")
 	actor := flags.String("actor", "", "disposition actor")
-	authorization := flags.String("maintainer-authorization", "", "exact eleven-line LF-only binding: gentle-ai.review-result-disposition-authorization/v1, repository, lineage, revision, target_identity, lens, order, artifact_digest, class, actor, reason")
+	authorization := flags.String("maintainer-authorization", "", "exact eleven-line LF-only binding: hgtran-ai.review-result-disposition-authorization/v1, repository, lineage, revision, target_identity, lens, order, artifact_digest, class, actor, reason")
 	if err := parseReviewFlags(flags, args); err != nil {
 		return err
 	}

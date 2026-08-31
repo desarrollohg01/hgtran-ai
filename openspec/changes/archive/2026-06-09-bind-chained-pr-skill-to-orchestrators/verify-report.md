@@ -23,8 +23,8 @@
 ```
 go test ./internal/... (full suite, fresh run, no cache)
 
-ok  github.com/gentleman-programming/gentle-ai/internal/assets         0.084s
-ok  github.com/gentleman-programming/gentle-ai/internal/components/sdd  60.808s
+ok  github.com/gentleman-programming/hgtran-ai/internal/assets         0.084s
+ok  github.com/gentleman-programming/hgtran-ai/internal/components/sdd  60.808s
 ok  (all other internal/... packages)
 
 All packages: PASS — zero failures.
@@ -46,7 +46,7 @@ Specific targeted runs:
 
 | Scenario | Status | Evidence |
 |----------|--------|----------|
-| Orchestrator resolves chained-pr skill by registry name on chained delivery | PASS | All 11 templates contain the canonical binding sentence referencing `chained-pr` (registry skill `gentle-ai-chained-pr`) by name, with no hardcoded path |
+| Orchestrator resolves chained-pr skill by registry name on chained delivery | PASS | All 11 templates contain the canonical binding sentence referencing `chained-pr` (registry skill `hgtran-ai-chained-pr`) by name, with no hardcoded path |
 | Binding is present in all 11 orchestrator templates | PASS | grep count: exactly 1 occurrence per file in all 11 templates (antigravity, claude, codex, cursor, gemini, generic, kimi, kiro, opencode, qwen, windsurf) |
 | sdd-tasks sub-agent reads chained-pr skill before planning PRs | PASS | Binding sentence in each template explicitly instructs injection into `sdd-tasks` prompts under `## Skills to load before work` |
 | sdd-apply sub-agent reads chained-pr skill before creating PRs | PASS | Binding sentence in each template explicitly instructs injection into `sdd-apply` prompts under `## Skills to load before work` |

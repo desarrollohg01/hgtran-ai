@@ -199,7 +199,7 @@ Every emitted transition argument MUST be literally executable as printed, inclu
 
 #### Scenario: Native start preserves index
 
-- GIVEN `gentle-ai review-start` receives an intended-untracked manifest
+- GIVEN `hgtran-ai review-start` receives an intended-untracked manifest
 - WHEN it writes transaction output
 - THEN the transaction is strict-parseable
 - AND the user's real Git index is byte-identical
@@ -213,9 +213,9 @@ Every emitted transition argument MUST be literally executable as printed, inclu
 
 #### Scenario: review schema publishes the verification-evidence contract (1775)
 
-- GIVEN `gentle-ai review schema` is invoked
+- GIVEN `hgtran-ai review schema` is invoked
 - WHEN the input schema catalog is emitted
-- THEN it includes the `gentle-ai.review-verification-evidence/v1` payload contract
+- THEN it includes the `hgtran-ai.review-verification-evidence/v1` payload contract
 - AND the usage/error text also names it
 
 #### Scenario: Lineage-only finalize consumes captured evidence (1663)
@@ -249,7 +249,7 @@ Every emitted transition argument MUST be literally executable as printed, inclu
 
 ### Requirement: Exact persistence references
 
-All artifact modes MUST use the repository-derived authoritative append-only CAS store at `<git-common-dir>/gentle-ai/review-transactions/v1/{lineage-id}/`. The lineage ID MUST be canonical lowercase kebab-case and MUST NOT permit path traversal or aliases. OpenSpec `transaction.json`, frozen `ledger.json`, `receipt.json`, `chain-bundle.json`, and `gate-context.json` artifacts and Engram `sdd/{change-name}/review/{transaction,ledger,receipt,chain-bundle,gate-context}` topics are non-authoritative mirrors. Each append MUST require the expected revision and one legal semantic successor. Each load MUST prove the complete content-addressed predecessor chain from exact HEAD to one valid `review/start` genesis, rejecting missing predecessors, cycles, hash or schema mismatches, immutable-field changes, illegal or reordered transitions, semantically incomplete finding routing, and incoherent counters. Archive readiness MUST cross-check the trusted terminal revision and complete chain against the transaction mirror, frozen ledger, verify evidence, receipt, portable bundle, gate identity, and current repository target; missing, stale, or mismatched artifacts block archive.
+All artifact modes MUST use the repository-derived authoritative append-only CAS store at `<git-common-dir>/hgtran-ai/review-transactions/v1/{lineage-id}/`. The lineage ID MUST be canonical lowercase kebab-case and MUST NOT permit path traversal or aliases. OpenSpec `transaction.json`, frozen `ledger.json`, `receipt.json`, `chain-bundle.json`, and `gate-context.json` artifacts and Engram `sdd/{change-name}/review/{transaction,ledger,receipt,chain-bundle,gate-context}` topics are non-authoritative mirrors. Each append MUST require the expected revision and one legal semantic successor. Each load MUST prove the complete content-addressed predecessor chain from exact HEAD to one valid `review/start` genesis, rejecting missing predecessors, cycles, hash or schema mismatches, immutable-field changes, illegal or reordered transitions, semantically incomplete finding routing, and incoherent counters. Archive readiness MUST cross-check the trusted terminal revision and complete chain against the transaction mirror, frozen ledger, verify evidence, receipt, portable bundle, gate identity, and current repository target; missing, stale, or mismatched artifacts block archive.
 
 Store discovery MUST enumerate only entries that carry a review-state document. A TERMINAL lineage that fails semantic validation MUST be excluded from that enumeration alone, MUST surface a structured diagnostic in the store status diagnostics surface whenever status is queried, and MUST NOT block discovery, status, start, abandon, or reclaim for any other lineage. Excluded lineages MUST remain quarantined and auditable; discovery MUST NOT silently drop them without a diagnostic, and MUST NOT repeat the diagnostic as a stderr warning on every unrelated operation.
 

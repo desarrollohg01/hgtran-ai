@@ -25,10 +25,10 @@ import (
 // byte-identical); any other value means ON. Read fresh on every start,
 // mirroring shadowObservationEnvVar's read-fresh convention
 // (shadow_observer.go) — no process restart is needed to toggle it between
-// runs. It is a distinct switch from GENTLE_AI_RDD_SHADOW (read-only
+// runs. It is a distinct switch from HGTRAN_AI_RDD_SHADOW (read-only
 // observation) and the user-owned RDD kill switch (delivery-gate scope);
 // none of the three substitutes for another.
-const newLineageActivationEnvVar = "GENTLE_AI_RDD_NEW_LINEAGE"
+const newLineageActivationEnvVar = "HGTRAN_AI_RDD_NEW_LINEAGE"
 
 // NewLineageActivationEnabled reports the start-only activation switch. It
 // gates only where a NEW lineage is created (review_facade.go's start

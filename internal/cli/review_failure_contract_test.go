@@ -60,7 +60,7 @@ func TestNegotiatedReviewContractFailuresArePreMutationAndLegacyErrorsStayCompat
 		args []string
 		code string
 	}{
-		{name: "capabilities unsupported", args: []string{"capabilities", "--contract", "gentle-ai.review-integration/v3"}, code: "unsupported_contract"},
+		{name: "capabilities unsupported", args: []string{"capabilities", "--contract", "hgtran-ai.review-integration/v3"}, code: "unsupported_contract"},
 		{name: "start empty", args: []string{"start", "--contract="}, code: "empty_contract"},
 		{name: "finalize malformed", args: []string{"finalize", "--contract"}, code: "invalid_request"},
 	}
@@ -793,9 +793,9 @@ func TestNegotiatedFinalizePostTransitionGitTimeoutRequiresStatus(t *testing.T) 
 }
 
 const (
-	reviewGitHelperModeEnv      = "GENTLE_AI_REVIEW_GIT_HELPER"
-	reviewGitHelperRealGitEnv   = "GENTLE_AI_REVIEW_GIT_HELPER_REAL"
-	reviewGitHelperStatePathEnv = "GENTLE_AI_REVIEW_GIT_HELPER_STATE"
+	reviewGitHelperModeEnv      = "HGTRAN_AI_REVIEW_GIT_HELPER"
+	reviewGitHelperRealGitEnv   = "HGTRAN_AI_REVIEW_GIT_HELPER_REAL"
+	reviewGitHelperStatePathEnv = "HGTRAN_AI_REVIEW_GIT_HELPER_STATE"
 )
 
 func reviewGitProcessHelperExitCode() (int, bool) {

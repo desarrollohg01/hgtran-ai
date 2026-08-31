@@ -328,7 +328,7 @@ func compactStartInvalidGraphRefusal(ctx context.Context, repo string, records m
 				exit.SuccessorLineageID, compactRepairCommandText(repo, plan))
 		}
 	}
-	return fmt.Errorf("%v.%s Capture the complete machine-readable diagnosis for every affected lineage with `gentle-ai review inspect-authority --cwd %q`",
+	return fmt.Errorf("%v.%s Capture the complete machine-readable diagnosis for every affected lineage with `hgtran-ai review inspect-authority --cwd %q`",
 		cause, continuation.String(), repo)
 }
 

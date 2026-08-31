@@ -128,7 +128,7 @@ func TestCheckOneTool_OK(t *testing.T) {
 }
 
 // TestCheckOneTool_ShadowedWindowsExt reproduces the Windows bug: binaries on
-// disk carry an executable extension (e.g. gentle-ai.exe / gentle-ai.cmd), so a
+// disk carry an executable extension (e.g. hgtran-ai.exe / hgtran-ai.cmd), so a
 // bare-name scan misses them and shadowing is reported as [ok]. With PATHEXT
 // extensions the duplicate copies are detected and a warning is produced.
 func TestCheckOneTool_ShadowedWindowsExt(t *testing.T) {
@@ -145,7 +145,7 @@ func TestCheckOneTool_ShadowedWindowsExt(t *testing.T) {
 
 	dir1 := t.TempDir()
 	dir2 := t.TempDir()
-	for _, p := range []string{filepath.Join(dir1, "gentle-ai.exe"), filepath.Join(dir2, "gentle-ai.cmd")} {
+	for _, p := range []string{filepath.Join(dir1, "hgtran-ai.exe"), filepath.Join(dir2, "hgtran-ai.cmd")} {
 		f, err := os.Create(p)
 		if err != nil {
 			t.Fatal(err)
@@ -153,9 +153,9 @@ func TestCheckOneTool_ShadowedWindowsExt(t *testing.T) {
 		_ = f.Close()
 	}
 
-	lookPathFn = func(string) (string, error) { return filepath.Join(dir1, "gentle-ai.exe"), nil }
+	lookPathFn = func(string) (string, error) { return filepath.Join(dir1, "hgtran-ai.exe"), nil }
 
-	got := checkOneTool("gentle-ai", []string{dir1, dir2})
+	got := checkOneTool("hgtran-ai", []string{dir1, dir2})
 
 	if got.Status != CheckStatusWarn {
 		t.Fatalf("expected warn for extensioned shadow, got %s: %s", got.Status, got.Detail)
@@ -513,22 +513,22 @@ func TestRunDoctor_IntegrationAllMocked(t *testing.T) {
 	pathDirsFn = func() []string { pathSnapshots++; return []string{"/usr/local/bin"} }
 	osUserHomeDirDoctor = func() (string, error) { return homeDir, nil }
 	// organic-dx Phase 3f task 3f.5 added an invoked-executable clause to the
-	// gentle-ai tool check; this integration test is about RunDoctor's overall
+	// hgtran-ai tool check; this integration test is about RunDoctor's overall
 	// rendering shape, not that feature, so it mocks the invoked executable to
 	// match the PATH-resolved copy exactly (the common case) to keep the
 	// expected output byte-identical to before that feature landed. The new
 	// feature has its own dedicated tests in doctor_invoked_binary_test.go.
-	osExecutableDoctor = func() (string, error) { return "/usr/local/bin/gentle-ai", nil }
+	osExecutableDoctor = func() (string, error) { return "/usr/local/bin/hgtran-ai", nil }
 
 	var buf bytes.Buffer
 	if err := RunDoctor(context.Background(), &buf); err != nil {
 		t.Fatalf("RunDoctor returned error: %v", err)
 	}
 
-	want := fmt.Sprintf(`gentle-ai doctor — system health check
+	want := fmt.Sprintf(`hgtran-ai doctor — system health check
 =======================================
 
-  [ok]  tool:gentle-ai                 gentle-ai found at /usr/local/bin/gentle-ai; invoked executable: /usr/local/bin/gentle-ai (version dev)
+  [ok]  tool:hgtran-ai                 hgtran-ai found at /usr/local/bin/hgtran-ai; invoked executable: /usr/local/bin/hgtran-ai (version dev)
   [ok]  tool:gga                       gga found at /usr/local/bin/gga
   [ok]  tool:engram                    engram found at /usr/local/bin/engram
   [ok]  tool:claude                    claude found at /usr/local/bin/claude
@@ -620,7 +620,7 @@ func TestCheckToolBinaries_AgentNotInState_NotReported(t *testing.T) {
 	var sawGentleAI, sawEngram, sawPi bool
 	for _, r := range results {
 		switch r.Name {
-		case "tool:gentle-ai":
+		case "tool:hgtran-ai":
 			sawGentleAI = true
 		case "tool:engram":
 			sawEngram = true
@@ -649,7 +649,7 @@ func TestCheckToolBinaries_StateMissing_ChecksCoreOnly(t *testing.T) {
 	for _, r := range results {
 		required[string(r.Name)] = struct{}{}
 	}
-	for _, core := range []string{"tool:gentle-ai", "tool:gga", "tool:engram"} {
+	for _, core := range []string{"tool:hgtran-ai", "tool:gga", "tool:engram"} {
 		if _, ok := required[core]; !ok {
 			t.Errorf("expected %s in core-only output, got %+v", core, required)
 		}
@@ -663,7 +663,7 @@ func TestCheckToolBinaries_StateMissing_ChecksCoreOnly(t *testing.T) {
 
 // TestCheckOneTool_DirectoryWithToolName_NotCountedAsDuplicate verifies that
 // a directory whose name happens to match a tool (e.g. an existing
-// $HOME/gentle-ai/ on PATH) is not treated as a duplicate binary copy by
+// $HOME/hgtran-ai/ on PATH) is not treated as a duplicate binary copy by
 // the doctor (#709).
 func TestCheckOneTool_DirectoryWithToolName_NotCountedAsDuplicate(t *testing.T) {
 	orig := lookPathFn
@@ -680,18 +680,18 @@ func TestCheckOneTool_DirectoryWithToolName_NotCountedAsDuplicate(t *testing.T) 
 	dirWithFile := t.TempDir()
 	dirWithDir := t.TempDir()
 
-	if err := os.WriteFile(filepath.Join(dirWithFile, "gentle-ai"), []byte("fake"), 0o755); err != nil {
+	if err := os.WriteFile(filepath.Join(dirWithFile, "hgtran-ai"), []byte("fake"), 0o755); err != nil {
 		t.Fatal(err)
 	}
-	if err := os.Mkdir(filepath.Join(dirWithDir, "gentle-ai"), 0o755); err != nil {
+	if err := os.Mkdir(filepath.Join(dirWithDir, "hgtran-ai"), 0o755); err != nil {
 		t.Fatal(err)
 	}
 
 	lookPathFn = func(string) (string, error) {
-		return filepath.Join(dirWithFile, "gentle-ai"), nil
+		return filepath.Join(dirWithFile, "hgtran-ai"), nil
 	}
 
-	got := checkOneTool("gentle-ai", []string{dirWithFile, dirWithDir})
+	got := checkOneTool("hgtran-ai", []string{dirWithFile, dirWithDir})
 
 	if got.Status != CheckStatusPass {
 		t.Fatalf("expected pass when only one real binary exists; got %s: %s", got.Status, got.Detail)
@@ -725,16 +725,16 @@ func TestCheckOneTool_FileWithoutExecBit_NotCountedAsDuplicate(t *testing.T) {
 	dir2 := t.TempDir()
 
 	// One executable copy, one non-executable copy.
-	if err := os.WriteFile(filepath.Join(dir1, "gentle-ai"), []byte("#!/bin/sh\nexit 0"), 0o755); err != nil {
+	if err := os.WriteFile(filepath.Join(dir1, "hgtran-ai"), []byte("#!/bin/sh\nexit 0"), 0o755); err != nil {
 		t.Fatal(err)
 	}
-	if err := os.WriteFile(filepath.Join(dir2, "gentle-ai"), []byte("not executable"), 0o644); err != nil {
+	if err := os.WriteFile(filepath.Join(dir2, "hgtran-ai"), []byte("not executable"), 0o644); err != nil {
 		t.Fatal(err)
 	}
 
-	lookPathFn = func(string) (string, error) { return filepath.Join(dir1, "gentle-ai"), nil }
+	lookPathFn = func(string) (string, error) { return filepath.Join(dir1, "hgtran-ai"), nil }
 
-	got := checkOneTool("gentle-ai", []string{dir1, dir2})
+	got := checkOneTool("hgtran-ai", []string{dir1, dir2})
 
 	if got.Status != CheckStatusPass {
 		t.Fatalf("expected pass when second copy lacks the execute bit; got %s: %s", got.Status, got.Detail)
@@ -818,7 +818,7 @@ func TestRunDoctor_OnlySelectedAgentsAreRequired(t *testing.T) {
 func TestRenderDoctorReportDoesNotRenderRemedyMetadata(t *testing.T) {
 	var buf bytes.Buffer
 	renderDoctorReport(&buf, DoctorReport{Checks: []CheckResult{{Name: doctor.CheckDiskSpace, Status: CheckStatusFail, Detail: "cleanup needed", Remedy: doctor.NewRemedy(doctor.RemedyFreeDiskSpace, "Free disk space")}}})
-	want := "gentle-ai doctor — system health check\n=======================================\n\n  [xx]  disk:space                     cleanup needed\n       Remedy: Free disk space\n\nSummary: 0 passed, 1 failed, 0 warnings\nStatus:  unhealthy\n"
+	want := "hgtran-ai doctor — system health check\n=======================================\n\n  [xx]  disk:space                     cleanup needed\n       Remedy: Free disk space\n\nSummary: 0 passed, 1 failed, 0 warnings\nStatus:  unhealthy\n"
 	if got := buf.String(); got != want {
 		t.Fatalf("rendered report mismatch\ngot:\n%s\nwant:\n%s", got, want)
 	}

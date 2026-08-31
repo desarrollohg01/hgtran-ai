@@ -17,7 +17,7 @@ import (
 	jsonschema "github.com/santhosh-tekuri/jsonschema/v6"
 )
 
-const capabilityFixtureExecutable = "gentle-ai capability fixture\n"
+const capabilityFixtureExecutable = "hgtran-ai capability fixture\n"
 
 func TestReviewCapabilitiesMatchesConformanceFixtureOutsideRepository(t *testing.T) {
 	fixturePath, err := filepath.Abs(filepath.Join("..", "..", "contracts", "review-integration", "v1", "fixtures", "capabilities-v1.5.fixture.json"))
@@ -28,7 +28,7 @@ func TestReviewCapabilitiesMatchesConformanceFixtureOutsideRepository(t *testing
 	if err != nil {
 		t.Fatal(err)
 	}
-	executable := filepath.Join(t.TempDir(), "gentle-ai-fixture")
+	executable := filepath.Join(t.TempDir(), "hgtran-ai-fixture")
 	if err := os.WriteFile(executable, []byte(capabilityFixtureExecutable), 0o755); err != nil {
 		t.Fatal(err)
 	}
@@ -89,7 +89,7 @@ func TestReviewCapabilitiesV22MatchesConformanceFixture(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	executable := filepath.Join(t.TempDir(), "gentle-ai-fixture")
+	executable := filepath.Join(t.TempDir(), "hgtran-ai-fixture")
 	if err := os.WriteFile(executable, []byte(capabilityFixtureExecutable), 0o755); err != nil {
 		t.Fatal(err)
 	}
@@ -157,7 +157,7 @@ func validateReviewCapabilitiesSchema(t *testing.T, name, id string, fixture []b
 	}
 	compiler := jsonschema.NewCompiler()
 	for uri, payload := range map[string][]byte{
-		"https://gentle-ai.dev/contracts/review-integration/v1/schemas/capabilities-v1.4.schema.json": v14,
+		"https://hgtran-ai.dev/contracts/review-integration/v1/schemas/capabilities-v1.4.schema.json": v14,
 		id: capabilities,
 	} {
 		var document any
@@ -191,7 +191,7 @@ func TestReviewCapabilitiesContractValidationIsExactAndReadOnly(t *testing.T) {
 		{name: "supported", contract: ReviewIntegrationContractV1},
 		{name: "native Git", contract: ReviewIntegrationContractV2},
 		{name: "empty", contract: "", wantErr: true},
-		{name: "future major", contract: "gentle-ai.review-integration/v3", wantErr: true},
+		{name: "future major", contract: "hgtran-ai.review-integration/v3", wantErr: true},
 		{name: "surrounding whitespace", contract: " " + ReviewIntegrationContractV1, wantErr: true},
 	}
 	for _, tt := range tests {
@@ -218,7 +218,7 @@ func TestReviewCapabilitiesContractValidationIsExactAndReadOnly(t *testing.T) {
 }
 
 func TestReviewCapabilitiesAdvertisesOnlyNativeSurface(t *testing.T) {
-	executable := filepath.Join(t.TempDir(), "gentle-ai-fixture")
+	executable := filepath.Join(t.TempDir(), "hgtran-ai-fixture")
 	if err := os.WriteFile(executable, []byte(capabilityFixtureExecutable), 0o755); err != nil {
 		t.Fatal(err)
 	}
@@ -243,7 +243,7 @@ func TestReviewCapabilitiesAdvertisesOnlyNativeSurface(t *testing.T) {
 	if !slices.Contains(result.Schemas, reviewResultArtifactSchema) || !slices.Contains(result.Schemas, ReviewIntegrationOperationSchema) || !slices.Contains(result.Schemas, ReviewIntegrationStartSchemaV2) || !slices.Contains(result.Schemas, ReviewIntegrationStatusSchemaV2) || !slices.Contains(result.Schemas, ReviewIntegrationProjectionSchema) || !slices.Contains(result.Schemas, ReviewIntegrationRepairSchema) || !slices.Contains(result.Schemas, reviewtransaction.AuthorityRepairAssessmentSchema) || !slices.Contains(result.Schemas, reviewtransaction.FinalVerificationIncidentSchema) {
 		t.Fatalf("capability schemas do not advertise the negotiated provider surface: %v", result.Schemas)
 	}
-	if result.Bootstrap == nil || result.Bootstrap.Command != "gentle-ai review status --cwd <repo> --contract gentle-ai.review-integration/v1 --next-transition" ||
+	if result.Bootstrap == nil || result.Bootstrap.Command != "hgtran-ai review status --cwd <repo> --contract hgtran-ai.review-integration/v1 --next-transition" ||
 		result.Bootstrap.RequiredFeature != "native_next_transition" || result.Bootstrap.UnsupportedOutcome != "unsupported-capability" || !result.Bootstrap.ParentOnly ||
 		len(result.Bootstrap.TargetSelectorVariants) != 4 {
 		t.Fatalf("capability bootstrap = %#v", result.Bootstrap)
@@ -585,7 +585,7 @@ func findCapabilityForbiddenField(value any, forbidden map[string]struct{}) stri
 }
 
 func TestReviewCapabilitiesFeatureRequirementsAreExplicit(t *testing.T) {
-	executable := filepath.Join(t.TempDir(), "gentle-ai-fixture")
+	executable := filepath.Join(t.TempDir(), "hgtran-ai-fixture")
 	if err := os.WriteFile(executable, []byte(capabilityFixtureExecutable), 0o755); err != nil {
 		t.Fatal(err)
 	}
@@ -638,7 +638,7 @@ func TestReviewCapabilitiesFeatureRequirementsAreExplicit(t *testing.T) {
 }
 
 func TestReviewCapabilitiesBootstrapIsOptionalForExistingV1Consumers(t *testing.T) {
-	executable := filepath.Join(t.TempDir(), "gentle-ai-fixture")
+	executable := filepath.Join(t.TempDir(), "hgtran-ai-fixture")
 	if err := os.WriteFile(executable, []byte(capabilityFixtureExecutable), 0o755); err != nil {
 		t.Fatal(err)
 	}

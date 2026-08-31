@@ -4,7 +4,7 @@
 // the target RDD relation model
 // (docs/architecture/rdd-root-simplification-design.md). Promotion means it
 // now serves both the shadow observer (shadow_observer.go, still gated by
-// GENTLE_AI_RDD_SHADOW) and the live ReviewCore (Wave 3 Slice 3+). It
+// HGTRAN_AI_RDD_SHADOW) and the live ReviewCore (Wave 3 Slice 3+). It
 // reuses live production primitives (OpenRepositoryIdentityLease,
 // SnapshotBuilder) rather than restating their logic, and must still never
 // mutate authority state, a Store, or a CompactState — see
@@ -322,7 +322,7 @@ func shadowChangedPathsModesDigest(ctx context.Context, repo string, paths []str
 		return "", err
 	}
 	hash := sha256.New()
-	hash.Write([]byte("gentle-ai.paths-modes/v1\x00"))
+	hash.Write([]byte("hgtran-ai.paths-modes/v1\x00"))
 	for _, path := range paths {
 		modes, ok := modesByPath[path]
 		if !ok {

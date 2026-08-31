@@ -24,7 +24,7 @@ func RunReviewLegacyAliasRepair(args []string, stdout io.Writer) error {
 	disposition := flags.String("disposition", "", "exact supported quarantine disposition")
 	reason := flags.String("reason", "", "non-empty repair reason")
 	actor := flags.String("actor", "", "repair actor")
-	authorization := flags.String("maintainer-authorization", "", "exact eight-line LF-only binding: gentle-ai.review-legacy-alias-repair-authorization/v1, repository, lineage, revision, diagnostic, disposition, actor, reason")
+	authorization := flags.String("maintainer-authorization", "", "exact eight-line LF-only binding: hgtran-ai.review-legacy-alias-repair-authorization/v1, repository, lineage, revision, diagnostic, disposition, actor, reason")
 	if err := parseReviewFlags(flags, args); err != nil {
 		return err
 	}

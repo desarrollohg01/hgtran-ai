@@ -61,7 +61,7 @@ func finalizeUnbornFacadeReview(t *testing.T, repo string, started ReviewFacadeS
 
 // TestReviewFacadeUnbornHeadDefaultProjectionStart proves 1771 on the direct
 // `review start` path (default workspace projection, no --projection flag),
-// which is the exact community repro (lu149e): plain `gentle-ai review start
+// which is the exact community repro (lu149e): plain `hgtran-ai review start
 // --cwd $PWD` on an unborn-HEAD repository with staged candidate files used
 // to fail with "build facade review target: git rev-parse --verify
 // HEAD^{tree} failed with exit code 128: fatal: Needed a single revision"
@@ -206,7 +206,7 @@ func TestReviewFacadeUnbornReceiptDeniesFirstPublicationGates(t *testing.T) {
 // TestFirstPublicationEmptyBaseReceiptRefusal proves 1641: first publication
 // attempted from an empty-base receipt (unborn HEAD, empty base tree) must be
 // refused with a typed error naming the proven in-product escape verbatim —
-// commit an authorized empty root, then run gentle-ai review start
+// commit an authorized empty root, then run hgtran-ai review start
 // --committed-only with --base-ref set to that commit's SHA — instead of the
 // generic "not supported" denial.
 func TestFirstPublicationEmptyBaseReceiptRefusal(t *testing.T) {
@@ -226,7 +226,7 @@ func TestFirstPublicationEmptyBaseReceiptRefusal(t *testing.T) {
 	runReviewCLIGit(t, repo, "commit", "-qm", "first commit")
 	branch := strings.TrimSpace(runReviewCLIGit(t, repo, "symbolic-ref", "--short", "HEAD"))
 
-	want := "commit an authorized empty root, then run gentle-ai review start --committed-only with --base-ref set to that commit's SHA"
+	want := "commit an authorized empty root, then run hgtran-ai review start --committed-only with --base-ref set to that commit's SHA"
 
 	// The publication that 1641 is actually about: a remote that has none of
 	// this work, so the push really does transfer the first publication. The

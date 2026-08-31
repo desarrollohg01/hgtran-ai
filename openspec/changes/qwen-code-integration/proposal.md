@@ -2,7 +2,7 @@
 
 ## Intent
 
-Add Qwen Code (by Alibaba/Alibaba Cloud) as a fully supported AI coding agent in the Gentle AI ecosystem, with parity to Gemini CLI's feature set. Qwen Code is an emerging agent in the AI-assisted development space with robust sub-agent capabilities, slash commands, and a `settings.json`-based config model that aligns well with the existing Gentle AI adapter pattern.
+Add Qwen Code (by Alibaba/Alibaba Cloud) as a fully supported AI coding agent in the Hgtran AI ecosystem, with parity to Gemini CLI's feature set. Qwen Code is an emerging agent in the AI-assisted development space with robust sub-agent capabilities, slash commands, and a `settings.json`-based config model that aligns well with the existing Hgtran AI adapter pattern.
 
 ## Scope
 
@@ -25,7 +25,7 @@ Add Qwen Code (by Alibaba/Alibaba Cloud) as a fully supported AI coding agent in
 - Qwen Code installation on Windows (npm-based install covers all platforms)
 - Output style / thinking mode integration (Qwen CLI does not expose these as configurable features)
 - Native workflow files (Qwen uses slash commands, not Windsurf-style `.windsurf/workflows/`)
-- Sub-agent injection (Qwen's `task` sub-agent is intrinsic to the agent, not configured by Gentle AI)
+- Sub-agent injection (Qwen's `task` sub-agent is intrinsic to the agent, not configured by Hgtran AI)
 - Model provider selection (Qwen uses its own models; no multi-provider catalog like OpenCode)
 
 ## Capabilities
@@ -103,4 +103,4 @@ Add Qwen Code (by Alibaba/Alibaba Cloud) as a fully supported AI coding agent in
 - [ ] `go test ./internal/cli/...` — install validation and default agent test pass
 - [ ] `go test ./internal/agents/...` — registry test includes Qwen Code
 - [ ] Qwen Code appears in TUI agent selection screen
-- [ ] `gentle-ai install --agent qwen-code --dry-run` shows correct plan
+- [ ] `hgtran-ai install --agent qwen-code --dry-run` shows correct plan

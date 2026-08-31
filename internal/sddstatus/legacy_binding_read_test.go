@@ -8,7 +8,7 @@ import (
 )
 
 // This file is Wave 4 S5 (design.md decision 2, task 6.4): the read-only
-// migration path for an existing legacy gentle-ai.sdd-review-binding/v1
+// migration path for an existing legacy hgtran-ai.sdd-review-binding/v1
 // file. parseLegacyBinding reuses parseBinding's unchanged validation and
 // projects the result, in memory only, to a reviewtransaction.SDDReceiptRef
 // -- it never rewrites and never unlinks the source file.

@@ -1,6 +1,6 @@
 {
-  "schema": "gentle-ai.review-integration.status/v2",
-  "contract": "gentle-ai.review-integration/v1",
+  "schema": "hgtran-ai.review-integration.status/v2",
+  "contract": "hgtran-ai.review-integration/v1",
   "operation": "review.status",
   "applicability": "current_target",
   "authority": {
@@ -22,7 +22,7 @@
   },
   "target_identity": "sha256:e6faad1cb9ceb2db170e0ec9ea5394b44c3991dff6cbd02fb6787539715968f6",
   "projection": {
-    "schema": "gentle-ai.review-integration.projection/v1",
+    "schema": "hgtran-ai.review-integration.projection/v1",
     "kind": "current-changes",
     "projection": "workspace",
     "base_tree": "3e21a205dd9b55021aeae87965092623807e455f",
@@ -38,7 +38,7 @@
     "current_snapshot_identity": "sha256:e6faad1cb9ceb2db170e0ec9ea5394b44c3991dff6cbd02fb6787539715968f6"
   },
   "repair": {
-    "schema": "gentle-ai.review-authority-repair-assessment/v1",
+    "schema": "hgtran-ai.review-authority-repair-assessment/v1",
     "status": "unsupported",
     "counts": {
       "lineages": 0,
@@ -54,7 +54,7 @@
       "review/complete-fix",
       "review/validate-fix"
     ],
-    "authorization_schema": "gentle-ai.review-repair-authorization/v1"
+    "authorization_schema": "hgtran-ai.review-repair-authorization/v1"
   },
   "candidates": [],
   "eligibility": {
@@ -123,7 +123,7 @@
       "inputs": [
         {
           "name": "reviewer_result",
-          "schema": "https://gentle-ai.dev/schema/review/reviewer/v1",
+          "schema": "https://hgtran-ai.dev/schema/review/reviewer/v1",
           "capture_operation": "review.capture-result",
           "arguments": [
             {
@@ -158,7 +158,7 @@
             }
           ],
           "artifact_subject": {
-            "schema": "gentle-ai.review-artifact-subject/v1",
+            "schema": "hgtran-ai.review-artifact-subject/v1",
             "subject_hash": "sha256:fe57db2ea45a33c7e852d039e8af3291c3bc31911f0c92a710b5fef547b1999d",
             "lineage_id": "review-status-fixture",
             "authority_revision": "sha256:81cdad8f3182d4919147d3c4fe8f614814068e5ef68417e3dcbd5e326dd3e390",

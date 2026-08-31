@@ -118,7 +118,7 @@ For non-Claude solo-inline and platform-native orchestrator assets, the system M
 
 All 12 SDD orchestrator assets MUST bind the `chained-pr` skill into their chain-strategy guidance. When delivery planning produces chained or stacked PRs, the orchestrator MUST resolve the `chained-pr` skill by its registry name (not a hardcoded filesystem path) through its existing Sub-Agent Launch Pattern, and MUST inject the resolved skill path into `sdd-tasks` and `sdd-apply` phase prompts under `## Skills to load before work`. Those phases MUST read and follow the skill BEFORE planning or creating any PR.
 
-The binding MUST reference the skill by registry name `chained-pr` (frontmatter `gentle-ai-chained-pr`). No hardcoded path to a `SKILL.md` file is permitted as the binding reference.
+The binding MUST reference the skill by registry name `chained-pr` (frontmatter `hgtran-ai-chained-pr`). No hardcoded path to a `SKILL.md` file is permitted as the binding reference.
 
 #### Scenario: Orchestrator resolves chained-pr skill by registry name on chained delivery
 

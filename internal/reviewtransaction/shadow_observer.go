@@ -14,7 +14,7 @@
 // 3's ShadowRelation, now a type alias for CandidateRelation — Wave 3 Slice
 // 1). It satisfies spec.md's "Advisory-Only, Never Blocking" and "Disable
 // Switch Is the Rollback Boundary" requirements: it returns nothing, its
-// own error and panic paths are always swallowed, and GENTLE_AI_RDD_SHADOW
+// own error and panic paths are always swallowed, and HGTRAN_AI_RDD_SHADOW
 // unset or empty makes it a true no-op before any repository read, Git
 // command, or in-memory record (design decision 2).
 package reviewtransaction
@@ -32,7 +32,7 @@ import (
 // Unset or empty (after trimming) means OFF; any other value means ON. It
 // is read fresh on every observation rather than cached once, so a test —
 // or an operator toggling it between runs — never needs a process restart.
-const shadowObservationEnvVar = "GENTLE_AI_RDD_SHADOW"
+const shadowObservationEnvVar = "HGTRAN_AI_RDD_SHADOW"
 
 func shadowObservationEnabled() bool {
 	return strings.TrimSpace(os.Getenv(shadowObservationEnvVar)) != ""
@@ -101,7 +101,7 @@ func recordShadowObservation(row shadowObservationRow) {
 	writer := shadowObserverStderr
 	shadowObserverMu.Unlock()
 	fmt.Fprintf(writer,
-		"gentle-ai.rdd-shadow/v1 gate=%s live_result=%s has_relation=%t shadow_relation=%s no_live_counterpart=%t authority_health=%s err=%q\n",
+		"hgtran-ai.rdd-shadow/v1 gate=%s live_result=%s has_relation=%t shadow_relation=%s no_live_counterpart=%t authority_health=%s err=%q\n",
 		row.Gate, row.LiveResult, row.HasRelation, row.Relation, row.NoLiveCounterpart, row.AuthorityHealth, row.Err)
 }
 
@@ -124,7 +124,7 @@ func recordShadowObservation(row shadowObservationRow) {
 // authority health is observed — no comparison is ever fabricated from
 // absent evidence.
 //
-// When GENTLE_AI_RDD_SHADOW is unset or empty, this function returns
+// When HGTRAN_AI_RDD_SHADOW is unset or empty, this function returns
 // before resolving a repository identity, running any Git command, or
 // touching the in-memory sink (spec.md "Disabling removes all shadow
 // execution"). When it is set, this call issues real Git reads through

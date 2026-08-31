@@ -2,7 +2,7 @@
 
 [Back to Codebase Guide](../CODEBASE-GUIDE.md)
 
-Gentle-AI does not currently contain dashboard source code. This page exists to prevent accidental invention of dashboard, HTMX, auth, or admin behavior while documenting the codebase.
+hgtran-ai does not currently contain dashboard source code. This page exists to prevent accidental invention of dashboard, HTMX, auth, or admin behavior while documenting the codebase.
 
 ## Source validation result
 
@@ -37,7 +37,7 @@ No HTMX or server-rendered dashboard flow is present. If a future dashboard is a
 
 - **No unauthenticated admin actions**: dashboard writes must have an explicit auth/session boundary.
 - **No full API duplication**: link to the endpoint/schema source of truth when one exists.
-- **No direct local DB assumptions**: do not read `.engram/engram.db` from Gentle-AI dashboard code unless the architecture explicitly chooses that boundary.
+- **No direct local DB assumptions**: do not read `.engram/engram.db` from hgtran-ai dashboard code unless the architecture explicitly chooses that boundary.
 - **No silent cloud coupling**: remote state must be isolated behind a transport/client interface.
 
 ## Contributor checklist

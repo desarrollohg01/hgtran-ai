@@ -26,7 +26,7 @@ The `pending_sync` flag MUST be cleared after the deferred sync completes succes
 - GIVEN the user invokes "Upgrade + Sync"
 - AND the upgrade step replaces the currently-running binary (self-upgrade)
 - WHEN the upgrade step applies the new binary
-- THEN `pending_sync = true` is written to `~/.gentle-ai/state.json` before the process exits
+- THEN `pending_sync = true` is written to `~/.hgtran-ai/state.json` before the process exits
 - AND the current process exits (or closes) after recording the flag
 
 #### Scenario: Deferred sync runs on next launch

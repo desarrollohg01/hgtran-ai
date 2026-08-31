@@ -488,7 +488,7 @@ func correctedBundleFixture(t *testing.T, repo, lineage string) correctedBundleT
 	evidencePath := filepath.Join(artifacts, "evidence.md")
 	for path, content := range map[string]string{
 		policyPath:   "bounded policy\n",
-		ledgerPath:   "{\"schema\":\"gentle-ai.review-ledger/v1\",\"findings\":[{\"id\":\"BRT1-005\",\"lens\":\"resilience\",\"location\":\"internal/reviewtransaction/bundle.go\",\"severity\":\"CRITICAL\",\"claim\":\"corrected lineages cannot recover authority\",\"proof_refs\":[\"bundle.go:209\"]}]}",
+		ledgerPath:   "{\"schema\":\"hgtran-ai.review-ledger/v1\",\"findings\":[{\"id\":\"BRT1-005\",\"lens\":\"resilience\",\"location\":\"internal/reviewtransaction/bundle.go\",\"severity\":\"CRITICAL\",\"claim\":\"corrected lineages cannot recover authority\",\"proof_refs\":[\"bundle.go:209\"]}]}",
 		fixDeltaPath: "portable recovery correction\n",
 		evidencePath: "verified corrected delivery\n",
 	} {

@@ -1,5 +1,5 @@
 name: Bug Report
-description: File a bug report for Gentle AI
+description: File a bug report for Hgtran AI
 labels: ["bug", "status:needs-review"]
 
 body:
@@ -70,7 +70,7 @@ body:
   - type: input
     id: version
     attributes:
-      label: Gentle AI Version
+      label: Hgtran AI Version
       description: Run `gga version` to get this
       placeholder: "e.g. v0.1.0"
     validations:

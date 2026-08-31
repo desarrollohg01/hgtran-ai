@@ -18,7 +18,7 @@ import (
 func reviewCLIAuthorityRoot(t *testing.T, repo string) string {
 	t.Helper()
 	commonDir := filepath.Clean(strings.TrimSpace(runReviewCLIGit(t, repo, "rev-parse", "--path-format=absolute", "--git-common-dir")))
-	return filepath.Join(commonDir, "gentle-ai", "review-transactions")
+	return filepath.Join(commonDir, "hgtran-ai", "review-transactions")
 }
 
 func writeReconcileCLIRecord(t *testing.T, repo string, state reviewtransaction.CompactState) string {
@@ -27,7 +27,7 @@ func writeReconcileCLIRecord(t *testing.T, repo string, state reviewtransaction.
 	if err != nil {
 		t.Fatal(err)
 	}
-	record := reviewtransaction.CompactRecord{Schema: "gentle-ai.review-state-record/v2", Revision: revision, State: state}
+	record := reviewtransaction.CompactRecord{Schema: "hgtran-ai.review-state-record/v2", Revision: revision, State: state}
 	payload, err := json.MarshalIndent(record, "", "  ")
 	if err != nil {
 		t.Fatal(err)
@@ -98,7 +98,7 @@ func invalidRecoveryEdgeCLIFixture(t *testing.T, repo, recoveryAuthorization str
 		PredecessorLineageID: predecessorState.LineageID, PredecessorRevision: predecessorRevision,
 		Disposition: reviewtransaction.RecoveryEscalated, Reason: "retry after escalation", Actor: "maintainer@example.com",
 		RecoveredAt: time.Date(2026, 7, 18, 12, 0, 0, 0, time.UTC),
-		MaintainerAuthorization: "gentle-ai.review-recovery-authorization/v1\npredecessor_lineage=" + predecessorState.LineageID +
+		MaintainerAuthorization: "hgtran-ai.review-recovery-authorization/v1\npredecessor_lineage=" + predecessorState.LineageID +
 			"\npredecessor_revision=" + predecessorRevision + "\ntarget_identity=" + successorState.InitialSnapshot.Identity +
 			"\nactor=maintainer@example.com\nreason=retry after escalation",
 	}
@@ -123,7 +123,7 @@ func reconcileCLIArgs(repo, predecessorRevision, successorRevision, authorizatio
 }
 
 func reconcileCLIBinding(predecessorRevision, successorRevision string) string {
-	return "gentle-ai.review-reconcile-authorization/v1\npredecessor_lineage=reconcile-incident\npredecessor_revision=" + predecessorRevision +
+	return "hgtran-ai.review-reconcile-authorization/v1\npredecessor_lineage=reconcile-incident\npredecessor_revision=" + predecessorRevision +
 		"\nsuccessor_lineage=reconcile-incident-g2\nsuccessor_revision=" + successorRevision +
 		"\nactor=maintainer@example.com\nreason=quarantine invalid unchanged-target recovery edge"
 }
@@ -321,7 +321,7 @@ func preContractReconcileCLIArgs(repo, predecessorRevision, successorRevision, a
 }
 
 func preContractReconcileCLIBinding(predecessorRevision, successorRevision string) string {
-	return "gentle-ai.review-reconcile-authorization/v1\npredecessor_lineage=reconcile-incident\npredecessor_revision=" + predecessorRevision +
+	return "hgtran-ai.review-reconcile-authorization/v1\npredecessor_lineage=reconcile-incident\npredecessor_revision=" + predecessorRevision +
 		"\nsuccessor_lineage=reconcile-incident-g2\nsuccessor_revision=" + successorRevision +
 		"\nactor=maintainer@example.com\nreason=quarantine pre-contract recovery authorization"
 }

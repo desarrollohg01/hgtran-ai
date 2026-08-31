@@ -18,7 +18,7 @@ import (
 
 func TestRealOpenCodeRejectsUnsupportedImmutableReviewerBash(t *testing.T) {
 	if os.Getenv(realAgentE2EEnvironment) != "1" {
-		t.Skip("set GENTLE_AI_REAL_AGENT_E2E=1 to run the real OpenCode reviewer rejection proof")
+		t.Skip("set HGTRAN_AI_REAL_AGENT_E2E=1 to run the real OpenCode reviewer rejection proof")
 	}
 	if runtime.GOOS != "windows" {
 		t.Skip("Windows-only proof for OpenCode 1.18.10 Bash permission behavior")
@@ -40,16 +40,16 @@ func TestRealOpenCodeRejectsUnsupportedImmutableReviewerBash(t *testing.T) {
 	}
 
 	marker := filepath.Join(harness.repo.worktree, "reviewer-bash-ran")
-	prompt := "Attempt this immutable Bash inspection exactly once: gentle-ai review inspect-candidate " +
+	prompt := "Attempt this immutable Bash inspection exactly once: hgtran-ai review inspect-candidate " +
 		"--repository-context rctx1_" + strings.Repeat("a", 64) +
 		" --expected-revision sha256:" + strings.Repeat("b", 64) +
 		" --lineage reviewer-e2e --target sha256:" + strings.Repeat("d", 64) +
 		" --lens review-risk --order 0 --operation name-status > " + marker
-	reviewerPrompt := "GENTLE_AI_REVIEWER_LAUNCH_PROBE\n" + prompt
+	reviewerPrompt := "HGTRAN_AI_REVIEWER_LAUNCH_PROBE\n" + prompt
 	fixture := newOpenCodeFixtureServer(t, []openCodeTurn{{tool: "task", arguments: map[string]any{
 		"description":   "Attempt immutable reviewer inspection",
 		"subagent_type": "review-risk",
-		"prompt": "GENTLE_AI_REVIEW_BINDING {\"lineage\":\"reviewer-e2e\",\"target\":\"sha256:" + strings.Repeat("d", 64) +
+		"prompt": "HGTRAN_AI_REVIEW_BINDING {\"lineage\":\"reviewer-e2e\",\"target\":\"sha256:" + strings.Repeat("d", 64) +
 			"\",\"lens\":\"review-risk\",\"order\":0,\"repository_context\":\"rctx1_" + strings.Repeat("a", 64) +
 			"\",\"revision\":\"sha256:" + strings.Repeat("b", 64) + "\",\"subject_hash\":\"sha256:" + strings.Repeat("c", 64) + "\"}\n" + reviewerPrompt,
 	}}}, reviewerPrompt)
@@ -103,7 +103,7 @@ func TestRealOpenCodeRejectsUnsupportedImmutableReviewerBash(t *testing.T) {
 	if _, err := os.Stat(marker); !errors.Is(err, os.ErrNotExist) {
 		t.Fatalf("rejected reviewer Bash changed the worktree: %v", err)
 	}
-	if _, err := os.Stat(filepath.Join(harness.commonDir(), "gentle-ai", "review-transactions", "v2")); !errors.Is(err, os.ErrNotExist) {
+	if _, err := os.Stat(filepath.Join(harness.commonDir(), "hgtran-ai", "review-transactions", "v2")); !errors.Is(err, os.ErrNotExist) {
 		t.Fatalf("rejected reviewer Bash created review authority: %v", err)
 	}
 }
@@ -172,9 +172,9 @@ func TestReviewerRejectedBeforeLaunch(t *testing.T) {
 }
 
 func TestOpenCodeFixtureRecognizesReviewerRequest(t *testing.T) {
-	fixture := newOpenCodeFixtureServer(t, nil, "GENTLE_AI_REVIEWER_LAUNCH_PROBE")
+	fixture := newOpenCodeFixtureServer(t, nil, "HGTRAN_AI_REVIEWER_LAUNCH_PROBE")
 	defer fixture.Close()
-	assertFixtureRecognizesReviewerRequest(t, fixture, "GENTLE_AI_REVIEWER_LAUNCH_PROBE")
+	assertFixtureRecognizesReviewerRequest(t, fixture, "HGTRAN_AI_REVIEWER_LAUNCH_PROBE")
 }
 
 func assertFixtureRecognizesReviewerRequest(t *testing.T, fixture *openCodeFixtureServer, prompt string) {

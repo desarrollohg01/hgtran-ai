@@ -230,7 +230,7 @@ None
 - W-01: `tasks.md` checkboxes are all `[ ]` (unchecked) — tasks are implemented but the markdown checkboxes were not updated to `[x]` after completion. This is expected since tasks.md was created retroactively.
 
 **SUGGESTION** (nice to have):
-- S-01: Consider adding integration test for the full `gentle-ai install --agent qwen-code --dry-run` flow in a test harness (currently only verified manually).
+- S-01: Consider adding integration test for the full `hgtran-ai install --agent qwen-code --dry-run` flow in a test harness (currently only verified manually).
 - S-02: Coverage at 82.9% is good but could reach 90%+ by testing `defaultStat()` error path directly and `OutputStyleDir()` return value.
 
 ---

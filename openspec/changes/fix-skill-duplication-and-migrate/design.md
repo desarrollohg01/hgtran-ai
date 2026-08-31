@@ -23,7 +23,7 @@ Components NOT touched: `internal/components/sdd/inject.go`, the Claude adapter,
 Data flow stays identical:
 
 ```
-gentle-ai install/sync
+hgtran-ai install/sync
    -> embedded FS (//go:embed)
    -> Claude adapter writer
    -> ~/.claude/skills/sdd-*/SKILL.md  (path unchanged)
@@ -43,7 +43,7 @@ gentle-ai install/sync
 
 ### ADR 1 — Frontmatter placement: TOP-LEVEL, not nested under `metadata:`
 
-**Context.** The two flags can technically be placed at the top level of the YAML map (matching official Claude Code docs at https://code.claude.com/docs/en/skills) or nested inside the existing `metadata:` block already used by gentle-ai skills. The current frontmatter linter at `internal/assets/skills_frontmatter_test.go:30-36` enforces a strict top-level allowlist of `{name, description, license, metadata, version}` — top-level placement requires widening this allowlist; nested placement does not.
+**Context.** The two flags can technically be placed at the top level of the YAML map (matching official Claude Code docs at https://code.claude.com/docs/en/skills) or nested inside the existing `metadata:` block already used by hgtran-ai skills. The current frontmatter linter at `internal/assets/skills_frontmatter_test.go:30-36` enforces a strict top-level allowlist of `{name, description, license, metadata, version}` — top-level placement requires widening this allowlist; nested placement does not.
 
 **Decision.** Top-level placement.
 
@@ -99,7 +99,7 @@ The apply phase will execute these steps in order; each step is verifiable befor
 3. **Run frontmatter linter alone** — `go test ./internal/assets/...`. MUST pass before continuing. This is the cheapest, fastest signal that placement and allowlist are aligned.
 4. **Regenerate goldens** — run the project's golden-update flow (typically `go test ./... -update` on the relevant packages). The exact set of golden files affected will be the union of `testdata/golden/skills-claude-*.golden` and `testdata/golden/sdd-*-skill-*.golden` that embed any of the 11 SKILL.md files. The list is mechanically determined by the regen step, not by guessing.
 5. **Run full test suite** — `go test ./...`. MUST pass without `-update`.
-6. **Manual verification** — build the binary, run `gentle-ai install` (or `sync`) against a clean `~/.claude/`, open Claude Code v2.1.131+, confirm the `/` picker shows each `sdd-*` exactly once and that all entries originate from `~/.claude/commands/sdd-*.md`. Smoke test one delegation chain (e.g. `/sdd-explore <topic>`) to confirm `Read` of the hidden SKILL.md still works from a sub-agent.
+6. **Manual verification** — build the binary, run `hgtran-ai install` (or `sync`) against a clean `~/.claude/`, open Claude Code v2.1.131+, confirm the `/` picker shows each `sdd-*` exactly once and that all entries originate from `~/.claude/commands/sdd-*.md`. Smoke test one delegation chain (e.g. `/sdd-explore <topic>`) to confirm `Read` of the hidden SKILL.md still works from a sub-agent.
 
 Steps 1–5 are mechanical and CI-verifiable. Step 6 is the human-in-the-loop confirmation that the upstream indexer actually honors the flags as documented.
 
@@ -110,7 +110,7 @@ Steps 1–5 are mechanical and CI-verifiable. Step 6 is the human-in-the-loop co
 | # | Risk | Likelihood | Impact | Mitigation |
 |---|------|------------|--------|------------|
 | 1 | Future Claude Code versions change the semantics of `user-invocable` / `disable-model-invocation` and duplication returns | Low | Medium | Change is reversible in 2 lines per file. Monitor Claude Code release notes. Fallback is the rejected Option C (path relocation) which can be revisited if upstream removes these flags. |
-| 2 | A user manually edits an installed `~/.claude/skills/sdd-*/SKILL.md`, then runs `gentle-ai sync` and the frontmatter is overwritten | Low | Low | Out of scope for this change — sync's overwrite policy for embedded assets is deliberate and pre-existing. Document elsewhere if it becomes a real complaint. |
+| 2 | A user manually edits an installed `~/.claude/skills/sdd-*/SKILL.md`, then runs `hgtran-ai sync` and the frontmatter is overwritten | Low | Low | Out of scope for this change — sync's overwrite policy for embedded assets is deliberate and pre-existing. Document elsewhere if it becomes a real complaint. |
 | 3 | Golden test churn produces noisy diffs | Certainty | Trivial | Diffs are purely mechanical (+2 lines per affected golden). Reviewers spot-check one or two and trust the rest. |
 | 4 | Top-level placement is canonical per docs but the running v2.1.131 indexer has a bug honoring it | Low | Medium | Step 6 manual verification catches this before merge. If the bug is real, file upstream and consider nesting under `metadata` as a temporary workaround in a follow-up PR. |
 

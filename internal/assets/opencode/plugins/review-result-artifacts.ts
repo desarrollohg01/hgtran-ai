@@ -2,7 +2,7 @@ import type { Plugin } from "@opencode-ai/plugin"
 import { spawn } from "node:child_process"
 
 const REVIEW_AGENTS = new Set(["review-risk", "review-resilience", "review-readability", "review-reliability"])
-const BINDING = /^GENTLE_AI_REVIEW_BINDING (\{[^\n]+\})(?:\n|$)/
+const BINDING = /^HGTRAN_AI_REVIEW_BINDING (\{[^\n]+\})(?:\n|$)/
 const TASK_RESULT = /^<task id="[^"\r\n]+" state="completed">\n<task_result>\n([\s\S]*?)\n<\/task_result>\n<\/task>$/
 const TASK_TAG = /<\/?task(?:\s|>)|<\/?task_result>/
 const REVIEW_OUTCOME = { UNSUPPORTED_CAPABILITY: "unsupported-capability" } as const
@@ -56,7 +56,7 @@ interface ReviewCapturePreflight {
 
 function parseBinding(prompt: unknown, lens: string): ReviewBinding {
   const match = BINDING.exec(typeof prompt === "string" ? prompt : "")
-  if (!match) throw new Error("review task is missing GENTLE_AI_REVIEW_BINDING")
+  if (!match) throw new Error("review task is missing HGTRAN_AI_REVIEW_BINDING")
 
   let binding: unknown
   try {
@@ -108,14 +108,14 @@ function extractionClass(cause: unknown): string | undefined {
 }
 
 function captureCwd(worktree: string | undefined, directory: string): string {
-  const override = process.env["GENTLE_AI_REVIEW_CWD"]
+  const override = process.env["HGTRAN_AI_REVIEW_CWD"]
   if (typeof override === "string" && override.trim() !== "") return override.trim()
   return worktree || directory
 }
 
 function runNative(cwd: string, args: string[], stdin: string): Promise<string> {
   return new Promise((resolve, reject) => {
-    const child = spawn("gentle-ai", args, { cwd, stdio: ["pipe", "pipe", "pipe"] })
+    const child = spawn("hgtran-ai", args, { cwd, stdio: ["pipe", "pipe", "pipe"] })
     const stdout: Buffer[] = []
     const stderr: Buffer[] = []
     child.stdout.on("data", (chunk: Buffer) => stdout.push(chunk))
@@ -127,7 +127,7 @@ function runNative(cwd: string, args: string[], stdin: string): Promise<string> 
         resolve(Buffer.concat(stdout).toString("utf8").trim())
         return
       }
-      reject(new Error(`gentle-ai ${args[0]} ${args[1]} failed (${code ?? "signal"}): ${Buffer.concat(stderr).toString("utf8").trim()}`))
+      reject(new Error(`hgtran-ai ${args[0]} ${args[1]} failed (${code ?? "signal"}): ${Buffer.concat(stderr).toString("utf8").trim()}`))
     })
     child.stdin.end(stdin)
   })
@@ -169,7 +169,7 @@ async function preflightCapture(cwd: string, binding: ReviewBinding): Promise<Re
     const value = parsed as Record<string, unknown>
     const subject = value.artifact_subject as Record<string, unknown> | undefined
     const manifest = value.changed_path_manifest
-    if (!subject || subject.schema !== "gentle-ai.review-artifact-subject/v2" ||
+    if (!subject || subject.schema !== "hgtran-ai.review-artifact-subject/v2" ||
         typeof subject.subject_hash !== "string" || !/^sha256:[a-f0-9]{64}$/.test(subject.subject_hash) ||
         typeof subject.authority_revision !== "string" || !/^sha256:[a-f0-9]{64}$/.test(subject.authority_revision) ||
         typeof subject.base_tree !== "string" || !/^[a-f0-9]{40}(?:[a-f0-9]{24})?$/.test(subject.base_tree) ||
@@ -178,7 +178,7 @@ async function preflightCapture(cwd: string, binding: ReviewBinding): Promise<Re
         subject.lineage_id !== binding.lineage || subject.target_identity !== binding.target ||
         (binding.revision !== undefined && subject.authority_revision !== binding.revision) ||
         subject.lens !== binding.lens || subject.selected_order !== binding.order ||
-        value.schema !== "gentle-ai.review-capture-preflight/v1" || value.capability !== "review.native_capture_preflight" ||
+        value.schema !== "hgtran-ai.review-capture-preflight/v1" || value.capability !== "review.native_capture_preflight" ||
         value.lineage_id !== binding.lineage || value.target_identity !== binding.target || value.lens !== binding.lens ||
         value.selected_order !== binding.order || value.base_tree !== subject.base_tree || value.candidate_tree !== subject.candidate_tree ||
         !validManifest(manifest)) {
@@ -195,7 +195,7 @@ async function preflightCapture(cwd: string, binding: ReviewBinding): Promise<Re
       : binding.repository_context
       ? `Refresh the exact native next_transition for lineage ${binding.lineage} before relaunching the lens.`
       : `If lineage ${binding.lineage} was started in a different repository (for example a nested one), ` +
-        `set GENTLE_AI_REVIEW_CWD to that repository and relaunch the lens.`
+        `set HGTRAN_AI_REVIEW_CWD to that repository and relaunch the lens.`
     throw new Error(
       `review capture preflight failed for lens ${binding.lens} under ${scope}: ` +
       `${sessionErrorMessage(binding, cause, "repository_context_preflight_failed")}. ` +
@@ -233,8 +233,8 @@ async function injectReviewerContext(prompt: string, lens: string, cwd: string):
   const binding = parseBinding(prompt, lens)
   const preflight = await preflightCapture(cwd, binding)
   const injectedBinding = { ...binding, subject_hash: preflight.artifact_subject.subject_hash }
-  return `GENTLE_AI_REVIEW_BINDING ${JSON.stringify(injectedBinding)}\n` +
-    `GENTLE_AI_REVIEW_CONTEXT ${JSON.stringify(preflight)}\n`
+  return `HGTRAN_AI_REVIEW_BINDING ${JSON.stringify(injectedBinding)}\n` +
+    `HGTRAN_AI_REVIEW_CONTEXT ${JSON.stringify(preflight)}\n`
 }
 
 function preserveResult(cwd: string, binding: ReviewBinding, raw: string, cls?: string): Promise<string> {
@@ -268,7 +268,7 @@ const GIT_TRUST_REFUSAL_CODE = "git_repository_untrusted"
 // tells the caller something they can actually carry out.
 const GIT_TRUST_REFUSAL_MESSAGE =
   `${GIT_TRUST_REFUSAL_CODE}: Git declined to open the bound repository in this process because it is owned by a ` +
-  `different account; gentle-ai never provisions a safe.directory exception and never bypasses that protection. ` +
+  `different account; hgtran-ai never provisions a safe.directory exception and never bypasses that protection. ` +
   `Restart the host process under a Git context that already trusts that repository.`
 
 const GIT_TRUST_REFUSAL_RECOVERY =
@@ -462,7 +462,7 @@ const ReviewResultArtifactsPlugin: Plugin = async ({ directory, worktree }) => {
     if (input.tool !== "task" || typeof output.args?.subagent_type !== "string" ||
         !REVIEW_AGENTS.has(output.args.subagent_type)) return
     if (typeof output.args.prompt !== "string") {
-      throw new Error("review task is missing GENTLE_AI_REVIEW_BINDING")
+      throw new Error("review task is missing HGTRAN_AI_REVIEW_BINDING")
     }
     if (output.args.background === true) {
       throw new Error("bound review tasks must run in the foreground for native result capture")

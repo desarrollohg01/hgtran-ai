@@ -213,7 +213,7 @@ func TestCancelledCompactStartDoesNotCreateLockInode(t *testing.T) {
 func TestStoreLockRecoversCrashAndCorruptOwnerRecords(t *testing.T) {
 	for _, content := range []string{
 		"not-json\n",
-		`{"schema":"gentle-ai.review-store-lock/v1","owner_id":"crashed","pid":999999,"host":"gone","acquired_at":"2000-01-01T00:00:00Z"}` + "\n",
+		`{"schema":"hgtran-ai.review-store-lock/v1","owner_id":"crashed","pid":999999,"host":"gone","acquired_at":"2000-01-01T00:00:00Z"}` + "\n",
 	} {
 		t.Run(content[:min(len(content), 8)], func(t *testing.T) {
 			store := Store{Dir: filepath.Join(canonicalTempDir(t), "review-store")}
@@ -233,8 +233,8 @@ func TestStoreLockRecoversCrashAndCorruptOwnerRecords(t *testing.T) {
 }
 
 func TestStoreLockIsReleasedWhenOwnerProcessExits(t *testing.T) {
-	if os.Getenv("GENTLE_AI_LOCK_EXIT_HELPER") == "1" {
-		lock, err := acquireStoreLock(os.Getenv("GENTLE_AI_LOCK_EXIT_PATH"))
+	if os.Getenv("HGTRAN_AI_LOCK_EXIT_HELPER") == "1" {
+		lock, err := acquireStoreLock(os.Getenv("HGTRAN_AI_LOCK_EXIT_PATH"))
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -243,7 +243,7 @@ func TestStoreLockIsReleasedWhenOwnerProcessExits(t *testing.T) {
 	}
 	path := filepath.Join(canonicalTempDir(t), "review-store", "LOCK")
 	command := exec.Command(os.Args[0], "-test.run=^TestStoreLockIsReleasedWhenOwnerProcessExits$")
-	command.Env = append(os.Environ(), "GENTLE_AI_LOCK_EXIT_HELPER=1", "GENTLE_AI_LOCK_EXIT_PATH="+path)
+	command.Env = append(os.Environ(), "HGTRAN_AI_LOCK_EXIT_HELPER=1", "HGTRAN_AI_LOCK_EXIT_PATH="+path)
 	if output, err := command.CombinedOutput(); err != nil {
 		t.Fatalf("lock owner helper: %v\n%s", err, output)
 	}
@@ -1170,7 +1170,7 @@ func TestAuthoritativeStoreUsesRepositoryCommonDirectoryAndCanonicalLineage(t *t
 		t.Fatalf("AuthoritativeStore() error = %v", err)
 	}
 	commonDir := strings.TrimSpace(gitSnapshot(t, repo, "rev-parse", "--path-format=absolute", "--git-common-dir"))
-	want := filepath.Join(commonDir, "gentle-ai", "review-transactions", "v1", "trusted-lineage-1")
+	want := filepath.Join(commonDir, "hgtran-ai", "review-transactions", "v1", "trusted-lineage-1")
 	if store.Dir != want {
 		t.Fatalf("authoritative store = %q, want %q", store.Dir, want)
 	}
@@ -1218,7 +1218,7 @@ func TestRepositoryIdentityIgnoresHostileGitSelectionEnvironment(t *testing.T) {
 		t.Fatalf("AuthoritativeStore() under hostile Git environment error = %v", err)
 	}
 	wantCommonDir := strings.TrimSpace(gitSnapshotWithoutLocalEnv(t, repo, "rev-parse", "--path-format=absolute", "--git-common-dir"))
-	wantStore := filepath.Join(wantCommonDir, "gentle-ai", "review-transactions", "v1", "hostile-env-lineage")
+	wantStore := filepath.Join(wantCommonDir, "hgtran-ai", "review-transactions", "v1", "hostile-env-lineage")
 	if store.Dir != wantStore {
 		t.Fatalf("authoritative store = %q, want %q", store.Dir, wantStore)
 	}
@@ -1234,7 +1234,7 @@ func TestAuthoritativeStorePreservesLinkedWorktreeCommonDirectory(t *testing.T) 
 		t.Fatalf("AuthoritativeStore(linked worktree) error = %v", err)
 	}
 	wantCommonDir := strings.TrimSpace(gitSnapshotWithoutLocalEnv(t, repo, "rev-parse", "--path-format=absolute", "--git-common-dir"))
-	want := filepath.Join(wantCommonDir, "gentle-ai", "review-transactions", "v1", "worktree-lineage")
+	want := filepath.Join(wantCommonDir, "hgtran-ai", "review-transactions", "v1", "worktree-lineage")
 	if store.Dir != want {
 		t.Fatalf("linked-worktree store = %q, want common store %q", store.Dir, want)
 	}

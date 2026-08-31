@@ -2,7 +2,7 @@
 
 <- [Back to README](../README.md)
 
-Ask for the outcome. Gentle AI keeps already-understood work inline, delegates only
+Ask for the outcome. Hgtran AI keeps already-understood work inline, delegates only
 the actions that benefit from fresh context, and offers SDD only when durable
 planning would materially reduce uncertainty. Verification, review, delivery, and
 lifecycle authority remain native provider responsibilities behind that simple
@@ -11,7 +11,7 @@ interaction.
 ## Quick path
 
 1. Describe the outcome in natural language.
-2. Gentle AI uses the smallest useful implementation route: direct inline,
+2. Hgtran AI uses the smallest useful implementation route: direct inline,
    delegated direct, or an optional SDD proposal.
 3. The normal interaction reports only **Working**, **Checking**, **Ready**, or
    **Needs your decision**.
@@ -38,7 +38,7 @@ actors may use fresh workers without changing the implementation route or
 creating an SDD run. Direct and delegated work create no SDD artifacts, phase
 attempts, or synthetic SDD lifecycle.
 
-If apparently simple work reveals substantial ambiguity, Gentle AI may offer SDD
+If apparently simple work reveals substantial ambiguity, Hgtran AI may offer SDD
 at the next safe boundary. Declining it leads to a safely reduced scope, a
 justified direct or delegated route, or **Needs your decision**—never silent SDD
 enrollment.
@@ -48,9 +48,9 @@ enrollment.
 | Public state | Meaning |
 |---|---|
 | **Working** | The implementation can still change. |
-| **Checking** | Gentle AI is performing the applicable functional proof and bounded review. |
+| **Checking** | Hgtran AI is performing the applicable functional proof and bounded review. |
 | **Ready** | The exact candidate has sufficient evidence for the selected delivery route. |
-| **Needs your decision** | Safe automatic convergence is impossible; Gentle AI presents the cause, impact, and concrete choices. |
+| **Needs your decision** | Safe automatic convergence is impossible; Hgtran AI presents the cause, impact, and concrete choices. |
 
 The user still asks only for the outcome. Repository identity, route, policy,
 candidate, delivery mechanism, and authority references remain owner-derived.
@@ -65,11 +65,11 @@ route:
 
 | Command | Effect |
 |---|---|
-| `gentle-ai review mode status --cwd <repo>` | Report the global source, clone-local source, deciding source, and effective mode without mutation. |
-| `gentle-ai review mode disable --cwd <repo>` | Disable receipt-driven development globally. |
-| `gentle-ai review mode disable --scope clone --cwd <repo>` | Disable it only for this clone; no other clone inherits the override. |
-| `gentle-ai review mode enable --cwd <repo>` | Enable it globally for future candidates. |
-| `gentle-ai review mode enable --scope clone --cwd <repo>` | Clear this clone's off-only override. |
+| `hgtran-ai review mode status --cwd <repo>` | Report the global source, clone-local source, deciding source, and effective mode without mutation. |
+| `hgtran-ai review mode disable --cwd <repo>` | Disable receipt-driven development globally. |
+| `hgtran-ai review mode disable --scope clone --cwd <repo>` | Disable it only for this clone; no other clone inherits the override. |
+| `hgtran-ai review mode enable --cwd <repo>` | Enable it globally for future candidates. |
+| `hgtran-ai review mode enable --scope clone --cwd <repo>` | Clear this clone's off-only override. |
 
 Any disabled source wins. A clone may opt out but cannot require review for the
 user. Interactive starts ask before reviewer work; non-interactive tier-1/tier-2 starts proceed without prompting and report how to disable review mode. Interactive consent is asked
@@ -91,7 +91,7 @@ no longer does. See
 
 ## Installation and refresh
 
-`gentle-ai install` and `gentle-ai sync` project the same canonical rules into
+`hgtran-ai install` and `hgtran-ai sync` project the same canonical rules into
 every supported adapter, independently of whether the optional SDD component is
 selected:
 
@@ -103,8 +103,8 @@ selected:
   managed router template.
 
 ```bash
-gentle-ai install   # full install
-gentle-ai sync      # refresh managed content
+hgtran-ai install   # full install
+hgtran-ai sync      # refresh managed content
 ```
 
 Refresh is idempotent: the managed projection is replaced without duplication.

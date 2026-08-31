@@ -68,7 +68,7 @@ Use this page before reviewing or making a change. It turns the codebase map int
 ### Community tool or OpenCode plugin behavior
 
 - [ ] Use `internal/components/communitytool/` for external tool install orchestration plus managed guidance/config/MCP reconciliation.
-- [ ] Use `internal/components/opencodeplugin/` for OpenCode TUI plugin registration: external plugins add package names, while Gentle Logo writes/registers the managed local plugin file.
+- [ ] Use `internal/components/opencodeplugin/` for OpenCode TUI plugin registration: external plugins add package names, while Hgtran Logo writes/registers the managed local plugin file.
 - [ ] Keep external runtime ownership explicit in docs.
 - [ ] Test idempotent sync/registration behavior.
 

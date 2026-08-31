@@ -24,7 +24,7 @@ import (
 // one into a shell does nothing.
 var organicDottedOperation = regexp.MustCompile(`review\.[a-z_-]+`)
 
-// organicNamedCommand extracts the single `gentle-ai ...` command a refusal
+// organicNamedCommand extracts the single `hgtran-ai ...` command a refusal
 // names, and requires the refusal to name exactly one. Placeholders the
 // operator must fill in are returned separately so the caller has to make a
 // deliberate choice for each one instead of silently running a broken command.
@@ -33,7 +33,7 @@ func organicNamedCommand(t *testing.T, message string) ([]string, []string) {
 	if match := organicDottedOperation.FindString(message); match != "" {
 		t.Fatalf("refusal names the internal operation identifier %q, which is not runnable:\n%s", match, message)
 	}
-	index := strings.Index(message, "gentle-ai ")
+	index := strings.Index(message, "hgtran-ai ")
 	if index < 0 {
 		t.Fatalf("refusal names no runnable command:\n%s", message)
 	}
@@ -42,8 +42,8 @@ func organicNamedCommand(t *testing.T, message string) ([]string, []string) {
 		tail = tail[:end]
 	}
 	fields := strings.Fields(strings.TrimRight(tail, ".;,"))
-	if len(fields) < 2 || fields[0] != "gentle-ai" {
-		t.Fatalf("refusal named %q, which is not a gentle-ai command:\n%s", tail, message)
+	if len(fields) < 2 || fields[0] != "hgtran-ai" {
+		t.Fatalf("refusal named %q, which is not a hgtran-ai command:\n%s", tail, message)
 	}
 	placeholders := []string{}
 	for _, field := range fields {
@@ -127,7 +127,7 @@ func TestOrganicEscalatedGateDenialNamesARunnableContinuation(t *testing.T) {
 	// what it named.
 	fixOrganicEscalatedCandidate(harness)
 	if stdout, recoverStderr, recoverErr := harness.gentleAllowFailure(arguments...); recoverErr != nil {
-		t.Fatalf("the continuation the escalated denial named failed: gentle-ai %v: %v\nstdout:\n%s\nstderr:\n%s",
+		t.Fatalf("the continuation the escalated denial named failed: hgtran-ai %v: %v\nstdout:\n%s\nstderr:\n%s",
 			arguments, recoverErr, stdout, recoverStderr)
 	}
 	harness.finalize("escalated-gate-denial-successor")
@@ -176,7 +176,7 @@ func TestOrganicEscalatedRecoveryRefusalNamesWhatToChange(t *testing.T) {
 	// the command it printed, with no substitution at all.
 	fixOrganicEscalatedCandidate(harness)
 	if stdout, recoverStderr, recoverErr := harness.gentleAllowFailure(arguments...); recoverErr != nil {
-		t.Fatalf("the command the unchanged-target refusal named failed: gentle-ai %v: %v\nstdout:\n%s\nstderr:\n%s",
+		t.Fatalf("the command the unchanged-target refusal named failed: hgtran-ai %v: %v\nstdout:\n%s\nstderr:\n%s",
 			arguments, recoverErr, stdout, recoverStderr)
 	}
 	harness.finalize(lineage + "-successor")

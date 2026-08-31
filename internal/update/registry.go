@@ -16,20 +16,20 @@ import (
 // the fallback strategy.
 var Tools = []ToolInfo{
 	{
-		Name:          "gentle-ai",
+		Name:          "hgtran-ai",
 		Owner:         "desarrollohg01",
 		Repo:          "hgtran-ai",
 		DetectCmd:     nil, // version comes from build-time ldflags (app.Version)
 		VersionPrefix: "v",
-		// gentle-ai: Homebrew when the package is brew-owned, authenticated binary
+		// hgtran-ai: Homebrew when the package is brew-owned, authenticated binary
 		// release download on Linux/macOS, and `go install` on Windows, where no
 		// official signed binary is published.
 		InstallMethod: InstallBinary,
 		// GoImportPath is what makes the Windows self-upgrade possible. It is
 		// deliberately NOT a general opt-in to go-install: effectiveMethod routes
-		// gentle-ai on Linux/macOS to InstallBinary regardless of this field, so
+		// hgtran-ai on Linux/macOS to InstallBinary regardless of this field, so
 		// those platforms keep the minisign-verified release download.
-		GoImportPath: "bitbucket.org/hgt_development/hgtran-ai/v2/cmd/gentle-ai",
+		GoImportPath: "bitbucket.org/hgt_development/hgtran-ai/v2/cmd/hgtran-ai",
 	},
 	{
 		Name:              "engram",

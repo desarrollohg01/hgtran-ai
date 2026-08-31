@@ -8,33 +8,33 @@
 
 | Component | ID | Description |
 |-----------|-----|-------------|
-| Engram | `engram` | Persistent cross-session memory via MCP — auto-detection of project name, full-text search, git sync, project consolidation. See [engram repo](https://github.com/Gentleman-Programming/engram) |
+| Engram | `engram` | Persistent cross-session memory via MCP — auto-detection of project name, full-text search, git sync, project consolidation. See [engram repo](https://github.com/desarrollohg01/engram) |
 | SDD | `sdd` | Spec-Driven Development workflow (10 phases, including `sdd-onboard`) — the agent handles SDD organically when the task warrants it, or when you ask; you don't need to learn the commands |
 | Skills | `skills` | Curated coding skill library |
 | Context7 | `context7` | MCP server for live framework/library documentation |
 | Persona | `persona` | Managed Gentleman/neutral persona injection, or unmanaged custom persona mode |
 | Permissions | `permissions` | Security-first defaults and guardrails. Applied to Claude Code and OpenCode (the two adapters with permissions overlay support). Default sensitive-paths deny list: `~/.ssh/*`, `~/.ssh/**/*`, `**/*.pem`, `**/*.key`, `**/.env*`, `~/.credentials/*`, `~/.aws/credentials`, `~/.config/gh/hosts.yml`, `~/Library/Keychains/*`, `**/secrets/*`, `**/*.p12`, `**/*.pfx` |
-| GGA | `gga` | Gentleman Guardian Angel — AI provider switcher |
+| hga | `hga` | Gentleman Guardian Angel — AI provider switcher |
 | Theme | `theme` | Gentleman Kanagawa theme overlay |
 
-## GGA Behavior
+## hga Behavior
 
-`gentle-ai install --component gga` installs/provisions the `gga` binary globally on your machine.
+`hgtran-ai install --component hga` installs/provisions the `hga` binary globally on your machine.
 
-It does **not** run project-level hook setup automatically (`gga init` / `gga install`) because that should be an explicit decision per repository.
+It does **not** run project-level hook setup automatically (`hga init` / `hga install`) because that should be an explicit decision per repository.
 
-After global install, enable GGA per project with:
+After global install, enable hga per project with:
 
 ```bash
-gga init
-gga install
+hga init
+hga install
 ```
 
 ---
 
 ## Skills
 
-### Included Skills (installed by gentle-ai)
+### Included Skills (installed by hgtran-ai)
 
 22 skill files organized by category, embedded in the binary and injected into your agent's configuration:
 
@@ -82,8 +82,8 @@ For framework-specific skills (React 19, Angular, TypeScript, Tailwind 4, Zod 4,
 
 | Preset | ID | What's Included |
 |--------|-----|-----------------|
-| Dev Stack + Polish | `full-gentleman` | All components (Engram + SDD + Skills + Context7 + GGA + Permissions + Theme) + all skills |
-| Dev Stack | `ecosystem-only` | Core components (Engram + SDD + Skills + Context7 + GGA) + all skills |
+| Dev Stack + Polish | `full-gentleman` | All components (Engram + SDD + Skills + Context7 + hga + Permissions + Theme) + all skills |
+| Dev Stack | `ecosystem-only` | Core components (Engram + SDD + Skills + Context7 + hga) + all skills |
 | Memory Only | `minimal` | Engram + SDD skills only |
 | Custom | `custom` | You choose components and skills manually while keeping any existing persona/settings unmanaged |
 

@@ -51,7 +51,7 @@ func makeResult(name string, status update.UpdateStatus, oldVer, newVer string, 
 // UpdateAvailable or DevBuild status (i.e. only UpToDate and NotInstalled tools).
 func TestExecute_NoopWhenNothingIsExecutable(t *testing.T) {
 	results := []update.UpdateResult{
-		makeResult("gentle-ai", update.UpToDate, "1.0.0", "1.0.0", update.InstallBinary),
+		makeResult("hgtran-ai", update.UpToDate, "1.0.0", "1.0.0", update.InstallBinary),
 		makeResult("engram", update.NotInstalled, "", "0.4.0", update.InstallGoInstall),
 		// gga: CheckFailed — should also be omitted from results.
 		makeResult("hga", update.CheckFailed, "", "", update.InstallScript),
@@ -88,7 +88,7 @@ func TestExecute_DevBuildOnlyNoBackupCreated(t *testing.T) {
 	}
 
 	results := []update.UpdateResult{
-		makeResult("gentle-ai", update.DevBuild, "dev", "1.0.0", update.InstallBinary),
+		makeResult("hgtran-ai", update.DevBuild, "dev", "1.0.0", update.InstallBinary),
 	}
 
 	report := Execute(context.Background(), results, linuxProfile(), t.TempDir(), false)
@@ -362,7 +362,7 @@ func TestExecute_PerToolSuccessAndFailure(t *testing.T) {
 // --- TestExecute_DevBuildIsSkipped ---
 
 // TestExecute_DevBuildIsSkipped verifies the spec requirement:
-// gentle-ai with DevBuild status must appear in Results as UpgradeSkipped
+// hgtran-ai with DevBuild status must appear in Results as UpgradeSkipped
 // with a non-empty ManualHint explaining it is a source/dev build.
 // DevBuild tools must NOT be auto-executed, and engram/gga remain eligible.
 func TestExecute_DevBuildIsSkipped(t *testing.T) {
@@ -373,29 +373,29 @@ func TestExecute_DevBuildIsSkipped(t *testing.T) {
 	}
 
 	results := []update.UpdateResult{
-		makeResult("gentle-ai", update.DevBuild, "dev", "1.0.0", update.InstallBinary),
+		makeResult("hgtran-ai", update.DevBuild, "dev", "1.0.0", update.InstallBinary),
 		makeResult("engram", update.UpdateAvailable, "0.3.0", "0.4.0", update.InstallGoInstall),
 	}
 	results[1].Tool.GoImportPath = "github.com/Gentleman-Programming/engram/cmd/engram"
 
 	report := Execute(context.Background(), results, linuxProfile(), t.TempDir(), false)
 
-	// gentle-ai (DevBuild) MUST appear as UpgradeSkipped with a ManualHint.
+	// hgtran-ai (DevBuild) MUST appear as UpgradeSkipped with a ManualHint.
 	var devResult *ToolUpgradeResult
 	for i := range report.Results {
-		if report.Results[i].ToolName == "gentle-ai" {
+		if report.Results[i].ToolName == "hgtran-ai" {
 			r := report.Results[i]
 			devResult = &r
 		}
 	}
 	if devResult == nil {
-		t.Fatalf("gentle-ai (DevBuild) must appear in Results — was not found")
+		t.Fatalf("hgtran-ai (DevBuild) must appear in Results — was not found")
 	}
 	if devResult.Status != UpgradeSkipped {
-		t.Errorf("gentle-ai DevBuild Status = %q, want UpgradeSkipped", devResult.Status)
+		t.Errorf("hgtran-ai DevBuild Status = %q, want UpgradeSkipped", devResult.Status)
 	}
 	if devResult.ManualHint == "" {
-		t.Errorf("gentle-ai DevBuild ManualHint must be non-empty")
+		t.Errorf("hgtran-ai DevBuild ManualHint must be non-empty")
 	}
 
 	// engram should still be processed as succeeded.
@@ -458,7 +458,7 @@ func TestExecute_FailureDoesNotImplyConfigLoss(t *testing.T) {
 // --- TestExecute_DevBuildSurfacedAsSkipped ---
 
 // TestExecute_DevBuildSurfacedAsSkipped verifies the spec gap:
-// A DevBuild tool (e.g. gentle-ai with version="dev") MUST appear in UpgradeReport.Results
+// A DevBuild tool (e.g. hgtran-ai with version="dev") MUST appear in UpgradeReport.Results
 // with Status=UpgradeSkipped and a non-empty ManualHint explaining it is a dev/source build.
 // Previously, DevBuild tools were silently omitted from Results entirely.
 func TestExecute_DevBuildSurfacedAsSkipped(t *testing.T) {
@@ -469,32 +469,32 @@ func TestExecute_DevBuildSurfacedAsSkipped(t *testing.T) {
 	}
 
 	results := []update.UpdateResult{
-		makeResult("gentle-ai", update.DevBuild, "dev", "1.0.0", update.InstallBinary),
+		makeResult("hgtran-ai", update.DevBuild, "dev", "1.0.0", update.InstallBinary),
 		makeResult("engram", update.UpdateAvailable, "0.3.0", "0.4.0", update.InstallGoInstall),
 	}
 	results[1].Tool.GoImportPath = "github.com/Gentleman-Programming/engram/cmd/engram"
 
 	report := Execute(context.Background(), results, linuxProfile(), t.TempDir(), false)
 
-	// gentle-ai (DevBuild) MUST appear in results as UpgradeSkipped.
+	// hgtran-ai (DevBuild) MUST appear in results as UpgradeSkipped.
 	var devResult *ToolUpgradeResult
 	for i := range report.Results {
-		if report.Results[i].ToolName == "gentle-ai" {
+		if report.Results[i].ToolName == "hgtran-ai" {
 			r := report.Results[i]
 			devResult = &r
 		}
 	}
 
 	if devResult == nil {
-		t.Fatalf("gentle-ai DevBuild must appear in Results as UpgradeSkipped, but was not found")
+		t.Fatalf("hgtran-ai DevBuild must appear in Results as UpgradeSkipped, but was not found")
 	}
 
 	if devResult.Status != UpgradeSkipped {
-		t.Errorf("gentle-ai DevBuild Status = %q, want UpgradeSkipped", devResult.Status)
+		t.Errorf("hgtran-ai DevBuild Status = %q, want UpgradeSkipped", devResult.Status)
 	}
 
 	if devResult.ManualHint == "" {
-		t.Errorf("gentle-ai DevBuild ManualHint must be non-empty — should explain dev/source build")
+		t.Errorf("hgtran-ai DevBuild ManualHint must be non-empty — should explain dev/source build")
 	}
 
 	// engram (UpdateAvailable) must still be processed normally.
@@ -593,7 +593,7 @@ func TestToolUpgradeResult_ErrorWrapping(t *testing.T) {
 // --- Upgrade Backup Hardening Tests ---
 
 // TestConfigPathsForBackup_CoversManagedAgentPaths verifies that upgrade
-// backups include Gentle AI-managed files for installed agents, without treating
+// backups include Hgtran AI-managed files for installed agents, without treating
 // every file in an agent config directory as backup-owned.
 func TestConfigPathsForBackup_CoversManagedAgentPaths(t *testing.T) {
 	homeDir := t.TempDir()
@@ -604,7 +604,7 @@ func TestConfigPathsForBackup_CoversManagedAgentPaths(t *testing.T) {
 		".config/opencode/AGENTS.md":     "# OpenCode",
 		".config/opencode/opencode.json": `{"model":"claude"}`,
 		".gemini/GEMINI.md":              "# Gemini",
-		".cursor/rules/gentle-ai.mdc":    "# Cursor rules",
+		".cursor/rules/hgtran-ai.mdc":    "# Cursor rules",
 	}
 	unmanagedFile := filepath.Join(homeDir, ".claude", "conversation-transcript.md")
 

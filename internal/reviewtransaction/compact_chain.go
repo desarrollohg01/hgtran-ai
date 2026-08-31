@@ -13,7 +13,7 @@ import (
 	"strings"
 )
 
-const CompactPrePRChainProofDomain = "gentle-ai.compact-pre-pr-chain/v1"
+const CompactPrePRChainProofDomain = "hgtran-ai.compact-pre-pr-chain/v1"
 
 type compactPrePRChainMember struct {
 	store   CompactStore

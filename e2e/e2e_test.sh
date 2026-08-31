@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# e2e_test.sh — End-to-end tests for gentle-ai installer
+# e2e_test.sh — End-to-end tests for hgtran-ai installer
 #
 # Test tiers (controlled by environment variables):
 #   (default)            Tier 1: binary existence + dry-run tests (fast, no side-effects)
@@ -22,7 +22,7 @@ source "$SCRIPT_DIR/lib.sh"
 # ---------------------------------------------------------------------------
 BINARY="$(resolve_binary)"
 if [ -z "$BINARY" ]; then
-    echo "ERROR: gentle-ai binary not found. Build it first."
+    echo "ERROR: hgtran-ai binary not found. Build it first."
     exit 1
 fi
 log_info "Using binary: $BINARY"
@@ -69,7 +69,7 @@ test_version_command() {
 
     output=$($BINARY version 2>&1) || true
 
-    if echo "$output" | grep -q "gentle-ai"; then
+    if echo "$output" | grep -q "hgtran-ai"; then
         log_pass "Version command returns binary name"
     else
         log_fail "Version command failed: $output"
@@ -265,7 +265,7 @@ test_preset_full_components() {
     assert_output_contains "$components_line" "permissions" "Full includes permissions"
     assert_output_contains "$components_line" "gga" "Full includes gga"
     assert_output_contains "$components_line" "claude-theme" "Full includes Claude Gentleman theme"
-    assert_output_contains "$components_line" "opencode-gentle-logo" "Full includes OpenCode Gentle logo"
+    assert_output_contains "$components_line" "opencode-gentle-logo" "Full includes OpenCode Hgtran logo"
 }
 
 test_dry_run_full_preset_persona_before_sdd() {
@@ -503,7 +503,7 @@ test_cc_engram_injection() {
 
         # CLAUDE.md section
         assert_file_exists "$HOME/.claude/CLAUDE.md" "CLAUDE.md exists"
-        assert_file_contains "$HOME/.claude/CLAUDE.md" "gentle-ai:engram-protocol" "CLAUDE.md has engram-protocol section marker"
+        assert_file_contains "$HOME/.claude/CLAUDE.md" "hgtran-ai:engram-protocol" "CLAUDE.md has engram-protocol section marker"
         assert_file_contains "$HOME/.claude/CLAUDE.md" "mem_save" "CLAUDE.md has real Engram content (mem_save)"
         assert_file_size_min "$HOME/.claude/CLAUDE.md" 500 "CLAUDE.md has substantial content"
     else
@@ -517,7 +517,7 @@ test_cc_sdd_injection() {
 
     if $BINARY install --agent claude-code --component sdd --persona neutral 2>&1; then
         assert_file_exists "$HOME/.claude/CLAUDE.md" "CLAUDE.md exists"
-        assert_file_contains "$HOME/.claude/CLAUDE.md" "gentle-ai:sdd-orchestrator" "CLAUDE.md has SDD section marker"
+        assert_file_contains "$HOME/.claude/CLAUDE.md" "hgtran-ai:sdd-orchestrator" "CLAUDE.md has SDD section marker"
         assert_file_contains "$HOME/.claude/CLAUDE.md" "sub-agent\|dependency\|orchestrator" "CLAUDE.md has real SDD content"
         assert_file_size_min "$HOME/.claude/CLAUDE.md" 500 "CLAUDE.md SDD section is substantial"
 
@@ -562,7 +562,7 @@ test_cc_persona_gentleman() {
 
     if $BINARY install --agent claude-code --component persona --persona gentleman 2>&1; then
         assert_file_exists "$HOME/.claude/CLAUDE.md" "CLAUDE.md exists"
-        assert_file_contains "$HOME/.claude/CLAUDE.md" "gentle-ai:persona" "CLAUDE.md has persona section marker"
+        assert_file_contains "$HOME/.claude/CLAUDE.md" "hgtran-ai:persona" "CLAUDE.md has persona section marker"
         # Claude has an active output-style channel — the CLAUDE.md persona
         # section is now a residual (tooling directives + pointer only); tone
         # content lives exclusively in the output style (design.md Decision 1).
@@ -589,7 +589,7 @@ test_cc_persona_neutral() {
 
     if $BINARY install --agent claude-code --component persona --persona neutral 2>&1; then
         assert_file_exists "$HOME/.claude/CLAUDE.md" "CLAUDE.md exists"
-        assert_file_contains "$HOME/.claude/CLAUDE.md" "gentle-ai:persona" "CLAUDE.md has persona section marker"
+        assert_file_contains "$HOME/.claude/CLAUDE.md" "hgtran-ai:persona" "CLAUDE.md has persona section marker"
         # Claude has an active output-style channel — the CLAUDE.md persona
         # section is now a residual; the mentor identity lives in the output
         # style (design.md Decision 1).
@@ -853,7 +853,7 @@ test_oc_engram_injection() {
 
         # Fallback safety: AGENTS.md must include engram protocol section.
         assert_file_exists "$agents_md" "OpenCode AGENTS.md"
-        assert_file_contains "$agents_md" 'gentle-ai:engram-protocol' "AGENTS.md has engram-protocol section"
+        assert_file_contains "$agents_md" 'hgtran-ai:engram-protocol' "AGENTS.md has engram-protocol section"
         assert_file_contains "$agents_md" 'mem_save' "AGENTS.md has memory protocol content"
     else
         log_fail "OpenCode engram install command failed"
@@ -1063,8 +1063,8 @@ test_full_preset_claude_code() {
 
         # CLAUDE.md should have all 3 sections coexisting
         assert_file_exists "$claude_md" "CLAUDE.md exists"
-        assert_file_contains "$claude_md" "gentle-ai:sdd-orchestrator" "Has SDD section"
-        assert_file_contains "$claude_md" "gentle-ai:persona" "Has persona section"
+        assert_file_contains "$claude_md" "hgtran-ai:sdd-orchestrator" "Has SDD section"
+        assert_file_contains "$claude_md" "hgtran-ai:persona" "Has persona section"
 
         # No duplicate sections
         assert_no_duplicate_section "$claude_md" "sdd-orchestrator" "No duplicate SDD section"
@@ -1113,13 +1113,13 @@ test_full_preset_opencode() {
         # AGENTS.md for persona + engram (SDD orchestrator is in opencode.json for OpenCode, NOT AGENTS.md)
         assert_file_exists "$agents_md" "AGENTS.md exists"
         assert_file_contains "$agents_md" "Senior Architect" "Gentleman persona"
-        assert_file_contains "$agents_md" "gentle-ai:engram-protocol" "AGENTS.md has engram protocol"
+        assert_file_contains "$agents_md" "hgtran-ai:engram-protocol" "AGENTS.md has engram protocol"
         assert_no_duplicate_section "$agents_md" "engram-protocol" "No duplicate engram section in AGENTS.md"
         # SDD orchestrator for OpenCode lives in opencode.json as an agent definition (not AGENTS.md)
         assert_file_contains "$settings" '"gentle-orchestrator"' "opencode.json has gentle-orchestrator agent"
         assert_file_not_contains "$settings" '"sdd-orchestrator"' "opencode.json does not have legacy base sdd-orchestrator agent"
         # AGENTS.md must NOT have a sdd-orchestrator HTML section (it's handled by opencode.json)
-        assert_file_not_contains "$agents_md" "<!-- gentle-ai:sdd-orchestrator -->" "AGENTS.md has no SDD section marker (opencode uses json agent)"
+        assert_file_not_contains "$agents_md" "<!-- hgtran-ai:sdd-orchestrator -->" "AGENTS.md has no SDD section marker (opencode uses json agent)"
 
         # SDD commands
         assert_file_count_min "$HOME/.config/opencode/commands" "*.md" 7 "SDD command files"
@@ -1146,7 +1146,7 @@ test_minimal_preset_opencode_only_engram_no_persona() {
 
         # Minimal preset should NOT silently install persona.
         if [ -f "$agents_md" ]; then
-            assert_file_not_contains "$agents_md" "gentle-ai:persona" "No persona marker in minimal preset"
+            assert_file_not_contains "$agents_md" "hgtran-ai:persona" "No persona marker in minimal preset"
             assert_file_not_contains "$agents_md" "Senior Architect" "No persona content in minimal preset"
         else
             log_pass "No AGENTS.md created by minimal preset (correct)"
@@ -1163,12 +1163,12 @@ test_minimal_preset_claude_only_engram() {
     if $BINARY install --agent claude-code --preset minimal --persona custom 2>&1; then
         # Engram should be installed (MCP + CLAUDE.md)
         assert_file_exists "$HOME/.claude/CLAUDE.md" "CLAUDE.md exists"
-        assert_file_contains "$HOME/.claude/CLAUDE.md" "gentle-ai:engram-protocol" "Engram protocol section"
+        assert_file_contains "$HOME/.claude/CLAUDE.md" "hgtran-ai:engram-protocol" "Engram protocol section"
 
         # SDD should NOT be in CLAUDE.md
-        assert_file_not_contains "$HOME/.claude/CLAUDE.md" "gentle-ai:sdd-orchestrator" "No SDD in minimal"
+        assert_file_not_contains "$HOME/.claude/CLAUDE.md" "hgtran-ai:sdd-orchestrator" "No SDD in minimal"
         # Persona should NOT be in CLAUDE.md
-        assert_file_not_contains "$HOME/.claude/CLAUDE.md" "gentle-ai:persona" "No persona in minimal"
+        assert_file_not_contains "$HOME/.claude/CLAUDE.md" "hgtran-ai:persona" "No persona in minimal"
         # No permissions settings.json
         if [ -f "$HOME/.claude/settings.json" ]; then
             assert_file_not_contains "$HOME/.claude/settings.json" '"permissions"' "No permissions in minimal"
@@ -1193,7 +1193,7 @@ test_ecosystem_both_agents() {
     if $BINARY install --agent claude-code --agent opencode --component sdd --component skills --component context7 --preset ecosystem-only --persona neutral 2>&1; then
         # Claude Code
         assert_file_exists "$HOME/.claude/CLAUDE.md" "Claude CLAUDE.md"
-        assert_file_contains "$HOME/.claude/CLAUDE.md" "gentle-ai:sdd-orchestrator" "Claude has SDD"
+        assert_file_contains "$HOME/.claude/CLAUDE.md" "hgtran-ai:sdd-orchestrator" "Claude has SDD"
         assert_file_contains "$HOME/.claude.json" '"context7"' "Claude context7 MCP"
         assert_file_count_min "$HOME/.claude/skills" "SKILL.md" 11 "Claude skills"
 
@@ -1544,8 +1544,8 @@ test_edge_theme_not_in_presets() {
         # the file.
         if [ -f "$HOME/.claude/CLAUDE.md" ]; then
             local sections
-            sections=$(grep -o '<!-- gentle-ai:[a-z-]* -->' "$HOME/.claude/CLAUDE.md" | sort -u | tr '\n' ' ')
-            if [ "$(printf '%s' "$sections" | xargs)" = "<!-- gentle-ai:agent-routing -->" ]; then
+            sections=$(grep -o '<!-- hgtran-ai:[a-z-]* -->' "$HOME/.claude/CLAUDE.md" | sort -u | tr '\n' ' ')
+            if [ "$(printf '%s' "$sections" | xargs)" = "<!-- hgtran-ai:agent-routing -->" ]; then
                 log_pass "Theme-only: CLAUDE.md carries routing guidance and no component section"
             else
                 log_fail "Theme-only install wrote component sections: $sections"
@@ -1604,7 +1604,7 @@ test_edge_persona_switch_preserves_sections_opencode() {
 
     local agents_md="$HOME/.config/opencode/AGENTS.md"
     assert_file_exists "$agents_md" "AGENTS.md after full install"
-    assert_file_contains "$agents_md" "gentle-ai:engram-protocol" "Engram section present before switch"
+    assert_file_contains "$agents_md" "hgtran-ai:engram-protocol" "Engram section present before switch"
 
     # Step 2: Switch to neutral persona
     $BINARY install --agent opencode --component persona --persona neutral 2>&1 || true
@@ -1612,7 +1612,7 @@ test_edge_persona_switch_preserves_sections_opencode() {
     # Step 3: Verify sections survived
     assert_file_contains "$agents_md" "Senior Architect" "Neutral persona present after switch"
     assert_file_not_contains "$agents_md" "Rioplatense" "Regional language removed after switch"
-    assert_file_contains "$agents_md" "gentle-ai:engram-protocol" "Engram section survived persona switch"
+    assert_file_contains "$agents_md" "hgtran-ai:engram-protocol" "Engram section survived persona switch"
     assert_no_duplicate_section "$agents_md" "engram-protocol" "No duplicate engram after switch"
 }
 
@@ -1806,10 +1806,10 @@ test_windsurf_persona_and_sdd_content() {
         local rules="$HOME/.codeium/windsurf/memories/global_rules.md"
         assert_file_exists "$rules" "global_rules.md exists"
         assert_file_contains "$rules" "Senior Architect" "Persona injected"
-        assert_file_contains "$rules" "gentle-ai:sdd-orchestrator" "SDD orchestrator marker present"
+        assert_file_contains "$rules" "hgtran-ai:sdd-orchestrator" "SDD orchestrator marker present"
         assert_file_contains "$rules" "skill_resolution" "SDD has skill_resolution field"
         assert_file_contains "$rules" "Engram Topic Key" "SDD has Engram Topic Key section"
-        assert_file_contains "$rules" "gentle-ai:engram-protocol" "Engram protocol marker present"
+        assert_file_contains "$rules" "hgtran-ai:engram-protocol" "Engram protocol marker present"
         assert_file_size_min "$rules" 2000 "global_rules.md has substantial content"
     else
         log_fail "Windsurf persona+SDD install command failed"

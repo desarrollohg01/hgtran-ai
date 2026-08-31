@@ -26,19 +26,19 @@ func TestComponentApplyStepOpenClawWorkspaceScopedInjections(t *testing.T) {
 			name:      "engram writes protocol to workspace AGENTS",
 			component: model.ComponentEngram,
 			fileName:  "AGENTS.md",
-			marker:    "<!-- gentle-ai:engram-protocol -->",
+			marker:    "<!-- hgtran-ai:engram-protocol -->",
 		},
 		{
 			name:      "persona writes soul to workspace",
 			component: model.ComponentPersona,
 			fileName:  "SOUL.md",
-			marker:    "<!-- gentle-ai:persona -->",
+			marker:    "<!-- hgtran-ai:persona -->",
 		},
 		{
 			name:      "sdd writes protocol to workspace AGENTS",
 			component: model.ComponentSDD,
 			fileName:  "AGENTS.md",
-			marker:    "<!-- gentle-ai:sdd-orchestrator -->",
+			marker:    "<!-- hgtran-ai:sdd-orchestrator -->",
 		},
 	}
 
@@ -99,19 +99,19 @@ func TestComponentSyncStepOpenClawWorkspaceScopedInjections(t *testing.T) {
 			name:      "engram sync writes protocol to workspace AGENTS",
 			component: model.ComponentEngram,
 			fileName:  "AGENTS.md",
-			marker:    "<!-- gentle-ai:engram-protocol -->",
+			marker:    "<!-- hgtran-ai:engram-protocol -->",
 		},
 		{
 			name:      "persona sync writes soul to workspace",
 			component: model.ComponentPersona,
 			fileName:  "SOUL.md",
-			marker:    "<!-- gentle-ai:persona -->",
+			marker:    "<!-- hgtran-ai:persona -->",
 		},
 		{
 			name:      "sdd sync writes protocol to workspace AGENTS",
 			component: model.ComponentSDD,
 			fileName:  "AGENTS.md",
-			marker:    "<!-- gentle-ai:sdd-orchestrator -->",
+			marker:    "<!-- hgtran-ai:sdd-orchestrator -->",
 		},
 	}
 
@@ -240,15 +240,15 @@ func quoteJSON(value string) string {
 func assertOpenClawInstructionsInWorkspace(t *testing.T, workspace string) {
 	t.Helper()
 	agentsText := readOpenClawTestFile(t, filepath.Join(workspace, "AGENTS.md"))
-	for _, want := range []string{"gentle-ai:engram-protocol", "gentle-ai:sdd-orchestrator", "gentle-ai:strict-tdd-mode"} {
+	for _, want := range []string{"hgtran-ai:engram-protocol", "hgtran-ai:sdd-orchestrator", "hgtran-ai:strict-tdd-mode"} {
 		if !strings.Contains(agentsText, want) {
 			t.Fatalf("active workspace AGENTS.md missing %q; got:\n%s", want, agentsText)
 		}
 	}
 
 	soulText := readOpenClawTestFile(t, filepath.Join(workspace, "SOUL.md"))
-	if !strings.Contains(soulText, "gentle-ai:persona") || !strings.Contains(soulText, "Senior Architect") {
-		t.Fatalf("active workspace SOUL.md missing Gentle AI persona; got:\n%s", soulText)
+	if !strings.Contains(soulText, "hgtran-ai:persona") || !strings.Contains(soulText, "Senior Architect") {
+		t.Fatalf("active workspace SOUL.md missing Hgtran AI persona; got:\n%s", soulText)
 	}
 }
 

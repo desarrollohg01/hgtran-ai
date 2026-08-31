@@ -102,7 +102,7 @@ func TestRenderUninstallOpenCodePluginReportSurfacesLayers(t *testing.T) {
 		ChangedNodeModules: true,
 		CacheEntryRemoved:  "/home/me/.cache/opencode/packages/opencode-subagent-statusline@latest",
 		NodeModulesPath:    "/home/me/.config/opencode/node_modules/opencode-subagent-statusline",
-		CleanupPending:     []string{"/home/me/.cache/opencode/packages/.gentle-ai-uninstall-pending"},
+		CleanupPending:     []string{"/home/me/.cache/opencode/packages/.hgtran-ai-uninstall-pending"},
 	})
 	for _, want := range []string{
 		"Sub-agent Statusline",
@@ -245,7 +245,7 @@ func TestPromptUninstallOpenCodePluginConfirmGentleLogoBranch(t *testing.T) {
 	}
 	out := stdout.String()
 	wantSubstrings := []string{
-		"Gentle Logo",
+		"Hgtran Logo",
 		"Layer 1: removes entry from ~/.config/opencode/tui.json",
 		"Plus: removes the local .tsx file ~/.config/opencode/tui-plugins/gentle-logo.tsx",
 	}

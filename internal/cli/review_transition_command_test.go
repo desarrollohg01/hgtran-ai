@@ -46,8 +46,8 @@ func reviewStartTransitionForCommand(t *testing.T, lineage string, kind reviewtr
 // order and in --flag=value form.
 func TestReviewNextTransitionExecuteEmitsRunnableCommand(t *testing.T) {
 	got := reviewStartTransitionForCommand(t, "review-start-command", reviewtransaction.TargetCurrentChanges)
-	want := "gentle-ai review start" +
-		" --contract=gentle-ai.review-integration/v1" +
+	want := "hgtran-ai review start" +
+		" --contract=hgtran-ai.review-integration/v1" +
 		" --target=sha256:" + strings.Repeat("b", 64) +
 		" --projection=workspace" +
 		" --lineage=review-start-command"
@@ -67,8 +67,8 @@ func TestReviewNextTransitionV2StartCommandCarriesConsentRelay(t *testing.T) {
 		},
 	}
 	got := newReviewNextTransition(status, nil, nil, nil, nil, reviewNextTransitionInput{StartLineage: "review-v2-consent-command"})
-	want := "gentle-ai review start" +
-		" --contract=gentle-ai.review-integration/v2" +
+	want := "hgtran-ai review start" +
+		" --contract=hgtran-ai.review-integration/v2" +
 		" --target=sha256:" + strings.Repeat("b", 64) +
 		" --projection=workspace" +
 		" --lineage=review-v2-consent-command" +
@@ -123,7 +123,7 @@ func TestReviewNextTransitionExecuteCommandRendersBooleanFlagsWithEquals(t *test
 // runs on the machine that generated the payload.
 func TestReviewNextTransitionExecuteCommandUsesCanonicalToolName(t *testing.T) {
 	got := reviewStartTransitionForCommand(t, "review-canonical-tool", reviewtransaction.TargetCurrentChanges)
-	if !strings.HasPrefix(got.Execute.Command, "gentle-ai review ") {
+	if !strings.HasPrefix(got.Execute.Command, "hgtran-ai review ") {
 		t.Fatalf("execute command = %q, want it to start with the canonical tool name", got.Execute.Command)
 	}
 	if strings.Contains(got.Execute.Command, os.Args[0]) {
@@ -232,7 +232,7 @@ func TestEveryPublishedTransitionOperationProducesARunnableCommand(t *testing.T)
 				t.Errorf("%s publishes transition operation %q, which resolves to verb %q, but review_facade.go dispatches no such command", schemaFile, operation, verb)
 			}
 			command := reviewTransitionCommandLine(operation, []ReviewTransitionArgument{{Name: "lineage", Value: "review-enum", Token: "--lineage=review-enum"}})
-			if command != "gentle-ai review "+verb+" --lineage=review-enum" {
+			if command != "hgtran-ai review "+verb+" --lineage=review-enum" {
 				t.Errorf("%s transition operation %q renders command %q", schemaFile, operation, command)
 			}
 		}
@@ -246,7 +246,7 @@ func TestEveryPublishedTransitionOperationProducesARunnableCommand(t *testing.T)
 
 // TestUnresolvedTransitionOperationEmitsNoHalfCommand proves the fail-closed
 // half: an operation with no registry-owned verb yields no command at all,
-// never "gentle-ai review  --flag=value" or any other half-assembled line.
+// never "hgtran-ai review  --flag=value" or any other half-assembled line.
 func TestUnresolvedTransitionOperationEmitsNoHalfCommand(t *testing.T) {
 	for operation := range reviewTransitionOperationsWithoutRegistryEntry {
 		if command := reviewTransitionCommandLine(operation, []ReviewTransitionArgument{{Name: "lineage", Value: "review-gap", Token: "--lineage=review-gap"}}); command != "" {
@@ -284,7 +284,7 @@ func TestReviewTransitionCommandQuotesFreeTextValues(t *testing.T) {
 		{Name: "reason", Value: "historical alias repair", Token: "--reason=historical alias repair"},
 		{Name: "actor", Value: "o'brien", Token: "--actor=o'brien"},
 	})
-	want := "gentle-ai review repair --lineage=review-quote '--reason=historical alias repair' '--actor=o'\\''brien'"
+	want := "hgtran-ai review repair --lineage=review-quote '--reason=historical alias repair' '--actor=o'\\''brien'"
 	if command != want {
 		t.Fatalf("command = %q, want %q", command, want)
 	}
@@ -305,7 +305,7 @@ func TestReviewTransitionCommandQuotedTokensSurviveShellWordSplitting(t *testing
 		{Name: "actor", Value: "o'brien", Token: "--actor=o'brien"},
 	}
 	command := reviewTransitionCommandLine("review.repair", arguments)
-	script := "set -- " + strings.TrimPrefix(command, "gentle-ai review repair ") + "\nfor argument in \"$@\"; do printf '%s\\n' \"$argument\"; done"
+	script := "set -- " + strings.TrimPrefix(command, "hgtran-ai review repair ") + "\nfor argument in \"$@\"; do printf '%s\\n' \"$argument\"; done"
 	output, err := exec.Command(shell, "-c", script).Output()
 	if err != nil {
 		t.Fatalf("shell rejected the emitted command %q: %v", command, err)

@@ -52,8 +52,8 @@ func TestReviewGateDeniedErrorNamesItsContinuation(t *testing.T) {
 			t.Fatalf("scope-changed Error() is still the bare mute block: %q", got)
 		}
 		assertNamesNoDottedOperation(t, got)
-		if !strings.Contains(got, "gentle-ai review recover") {
-			t.Fatalf("scope-changed Error() = %q, want it to name the runnable gentle-ai review recover", got)
+		if !strings.Contains(got, "hgtran-ai review recover") {
+			t.Fatalf("scope-changed Error() = %q, want it to name the runnable hgtran-ai review recover", got)
 		}
 		for _, input := range denied.Context.ScopeChange.RecoveryRequiredInputs {
 			if !strings.Contains(got, input) {
@@ -77,7 +77,7 @@ func TestReviewGateDeniedErrorNamesItsContinuation(t *testing.T) {
 		if strings.Contains(got, "explicit maintainer action") {
 			t.Fatalf("scope-changed (no diagnostics) Error() = %q, must not defer to a maintainer while a specific reason exists", got)
 		}
-		if strings.Contains(got, "gentle-ai review recover") {
+		if strings.Contains(got, "hgtran-ai review recover") {
 			t.Fatalf("scope-changed (no diagnostics) Error() = %q, must not fabricate a recovery without diagnostics", got)
 		}
 	})
@@ -131,7 +131,7 @@ func TestReviewGateDeniedErrorNamesItsContinuation(t *testing.T) {
 		// actually moves this operator forward.
 		for _, want := range []string{
 			"change the candidate",
-			"gentle-ai review recover",
+			"hgtran-ai review recover",
 			"--predecessor-lineage " + lineage,
 			"--expected-predecessor-revision " + revision,
 			"--disposition escalated",
@@ -146,7 +146,7 @@ func TestReviewGateDeniedErrorNamesItsContinuation(t *testing.T) {
 		denied := ReviewGateDeniedError{Result: reviewtransaction.GateEscalated}
 		got := denied.Error()
 		assertNamesNoDottedOperation(t, got)
-		if !strings.Contains(got, "gentle-ai review recover") || !strings.Contains(got, "gentle-ai review status") {
+		if !strings.Contains(got, "hgtran-ai review recover") || !strings.Contains(got, "hgtran-ai review status") {
 			t.Fatalf("escalated Error() without a lineage = %q, want the recover command plus where to read its inputs", got)
 		}
 	})

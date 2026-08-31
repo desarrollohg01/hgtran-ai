@@ -15,7 +15,7 @@ Observed read-only on 2026-07-10; these contracts become fixtures.
 
 ## Technical Approach
 
-Add a Pi-specific reconciler owning a minimal Pi MCP key, child overlays/marker blocks, and `~/.gentle-ai/pi-codegraph.json`. It never changes `gentle-pi`; install and sync invoke one transaction after refreshes.
+Add a Pi-specific reconciler owning a minimal Pi MCP key, child overlays/marker blocks, and `~/.hgtran-ai/pi-codegraph.json`. It never changes `gentle-pi`; install and sync invoke one transaction after refreshes.
 
 ## Architecture Decisions
 
@@ -24,7 +24,7 @@ Add a Pi-specific reconciler owning a minimal Pi MCP key, child overlays/marker 
 | Merge only `mcpServers.codegraph = {command:"codegraph", args:["serve","--mcp"]}` into Pi's global override. | Upstream installer cannot target Pi; a new adapter duplicates MCP. | Exact intersection of observed CodeGraph and Pi schemas. Existing unowned equivalent entries are preserved/adopted; conflicts are `misconfigured`, never overwritten. |
 | Discover effective children using the observed four-directory precedence. | Scanning only gentle-pi assets misses user/project children. | Matches runtime identity; unreadable/shadowed candidates are reported `unavailable`. |
 | A child is `compatible` only with parseable explicit `tools`, existing `bash`, detectable MCP proxy, and injectable `mcp`. | Adding `bash` broadens privilege; direct tools need warm cache. | Least privilege. Other readable children are `guidance-only`. |
-| Never edit package-owned gentle-pi files. Create owned same-name overlays in `$PI_CODING_AGENT_DIR/subagents`; bounded-edit user/project effective files. | Editing gentle-pi files invalidates its hash ownership manifest. | Preserves upstream ownership and survives refresh. Tool and body blocks use ignored comments `gentle-ai:pi-codegraph-tool/guidance`; the manifest records source/target hashes and ownership mode. |
+| Never edit package-owned gentle-pi files. Create owned same-name overlays in `$PI_CODING_AGENT_DIR/subagents`; bounded-edit user/project effective files. | Editing gentle-pi files invalidates its hash ownership manifest. | Preserves upstream ownership and survives refresh. Tool and body blocks use ignored comments `hgtran-ai:pi-codegraph-tool/guidance`; the manifest records source/target hashes and ownership mode. |
 | Uninstall removes only owned MCP key/overlays/blocks/manifest. | `codegraph uninstall` would affect unrelated agents. | Preserve external MCP entries, user content, CLI, and project `.codegraph/` data. Hash drift becomes a manual action, not deletion. |
 
 ## Data Flow and Contracts
@@ -32,12 +32,12 @@ Add a Pi-specific reconciler owning a minimal Pi MCP key, child overlays/marker 
 ```text
 Pi install/refresh -> discover + capability probe -> plan/snapshot -> MCP merge
   -> child overlay/block reconcile -> verify MCP schema + every effective child -> commit manifest
-gentle-ai sync components ----------------------------------------------------^
+hgtran-ai sync components ----------------------------------------------------^
 ```
 
 Lifecycle methods return per-child `{name, source, target, classification, tools, guidance, reason}`. Verification requires canonical MCP transport, read-only `tools/list` with the observed schema, guidance in every readable effective child, and `bash` plus `mcp` for compatible children; `APPEND_SYSTEM.md` is never evidence.
 
-Guidance resolves root with argv-based `git rev-parse --show-toplevel` or a validated workspace, rejects home/root/temp, checks `<root>/.codegraph`, runs `gentle-ai codegraph init --cwd <root>` once when absent, then calls `mcp`/`codegraph_explore`; fallback requires a reported failure. The CLI command canonicalizes the root and rejects symlink escapes and unrecognized projects before invoking CodeGraph.
+Guidance resolves root with argv-based `git rev-parse --show-toplevel` or a validated workspace, rejects home/root/temp, checks `<root>/.codegraph`, runs `hgtran-ai codegraph init --cwd <root>` once when absent, then calls `mcp`/`codegraph_explore`; fallback requires a reported failure. The CLI command canonicalizes the root and rejects symlink escapes and unrecognized projects before invoking CodeGraph.
 
 Apply uses atomic writes plus an in-memory before-image journal. Any apply/verify failure restores changed files (including deleting newly created overlays) before pipeline rollback. Repeated runs compare canonical bytes/hashes and are no-ops.
 

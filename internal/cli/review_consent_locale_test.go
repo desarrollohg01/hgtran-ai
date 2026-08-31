@@ -16,7 +16,7 @@ func TestRelayedConsentSpanishLocalizesHumanFieldsWithoutChangingMachineTokens(t
 		"--lineage", "review-consent-spanish", "--locale", "es", "--consent", "relay",
 	})).Bytes())
 	if question.Headline == reviewConsentHeadline || question.Value == reviewConsentValue ||
-		!strings.Contains(question.Headline, "Gentle AI") || !strings.Contains(question.Reason, "revisión") {
+		!strings.Contains(question.Headline, "Hgtran AI") || !strings.Contains(question.Reason, "revisión") {
 		t.Fatalf("Spanish consent envelope did not localize human fields: %#v", question)
 	}
 	if len(question.Choices) != 2 || question.Choices[0].Answer != "granted" || question.Choices[1].Answer != "declined" {

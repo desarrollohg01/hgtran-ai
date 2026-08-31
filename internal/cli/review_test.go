@@ -27,7 +27,7 @@ func TestFlatReviewStartRejectsBeforeCreatingLegacyAuthority(t *testing.T) {
 		"--cwd", repo, "--lineage", "flat-start-read-only", "--policy-file", policy,
 		"--machine-transaction-out", mirror,
 	}, io.Discard)
-	if !errors.Is(err, reviewtransaction.ErrLegacyReadOnly) || !strings.Contains(err.Error(), "gentle-ai review start") {
+	if !errors.Is(err, reviewtransaction.ErrLegacyReadOnly) || !strings.Contains(err.Error(), "hgtran-ai review start") {
 		t.Fatalf("flat review-start error = %v", err)
 	}
 	store, storeErr := reviewtransaction.AuthoritativeStore(context.Background(), repo, "flat-start-read-only")

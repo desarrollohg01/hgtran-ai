@@ -72,7 +72,7 @@ func TestPiCodeGraphReconcileInjectsOnlyCompatibleToolsAndGuidanceForEveryChild(
 func TestPiCodeGraphRejectsParentMarkerAndRestoresOnConflict(t *testing.T) {
 	home := t.TempDir()
 	settings := filepath.Join(home, ".pi", "agent", "mcp.json")
-	writePiFile(t, filepath.Join(home, ".pi", "agent", "APPEND_SYSTEM.md"), "<!-- gentle-ai:codegraph-guidance -->")
+	writePiFile(t, filepath.Join(home, ".pi", "agent", "APPEND_SYSTEM.md"), "<!-- hgtran-ai:codegraph-guidance -->")
 	writePiFile(t, filepath.Join(home, ".pi", "agent", "subagents", "worker.md"), "---\ntools: bash\n---\nwork\n")
 	writePiFile(t, settings, `{"mcpServers":{"codegraph":{"command":"other"}}}`)
 	before, _ := os.ReadFile(settings)
@@ -819,7 +819,7 @@ func TestPiCodeGraphProbeRejectsInvalidInitializeResponses(t *testing.T) {
 			agentDir := filepath.Join(home, "custom-agent")
 			writePiFile(t, filepath.Join(agentDir, "npm", "node_modules", "pi-mcp-adapter", "index.ts"), "export default {}\n")
 			if runtime.GOOS == "windows" {
-				t.Setenv("GENTLE_AI_CODEGRAPH_TEST_RESPONSE", response)
+				t.Setenv("HGTRAN_AI_CODEGRAPH_TEST_RESPONSE", response)
 				installFakeCodeGraphHelper(t, "invalid-response")
 			} else {
 				installFakeCodeGraphScript(t, `while IFS= read -r request; do printf '%s\n' '`+response+`'; done`)
@@ -1021,7 +1021,7 @@ func installFakeCodeGraphHelper(t *testing.T, mode string) {
 	if err := os.WriteFile(filepath.Join(binDir, "codegraph.exe"), data, 0o755); err != nil {
 		t.Fatal(err)
 	}
-	t.Setenv("GENTLE_AI_CODEGRAPH_TEST_HELPER", mode)
+	t.Setenv("HGTRAN_AI_CODEGRAPH_TEST_HELPER", mode)
 	t.Setenv("PATH", binDir+string(os.PathListSeparator)+os.Getenv("PATH"))
 }
 

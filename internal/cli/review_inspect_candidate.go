@@ -68,25 +68,25 @@ func runReviewInspectCandidate(args []string, help io.Writer, deps reviewInspect
 	}
 	if flags.NArg() != 0 || strings.TrimSpace(*repositoryContext) == "" || strings.TrimSpace(*revision) == "" ||
 		strings.TrimSpace(*lineage) == "" || strings.TrimSpace(*target) == "" || strings.TrimSpace(*lens) == "" || *order < 0 {
-		return nil, reviewPreflightError(errors.New("review inspect-candidate requires the exact provider-issued repository context, revision, lineage, target, lens, and order; run `gentle-ai review inspect-candidate --help` for the closed command forms"))
+		return nil, reviewPreflightError(errors.New("review inspect-candidate requires the exact provider-issued repository context, revision, lineage, target, lens, and order; run `hgtran-ai review inspect-candidate --help` for the closed command forms"))
 	}
 	pathProvided := reviewFlagWasProvided(flags, "path-index")
 	sideProvided := reviewFlagWasProvided(flags, "side")
 	switch *operation {
 	case "name-status", "numstat":
 		if pathProvided || sideProvided {
-			return nil, reviewPreflightError(errors.New("global candidate inspection does not accept a path index or side; run `gentle-ai review inspect-candidate --help` for the closed command forms"))
+			return nil, reviewPreflightError(errors.New("global candidate inspection does not accept a path index or side; run `hgtran-ai review inspect-candidate --help` for the closed command forms"))
 		}
 	case "stat", "patch":
 		if !pathProvided || *pathIndex < 0 || sideProvided {
-			return nil, reviewPreflightError(errors.New("path candidate inspection requires only a non-negative --path-index; run `gentle-ai review inspect-candidate --help` for the closed command forms"))
+			return nil, reviewPreflightError(errors.New("path candidate inspection requires only a non-negative --path-index; run `hgtran-ai review inspect-candidate --help` for the closed command forms"))
 		}
 	case "object":
 		if !pathProvided || *pathIndex < 0 || !sideProvided || (*side != "base" && *side != "candidate") {
-			return nil, reviewPreflightError(errors.New("object candidate inspection requires --path-index and --side base|candidate; run `gentle-ai review inspect-candidate --help` for the closed command forms"))
+			return nil, reviewPreflightError(errors.New("object candidate inspection requires --path-index and --side base|candidate; run `hgtran-ai review inspect-candidate --help` for the closed command forms"))
 		}
 	default:
-		return nil, reviewPreflightError(fmt.Errorf("unknown candidate inspection operation %q; run `gentle-ai review inspect-candidate --help` for the closed command forms", *operation))
+		return nil, reviewPreflightError(fmt.Errorf("unknown candidate inspection operation %q; run `hgtran-ai review inspect-candidate --help` for the closed command forms", *operation))
 	}
 
 	root, err := deps.resolve(ctx, *repositoryContext, reviewtransaction.ReviewRepositoryContextBinding{
@@ -105,7 +105,7 @@ func runReviewInspectCandidate(args []string, help io.Writer, deps reviewInspect
 	state := record.State
 	if state.State != reviewtransaction.StateReviewing || state.InitialSnapshot.Identity != *target || record.Revision != *revision ||
 		*order >= len(state.SelectedLenses) || state.SelectedLenses[*order] != *lens {
-		return nil, reviewPreflightError(errors.New("candidate inspection binding does not match the current reviewing authority; refresh the exact native next_transition before retrying `gentle-ai review inspect-candidate`"))
+		return nil, reviewPreflightError(errors.New("candidate inspection binding does not match the current reviewing authority; refresh the exact native next_transition before retrying `hgtran-ai review inspect-candidate`"))
 	}
 	payload, err := deps.inspect(reviewtransaction.SnapshotBuilder{Repo: root}, ctx, state.InitialSnapshot, *operation, *pathIndex, *side)
 	if err != nil {

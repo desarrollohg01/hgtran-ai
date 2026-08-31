@@ -14,11 +14,11 @@
 ### Build & Tests Execution
 **Build**: PASS — `go build ./...` exits 0.
 
-**Tests**: PASS — `go test ./... -count=1` → 52/52 packages `ok`, 0 `FAIL`, 2 packages with no test files (`cmd/gentle-ai`, `internal/tui/styles`).
+**Tests**: PASS — `go test ./... -count=1` → 52/52 packages `ok`, 0 `FAIL`, 2 packages with no test files (`cmd/hgtran-ai`, `internal/tui/styles`).
 
 ```text
 $ go test ./... -count=1
-ok  github.com/gentleman-programming/gentle-ai/internal/... (all 50 tested packages)
+ok  github.com/gentleman-programming/hgtran-ai/internal/... (all 50 tested packages)
 ```
 
 Targeted ledger-contract test run (verbose):

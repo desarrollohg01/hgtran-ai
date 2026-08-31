@@ -1,5 +1,5 @@
 ```yaml
-schema: gentle-ai.remediation-result/v1
+schema: hgtran-ai.remediation-result/v1
 status: partial
 failed_verify_revision: sha256:608b7c497ba2bde1a0f8beda178f82fec1e7920fc58acb0819855368c43549df
 task_count: 16
@@ -12,7 +12,7 @@ next_recommended: sdd-verify
 
 ```json
 {
-  "schema": "gentle-ai.remediation-evidence/v1",
+  "schema": "hgtran-ai.remediation-evidence/v1",
   "failed_verify_revision": "sha256:608b7c497ba2bde1a0f8beda178f82fec1e7920fc58acb0819855368c43549df",
   "commands": [
     {
@@ -84,7 +84,7 @@ Rollback boundary: `internal/components/communitytool/pi_codegraph.go`, `interna
 | Rollback boundary | Adoption capture, failure result clearing, and related tests | Independent revert affects only this remediation. |
 
 ```yaml
-schema: gentle-ai.remediation-result/v1
+schema: hgtran-ai.remediation-result/v1
 status: complete
 failed_verify_revision: sha256:d723a7825e385516ef5719447116d6ec757dd6dd2157b9d849fe773830186f3d
 focused_tests: passed
@@ -95,7 +95,7 @@ next_recommended: sdd-verify
 
 ```json
 {
-  "schema": "gentle-ai.remediation-evidence/v1",
+  "schema": "hgtran-ai.remediation-evidence/v1",
   "failed_verify_revision": "sha256:d723a7825e385516ef5719447116d6ec757dd6dd2157b9d849fe773830186f3d",
   "commands": [
     {
@@ -137,7 +137,7 @@ next_recommended: sdd-verify
 | Rollback boundary | `pi_codegraph.go`, `pi_codegraph_test.go` | Independent revert restores only prior schema validation. |
 
 ```yaml
-schema: gentle-ai.remediation-result/v1
+schema: hgtran-ai.remediation-result/v1
 status: complete
 failed_verify_revision: sha256:a1c23d7255ce6df7bfe7041fbb120b65efe5ecb8644d563f1de369c5bec01e8f
 focused_tests: passed
@@ -147,7 +147,7 @@ rollback_boundary: recorded
 
 ```json
 {
-  "schema": "gentle-ai.remediation-evidence/v1",
+  "schema": "hgtran-ai.remediation-evidence/v1",
   "failed_verify_revision": "sha256:a1c23d7255ce6df7bfe7041fbb120b65efe5ecb8644d563f1de369c5bec01e8f",
   "commands": [
     {
@@ -184,7 +184,7 @@ rollback_boundary: recorded
 
 ```json
 {
-  "schema": "gentle-ai.remediation-result/v1",
+  "schema": "hgtran-ai.remediation-result/v1",
   "failedVerifyRevision": "sha256:4ba12cbee34eb067faf972ff2a05f38c224fdf0f374009225091b4466d7f1e03",
   "result": "success",
   "mode": "Strict TDD",
@@ -196,7 +196,7 @@ rollback_boundary: recorded
 
 ```json
 {
-  "schema": "gentle-ai.remediation-evidence/v1",
+  "schema": "hgtran-ai.remediation-evidence/v1",
   "failedVerifyRevision": "sha256:4ba12cbee34eb067faf972ff2a05f38c224fdf0f374009225091b4466d7f1e03",
   "focusedTest": "go test -count=1 ./internal/cli -run TestInstallRuntimeStagePlanDeselectionCleansOwnedPiIntegration -v && go test -count=1 ./internal/components/communitytool -run 'Test(VerifyPiMCP|InstallWithHome(FailsClosedForEmptyPiSettingsWithoutMCPProcess|ReportsEffectiveMCPAdapterSchema))' -v",
   "focusedResult": "exit 0; CLI deselection runtime test and all effective-probe schema/fail-closed tests passed fresh",
@@ -224,7 +224,7 @@ Pre-apply tree: `0ae4b17b0fb2f92cbd7f7e927828cb6083a6c692`.
 
 ```json
 {
-  "schema": "gentle-ai.remediation-result/v1",
+  "schema": "hgtran-ai.remediation-result/v1",
   "failedVerifyRevision": "sha256:1d796738bb44d01306c83027ac5d5c6544c2ecdfd749353377ebffed761e06de",
   "result": "success",
   "mode": "Strict TDD",
@@ -236,13 +236,13 @@ Pre-apply tree: `0ae4b17b0fb2f92cbd7f7e927828cb6083a6c692`.
 
 ```json
 {
-  "schema": "gentle-ai.remediation-evidence/v1",
+  "schema": "hgtran-ai.remediation-evidence/v1",
   "failedVerifyRevision": "sha256:1d796738bb44d01306c83027ac5d5c6544c2ecdfd749353377ebffed761e06de",
   "focusedTest": "go test -count=1 ./internal/cli ./internal/components/communitytool -run 'Test(InstallRuntimeStagePlanDeselectionCleansOwnedPiIntegration|InstallWithHomeReportsWorkspaceChildAndOwnershipTarget|InstallWithHomeReportsEffectiveMCPAdapterSchema|PiCodeGraphReportsMisconfigured(Malformed|Conflicting)Child)' -v",
   "focusedResult": "exit 0; 5/5 focused runtime and contract tests passed",
   "runtimeHarness": "t.TempDir Pi home/workspace fixtures execute the install stage's deselection step, public InstallWithHome provisioning, manifest ownership persistence, effective child reporting, and direct MCP contract verification",
   "runtimeResult": "exit 0; manifest-owned MCP/children were removed on deselection and workspace child target/classification were retained",
-  "rollbackBoundary": "Revert internal/cli/run.go, internal/components/communitytool/pi_codegraph.go, internal/components/communitytool/tool.go and their focused tests; this removes only Gentle-AI-owned optional Pi CodeGraph reconciliation/reporting."
+  "rollbackBoundary": "Revert internal/cli/run.go, internal/components/communitytool/pi_codegraph.go, internal/components/communitytool/tool.go and their focused tests; this removes only hgtran-ai-owned optional Pi CodeGraph reconciliation/reporting."
 }
 ```
 
@@ -385,7 +385,7 @@ FIX-DIFF scope (R4-011 Round 2 only): `internal/components/communitytool/pi_code
 ## Native Correction Transaction — `pi-postmerge-full-v1`
 
 ```yaml
-schema: gentle-ai.remediation-result/v1
+schema: hgtran-ai.remediation-result/v1
 lineage_id: pi-postmerge-full-v1
 generation: 1
 fix_batch: 1
@@ -397,7 +397,7 @@ next_recommended: complete-authorized-correction
 
 ```json
 {
-  "schema": "gentle-ai.remediation-evidence/v1",
+  "schema": "hgtran-ai.remediation-evidence/v1",
   "lineage_id": "pi-postmerge-full-v1",
   "generation": 1,
   "fix_batch": 1,
@@ -429,5 +429,5 @@ next_recommended: complete-authorized-correction
 
 | Frozen ID | Executable proof |
 | --- | --- |
-| `RISK-005` | `gentle-ai codegraph init --cwd <project-root>` canonicalizes the Git root, rejects filesystem root, home, temporary paths, symlink escapes, and unrecognized directories before executing `codegraph init <canonical-root>`. `TestRunCodeGraphInitValidatesCanonicalProjectAndPropagatesInitFailure` and `TestRunCodeGraphInitRejectsUnsafeOrUnrecognizedRoots` prove valid execution, every rejection class, and subprocess error propagation. Generated guidance now invokes only this boundary. |
+| `RISK-005` | `hgtran-ai codegraph init --cwd <project-root>` canonicalizes the Git root, rejects filesystem root, home, temporary paths, symlink escapes, and unrecognized directories before executing `codegraph init <canonical-root>`. `TestRunCodeGraphInitValidatesCanonicalProjectAndPropagatesInitFailure` and `TestRunCodeGraphInitRejectsUnsafeOrUnrecognizedRoots` prove valid execution, every rejection class, and subprocess error propagation. Generated guidance now invokes only this boundary. |
 | `RELIABILITY-001` | Pi status output is fail-closed: session-only and plaintext `/mcp status` output cannot mark the adapter healthy. `TestPiCodeGraphAdapterRuntimeFailsClosedWithoutPositiveCapabilityEvidence` proves rejection; `TestInstallLeavesPiPendingWhenAdapterHealthIsNotMachineVerifiable` proves selection completes with pending manual guidance and Pi remains unconfigured. Direct `codegraph_explore` MCP schema tests remain separate capability evidence. |

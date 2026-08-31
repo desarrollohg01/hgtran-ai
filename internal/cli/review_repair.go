@@ -11,10 +11,10 @@ import (
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/reviewtransaction"
 )
 
-const ReviewIntegrationRepairSchema = "gentle-ai.review-integration.repair/v1"
-const ReviewIntegrationRepairSchemaID = "https://gentle-ai.dev/contracts/review-integration/v1/schemas/repair.schema.json"
-const ReviewIntegrationRepairSchemaV2 = "gentle-ai.review-integration.repair/v2"
-const ReviewIntegrationRepairSchemaIDV2 = "https://gentle-ai.dev/contracts/review-integration/v2/schemas/repair.schema.json"
+const ReviewIntegrationRepairSchema = "hgtran-ai.review-integration.repair/v1"
+const ReviewIntegrationRepairSchemaID = "https://hgtran-ai.dev/contracts/review-integration/v1/schemas/repair.schema.json"
+const ReviewIntegrationRepairSchemaV2 = "hgtran-ai.review-integration.repair/v2"
+const ReviewIntegrationRepairSchemaIDV2 = "https://hgtran-ai.dev/contracts/review-integration/v2/schemas/repair.schema.json"
 
 type ReviewRepairMode string
 
@@ -161,7 +161,7 @@ func RunReviewRepair(args []string, stdout io.Writer) error {
 }
 
 func runReviewRepair(ctx context.Context, args []string, stdout io.Writer) error {
-	flags := newReviewFlagSet("review repair", stdout, "Assess the complete review authority inventory and execute only one provider-owned classified repair. Run --preflight first. It emits bounded path-free provider inputs, never an authorization template. A maintainer supplies actor, reason, and an exact gentle-ai.review-repair-authorization/v1 binding. The compatibility-only repair-legacy-alias command remains available for established automation. --preflight also surfaces a plan-bound leaf authority disposition digest and inventory revision (Wave 2) for an eligible content-mismatched leaf; execute it with --plan-digest --inventory-revision --actor --reason --authorization.")
+	flags := newReviewFlagSet("review repair", stdout, "Assess the complete review authority inventory and execute only one provider-owned classified repair. Run --preflight first. It emits bounded path-free provider inputs, never an authorization template. A maintainer supplies actor, reason, and an exact hgtran-ai.review-repair-authorization/v1 binding. The compatibility-only repair-legacy-alias command remains available for established automation. --preflight also surfaces a plan-bound leaf authority disposition digest and inventory revision (Wave 2) for an eligible content-mismatched leaf; execute it with --plan-digest --inventory-revision --actor --reason --authorization.")
 	cwd := flags.String("cwd", ".", "repository path")
 	contract := flags.String("contract", ReviewIntegrationContractV1, "review integration contract")
 	preflight := flags.Bool("preflight", false, "perform deterministic read-only classification without authority mutation")
@@ -236,11 +236,11 @@ func runReviewRepair(ctx context.Context, args []string, stdout io.Writer) error
 	}
 	if repairExecutionInputPresent(*planDigest, *inventoryRevision, *dispositionAuthorization) {
 		if repairExecutionInputPresent(*class, *lineage, *expectedRevision, *cause, *disposition, *repositoryBinding, *authorization) {
-			return reviewPreflightError(errors.New("review repair execution accepts either classified repair inputs or leaf authority disposition inputs, not both; run `gentle-ai review repair` again with only one input set"))
+			return reviewPreflightError(errors.New("review repair execution accepts either classified repair inputs or leaf authority disposition inputs, not both; run `hgtran-ai review repair` again with only one input set"))
 		}
 		for _, required := range []string{*planDigest, *inventoryRevision, *actor, *reason, *dispositionAuthorization} {
 			if strings.TrimSpace(required) == "" {
-				return reviewPreflightError(errors.New("review repair leaf authority disposition execution requires --plan-digest --inventory-revision --actor --reason --authorization; run `gentle-ai review repair --preflight` first to obtain --plan-digest and --inventory-revision"))
+				return reviewPreflightError(errors.New("review repair leaf authority disposition execution requires --plan-digest --inventory-revision --actor --reason --authorization; run `hgtran-ai review repair --preflight` first to obtain --plan-digest and --inventory-revision"))
 			}
 		}
 		plan, err := reviewtransaction.DeriveAuthorityDispositionPlanAtRepo(ctx, root, *actor, *reason)
@@ -251,7 +251,7 @@ func runReviewRepair(ctx context.Context, args []string, stdout io.Writer) error
 			return &reviewRepairOperationError{message: "review repair leaf authority disposition execution refused", cause: err}
 		}
 		if plan.PlanDigest != *planDigest || plan.AuthorityInventoryRevision != *inventoryRevision {
-			return reviewPreflightError(errors.New("review repair leaf authority disposition inputs do not match the current provider-derived plan; run `gentle-ai review repair --preflight` again for the current values"))
+			return reviewPreflightError(errors.New("review repair leaf authority disposition inputs do not match the current provider-derived plan; run `hgtran-ai review repair --preflight` again for the current values"))
 		}
 		record, err := reviewtransaction.RepairAuthorityDisposition(ctx, root, *actor, *reason, *dispositionAuthorization)
 		if err != nil {

@@ -38,7 +38,7 @@ func TestParseRemediationResultRequiresExactTransactionBinding(t *testing.T) {
 func remediationEnvelope(revision string) string {
 	return strings.Join([]string{
 		"```yaml",
-		"schema: gentle-ai.remediation-result/v1",
+		"schema: hgtran-ai.remediation-result/v1",
 		"status: complete",
 		"failed_evidence_revision: " + revision,
 		"focused_tests: passed",
@@ -50,7 +50,7 @@ func remediationEnvelope(revision string) string {
 
 func remediationResultEvidence(revision string) string {
 	payload := map[string]any{
-		"schema":                   "gentle-ai.remediation-evidence/v1",
+		"schema":                   "hgtran-ai.remediation-evidence/v1",
 		"failed_evidence_revision": revision,
 		"commands":                 []map[string]any{{"command": "go test ./internal/example", "exit_code": 0, "result": "1 test passed"}},
 		"runtime_harness": map[string]any{
@@ -74,7 +74,7 @@ func remediationResultEvidenceWithBinding(revision string, binding RemediationBi
 		"focused_tests: passed",
 	}, "\n"), 1)
 	payload := map[string]any{
-		"schema":                   "gentle-ai.remediation-evidence/v1",
+		"schema":                   "hgtran-ai.remediation-evidence/v1",
 		"failed_evidence_revision": revision,
 		"lineage_id":               binding.LineageID,
 		"generation":               binding.Generation,

@@ -470,7 +470,7 @@ func applyReviewGateEvaluation(status *Status, evaluation reviewAuthorityEvaluat
 // over unreviewed content names (issue #1877): the fresh full review of the
 // current state. It stays LAST in each reason so the operator's read and the
 // mechanical continuation extraction see the same command.
-const reviewGateFreshReviewContinuation = "run the fresh full review of the current state with gentle-ai review start"
+const reviewGateFreshReviewContinuation = "run the fresh full review of the current state with hgtran-ai review start"
 
 // reviewGateEmptyReceiptReason refuses the one laundering shape a clean tree
 // permits: an approved receipt that froze no content cannot count as coverage
@@ -484,7 +484,7 @@ const reviewGateEmptyReceiptReason = "the terminal review receipt froze an empty
 // current state, so the archive cannot know which one to record. Binding one
 // to the change resolves it without opening any review.
 const reviewGateAmbiguousGovernanceReason = "multiple terminal native review receipts govern the current repository state; " +
-	"bind the governing one to the change with gentle-ai review bind-sdd"
+	"bind the governing one to the change with hgtran-ai review bind-sdd"
 
 func resolveReviewAuthority(ctx context.Context, repo, receiptPath, receiptContent, changeName string) reviewAuthorityEvaluation {
 	receiptPayload, explicit := readReviewArtifact(receiptPath, receiptContent)

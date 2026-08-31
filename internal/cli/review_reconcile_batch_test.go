@@ -116,7 +116,7 @@ func TestReviewReconcileAuthorityBatchHelpAndInputContract(t *testing.T) {
 	if err := RunReview([]string{"reconcile-authority-batch", "--help"}, &help); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(help.String(), "Usage: gentle-ai review reconcile-authority-batch [flags]") || !strings.Contains(help.String(), "--prepare") {
+	if !strings.Contains(help.String(), "Usage: hgtran-ai review reconcile-authority-batch [flags]") || !strings.Contains(help.String(), "--prepare") {
 		t.Fatalf("batch reconcile help:\n%s", help.String())
 	}
 	for _, tt := range []struct {

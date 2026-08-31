@@ -126,7 +126,7 @@ func Download(ctx context.Context, r update.UpdateResult, profile system.Platfor
 	}
 
 	// Download only after the signed manifest has been authenticated.
-	tmpDir, err := os.MkdirTemp("", "gentle-ai-upgrade-*")
+	tmpDir, err := os.MkdirTemp("", "hgtran-ai-upgrade-*")
 	if err != nil {
 		return fmt.Errorf("create temp dir: %w", err)
 	}

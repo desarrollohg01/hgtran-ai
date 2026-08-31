@@ -96,8 +96,8 @@ These tasks are **completed/historical** — they describe work shipped via comm
 
 ### Phase 5: Manual Verification (Human-in-the-loop)
 
-- [ ] 5.1 Build the binary: `go build -o /tmp/gentle-ai .` from repo root.
-- [ ] 5.2 Run `gentle-ai install` (or `gentle-ai sync`) against your `~/.claude/` directory.
+- [ ] 5.1 Build the binary: `go build -o /tmp/hgtran-ai .` from repo root.
+- [ ] 5.2 Run `hgtran-ai install` (or `hgtran-ai sync`) against your `~/.claude/` directory.
 - [ ] 5.3 Confirm `~/.claude/skills/sdd-apply/SKILL.md` and each of the other 10 SDD files contain both `user-invocable: false` and `disable-model-invocation: true`.
 - [ ] 5.4 Confirm `~/.claude/skills/chained-pr/references/chaining-details.md`, `go-testing/references/examples.md`, `judgment-day/references/prompts-and-formats.md`, `sdd-init/references/init-details.md`, and `sdd-verify/references/report-format.md` exist on disk (Part 1 check).
 - [ ] 5.5 Open Claude Code v2.1.131+ and open the `/` picker. Each SDD phase appears AT MOST ONCE.

@@ -126,7 +126,7 @@ func skillDirBasename(path string) string {
 
 // extractSkillFrontmatter parses the leading `---` ... `---` block of a
 // SKILL.md file and returns the rules-relevant fields. It intentionally
-// supports only the simple key forms used by gentle-ai's SKILL.md files:
+// supports only the simple key forms used by hgtran-ai's SKILL.md files:
 //
 //   - `key: value`                  — plain scalar on the same line
 //   - `key: > / key: |` + indented continuation lines (block scalars)

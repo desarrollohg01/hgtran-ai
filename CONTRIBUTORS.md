@@ -1,6 +1,6 @@
 # Contributors
 
-Thanks to everyone who has contributed to gentle-ai. This project exists because of the community.
+Thanks to everyone who has contributed to hgtran-ai. This project exists because of the community.
 
 ## Maintainer
 

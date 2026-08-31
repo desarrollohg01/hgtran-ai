@@ -277,13 +277,13 @@ The TUI's `loadSelection()` function MUST include a case for `"qwen-code"` that 
 
 ### Requirement: Orchestrator Written to QWEN.md
 
-When `sdd.Inject()` is called with a Qwen Code adapter, the SDD orchestrator content MUST be injected into `~/.qwen/QWEN.md` using `<!-- gentle-ai:sdd-orchestrator -->` markers.
+When `sdd.Inject()` is called with a Qwen Code adapter, the SDD orchestrator content MUST be injected into `~/.qwen/QWEN.md` using `<!-- hgtran-ai:sdd-orchestrator -->` markers.
 
 #### Scenario: SDD orchestrator injection
 
 - GIVEN a fresh home directory with no `~/.qwen/`
 - WHEN `Inject(homeDir, qwenAdapter, "")` is called
-- THEN `~/.qwen/QWEN.md` is created and contains `<!-- gentle-ai:sdd-orchestrator -->` markers
+- THEN `~/.qwen/QWEN.md` is created and contains `<!-- hgtran-ai:sdd-orchestrator -->` markers
 
 #### Scenario: SDD skill files written
 
