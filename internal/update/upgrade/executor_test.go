@@ -232,7 +232,7 @@ func TestExecute_BackupBeforeExecution(t *testing.T) {
 	results := []update.UpdateResult{
 		makeResult("engram", update.UpdateAvailable, "0.3.0", "0.4.0", update.InstallGoInstall),
 	}
-	results[0].Tool.GoImportPath = "github.com/Gentleman-Programming/engram/cmd/engram"
+	results[0].Tool.GoImportPath = "github.com/desarrollohg01/engram/cmd/engram"
 
 	report := Execute(context.Background(), results, linuxProfile(), t.TempDir(), false)
 
@@ -269,7 +269,7 @@ func TestExecuteProgressDoesNotIncludeBackupExclusionDiagnostics(t *testing.T) {
 	results := []update.UpdateResult{
 		makeResult("engram", update.UpdateAvailable, "0.3.0", "0.4.0", update.InstallGoInstall),
 	}
-	results[0].Tool.GoImportPath = "github.com/Gentleman-Programming/engram/cmd/engram"
+	results[0].Tool.GoImportPath = "github.com/desarrollohg01/engram/cmd/engram"
 
 	var progress bytes.Buffer
 	report := Execute(context.Background(), results, linuxProfile(), home, false, &progress)
@@ -303,7 +303,7 @@ func TestExecute_DryRunNeverExecs(t *testing.T) {
 	results := []update.UpdateResult{
 		makeResult("engram", update.UpdateAvailable, "0.3.0", "0.4.0", update.InstallGoInstall),
 	}
-	results[0].Tool.GoImportPath = "github.com/Gentleman-Programming/engram/cmd/engram"
+	results[0].Tool.GoImportPath = "github.com/desarrollohg01/engram/cmd/engram"
 
 	report := Execute(context.Background(), results, linuxProfile(), t.TempDir(), true)
 
@@ -345,7 +345,7 @@ func TestExecute_PerToolSuccessAndFailure(t *testing.T) {
 	results := []update.UpdateResult{
 		makeResult("engram", update.UpdateAvailable, "0.3.0", "0.4.0", update.InstallGoInstall),
 	}
-	results[0].Tool.GoImportPath = "github.com/Gentleman-Programming/engram/cmd/engram"
+	results[0].Tool.GoImportPath = "github.com/desarrollohg01/engram/cmd/engram"
 
 	report := Execute(context.Background(), results, linuxProfile(), t.TempDir(), false)
 
@@ -376,7 +376,7 @@ func TestExecute_DevBuildIsSkipped(t *testing.T) {
 		makeResult("hgtran-ai", update.DevBuild, "dev", "1.0.0", update.InstallBinary),
 		makeResult("engram", update.UpdateAvailable, "0.3.0", "0.4.0", update.InstallGoInstall),
 	}
-	results[1].Tool.GoImportPath = "github.com/Gentleman-Programming/engram/cmd/engram"
+	results[1].Tool.GoImportPath = "github.com/desarrollohg01/engram/cmd/engram"
 
 	report := Execute(context.Background(), results, linuxProfile(), t.TempDir(), false)
 
@@ -429,7 +429,7 @@ func TestExecute_FailureDoesNotImplyConfigLoss(t *testing.T) {
 	results := []update.UpdateResult{
 		makeResult("engram", update.UpdateAvailable, "0.3.0", "0.4.0", update.InstallGoInstall),
 	}
-	results[0].Tool.GoImportPath = "github.com/Gentleman-Programming/engram/cmd/engram"
+	results[0].Tool.GoImportPath = "github.com/desarrollohg01/engram/cmd/engram"
 
 	report := Execute(context.Background(), results, linuxProfile(), t.TempDir(), false)
 
@@ -472,7 +472,7 @@ func TestExecute_DevBuildSurfacedAsSkipped(t *testing.T) {
 		makeResult("hgtran-ai", update.DevBuild, "dev", "1.0.0", update.InstallBinary),
 		makeResult("engram", update.UpdateAvailable, "0.3.0", "0.4.0", update.InstallGoInstall),
 	}
-	results[1].Tool.GoImportPath = "github.com/Gentleman-Programming/engram/cmd/engram"
+	results[1].Tool.GoImportPath = "github.com/desarrollohg01/engram/cmd/engram"
 
 	report := Execute(context.Background(), results, linuxProfile(), t.TempDir(), false)
 
@@ -548,7 +548,7 @@ func TestExecute_ConfigNotMutatedDuringUpgrade(t *testing.T) {
 	results := []update.UpdateResult{
 		makeResult("engram", update.UpdateAvailable, "0.3.0", "0.4.0", update.InstallGoInstall),
 	}
-	results[0].Tool.GoImportPath = "github.com/Gentleman-Programming/engram/cmd/engram"
+	results[0].Tool.GoImportPath = "github.com/desarrollohg01/engram/cmd/engram"
 
 	profile := linuxProfile()
 
@@ -685,7 +685,7 @@ func TestExecute_ForcedSnapshotFailureSurfacesWarningEndToEnd(t *testing.T) {
 	results := []update.UpdateResult{
 		makeResult("engram", update.UpdateAvailable, "0.3.0", "0.4.0", update.InstallGoInstall),
 	}
-	results[0].Tool.GoImportPath = "github.com/Gentleman-Programming/engram/cmd/engram"
+	results[0].Tool.GoImportPath = "github.com/desarrollohg01/engram/cmd/engram"
 
 	report := Execute(context.Background(), results, linuxProfile(), t.TempDir(), false)
 
@@ -754,7 +754,7 @@ func TestExecute_UpgradeBackupManifestHasUpgradeMetadata(t *testing.T) {
 	results := []update.UpdateResult{
 		makeResult("engram", update.UpdateAvailable, "0.3.0", "0.4.0", update.InstallGoInstall),
 	}
-	results[0].Tool.GoImportPath = "github.com/Gentleman-Programming/engram/cmd/engram"
+	results[0].Tool.GoImportPath = "github.com/desarrollohg01/engram/cmd/engram"
 
 	report := Execute(context.Background(), results, linuxProfile(), homeDir, false)
 
@@ -803,7 +803,7 @@ func TestExecute_SuccessfulSnapshotHasNoWarning(t *testing.T) {
 	results := []update.UpdateResult{
 		makeResult("engram", update.UpdateAvailable, "0.3.0", "0.4.0", update.InstallGoInstall),
 	}
-	results[0].Tool.GoImportPath = "github.com/Gentleman-Programming/engram/cmd/engram"
+	results[0].Tool.GoImportPath = "github.com/desarrollohg01/engram/cmd/engram"
 
 	report := Execute(context.Background(), results, linuxProfile(), t.TempDir(), false)
 

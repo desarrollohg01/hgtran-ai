@@ -35,7 +35,7 @@ Engram is persistent memory for your AI agent. It saves decisions, discoveries, 
 
 Since v1.11.0, engram auto-detects the project name from git remote at startup, normalizes to lowercase, and warns if it finds similar existing project names. This prevents the name drift issue where the same project ends up with multiple name variants.
 
-For full documentation: [github.com/Gentleman-Programming/engram](https://github.com/Gentleman-Programming/engram)
+For full documentation: [github.com/desarrollohg01/engram](https://github.com/desarrollohg01/engram)
 
 ---
 

@@ -98,7 +98,7 @@ func goInstallResult() update.UpdateResult {
 		Tool: update.ToolInfo{
 			Name:          "engram",
 			InstallMethod: update.InstallGoInstall,
-			GoImportPath:  "github.com/Gentleman-Programming/engram/cmd/engram",
+			GoImportPath:  "github.com/desarrollohg01/engram/cmd/engram",
 		},
 		LatestVersion: "0.4.0",
 	}

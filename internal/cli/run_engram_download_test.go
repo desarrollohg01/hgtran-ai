@@ -656,7 +656,7 @@ func TestRunInstallBetaEngramUsesMainGoInstallAndInstalledBinary(t *testing.T) {
 	foundGoInstall := false
 	foundSetupWithBetaBinary := false
 	for _, cmd := range commands {
-		if cmd == "go install github.com/Gentleman-Programming/engram/cmd/engram@main" {
+		if cmd == "go install github.com/desarrollohg01/engram/cmd/engram@main" {
 			foundGoInstall = true
 		}
 		if strings.HasPrefix(cmd, betaEngram+" setup ") {

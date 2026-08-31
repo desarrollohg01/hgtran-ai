@@ -591,7 +591,7 @@ func TestResolveComponentInstall(t *testing.T) {
 			name:      "engram on darwin uses brew tap and install",
 			profile:   system.PlatformProfile{OS: "darwin", PackageManager: "brew"},
 			component: model.ComponentEngram,
-			want:      CommandSequence{{"brew", "tap", "Gentleman-Programming/homebrew-tap"}, {"brew", "install", "engram"}},
+			want:      CommandSequence{{"brew", "tap", "desarrollohg01/homebrew-tap"}, {"brew", "install", "engram"}},
 		},
 		// Linux and Windows engram now use DownloadLatestBinary() — resolver returns error.
 		// These cases are handled by run.go's componentApplyStep directly.
@@ -617,7 +617,7 @@ func TestResolveComponentInstall(t *testing.T) {
 			name:      "gga on darwin uses brew tap and reinstall",
 			profile:   system.PlatformProfile{OS: "darwin", PackageManager: "brew"},
 			component: model.ComponentGGA,
-			want:      CommandSequence{{"brew", "tap", "Gentleman-Programming/homebrew-tap"}, {"brew", "reinstall", "hga"}},
+			want:      CommandSequence{{"brew", "tap", "desarrollohg01/homebrew-tap"}, {"brew", "reinstall", "hga"}},
 		},
 		{
 			name:      "gga on ubuntu uses git clone and install.sh",

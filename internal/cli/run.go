@@ -470,7 +470,7 @@ func goInstallBinDirFromGoEnv() (string, error) {
 	return "", fmt.Errorf("go env returned empty GOBIN and GOPATH")
 }
 
-const engramBetaGoInstallPackage = "github.com/Gentleman-Programming/engram/cmd/engram@main"
+const engramBetaGoInstallPackage = "github.com/desarrollohg01/engram/cmd/engram@main"
 
 func installBetaEngramFromMain() (string, error) {
 	if err := runCommand("go", "install", engramBetaGoInstallPackage); err != nil {

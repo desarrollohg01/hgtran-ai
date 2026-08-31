@@ -80,7 +80,7 @@ func TestRunStrategy_GoInstallUpgrade(t *testing.T) {
 		Tool: update.ToolInfo{
 			Name:          "engram",
 			InstallMethod: update.InstallGoInstall,
-			GoImportPath:  "github.com/Gentleman-Programming/engram/cmd/engram",
+			GoImportPath:  "github.com/desarrollohg01/engram/cmd/engram",
 		},
 		LatestVersion: "0.4.0",
 	}
@@ -94,8 +94,8 @@ func TestRunStrategy_GoInstallUpgrade(t *testing.T) {
 	if gotName != "go" {
 		t.Errorf("exec name = %q, want %q", gotName, "go")
 	}
-	// Expected: go install github.com/Gentleman-Programming/engram/cmd/engram@v0.4.0
-	wantArg0, wantArg1 := "install", "github.com/Gentleman-Programming/engram/cmd/engram@v0.4.0"
+	// Expected: go install github.com/desarrollohg01/engram/cmd/engram@v0.4.0
+	wantArg0, wantArg1 := "install", "github.com/desarrollohg01/engram/cmd/engram@v0.4.0"
 	if len(gotArgs) < 2 || gotArgs[0] != wantArg0 || gotArgs[1] != wantArg1 {
 		t.Errorf("exec args = %v, want [%s %s]", gotArgs, wantArg0, wantArg1)
 	}
@@ -257,7 +257,7 @@ func TestRunStrategy_GoInstallFailure(t *testing.T) {
 		Tool: update.ToolInfo{
 			Name:          "engram",
 			InstallMethod: update.InstallGoInstall,
-			GoImportPath:  "github.com/Gentleman-Programming/engram/cmd/engram",
+			GoImportPath:  "github.com/desarrollohg01/engram/cmd/engram",
 		},
 		LatestVersion: "0.4.0",
 	}
@@ -1017,7 +1017,7 @@ func TestBrewUpgrade_UpdateFailureIsNonFatal(t *testing.T) {
 // --- TestBrewUpgrade_TapsBeforeUpdateAndUpgrade ---
 
 // TestBrewUpgrade_TapsAndTrustsBeforeUpdateAndUpgrade verifies that brewUpgrade calls
-// `brew tap Gentleman-Programming/homebrew-tap` and scoped artifact trust BEFORE
+// `brew tap desarrollohg01/homebrew-tap` and scoped artifact trust BEFORE
 // `brew update` and `brew upgrade <toolName>`. This makes the upgrade idempotent
 // when a user has lost the tap and works with Homebrew tap trust enforcement.
 func TestBrewUpgrade_TapsAndTrustsBeforeUpdateAndUpgrade(t *testing.T) {
@@ -1050,14 +1050,14 @@ func TestBrewUpgrade_TapsAndTrustsBeforeUpdateAndUpgrade(t *testing.T) {
 	if calls[0].subcommand != "tap" {
 		t.Errorf("first brew call subcommand = %q, want %q", calls[0].subcommand, "tap")
 	}
-	if len(calls[0].args) != 1 || calls[0].args[0] != "Gentleman-Programming/homebrew-tap" {
-		t.Errorf("first brew call args = %v, want [Gentleman-Programming/homebrew-tap]", calls[0].args)
+	if len(calls[0].args) != 1 || calls[0].args[0] != "desarrollohg01/homebrew-tap" {
+		t.Errorf("first brew call args = %v, want [desarrollohg01/homebrew-tap]", calls[0].args)
 	}
 	if calls[1].subcommand != "trust" {
 		t.Errorf("second brew call = %q, want %q", calls[1].subcommand, "trust")
 	}
-	if len(calls[1].args) != 2 || calls[1].args[0] != "--cask" || calls[1].args[1] != "gentleman-programming/tap/engram" {
-		t.Errorf("second brew call args = %v, want [--cask gentleman-programming/tap/engram]", calls[1].args)
+	if len(calls[1].args) != 2 || calls[1].args[0] != "--cask" || calls[1].args[1] != "desarrollohg01/tap/engram" {
+		t.Errorf("second brew call args = %v, want [--cask desarrollohg01/tap/engram]", calls[1].args)
 	}
 	if calls[2].subcommand != "update" {
 		t.Errorf("third brew call = %q, want %q", calls[2].subcommand, "update")
@@ -1083,17 +1083,17 @@ func TestBrewUpgrade_FormulaToolUsesFormulaTrust(t *testing.T) {
 		t.Fatalf("brewUpgrade: unexpected error: %v", err)
 	}
 
-	if len(trustArgs) != 2 || trustArgs[0] != "--formula" || trustArgs[1] != "gentleman-programming/tap/hgtran-ai" {
-		t.Fatalf("brew trust args = %v, want [--formula gentleman-programming/tap/hgtran-ai]", trustArgs)
+	if len(trustArgs) != 2 || trustArgs[0] != "--formula" || trustArgs[1] != "desarrollohg01/tap/hgtran-ai" {
+		t.Fatalf("brew trust args = %v, want [--formula desarrollohg01/tap/hgtran-ai]", trustArgs)
 	}
 }
 
 func TestHomebrewFailureAdviceTapTrust(t *testing.T) {
-	output := `Error: Refusing to load formula gentleman-programming/tap/hgtran-ai from untrusted tap.
-Run brew trust --formula gentleman-programming/tap/hgtran-ai to trust it.`
+	output := `Error: Refusing to load formula desarrollohg01/tap/hgtran-ai from untrusted tap.
+Run brew trust --formula desarrollohg01/tap/hgtran-ai to trust it.`
 	advice := homebrewFailureAdvice("hgtran-ai", output)
 	for _, want := range []string{
-		"brew trust --formula gentleman-programming/tap/hgtran-ai",
+		"brew trust --formula desarrollohg01/tap/hgtran-ai",
 		"brew upgrade --formula hgtran-ai",
 	} {
 		if !strings.Contains(advice, want) {
@@ -1103,11 +1103,11 @@ Run brew trust --formula gentleman-programming/tap/hgtran-ai to trust it.`
 }
 
 func TestHomebrewFailureAdviceCaskTapTrust(t *testing.T) {
-	output := `Error: Refusing to load cask gentleman-programming/tap/engram from untrusted tap.
-Run brew trust --cask gentleman-programming/tap/engram to trust it.`
+	output := `Error: Refusing to load cask desarrollohg01/tap/engram from untrusted tap.
+Run brew trust --cask desarrollohg01/tap/engram to trust it.`
 	advice := homebrewFailureAdvice("engram", output)
 	for _, want := range []string{
-		"brew trust --cask gentleman-programming/tap/engram",
+		"brew trust --cask desarrollohg01/tap/engram",
 		"brew upgrade --cask engram",
 	} {
 		if !strings.Contains(advice, want) {

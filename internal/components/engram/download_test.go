@@ -1184,13 +1184,27 @@ func TestCanonicalEngramGoInstallPackagePreservesDeclaredModuleCasing(t *testing
 	}{
 		{
 			name: "lowercase owner is canonicalized",
-			pkg:  "github.com/Gentleman-Programming/engram/cmd/engram@main",
-			want: "github.com/Gentleman-Programming/engram/cmd/engram@main",
+			pkg:  "github.com/DESARROLLOHG01/engram/cmd/engram@main",
+			want: "github.com/desarrollohg01/engram/cmd/engram@main",
 		},
 		{
 			name: "canonical owner remains unchanged",
-			pkg:  "github.com/Gentleman-Programming/engram/cmd/engram@v1.2.3",
-			want: "github.com/Gentleman-Programming/engram/cmd/engram@v1.2.3",
+			pkg:  "github.com/desarrollohg01/engram/cmd/engram@v1.2.3",
+			want: "github.com/desarrollohg01/engram/cmd/engram@v1.2.3",
+		},
+		// engram moved to HG. A caller still spelling the package the upstream
+		// way must land on this fork, not on upstream engram: the go-install
+		// path would otherwise overwrite the forked binary with the one the
+		// fork exists to replace.
+		{
+			name: "upstream owner is redirected to the fork",
+			pkg:  "github.com/Gentleman-Programming/engram/cmd/engram@main",
+			want: "github.com/desarrollohg01/engram/cmd/engram@main",
+		},
+		{
+			name: "upstream owner is redirected at a pinned version",
+			pkg:  "github.com/gentleman-programming/engram/cmd/engram@v1.2.3",
+			want: "github.com/desarrollohg01/engram/cmd/engram@v1.2.3",
 		},
 		{
 			name: "unrelated package remains unchanged",
@@ -1227,12 +1241,12 @@ func TestEngramGoInstallFromMainCanonicalizesModuleCasing(t *testing.T) {
 		return map[string]string{"GOBIN": fakeInstallDir, "GOPATH": ""}, nil
 	}
 
-	_, err := engramGoInstallFromMain("github.com/Gentleman-Programming/engram/cmd/engram@main")
+	_, err := engramGoInstallFromMain("github.com/desarrollohg01/engram/cmd/engram@main")
 	if err != nil {
 		t.Fatalf("engramGoInstallFromMain: unexpected error: %v", err)
 	}
 
-	wantPkg := "github.com/Gentleman-Programming/engram/cmd/engram@main"
+	wantPkg := "github.com/desarrollohg01/engram/cmd/engram@main"
 	if gotPkg != wantPkg {
 		t.Fatalf("go install package = %q, want %q", gotPkg, wantPkg)
 	}
@@ -1272,7 +1286,7 @@ func TestEngramGoInstallFromMain_UsesGoEnvForBinDir(t *testing.T) {
 	t.Cleanup(func() { engramGoInstallCmdFn = origGoInstallCmdFn })
 	engramGoInstallCmdFn = func(pkg string) error { return nil }
 
-	binaryPath, err := engramGoInstallFromMain("github.com/Gentleman-Programming/engram/cmd/engram@main")
+	binaryPath, err := engramGoInstallFromMain("github.com/desarrollohg01/engram/cmd/engram@main")
 	if err != nil {
 		t.Fatalf("engramGoInstallFromMain: unexpected error: %v", err)
 	}
@@ -1319,7 +1333,7 @@ func TestEngramGoInstallFromMain_BypassesPublicGoProxy(t *testing.T) {
 		return map[string]string{"GOBIN": goPath, "GOPATH": filepath.Join(t.TempDir(), "gopath")}, nil
 	}
 
-	if _, err := engramGoInstallFromMain("github.com/Gentleman-Programming/engram/cmd/engram@main"); err != nil {
+	if _, err := engramGoInstallFromMain("github.com/desarrollohg01/engram/cmd/engram@main"); err != nil {
 		t.Fatalf("engramGoInstallFromMain() error = %v", err)
 	}
 
@@ -1328,9 +1342,9 @@ func TestEngramGoInstallFromMain_BypassesPublicGoProxy(t *testing.T) {
 		t.Fatalf("ReadFile(%q) error = %v", recordPath, err)
 	}
 	for _, want := range []string{
-		"GONOSUMDB=github.com/Gentleman-Programming/engram",
-		"GOPRIVATE=github.com/Gentleman-Programming/engram",
-		"GONOPROXY=github.com/Gentleman-Programming/engram",
+		"GONOSUMDB=github.com/desarrollohg01/engram",
+		"GOPRIVATE=github.com/desarrollohg01/engram",
+		"GONOPROXY=github.com/desarrollohg01/engram",
 	} {
 		if !strings.Contains(string(recorded), want) {
 			t.Fatalf("go install env missing %q\nrecorded:\n%s", want, recorded)

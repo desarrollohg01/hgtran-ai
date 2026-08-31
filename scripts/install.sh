@@ -17,8 +17,8 @@ set -euo pipefail
 GITHUB_OWNER="Gentleman-Programming"
 GITHUB_REPO="hgtran-ai"
 BINARY_NAME="hgtran-ai"
-BREW_TAP="Gentleman-Programming/homebrew-tap"
-BREW_FORMULA_REF="gentleman-programming/tap/${BINARY_NAME}"
+BREW_TAP="desarrollohg01/homebrew-tap"
+BREW_FORMULA_REF="desarrollohg01/tap/${BINARY_NAME}"
 
 # ============================================================================
 # Color support

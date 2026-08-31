@@ -23,10 +23,10 @@ import (
 )
 
 const (
-	engramOwner            = "Gentleman-Programming"
+	engramOwner            = "desarrollohg01"
 	engramRepo             = "engram"
 	engramName             = "engram"
-	engramCanonicalModule  = "github.com/Gentleman-Programming/engram"
+	engramCanonicalModule  = "github.com/desarrollohg01/engram"
 	engramCanonicalPackage = engramCanonicalModule + "/cmd/engram"
 )
 
@@ -112,16 +112,30 @@ func appendGoEnvPattern(required, existing string) string {
 	return existing + "," + required
 }
 
+// canonicalEngramGoInstallPackage rewrites a recognised engram package path to
+// the canonical one, preserving whatever version suffix it carried.
+//
+// Both this fork's path and the upstream one are recognised, and both resolve
+// to the fork. The upstream prefix is load-bearing, not leftover: engram moved
+// to HG, and a caller still spelling the package the upstream way would
+// otherwise install upstream engram over this fork's binary. That is the class
+// of defect internal/update/fork_identity_test.go exists to catch, reached
+// through the go-install path instead of the registry.
 func canonicalEngramGoInstallPackage(pkg string) string {
-	const lowerPackage = "github.com/gentleman-programming/engram/cmd/engram"
-	if strings.HasPrefix(strings.ToLower(pkg), lowerPackage) {
-		return engramCanonicalPackage + pkg[len(lowerPackage):]
+	lowerPkg := strings.ToLower(pkg)
+	for _, lowerPackage := range []string{
+		"github.com/desarrollohg01/engram/cmd/engram",
+		"github.com/gentleman-programming/engram/cmd/engram",
+	} {
+		if strings.HasPrefix(lowerPkg, lowerPackage) {
+			return engramCanonicalPackage + pkg[len(lowerPackage):]
+		}
 	}
 	return pkg
 }
 
 // engramCoreTagPattern matches only plain semver tags (vX.Y.Z) that identify
-// core engram binary releases. The Gentleman-Programming/engram repository also
+// core engram binary releases. The desarrollohg01/engram repository also
 // publishes gentle-engram npm and pi releases under tags like
 // "gentle-engram vX.Y.Z" or "pi-vX.Y.Z" in the same release stream. This
 // pattern intentionally excludes those so a gentle-engram/pi tag can never be
@@ -361,7 +375,7 @@ const engramReleasePageSize = 20
 
 // engramReleaseMaxPages caps the pagination loop so it can never run forever.
 // At 20 releases/page this covers 100 releases — enough runway even when the
-// Gentleman-Programming/engram repo publishes many pi-v*/gentle-engram entries
+// desarrollohg01/engram repo publishes many pi-v*/gentle-engram entries
 // between core vX.Y.Z releases.
 const engramReleaseMaxPages = 5
 

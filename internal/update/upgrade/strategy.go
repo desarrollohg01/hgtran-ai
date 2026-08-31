@@ -359,7 +359,7 @@ func brewUpgrade(ctx context.Context, r update.UpdateResult, ownership update.Ho
 	// reason, the subsequent brew upgrade will surface the real error. See issue #455:
 	// without this, a lost tap (untap, machine swap, brew cleanup) makes upgrades fail
 	// with "No available formula" for engram/gga/hgtran-ai.
-	tapCmd := execCommand("brew", "tap", "Gentleman-Programming/homebrew-tap")
+	tapCmd := execCommand("brew", "tap", "desarrollohg01/homebrew-tap")
 	tapCmd.Stdin = nil
 	_ = tapCmd.Run()
 
@@ -368,7 +368,7 @@ func brewUpgrade(ctx context.Context, r update.UpdateResult, ownership update.Ho
 	// our formula/cask, not the whole tap or third-party taps. Older Homebrew versions
 	// may not support `brew trust`, so this is non-fatal and the upgrade output
 	// below remains the source of truth.
-	trustCmd := execCommand("brew", "trust", flag, gentlemanProgrammingTapRef(toolName))
+	trustCmd := execCommand("brew", "trust", flag, hgTapRef(toolName))
 	trustCmd.Stdin = nil
 	_ = trustCmd.Run()
 
@@ -409,8 +409,8 @@ func verifyLegacyCaskTarget(r update.UpdateResult) error {
 	return nil
 }
 
-func gentlemanProgrammingTapRef(toolName string) string {
-	return "gentleman-programming/tap/" + strings.TrimSpace(toolName)
+func hgTapRef(toolName string) string {
+	return "desarrollohg01/tap/" + strings.TrimSpace(toolName)
 }
 
 func homebrewTrustFlag(toolName string) string {
@@ -421,7 +421,7 @@ func homebrewTrustFlag(toolName string) string {
 }
 
 func legacyCaskMigration(toolName string) string {
-	return fmt.Sprintf("migrate the legacy cask to the current formula:\n  brew uninstall --cask %s\n  brew install --formula %s", strings.TrimSpace(toolName), gentlemanProgrammingTapRef(toolName))
+	return fmt.Sprintf("migrate the legacy cask to the current formula:\n  brew uninstall --cask %s\n  brew install --formula %s", strings.TrimSpace(toolName), hgTapRef(toolName))
 }
 
 func formatBrewUpgradeError(toolName string, ownership update.HomebrewOwnership, err error, output string) error {
@@ -437,7 +437,7 @@ func formatBrewUpgradeError(toolName string, ownership update.HomebrewOwnership,
 
 func homebrewFailureAdvice(toolName string, output string, detected ...update.HomebrewOwnership) string {
 	lower := strings.ToLower(output)
-	ref := gentlemanProgrammingTapRef(toolName)
+	ref := hgTapRef(toolName)
 	flag := homebrewTrustFlag(toolName)
 	if len(detected) > 0 {
 		flag = "--" + string(detected[0])

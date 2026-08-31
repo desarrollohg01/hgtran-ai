@@ -251,13 +251,13 @@ func resolveOpenCodeInstall(profile system.PlatformProfile) (CommandSequence, er
 }
 
 // resolveGGAInstall returns the correct install command sequence for GGA per platform.
-// - darwin: brew tap + brew install (via Gentleman-Programming/homebrew-tap)
+// - darwin: brew tap + brew install (via desarrollohg01/homebrew-tap)
 // - linux: git clone + install.sh (GGA is a pure Bash project, NOT a Go module)
 func resolveGGAInstall(profile system.PlatformProfile) (CommandSequence, error) {
 	switch profile.PackageManager {
 	case "brew":
 		return CommandSequence{
-			{"brew", "tap", "Gentleman-Programming/homebrew-tap"},
+			{"brew", "tap", "desarrollohg01/homebrew-tap"},
 			{"brew", "reinstall", "hga"},
 		}, nil
 	case "apt", "pacman", "dnf":
@@ -390,18 +390,18 @@ func validateGoForModuleInstall(profile system.PlatformProfile) error {
 }
 
 // resolveEngramInstall returns the correct install command sequence for Engram per platform.
-// - darwin (brew): brew tap + brew install (via Gentleman-Programming/homebrew-tap)
+// - darwin (brew): brew tap + brew install (via desarrollohg01/homebrew-tap)
 // - linux/windows: returns an error — callers must use engram.DownloadLatestBinary() instead.
 //
 // The go install method has been removed because it required Go 1.24+ which most
 // users on Linux/Windows don't have. Pre-built binaries are available at:
-// https://github.com/Gentleman-Programming/engram/releases
+// https://github.com/desarrollohg01/engram/releases
 func resolveEngramInstall(profile system.PlatformProfile) (CommandSequence, error) {
 	switch profile.PackageManager {
 	case "brew":
 		// macOS (or Linux with Homebrew): brew manages Go transitively — no preflight needed.
 		return CommandSequence{
-			{"brew", "tap", "Gentleman-Programming/homebrew-tap"},
+			{"brew", "tap", "desarrollohg01/homebrew-tap"},
 			{"brew", "install", "engram"},
 		}, nil
 	default:

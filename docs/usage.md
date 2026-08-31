@@ -165,11 +165,11 @@ If Homebrew refuses an upgrade from an untrusted tap, trust only the artifact Ho
 
 ```bash
 # Formula tools, for example hgtran-ai
-brew trust --formula gentleman-programming/tap/hgtran-ai
+brew trust --formula desarrollohg01/tap/hgtran-ai
 brew upgrade hgtran-ai
 
 # Cask tools, for example engram
-brew trust --cask gentleman-programming/tap/engram
+brew trust --cask desarrollohg01/tap/engram
 brew upgrade engram
 ```
 
@@ -282,7 +282,7 @@ See [OpenCode SDD Profiles](opencode-profiles.md) for the full guide.
 
 ```bash
 # First time: install everything
-brew install gentleman-programming/tap/hgtran-ai
+brew install desarrollohg01/tap/hgtran-ai
 hgtran-ai install --agent claude-code,cursor --preset full-gentleman
 
 # After a new release: upgrade + sync
@@ -304,7 +304,7 @@ auto-trust only the Hgtran AI formula, but manual upgrades may still need this
 one-time command:
 
 ```bash
-brew trust --formula gentleman-programming/tap/hgtran-ai
+brew trust --formula desarrollohg01/tap/hgtran-ai
 brew upgrade hgtran-ai
 ```
 
