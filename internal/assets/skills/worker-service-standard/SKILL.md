@@ -70,7 +70,9 @@ escribir esa frase, el registro va `AddScoped`.
 
 ## Scheduler
 
-Quartz.NET, y el host como servicio de Windows con `AddWindowsService()`. No schedulers propios,
+Quartz.NET, y el host como servicio de Windows con `AddWindowsService()` **bajo la guarda de
+`WindowsServiceHelpers.IsWindowsService()`**, para que el mismo binario corra como servicio o como
+consola. Sin la guarda, depurar obliga a compilar distinto. No schedulers propios,
 no `Timer` a mano.
 
 Cada Job MUST documentar qué lo dispara, con qué frecuencia, y qué pasa si una ejecución se
@@ -154,9 +156,10 @@ imposible saber si rompió el framework o el rediseño.
 
 1. Inventariar los `.csproj` y leer el framework **del `.csproj`, nunca del `README`**.
 2. Separar en las cuatro capas, todavía sobre el framework viejo.
-3. Sustituir el host por el genérico con `AddWindowsService()`.
+3. Sustituir el host por el genérico, con `AddWindowsService()` bajo su guarda.
 4. Reemplazar el scheduler propio por Quartz.NET.
-5. Mover el envío de correo al submódulo compartido.
+5. Mover el envío de correo a la librería compartida: submódulo, o copia vendorizada si el
+   submódulo no sirve y la razón queda escrita en el `.csproj`.
 6. **Recién ahora** subir a `net10.0`.
 7. Agregar el aviso de ciclo de vida y el pipeline.
 
