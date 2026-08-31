@@ -529,7 +529,7 @@ func TestRunDoctor_IntegrationAllMocked(t *testing.T) {
 =======================================
 
   [ok]  tool:hgtran-ai                 hgtran-ai found at /usr/local/bin/hgtran-ai; invoked executable: /usr/local/bin/hgtran-ai (version dev)
-  [ok]  tool:gga                       gga found at /usr/local/bin/gga
+  [ok]  tool:hga                       hga found at /usr/local/bin/hga
   [ok]  tool:engram                    engram found at /usr/local/bin/engram
   [ok]  tool:claude                    claude found at /usr/local/bin/claude
   [ok]  state:json                     state file OK — 1 agent(s) installed: claude-code
@@ -649,7 +649,7 @@ func TestCheckToolBinaries_StateMissing_ChecksCoreOnly(t *testing.T) {
 	for _, r := range results {
 		required[string(r.Name)] = struct{}{}
 	}
-	for _, core := range []string{"tool:hgtran-ai", "tool:gga", "tool:engram"} {
+	for _, core := range []string{"tool:hgtran-ai", "tool:hga", "tool:engram"} {
 		if _, ok := required[core]; !ok {
 			t.Errorf("expected %s in core-only output, got %+v", core, required)
 		}
