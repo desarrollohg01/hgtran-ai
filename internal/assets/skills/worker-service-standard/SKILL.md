@@ -1,6 +1,6 @@
 ---
 name: worker-service-standard
-description: "Trigger: worker service, windows service, Quartz, job programado, ETL, proceso batch, migrar de .NET Framework. Estandares de workers de HG."
+description: "Trigger: worker service, windows service, Quartz, Hangfire, job programado, ETL, proceso batch, migrar de .NET Framework. Estandares de workers de HG."
 license: Apache-2.0
 metadata:
   author: hgtransportaciones
@@ -22,7 +22,7 @@ Cuatro proyectos. **Es el objetivo, no un censo.**
 Hg.<Contexto>.Domain     entidades, DTOs, interfaces, helpers
 Hg.<Contexto>.Data       repositorios, DbContext, AddDataLayer()
 Hg.<Contexto>.Business   lógica de negocio, AddBusinessLayer()
-Hg.<Contexto>.Worker     host, Jobs de Quartz, Program.cs, Configs/
+Hg.<Contexto>.Worker     host, Jobs programados, Program.cs, Configs/
 ```
 
 El host se llama **`Worker`**, no `Service`, **en un worker nuevo**. Esa nomenclatura es de
@@ -70,14 +70,46 @@ escribir esa frase, el registro va `AddScoped`.
 
 ## Scheduler
 
-Quartz.NET, y el host como servicio de Windows con `AddWindowsService()` **bajo la guarda de
-`WindowsServiceHelpers.IsWindowsService()`**, para que el mismo binario corra como servicio o como
-consola. Sin la guarda, depurar obliga a compilar distinto. No schedulers propios,
+Dos opciones, y la elección tiene criterio, no es preferencia.
+
+**La pregunta que decide: ¿correr el mismo job dos veces en paralelo hace daño?**
+
+- **Sí — Quartz.NET.** ETL, escrituras en lote, cualquier cosa que toque las mismas filas.
+  `[DisallowConcurrentExecution]` da una garantía real dentro del scheduler, y esta skill la exige.
+- **No — Hangfire.** Jobs idempotentes: notificaciones, sincronizaciones que se pueden repetir sin
+  consecuencia. A cambio se obtiene un dashboard con historial, fallos y reintentos, que Quartz no
+  tiene.
+
+Por qué Quartz manda donde importa: el `DisableConcurrentExecution` de Hangfire es best-effort por
+diseño — su propia documentación advierte que depende de una conexión activa que puede cortarse sin
+aviso, y ahí el lock se libera. El equivalente con garantía, el `[Mutex]` de `Hangfire.Throttling`,
+es de la edición comercial.
+
+En cualquiera de los dos, el host va como servicio de Windows con `AddWindowsService()` **bajo la
+guarda de `WindowsServiceHelpers.IsWindowsService()`**, para que el mismo binario corra como
+servicio o como consola. Sin la guarda, depurar obliga a compilar distinto. No schedulers propios,
 no `Timer` a mano.
 
 Cada Job MUST documentar qué lo dispara, con qué frecuencia, y qué pasa si una ejecución se
 solapa con la anterior. Un Job sin política de solapamiento declarada es un Job que algún día
 va a correr dos veces sobre los mismos datos.
+
+### Persistencia del disparo
+
+Quartz usa por defecto un store en memoria: un disparo programado y no ejecutado **se pierde al
+reiniciar el servicio**. Si perder un disparo importa, el job store MUST ser persistente
+(`JobStoreTX` sobre SQL Server). Hangfire persiste siempre — es parte de su diseño, no una opción.
+
+### Si se usa Hangfire
+
+- El dashboard **no reemplaza** al aviso de ciclo de vida por correo. `email-branding` lo marca
+  obligatorio para todo worker de ciclo largo: el correo sirve para enterarse sin mirar, el
+  dashboard para investigar una vez que te enteraste.
+- El dashboard es una superficie HTTP en un servicio que no tenía ninguna. Sin autenticación deja
+  ver el historial y **reencolar o borrar jobs**. MUST protegerse antes de exponerlo.
+- Hangfire reintenta por su cuenta con `[AutomaticRetry]`, y esta skill ya fija Polly en 3. Con los
+  dos activos los intentos se multiplican: 3 y 3 son 9, no 3. MUST quedar uno solo por operación, y
+  MUST estar escrito cuál.
 
 ## Librería de correo
 
@@ -133,7 +165,7 @@ Lo que sí vale la pena documentar es el porqué:
 .AddSingleton<ISmtpClientService, SmtpClientService>()
 ```
 
-MUST documentarse todo Job de Quartz y toda
+MUST documentarse todo Job programado y toda
 consulta cruda —Dapper o `SqlConnection`— explicando por qué no se usó el camino por defecto.
 
 ## Reintentos
@@ -157,7 +189,7 @@ imposible saber si rompió el framework o el rediseño.
 1. Inventariar los `.csproj` y leer el framework **del `.csproj`, nunca del `README`**.
 2. Separar en las cuatro capas, todavía sobre el framework viejo.
 3. Sustituir el host por el genérico, con `AddWindowsService()` bajo su guarda.
-4. Reemplazar el scheduler propio por Quartz.NET.
+4. Reemplazar el scheduler propio por Quartz.NET o Hangfire, según el criterio de arriba.
 5. Mover el envío de correo a la librería compartida: submódulo, o copia vendorizada si el
    submódulo no sirve y la razón queda escrita en el `.csproj`.
 6. **Recién ahora** subir a `net10.0`.
