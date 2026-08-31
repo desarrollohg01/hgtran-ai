@@ -19,7 +19,7 @@ jobs:
       - name: Send stable release event
         if: ${{ !github.event.release.prerelease }}
         env:
-          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_GENTLE_AI_RELEASES_WEBHOOK }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_HGTRAN_AI_RELEASES_WEBHOOK }}
         run: |
           set -euo pipefail
           webhook_pattern='^https://discord\.com/api/webhooks/[0-9]+/[^/?#]+(/github)?$'
@@ -42,7 +42,7 @@ jobs:
       - name: Send prerelease event
         if: ${{ github.event.release.prerelease }}
         env:
-          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_GENTLE_AI_BETA_WEBHOOK }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_HGTRAN_AI_BETA_WEBHOOK }}
         run: |
           set -euo pipefail
           webhook_pattern='^https://discord\.com/api/webhooks/[0-9]+/[^/?#]+(/github)?$'
@@ -70,7 +70,7 @@ jobs:
     steps:
       - name: Send issue event
         env:
-          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_GENTLE_AI_ISSUES_WEBHOOK }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_HGTRAN_AI_ISSUES_WEBHOOK }}
         run: |
           set -euo pipefail
           webhook_pattern='^https://discord\.com/api/webhooks/[0-9]+/[^/?#]+(/github)?$'
