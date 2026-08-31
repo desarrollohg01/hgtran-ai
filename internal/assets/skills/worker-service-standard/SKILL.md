@@ -1,6 +1,6 @@
 ---
 name: worker-service-standard
-description: "Trigger: worker service, windows service, Quartz, Hangfire, job programado, ETL, proceso batch, migrar de .NET Framework. Estandares de workers de HG."
+description: "Trigger: worker service, windows service, Quartz, job programado, ETL, proceso batch, migrar de .NET Framework. Estandares de workers de HG."
 license: Apache-2.0
 metadata:
   author: hgtransportaciones
@@ -32,8 +32,9 @@ a `portaltools-api`, `etruckssecurity-api` y `portaltools-webapp` (`spec.md:359`
 y `Business` a esos repositorios contradice la convención vigente ahí.
 
 El repositorio se llama `{funcionalidad}-worker` o `{funcionalidad}-ws` — `ws` por *worker
-service*. **No `-service` ni `-winservice`**: así se nombraban los servicios de .NET Framework, y
-el nombre arrastra esa expectativa. Los repositorios existentes no se renombran de paso.
+service*. **No `-service` ni `-winservice`**: son el nombre que se arrastra de la época de .NET
+Framework y hoy no distinguen nada, porque los llevan tanto servicios modernos como legacy. Los
+repositorios existentes no se renombran de paso.
 
 Para una API nueva el vocabulario todavía no está definido: la spec gobierna esos repositorios y
 fuera de ellos no hay respuesta acordada. Es decisión pendiente del equipo, no un hueco a llenar
@@ -70,46 +71,40 @@ escribir esa frase, el registro va `AddScoped`.
 
 ## Scheduler
 
-Dos opciones, y la elección tiene criterio, no es preferencia.
+Quartz.NET, y nada más. `service-architecture` lo fija como MUST para todo worker nuevo que
+necesite jobs programados; esta skill no abre excepciones a eso. Si alguna vez conviene otro
+scheduler, se cambia primero la spec y después esta skill, en ese orden.
 
-**La pregunta que decide: ¿correr el mismo job dos veces en paralelo hace daño?**
-
-- **Sí — Quartz.NET.** ETL, escrituras en lote, cualquier cosa que toque las mismas filas.
-  `[DisallowConcurrentExecution]` da una garantía real dentro del scheduler, y esta skill la exige.
-- **No — Hangfire.** Jobs idempotentes: notificaciones, sincronizaciones que se pueden repetir sin
-  consecuencia. A cambio se obtiene un dashboard con historial, fallos y reintentos, que Quartz no
-  tiene.
-
-Por qué Quartz manda donde importa: el `DisableConcurrentExecution` de Hangfire es best-effort por
-diseño — su propia documentación advierte que depende de una conexión activa que puede cortarse sin
-aviso, y ahí el lock se libera. El equivalente con garantía, el `[Mutex]` de `Hangfire.Throttling`,
-es de la edición comercial.
-
-En cualquiera de los dos, el host va como servicio de Windows con `AddWindowsService()` **bajo la
-guarda de `WindowsServiceHelpers.IsWindowsService()`**, para que el mismo binario corra como
-servicio o como consola. Sin la guarda, depurar obliga a compilar distinto. No schedulers propios,
-no `Timer` a mano.
+El host va como servicio de Windows con `AddWindowsService()` **bajo la guarda de
+`WindowsServiceHelpers.IsWindowsService()`**, para que el mismo binario corra como servicio o como
+consola. Sin la guarda, depurar obliga a compilar distinto. No schedulers propios, no `Timer` a
+mano: reimplementar cron a mano trae el bug de horario de verano, y ya mordió en este dominio.
 
 Cada Job MUST documentar qué lo dispara, con qué frecuencia, y qué pasa si una ejecución se
 solapa con la anterior. Un Job sin política de solapamiento declarada es un Job que algún día
 va a correr dos veces sobre los mismos datos.
 
+`[DisallowConcurrentExecution]` protege **dentro de un scheduler**. Si el servicio puede correr en
+más de un host —failover, un despliegue solapado, una segunda instalación— eso no garantiza nada:
+ahí hace falta un store persistente en modo cluster.
+
 ### Persistencia del disparo
 
 Quartz usa por defecto un store en memoria: un disparo programado y no ejecutado **se pierde al
 reiniciar el servicio**. Si perder un disparo importa, el job store MUST ser persistente
-(`JobStoreTX` sobre SQL Server). Hangfire persiste siempre — es parte de su diseño, no una opción.
+(`JobStoreTX` sobre SQL Server).
 
-### Si se usa Hangfire
+Y con eso viene una decisión que MUST tomarse explícita: **la política de misfire**. El default de
+Quartz dispara de inmediato todo lo que se perdió, así que tras una caída larga arrancan todos los
+jobs atrasados a la vez, contra la misma base. Para un ETL eso es el daño que
+`[DisallowConcurrentExecution]` venía a evitar, autoinfligido.
 
-- El dashboard **no reemplaza** al aviso de ciclo de vida por correo. `email-branding` lo marca
-  obligatorio para todo worker de ciclo largo: el correo sirve para enterarse sin mirar, el
-  dashboard para investigar una vez que te enteraste.
-- El dashboard es una superficie HTTP en un servicio que no tenía ninguna. Sin autenticación deja
-  ver el historial y **reencolar o borrar jobs**. MUST protegerse antes de exponerlo.
-- Hangfire reintenta por su cuenta con `[AutomaticRetry]`, y esta skill ya fija Polly en 3. Con los
-  dos activos los intentos se multiplican: 3 y 3 son 9, no 3. MUST quedar uno solo por operación, y
-  MUST estar escrito cuál.
+Persistir el disparo recupera **la ejecución, no los datos**: un job que calcula su ventana con la
+hora actual no puede reprocesar el día que se perdió. Para eso la ventana MUST venir de estado
+persistido —una marca de agua que avanza recién cuando la escritura confirma—, no del reloj.
+
+Las tablas del job store son un cambio de esquema: van por `db-change-standard` como cualquier
+otra, con su retención acotada y declarada.
 
 ## Librería de correo
 
@@ -170,9 +165,15 @@ consulta cruda —Dapper o `SqlConnection`— explicando por qué no se usó el 
 
 ## Reintentos
 
-Polly se configura en `AddPollyConfig`, con los parámetros leídos desde `appsettings`. **El
-default son 3 reintentos.** Más de 3 se admite cuando el caso lo justifica, pero sigue siendo
-configuración: nunca un número incrustado en el código.
+Polly se configura en `AddPollyConfig`, con los parámetros leídos desde `appsettings`. **En un
+worker nuevo el default son 3 reintentos**; los existentes tienen sus propios valores y no se
+tocan de paso. Más de 3 se admite cuando el caso lo justifica, pero sigue siendo configuración:
+nunca un número incrustado en el código.
+
+Un reintento sin límite de tiempo no es una política: toda operación reintentada MUST tener
+timeout, y **la duración del peor caso MUST ser menor que el intervalo del propio job**. Si no lo
+es, la corrida siguiente arranca encima de la anterior y lo único que separa eso de una escritura
+duplicada es la política de solapamiento.
 
 Lo que MUST estar escrito es **qué operaciones son idempotentes**. Cuántas veces se reintenta y
 qué se reintenta ya se leen de la configuración; la idempotencia no se lee de ningún lado.
@@ -189,7 +190,7 @@ imposible saber si rompió el framework o el rediseño.
 1. Inventariar los `.csproj` y leer el framework **del `.csproj`, nunca del `README`**.
 2. Separar en las cuatro capas, todavía sobre el framework viejo.
 3. Sustituir el host por el genérico, con `AddWindowsService()` bajo su guarda.
-4. Reemplazar el scheduler propio por Quartz.NET o Hangfire, según el criterio de arriba.
+4. Reemplazar el scheduler propio por Quartz.NET.
 5. Mover el envío de correo a la librería compartida: submódulo, o copia vendorizada si el
    submódulo no sirve y la razón queda escrita en el `.csproj`.
 6. **Recién ahora** subir a `net10.0`.
@@ -200,11 +201,17 @@ posterior en una discusión sobre quién la causó.
 
 ## Lo mínimo antes de dar por terminado
 
-- **Aviso de ciclo de vida.** Un worker no tiene superficie HTTP, así que un health check clásico
-  no aplica: lo que se usa es la notificación de arranque y parada, que `email-branding` marca
-  obligatoria para todo winservice o worker de ciclo largo (`spec.md:459`). `ServiceStopNotifier`
-  es la implementación de referencia.
-- **Pipeline en Bitbucket.**
-- **El clon limpio compila**, con los submódulos inicializados.
-- Proyecto de pruebas: **pendiente, depende del caso** y todavía no es requisito. Vale recordar
-  igual que un worker corre solo, de noche y sin nadie mirando.
+- **Que la muerte del servicio se note.** Son tres cosas distintas y hacen falta las tres:
+  - Un arranque fallido MUST terminar con **código de salida distinto de cero**. Con código 0 el
+    gestor de servicios de Windows entiende "arrancó bien y paró limpio": no reinicia, no marca
+    error, no alerta. El servicio queda caído y el sistema cree que todo salió bien.
+  - Un **vigilante fuera del proceso** que alerte por ausencia de señal — un latido y una marca de
+    última corrida exitosa, y la alarma se dispara cuando envejecen. El aviso por correo NO cubre
+    esto: si el proceso murió, no queda nadie para mandarlo, y `email-branding` lo dice
+    explícitamente al declarar fuera de alcance el servicio que no vuelve a arrancar.
+  - El **aviso de ciclo de vida** al arrancar y al detenerse, obligatorio por `email-branding`.
+    Sirve para enterarse de lo que sí pasó, no de lo que dejó de pasar.
+- **Pipeline en Bitbucket**, y que falle si el clon limpio no compila con los submódulos
+  inicializados.
+- **Ningún secreto versionado.** `git ls-files` no debe devolver ningún archivo con una credencial.
+- Proyecto de pruebas: **pendiente, depende del caso** y todavía no es requisito.
