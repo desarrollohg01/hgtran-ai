@@ -239,12 +239,13 @@ func TestKilocodeReviewSettingsMatchCurrentMainBaseline(t *testing.T) {
 		t.Fatal(err)
 	}
 	got := fmt.Sprintf("%x", sha256.Sum256(settings))
-	// Corrective verify cycle 5, CRITICAL-D: review-ledger-contract.md's
-	// Delivery section archive-gate sentence was corrected (see
-	// TestOpenCodeRenderedReviewProtocolCost's changelog comment above for
-	// the full reason); Kilocode embeds the same shared contract, so its
-	// rendered settings hash moved too. Deliberate, not drift.
-	const want = "0562ea542ac63f0ef45a1f8ecfd53a90bf454f03925767b6da789896d5c3a143"
+	// Moved by the hgtran-ai identity rename: the shared review-ledger contract
+	// Kilocode embeds names the tool and its environment variables, and both
+	// changed. The previous move was corrective verify cycle 5, CRITICAL-D,
+	// which corrected the Delivery section's archive-gate sentence (see
+	// TestOpenCodeRenderedReviewProtocolCost's changelog comment above).
+	// Deliberate, not drift.
+	const want = "d35f178f70f6e9c354e7ecf73eb0d569b18512d96f194deefa6bb7b066f6f71b"
 	if got != want {
 		t.Fatalf("Kilocode settings SHA-256 = %s, want current-main baseline %s", got, want)
 	}

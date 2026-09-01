@@ -1,9 +1,9 @@
 {
-  "schema": "hgtran-ai.review-record/v1",
+  "schema": "gentle-ai.review-record/v1",
   "operation": "review/start",
   "previous_revision": "",
   "transaction": {
-    "schema": "hgtran-ai.review-transaction/v1",
+    "schema": "gentle-ai.review-transaction/v1",
     "lineage_id": "legacy-valid",
     "mode": "ordinary_4r",
     "generation": 1,

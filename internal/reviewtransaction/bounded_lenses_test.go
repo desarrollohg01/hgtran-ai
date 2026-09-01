@@ -146,7 +146,12 @@ func TestOrdinaryBoundedLensStateRoundTripsAndLegacyJSONRemainsAdditive(t *testi
 	if err != nil {
 		t.Fatal(err)
 	}
-	const baselineRevision = "sha256:077a4d5e483613817b335c69976e874f37f5112488e70c08dc5ad94ca9bb04a5"
+	// Baseline moved with the identity rename: Append serialises the record
+	// using this build's schema identifiers, which left the gentle-ai namespace
+	// for hgtran-ai. The fixture on disk is untouched by that — it stays the
+	// byte-for-byte v1.49.0 capture its PROVENANCE claims — so what this pins is
+	// still that a legacy transaction round-trips into a stable genesis revision.
+	const baselineRevision = "sha256:b94ec3aa794191b97c8b28de1d0c3c11ba1a118596feedadac82ec8a1aa6a253"
 	if legacyRevision != baselineRevision {
 		t.Fatalf("legacy ordinary_4r genesis revision = %q, want baseline %q", legacyRevision, baselineRevision)
 	}
