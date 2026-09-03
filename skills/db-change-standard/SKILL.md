@@ -32,22 +32,37 @@ y tipos de columna, contar filas.
 
 Columnas mínimas: `Activo`, `FechaCreacion`, `CreadoPor`, `FechaModificacion`, `ModificadoPor`.
 
-- `CreadoPor` / `ModificadoPor` guardan el **identificador** del operador, no su nombre: un nombre
-  deja de apuntar a nadie si la persona se renombra. Una tabla nueva REQUIERE `uniqueidentifier`
-  con FK a la tabla de usuario, y el nombre en texto vive en la vista o el DTO, nunca como columna
-  de la tabla base. Es la forma que `api-crud-standard` da como canónica, y `portaltools-api` la
-  implementa.
-- **La excepción son las tablas que escribe únicamente un proceso sin sesión.** Ahí la columna es
-  texto con una constante explícita — `cat.Proveedor` usa `ETL_ProveedorSync`. Vale porque
-  `api-crud-standard` declara que aplica exclusivamente a `portaltools-api`, `etruckssecurity-api`
-  y `portaltools-webapp` (`spec.md:359`); fuera de ese alcance, la excepción se cita con su
-  repositorio.
-- Si una tabla la puebla un proceso **y** la edita una persona, va la forma canónica: el actor no
-  humano REQUIERE su propia fila en la tabla de usuarios. Aplica a tablas nuevas; las columnas de
+`CreadoPor` / `ModificadoPor` guardan el **identificador** del operador, no su nombre: un nombre
+deja de apuntar a nadie si la persona se renombra. El tipo y la forma dependen de **dónde vive la
+identidad**, y eso se resuelve ANTES de escribir el `CREATE TABLE`.
+
+- **Identidad local** — existe una tabla de usuarios en la misma base: `uniqueidentifier` con FK
+  real a esa tabla, y el nombre en texto en la vista o el DTO, no como columna de la tabla base. Es
+  la forma que fija `api-crud-standard`, cuyo alcance declarado son `portaltools-api`,
+  `etruckssecurity-api` y `portaltools-webapp` (`spec.md:359`).
+- **Identidad externa** — la gobierna otro sistema (HG.AccessExternal / Entra) y esta base no es
+  dueña de esa tabla: se guarda el identificador que emite el token —el claim `sub`, un
+  `uniqueidentifier`— **sin FK**, con índice y con un default explícito para las filas anteriores
+  que no lo tienen. Es lo que hace `003_Corrige_Auditoria_ProveedorUsuario.sql`. Si el sistema no
+  maneja un GUID de usuario, la columna es el UPN en texto; `zametlordenescompra-winservice` lo deja
+  escrito en su `IAuditable`: "NO un Guid FK a la tabla de usuarios, porque Compras/OC no es dueño
+  de esa tabla".
+- **Ojo con lo que parece local y no lo es.** En `portaltools-api` la navegación de auditoría apunta
+  a `VwUsuario`, mapeada con `ToView(...)`: el `[ForeignKey]` de EF declara una navegación, no una
+  restricción en la base, y SQL Server no admite una FK contra una vista. Pedir "FK a la tabla de
+  usuario" sin distinguir el caso deja al autor con una regla que no puede cumplir.
+- Un **actor no humano** (ETL, job) no tiene sesión ni token. Con columna de texto va una constante
+  explícita — `cat.Proveedor` usa `ETL_ProveedorSync`. Con identidad local y columna
+  `uniqueidentifier`, el proceso REQUIERE su propia fila en la tabla de usuarios. Las columnas de
   texto que ya existen se quedan y se citan como excepción.
-- Existe además una columna escalar con el nombre: `CreadoPorNombre` aparece en
-  `hgproveedorextranet-api`. **No va en tabla nueva.** En una tabla existente se sigue la que ya
-  usa su base.
+- El **nombre en texto** (`CreadoPorNombre`) sigue el mismo eje. Con identidad local NO va en la
+  tabla base: la vista lo resuelve con un `JOIN` y duplicarlo en cada tabla se desactualiza. Con
+  identidad externa que no expone consulta por lotes SÍ va, y es justo lo que evita el N+1: sin el
+  nombre guardado, pintar el listado obliga a una llamada por fila a HG.AccessExternal. El token
+  trae `sub` y `unique_name` juntos, así que guardar ambos no cuesta nada al escribir.
+  `003_Corrige_Auditoria_ProveedorUsuario.sql` agrega `CreadoPorNombre` y `ModificadoPorNombre`
+  sobre una tabla creada dos scripts antes, por esa razón exacta. El GUID responde QUIÉN fue
+  —referencia inmutable—; el nombre, CÓMO SE LLAMABA al momento de la acción.
 - Índice por `CreadoPor`: responde "qué hizo esta persona", la consulta típica de auditoría.
 
 ## Fechas

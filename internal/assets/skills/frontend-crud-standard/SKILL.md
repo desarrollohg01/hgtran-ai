@@ -12,18 +12,56 @@ metadata:
 Al construir o revisar una pantalla de catálogo en Angular con Angular Material: tablas, filtros,
 formularios de alta y edición, estados vacíos.
 
+**No todas las webapps de HG usan Angular Material.** Antes de aplicar nada, mirá las PLANTILLAS
+del repositorio: la dependencia del `package.json` no alcanza — `operationsboard-webapp` declara
+`@angular/material` y no tiene una sola plantilla con componentes de Material.
+
+- Angular Material en las plantillas: `portaltools-webapp` y `hgproveedorextranet-webapp`. Ahí
+  aplica esta skill entera.
+- PrimeNG: `operationsboard-webapp`, `comedor/frontend`, `ediboard-webapp`. Ahí la sección de
+  Angular Material no aplica. Y sobre `operationsboard-webapp` manda `web-ui-standard`, que exige
+  PrimeNG o los componentes compartidos y el esqueleto de pantalla (`placeholder-title`,
+  `placeholder-content`, `app-loader`, `p-toast`). Donde esa spec gobierna, gana ella.
+
+Lo que sí es transversal: fechas, estados vacíos, formularios de edición, consumo de la API,
+dependencias y verificación.
+
 Cada regla nació de un defecto real. Varias causaron pérdida de datos.
 
 ## La tabla es compartida
 
 Una pantalla declara QUÉ mostrar; paginar, ordenar y filtrar es de la tabla.
 
-- Contrato: `ColumnConfig`, `TableAction`, `ParametrosGenerales`, `fetchDataFunction`.
+**El contrato no es el mismo en todos los repositorios.** `ColumnConfig` es el único nombre común:
+`TableAction`, `ParametrosGenerales` y `fetchDataFunction` son de las webapps con Material y no
+existen en `operationsboard-webapp`; `filterKey` y `filterType: 'autocomplete'` hoy sólo viven en
+`hgproveedorextranet-webapp`. Leé el contrato real de la tabla del repositorio antes de escribir
+una columna.
+
+- Contrato de referencia: `ColumnConfig`, `TableAction`, `ParametrosGenerales`, `fetchDataFunction`.
 - `customRender` recibe la **FILA COMPLETA**, no el valor de la celda.
 - `filterKey` separa lo que se MUESTRA de lo que se FILTRA: la columna pinta el nombre del
   proveedor y filtra por su identificador, que es exacto y no depende de acentos.
 - Catálogo grande (cientos o más) → `filterType: 'autocomplete'` con fuente paginada, NUNCA un
   `select`: abrir un menú no puede costar descargar 1 766 registros.
+- Si la tabla del repositorio no expone la pieza equivalente, la regla se traduce al contrato que
+  sí tiene; no se inventa una API que no existe ahí.
+
+## El sobre de la API
+
+El backend responde `Response<T>`, y **un fallo de negocio llega como HTTP 200 con
+`Success = false`** — lo fija `backend-crud-standard`. Consumirlo asumiendo "200 = salió bien"
+pinta éxito sobre un rechazo, o una tabla vacía sobre un error.
+
+- REQUIERE inspeccionar `Success` antes de usar el cuerpo. El veredicto está en `Success`, el motivo
+  en `ErrorList`, los datos en `Items` (colección) o `Item` (uno), y el universo de la búsqueda en
+  `TotalRecords` — no en el largo de `Items`, que es sólo la página.
+- **RECHAZA `catchError(() => of([]))`** y su forma equivalente en bloque. Descarta `ErrorList` y la
+  pantalla queda sin poder decir qué pasó: el operador lee "Aún no hay registros" donde lo que hubo
+  fue un fallo.
+- El patrón que exige `api-crud-standard` es `ensureSuccessResponse` / `normalizeApiError` en el
+  servicio DataAccess. Es OBJETIVO para servicios nuevos y para los que se tocan; la base todavía
+  arrastra el anti-patrón en muchos archivos y migra oportunistamente.
 
 ## Formularios de edición
 
@@ -64,10 +102,10 @@ cargado.
 | Trampa | Realidad |
 |---|---|
 | `panelClass` en `<mat-autocomplete>` | NO llega al panel. Va al contenedor del overlay. Se usa el input **`class`** |
-| `mat-sort-header` | Envuelve su contenido en un `<button>`. Otro botón adentro = botones anidados y foco atrapado. Aplicarlo a un `<span>` interno |
+| `mat-sort-header` | Va en el `<th>`, que es el uso documentado. NO renderiza un `<button>`: es un `<div role="button">` con `tabindex`, elegido a propósito para que el lector de pantalla anuncie el `aria-sort` del encabezado |
+| `aria-sort` | Lo pone el propio `MatSortHeader` como host binding sobre el elemento que lleva la directiva. Moverla a un `<span>` interno deja el `aria-sort` en un `span`, donde es inerte: sólo tiene efecto en `columnheader`/`rowheader` |
 | Paginador en inglés | Sólo se traduce con `MatPaginatorIntl`; no se puede desde la plantilla |
-| Overlays transparentes | Falta `mat.theme()`. Sin tema, los tokens `--mat-*` quedan vacíos. Es la causa raíz, no se parchea panel por panel |
-| `aria-sort` | Va en el `span.mat-sort-header`, NO en el `th` |
+| Overlays transparentes | Faltan los tokens del tema: sin tema, las variables `--mat-*` quedan vacías. Es la causa raíz, no se parchea panel por panel. **El mixin depende de la versión**: `mat.theme()` existe desde Material 19; en 16 y 18 el equivalente es `mat.all-component-themes($tema)` con `mat.define-light-theme` / `define-dark-theme` |
 
 ## Tablas: `table-layout: fixed`
 
@@ -84,11 +122,14 @@ cargado.
 
 ## Estilo
 
-- RECHAZA cualquier hex en un componente. Todo color sale de `var(--hg-*)`; el tema oscuro depende
-  de eso.
+- RECHAZA cualquier hex en un componente: el color sale del token, y el tema oscuro depende de eso.
+  `var(--hg-*)` es la nomenclatura de `hgproveedorextranet-webapp`; `portaltools-webapp` no la usa.
+  Averiguá el prefijo real del repositorio antes de escribir una variable.
 - Una sola familia tipográfica, por token. Material NO hereda la fuente del documento: hay que
   pasársela al tema. Los controles de formulario tampoco: necesitan `font-family: inherit`.
-- Autoalojar fuentes por npm, no CDN: es una aplicación de intranet.
+- Fuente por npm, nunca por CDN: es una aplicación de intranet. Donde manda `web-ui-standard` la
+  regla es más fuerte todavía y va en el otro sentido — pila tipográfica de SISTEMA, sin depender de
+  webfonts descargadas. Ninguna de las dos admite el CDN.
 
 ## Dependencias
 

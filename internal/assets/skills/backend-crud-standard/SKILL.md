@@ -12,10 +12,20 @@ metadata:
 Al escribir o revisar un CRUD en .NET: controladores, repositorios EF Core, servicios de negocio
 o integraciones con servicios externos.
 
-**El vocabulario de capas depende del repositorio.** `api-crud-standard` fija API / CORE / SERVICE
-/ DATA para `portaltools-api` y `etruckssecurity-api`, donde `SERVICE` es la capa de negocio;
-DOMAIN / DATA / BUSINESS / API es la de `hgproveedorextranet-api`. Verificá cuál usa la solución
-antes de crear proyectos.
+**El vocabulario de capas depende del repositorio.** Hoy conviven tres:
+
+- **API / CORE / SERVICE / DATA**, donde `SERVICE` es la capa de negocio. Es la que fija
+  `api-crud-standard`, y la usan `portaltools-api`, `etruckssecurity-api`, `edi-api` y
+  `operationsboard-api`.
+- **DOMAIN / DATA / BUSINESS / API** — `hgproveedorextranet-api`.
+- **Domain / Data / Service** — `Hg.GpsApi` (donde la capa de negocio se llama `Services`),
+  `datahubviaje-api` y el backend de `comedor`.
+
+Verificá cuál usa la solución antes de crear proyectos. Para una API nueva fuera del alcance de
+`api-crud-standard` no hay una regla escrita, pero tampoco es un hueco: la primera es la más
+repetida —`edi-api` y `operationsboard-api` la adoptaron sin estar en ese alcance— y la tercera es
+la de `Hg.GpsApi`, el proyecto que `service-architecture` toma como referencia del orden de
+configuración de `Program.cs`. Se elige una de las tres y se declara; no se inventa una cuarta.
 
 Cada regla de aquí nació de un defecto real que llegó a un ambiente. No son preferencias.
 
@@ -35,7 +45,7 @@ El punto 2 sorprende a quien llega nuevo: consumir la API asumiendo "200 = sali�
 | Regla | Por qué |
 |---|---|
 | REQUIERE guardar el **identificador** del operador, no su nombre | Un nombre deja de apuntar a nadie si la persona se renombra |
-| El nombre en texto va en la vista o el DTO, no en la tabla base | Evita una llamada por renglón al servicio de identidad sin duplicar el dato en cada tabla |
+| El nombre en texto va donde NO genere un N+1 | Con tabla de usuarios local, en la vista o el DTO. Con identidad externa sin consulta por lotes, en la tabla base: ahí es lo único que evita una llamada por renglón |
 | El autor sale del TOKEN, nunca del cuerpo de la petición | Si viene del cliente, cualquiera firma una baja con el nombre de otro |
 | RECHAZA escribir auditoría incompleta | Sin identidad completa se responde 401. Un registro a medias parece confiable y no lo es |
 
@@ -47,10 +57,13 @@ tiene sesión ni token, y exigirle uno lo lleva a responder 401 por algo que no 
 actor no humano REQUIERE una constante propia y explícita — `cat.Proveedor` usa
 `ETL_ProveedorSync`. Antes de aplicar estas reglas a una tabla, verificá quién escribe en ella.
 
-El tipo y el nombre de las columnas los fija `db-change-standard`: una tabla nueva lleva
-`uniqueidentifier` con FK y la navegación marcada `[JsonIgnore]`, con el nombre en texto en la
-vista o el DTO. La forma de texto es la excepción de las tablas que escribe únicamente un proceso,
-y vale porque `api-crud-standard` declara su alcance exclusivo (`spec.md:359`).
+El tipo y el nombre de las columnas los fija `db-change-standard`, y dependen de dónde viva la
+identidad. Con una tabla de usuarios en la propia base: `uniqueidentifier` con FK y la navegación
+marcada `[JsonIgnore]`, con el nombre en texto en la vista o el DTO. Con identidad externa
+(HG.AccessExternal / Entra): el `sub` del token sin FK —o el UPN en texto si ese sistema no maneja
+un GUID de usuario—, porque no hay tabla local a la cual apuntar. Antes de copiar la forma con FK,
+verificá que el destino sea una tabla y no una vista: `VwUsuario` está mapeada con `ToView(...)` y
+SQL Server no admite una FK contra una vista.
 
 ## Fechas
 
@@ -71,7 +84,7 @@ hora local: todas las fechas se corren el tamaño del huso.
 | El total se cuenta DESPUÉS de aplicar filtros | Es el universo de la búsqueda, no el de la tabla |
 | REQUIERE desempate por la clave primaria | Sin orden total, la paginación repite u omite renglones entre páginas |
 | Página 0 o negativa se trata como la primera | Devolver vacío ahí parece "no hay datos" |
-| Devuelve el TOTAL, no sólo la página | Es lo que permite al cliente saber si quedan más |
+| Devuelve el TOTAL en `TotalRecords`, no sólo la página | Es lo que permite al cliente saber si quedan más |
 | Columna de orden y de filtro contra una lista BLANCA | Lo demás se ignora; nunca concatenar en SQL |
 
 ## Integración con servicios externos

@@ -36,9 +36,10 @@ service*. **No `-service` ni `-winservice`**: son el nombre que se arrastra de l
 Framework y hoy no distinguen nada, porque los llevan tanto servicios modernos como legacy. Los
 repositorios existentes no se renombran de paso.
 
-Para una API nueva el vocabulario todavía no está definido: la spec gobierna esos repositorios y
-fuera de ellos no hay respuesta acordada. Es decisión pendiente del equipo, no un hueco a llenar
-por cuenta propia.
+Para una API nueva fuera del alcance de la spec no hay una regla escrita, pero tampoco es un hueco:
+hay tres vocabularios en uso —API / CORE / SERVICE / DATA, DOMAIN / DATA / BUSINESS / API y
+Domain / Data / Service—, y `backend-crud-standard` los enumera con sus repositorios. Se elige uno
+de esos tres y se declara; no se inventa un cuarto.
 
 `net10.0` en todos los `.csproj` de un proyecto nuevo. No se elige una versión más vieja por
 alinearse con proyectos legacy — pero tampoco se sube un worker existente como limpieza
@@ -95,9 +96,13 @@ reiniciar el servicio**. Si perder un disparo importa, el job store MUST ser per
 (`JobStoreTX` sobre SQL Server).
 
 Y con eso viene una decisión que MUST tomarse explícita: **la política de misfire**. El default de
-Quartz dispara de inmediato todo lo que se perdió, así que tras una caída larga arrancan todos los
-jobs atrasados a la vez, contra la misma base. Para un ETL eso es el daño que
-`[DisallowConcurrentExecution]` venía a evitar, autoinfligido.
+Quartz es `SmartPolicy`, que para un `CronTrigger` resuelve en disparar UNA sola vez al volver y
+seguir con la agenda; reencolar cada disparo perdido hay que pedirlo a propósito con
+`IgnoreMisfires`. Nada de eso salva del problema real: tras una caída larga, todos los jobs
+distintos que quedaron atrasados despiertan juntos y golpean la misma base al mismo tiempo. Para un
+ETL eso es el daño que `[DisallowConcurrentExecution]` venía a evitar, autoinfligido — y esa
+directiva no protege contra jobs distintos. La política se elige y se escribe:
+`zamletl-winservice` fija `WithMisfireHandlingInstructionFireAndProceed()` con el motivo al lado.
 
 Persistir el disparo recupera **la ejecución, no los datos**: un job que calcula su ventana con la
 hora actual no puede reprocesar el día que se perdió. Para eso la ventana MUST venir de estado
@@ -116,11 +121,20 @@ por `HintPath`, y un `PackageReference` que no resuelve. Buscar solo submódulos
 todas. Un proyecto nuevo MUST montarla en `libs/smtpemailclient-library`. Los existentes NO se
 renombran de paso: mover la ruta rompe lo que ya compila, y merece su propia tarea.
 
-Vendorizar es legítimo cuando el submódulo no sirve, y hoy hay dos razones reales y verificadas:
-no existe un NuGet consumible porque el feed privado devuelve 401, y el submódulo está en
-`net8.0` mientras esta skill exige `net10.0`. Cuando se vendoriza, la razón MUST quedar escrita
-en el `.csproj` de la copia, con la historia que lo decidió. Una copia sin esa justificación sí
-es un defecto.
+Vendorizar es legítimo cuando el submódulo no sirve, y hoy hay **una** razón real y verificada: no
+existe un NuGet consumible, porque el feed privado que debería hospedarlo devuelve 401. Es la única
+que aparece escrita en la copia que sí se justificó, la de `zametlordenescompra-winservice`.
+
+**La diferencia de framework NO es razón para vendorizar.** El submódulo declara `net8.0` y se
+consume por `ProjectReference` desde un worker `net10.0` sin problema: `zamletl-winservice` lo hace
+y lo deja escrito en el `Directory.Build.props` de su `libs/`, con la fecha en que se verificó que
+compila. Aceptarla como razón la vuelve siempre verdadera, y una excepción siempre verdadera anula
+la regla del submódulo.
+
+Cuando se vendoriza, la razón MUST quedar escrita en el `.csproj` de la copia, con la historia que
+lo decidió. **Aplica a las copias nuevas.** Varias de las que ya existen no la tienen: son la misma
+deuda que el resto de lo existente, se documentan cuando se toca ese repositorio, y no se arreglan
+de paso.
 
 Si se usa submódulo, el `README` MUST decir que el clon necesita
 `git submodule update --init --recursive`. Sin eso el proyecto no compila y quien llega nuevo no
