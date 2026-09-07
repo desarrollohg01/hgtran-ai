@@ -47,21 +47,49 @@ countfiles() {
   git grep -I -l -e "$1" -- "${@:2}" $SELF 2>/dev/null | wc -l | tr -d ' '
 }
 
+# Pre-fork identity tokens. The census measures what remains of THESE, so every
+# one of them MUST name the OLD identity, never the current one.
+#
+# They are variables rather than literals because a bulk rename already ate this
+# file once. Commit 4ab09a59 renamed the repository and, in the same pass,
+# rewrote these patterns: `gentleman-programming/gentle-ai` became
+# `gentleman-programming/hgtran-ai` (a pattern that cannot match anything, so
+# I2_module read 0 forever), `Gentle AI` became `Hgtran AI`, and TOTAL started
+# counting how much of the NEW identity existed. Progress read as regression.
+# The SELF exclusion below keeps this file out of the count; it never kept it
+# out of the edit.
+OLD_MODULE='gentleman-programming/gentle-ai'
+OLD_BINARY='gentle-ai'
+OLD_BRAND='Gentle AI'
+OLD_STATEROOT='\.gentle-ai'
+OLD_OWNER='github.com/Gentleman-Programming'
+
+# Guard: fail loudly rather than report a number nobody can interpret.
+for _tok in "$OLD_MODULE" "$OLD_BINARY" "$OLD_BRAND" "$OLD_STATEROOT" "$OLD_OWNER"; do
+  case "$_tok" in
+    *hgtran*|*Hgtran*|*HGTRAN*)
+      printf '\033[31mFATAL\033[0m the census tokens name the CURRENT identity, not the pre-fork one.\n' >&2
+      printf '      A rename rewrote this file. Restore the tokens before trusting any count.\n' >&2
+      printf '      Offending token: %s\n' "$_tok" >&2
+      exit 2 ;;
+  esac
+done
+
 census() {
-  echo "I1_binary=$(count '\bgentle-ai\b')"
-  echo "I2_module=$(count 'gentleman-programming/hgtran-ai' '*.go')"
+  echo "I1_binary=$(count "\b${OLD_BINARY}\b")"
+  echo "I2_module=$(count "$OLD_MODULE" '*.go')"
   echo "I3_gga=$(count '\bgga\b')"
-  echo "I4_urls=$(count 'github.com/Gentleman-Programming')"
-  echo "I5_brand=$(count 'Hgtran AI')"
-  echo "I6_golden=$(countfiles '\(gentleman\|hgtran-ai\)' '*.golden')"
+  echo "I4_urls=$(count "$OLD_OWNER")"
+  echo "I5_brand=$(count "$OLD_BRAND")"
+  echo "I6_golden=$(countfiles "\(gentleman\|${OLD_BINARY}\)" '*.golden')"
   # The user state root, tracked apart from the binary name because it is the
   # one class where getting it wrong orphans data instead of breaking a build.
   # The quoted form excludes the three filename prefixes that merely start with
-  # the old name (.hgtran-ai-*.tmp, .hgtran-ai-default-agent.json, and the
+  # the old name (.gentle-ai-*.tmp, .gentle-ai-default-agent.json, and the
   # OpenCode uninstall marker) — those are brand, not the state root.
-  echo "I7_stateroot=$(count '"\.hgtran-ai"')"
-  echo "TOTAL=$(count '\(gentleman\|hgtran-ai\|Gentleman\|Hgtran AI\)')"
-  echo "FILES=$(countfiles '\(gentleman\|hgtran-ai\|Gentleman\|Hgtran AI\)')"
+  echo "I7_stateroot=$(count "\"${OLD_STATEROOT}\"")"
+  echo "TOTAL=$(count "\(gentleman\|${OLD_BINARY}\|Gentleman\|${OLD_BRAND}\)")"
+  echo "FILES=$(countfiles "\(gentleman\|${OLD_BINARY}\|Gentleman\|${OLD_BRAND}\)")"
 }
 
 # --- functional state -------------------------------------------------------
