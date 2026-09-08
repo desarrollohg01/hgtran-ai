@@ -5639,7 +5639,7 @@ func TestWelcomeView_LongAdvisoryStaysWithinWindowWidth(t *testing.T) {
 }
 
 func TestWelcomeAdvisory_BoundsAndScrollsOverflow(t *testing.T) {
-	const releaseURL = "https://github.com/Gentleman-Programming/hgtran-ai/releases/tag/v1.49.0"
+	const releaseURL = "https://github.com/Gentleman-Programming/gentle-ai/releases/tag/v1.49.0"
 	m := NewModel(system.DetectionResult{}, "dev")
 	m.Width = 60
 	m.Height = 50
@@ -5682,7 +5682,7 @@ func TestWelcomeAdvisory_BoundsAndScrollsOverflow(t *testing.T) {
 }
 
 func TestWelcomeAdvisory_FittingContentShowsLatestReleaseWithoutScrollHint(t *testing.T) {
-	const releaseURL = "https://github.com/Gentleman-Programming/hgtran-ai/releases/tag/v1.49.0"
+	const releaseURL = "https://github.com/Gentleman-Programming/gentle-ai/releases/tag/v1.49.0"
 	m := NewModel(system.DetectionResult{}, "dev")
 	m.Width = 100
 	m.Height = 60
@@ -5708,7 +5708,7 @@ func TestWelcomeAdvisory_SmallTerminalPreservesMenu(t *testing.T) {
 	baselineHeight := lipgloss.Height(m.View())
 	updated, _ := m.Update(AdvisoryMsg{Advisory: update.Advisory{
 		Message: strings.Repeat("long advisory ", 80),
-		URL:     "https://github.com/Gentleman-Programming/hgtran-ai/releases/tag/v1.49.0",
+		URL:     "https://github.com/Gentleman-Programming/gentle-ai/releases/tag/v1.49.0",
 	}})
 	view := updated.(Model).View()
 
@@ -5726,7 +5726,7 @@ func TestWelcomeAdvisory_ResizeAndContentChangesClampScroll(t *testing.T) {
 	m.Height = 60
 	updated, _ := m.Update(AdvisoryMsg{Advisory: update.Advisory{
 		Message: strings.Repeat("release detail ", 12),
-		URL:     "https://github.com/Gentleman-Programming/hgtran-ai/releases/tag/v1.49.0",
+		URL:     "https://github.com/Gentleman-Programming/gentle-ai/releases/tag/v1.49.0",
 	}})
 	state := updated.(Model)
 	updated, _ = state.Update(tea.KeyMsg{Type: tea.KeyPgDown})

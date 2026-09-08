@@ -40,7 +40,7 @@ func TestResolveUsesEngramArtifactsWhenOpenSpecIsAbsent(t *testing.T) {
 	root := t.TempDir()
 	mkdir(t, filepath.Join(root, ".engram"))
 	runRuntimeLedgerGit(t, root, "init", "-q")
-	runRuntimeLedgerGit(t, root, "remote", "add", "origin", "git@github.com:Gentleman-Programming/hgtran-ai.git")
+	runRuntimeLedgerGit(t, root, "remote", "add", "origin", "git@github.com:Gentleman-Programming/gentle-ai.git")
 
 	restore := stubEngramExport(t, []engramObservation{
 		{Title: "sdd/add-auth/proposal", Content: "## Proposal\nAdd auth", Project: "hgtran-ai", Scope: "project"},
@@ -286,7 +286,7 @@ func TestResolvePlanningRoutesOmitExpectedBlockersForBothStores(t *testing.T) {
 				} else {
 					mkdir(t, filepath.Join(root, ".engram"))
 					runRuntimeLedgerGit(t, root, "init", "-q")
-					runRuntimeLedgerGit(t, root, "remote", "add", "origin", "git@github.com:Gentleman-Programming/hgtran-ai.git")
+					runRuntimeLedgerGit(t, root, "remote", "add", "origin", "git@github.com:Gentleman-Programming/gentle-ai.git")
 					restore := stubEngramExport(t, engramPlanningRoute("thin", tt.route))
 					t.Cleanup(restore)
 				}
@@ -352,7 +352,7 @@ func TestResolveEngramPlanningRouteRetainsGenuineBlocker(t *testing.T) {
 	root := t.TempDir()
 	mkdir(t, filepath.Join(root, ".engram"))
 	runRuntimeLedgerGit(t, root, "init", "-q")
-	runRuntimeLedgerGit(t, root, "remote", "add", "origin", "git@github.com:Gentleman-Programming/hgtran-ai.git")
+	runRuntimeLedgerGit(t, root, "remote", "add", "origin", "git@github.com:Gentleman-Programming/gentle-ai.git")
 	restore := stubEngramExport(t, []engramObservation{
 		{Title: "sdd/thin/tasks", Content: "not a checklist\n", Project: "hgtran-ai", Scope: "project"},
 	})
@@ -379,7 +379,7 @@ func TestResolveRuntimeOverrideRestoresExpectedPlanningBlockersForBothStores(t *
 				seedPlanningRoute(t, root, "thin", "propose")
 			} else {
 				mkdir(t, filepath.Join(root, ".engram"))
-				runRuntimeLedgerGit(t, root, "remote", "add", "origin", "git@github.com:Gentleman-Programming/hgtran-ai.git")
+				runRuntimeLedgerGit(t, root, "remote", "add", "origin", "git@github.com:Gentleman-Programming/gentle-ai.git")
 				restore := stubEngramExport(t, engramPlanningRoute("thin", "propose"))
 				t.Cleanup(restore)
 			}

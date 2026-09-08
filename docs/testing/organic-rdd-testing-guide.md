@@ -1,6 +1,6 @@
 # 🧪 How to test — Organic RDD (pre-release 2.2.0-rc.1)
 
-> Community testing guide for the candidate built from PR [#1801](https://github.com/Gentleman-Programming/hgtran-ai/pull/1801). Every **Expected** here was validated against real output before publication. The guide uses a throwaway HOME precisely so it does not touch your real config — do not skip the setup.
+> Community testing guide for the candidate built from PR [#1801](https://github.com/Gentleman-Programming/gentle-ai/pull/1801). Every **Expected** here was validated against real output before publication. The guide uses a throwaway HOME precisely so it does not touch your real config — do not skip the setup.
 
 > [!IMPORTANT]
 > **This guide moves; a published asset does not.** It tracks the PR head and describes behaviour that may have landed *after* the binary you downloaded was built. Running it literally against an older asset produces false regressions — that is the guide's fault, not the product's.
@@ -15,7 +15,7 @@
 
 ## How to get this binary
 
-The binaries are on the pre-release page: **https://github.com/Gentleman-Programming/hgtran-ai/releases/tag/v2.2.0-rc.1**
+The binaries are on the pre-release page: **https://github.com/Gentleman-Programming/gentle-ai/releases/tag/v2.2.0-rc.1**
 
 1. Download the asset for your platform from the Assets section of that page.
 2. Verify the checksum against `SHA256SUMS.txt`:
@@ -260,7 +260,7 @@ $EDITOR "$(git rev-parse --git-common-dir)"/hgtran-ai/review-transactions/v2/<li
 
 ```
 ... A defect report was saved at <...>/hgtran-ai/defect-reports/receipt-publication-conflict-<hash>.md
--- file it at https://github.com/Gentleman-Programming/hgtran-ai/issues/new/choose.
+-- file it at https://github.com/Gentleman-Programming/gentle-ai/issues/new/choose.
 ```
 
 4. [ ] Open that file → **Expected**: it carries version, commit, OS, the operation and the error. It does **NOT** carry the contents of your files, or absolute paths with your username, or environment variables. It is meant to be pasted into a public issue.
@@ -733,9 +733,9 @@ echo "exit=$?"
 
 Anything that does not match an **Expected** — and anything you find confusing even if it works. Open an issue with: what you tried, what you expected, what you saw, `hgtran-ai --version`, OS, and terminal output.
 
-👉 https://github.com/Gentleman-Programming/hgtran-ai/issues/new/choose — mention that this is the **2.2.0-rc.1 pre-release**.
+👉 https://github.com/Gentleman-Programming/gentle-ai/issues/new/choose — mention that this is the **2.2.0-rc.1 pre-release**.
 
-If everything worked, comment on PR [#1801](https://github.com/Gentleman-Programming/hgtran-ai/pull/1801) with which flows passed and on which platform — that feedback decides the merge.
+If everything worked, comment on PR [#1801](https://github.com/Gentleman-Programming/gentle-ai/pull/1801) with which flows passed and on which platform — that feedback decides the merge.
 
 ## What is NOT a bug
 

@@ -13,7 +13,7 @@ metadata:
 
 Load this skill whenever you need to:
 - Create a branch for a new fix or feature
-- Open a pull request on [Gentleman-Programming/hgtran-ai](https://github.com/Gentleman-Programming/hgtran-ai)
+- Open a pull request on [Gentleman-Programming/gentle-ai](https://github.com/Gentleman-Programming/gentle-ai)
 - Prepare changes for review
 
 ## Critical Rules
@@ -29,7 +29,7 @@ Load this skill whenever you need to:
 
 ```
 1. Confirm the issue has status:approved
-   gh issue view <N> --repo Gentleman-Programming/hgtran-ai
+   gh issue view <N> --repo Gentleman-Programming/gentle-ai
 
 2. Create a branch from main using the naming convention below
 
@@ -228,7 +228,7 @@ feat(cli)!: change default config path
 
 ```bash
 # Confirm issue is approved before starting
-gh issue view <N> --repo Gentleman-Programming/hgtran-ai
+gh issue view <N> --repo Gentleman-Programming/gentle-ai
 
 # Create branch
 git checkout main && git pull
@@ -258,7 +258,7 @@ cd e2e && ./docker-test.sh
 
 ```bash
 gh pr create \
-  --repo Gentleman-Programming/hgtran-ai \
+  --repo Gentleman-Programming/gentle-ai \
   --title "fix(agent): correct Claude Code detection on Linux" \
   --body "$(cat <<'EOF'
 ## 🔗 Linked Issue
@@ -302,12 +302,12 @@ EOF
 ### Check PR Status
 
 ```bash
-gh pr checks --repo Gentleman-Programming/hgtran-ai <PR-number>
-gh pr view --repo Gentleman-Programming/hgtran-ai <PR-number>
+gh pr checks --repo Gentleman-Programming/gentle-ai <PR-number>
+gh pr view --repo Gentleman-Programming/gentle-ai <PR-number>
 ```
 
 ### Add a Label
 
 ```bash
-gh pr edit <PR-number> --repo Gentleman-Programming/hgtran-ai --add-label "type:bug"
+gh pr edit <PR-number> --repo Gentleman-Programming/gentle-ai --add-label "type:bug"
 ```

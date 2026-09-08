@@ -33,7 +33,7 @@ hgtran-ai.rdd-shadow/v1 gate=<GateKind> live_result=<GateResult> has_relation=<b
 Shadow evaluation's own exit evidence — the differential matrix in `internal/reviewtransaction/testdata/shadow-differential-matrix.golden` — already documents every *expected* divergence class (Amendment B's no-input degradation, and the shadow-only `unrelated` value's vocabulary gap against the five-value live classifier). If a stderr line shows a divergence outside those documented classes:
 
 1. Copy the exact `hgtran-ai.rdd-shadow/v1` line (it contains no candidate content, only relation/health enum values).
-2. Open an issue: <https://github.com/Gentleman-Programming/hgtran-ai/issues/new/choose>. Include the line, the gate or command that produced it, and whether it repeats.
+2. Open an issue: <https://github.com/Gentleman-Programming/gentle-ai/issues/new/choose>. Include the line, the gate or command that produced it, and whether it repeats.
 3. An unexplained divergence on `exact`, `compatible_base_advance`, or `provable_contraction` blocks Wave 2 entry by design (`docs/architecture/rdd-root-simplification-design.md`, Migration waves) — reporting it is how that boundary gets enforced.
 
 ## Next step

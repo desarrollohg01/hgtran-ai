@@ -19,7 +19,7 @@ import (
 
 // reviewDefectReportIssuesURL is the single destination every tool-fault
 // Tier C statement points at, per organic-dx tasks.md 5.6.
-const reviewDefectReportIssuesURL = "https://github.com/Gentleman-Programming/hgtran-ai/issues/new/choose"
+const reviewDefectReportIssuesURL = "https://github.com/Gentleman-Programming/gentle-ai/issues/new/choose"
 
 // reviewDefectReportDirName is the subdirectory under the repository's
 // Git-common-dir "hgtran-ai" root (the same convention repository_locator.go

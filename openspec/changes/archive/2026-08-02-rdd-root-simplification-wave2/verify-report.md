@@ -71,14 +71,14 @@ Every branch tip resolves to the expected commit; `feat/rdd-wave2-bench-journeys
 **Tests**: ✅ Passed — `go test -count=1 ./...` exit 0, 63 packages `ok`, **0 cached**, 0 `FAIL`.
 
 ```text
-ok  github.com/gentleman-programming/hgtran-ai/v2/internal/app              17.799s
-ok  github.com/gentleman-programming/hgtran-ai/v2/internal/cli             161.682s
-ok  github.com/gentleman-programming/hgtran-ai/v2/internal/reviewtransaction 125.163s
+ok  github.com/gentleman-programming/gentle-ai/v2/internal/app              17.799s
+ok  github.com/gentleman-programming/gentle-ai/v2/internal/cli             161.682s
+ok  github.com/gentleman-programming/gentle-ai/v2/internal/reviewtransaction 125.163s
 ```
 
 A first `go test ./...` returned exit 0 entirely from cache (63 cached entries) and was **discarded as non-evidence**; the recorded run is the uncached `-count=1` execution.
 
-**Bench module**: `go test -count=1 ./...` in `bench/` → `ok github.com/gentleman-programming/hgtran-ai/bench 0.173s`, exit 0.
+**Bench module**: `go test -count=1 ./...` in `bench/` → `ok github.com/gentleman-programming/gentle-ai/bench 0.173s`, exit 0.
 
 **Runtime harness (re-executed independently, not trusted from apply)**:
 `hgtran-ai-bench run --binary <tip-built hgtran-ai> --axis damaged-store` → exit 0, **65 journeys: 65 completed, 0 unsupported, 0 failed**. Result JSON status histogram: `{"completed": 65}` over 65 journeys.

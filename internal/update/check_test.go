@@ -1014,7 +1014,7 @@ func TestUpdateHint(t *testing.T) {
 			name:    "hgtran-ai linux",
 			tool:    ToolInfo{Name: "hgtran-ai"},
 			profile: system.PlatformProfile{OS: "linux", PackageManager: "apt"},
-			want:    "curl -fsSL https://raw.githubusercontent.com/Gentleman-Programming/hgtran-ai/main/scripts/install.sh | bash",
+			want:    "curl -fsSL https://raw.githubusercontent.com/Gentleman-Programming/gentle-ai/main/scripts/install.sh | bash",
 		},
 		{
 			name:    "hgtran-ai windows",

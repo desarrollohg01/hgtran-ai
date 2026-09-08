@@ -53,7 +53,7 @@ countfiles() {
 # They are variables rather than literals because a bulk rename already ate this
 # file once. Commit 4ab09a59 renamed the repository and, in the same pass,
 # rewrote these patterns: `gentleman-programming/gentle-ai` became
-# `gentleman-programming/hgtran-ai` (a pattern that cannot match anything, so
+# `gentleman-programming/gentle-ai` (a pattern that cannot match anything, so
 # I2_module read 0 forever), `Gentle AI` became `Hgtran AI`, and TOTAL started
 # counting how much of the NEW identity existed. Progress read as regression.
 # The SELF exclusion below keeps this file out of the count; it never kept it

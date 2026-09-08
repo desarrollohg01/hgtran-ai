@@ -1,6 +1,6 @@
 # Organic RDD — architecture and change record
 
-> Technical reference for PR [#1801](https://github.com/Gentleman-Programming/hgtran-ai/pull/1801). 154 commits, 340 files, +58,379 / −6,586. For the story behind it, see [the-organic-rdd-story.md](the-organic-rdd-story.md).
+> Technical reference for PR [#1801](https://github.com/Gentleman-Programming/gentle-ai/pull/1801). 154 commits, 340 files, +58,379 / −6,586. For the story behind it, see [the-organic-rdd-story.md](the-organic-rdd-story.md).
 
 ## 1. What changed at the top
 

@@ -69,11 +69,11 @@ Verbatim run (`-count=1`):
     --- PASS: TestNewLineageActivationSwitchIndependentOfKillSwitch/kill-switch-resolution-with-activation= (0.00s)
     --- PASS: TestNewLineageActivationSwitchIndependentOfKillSwitch/kill-switch-resolution-with-activation=1 (0.00s)
 PASS
-ok  	github.com/gentleman-programming/hgtran-ai/v2/internal/reviewtransaction	0.105s
+ok  	github.com/gentleman-programming/gentle-ai/v2/internal/reviewtransaction	0.105s
 --- PASS: TestNewLineageFrozenTierIsNeverRecomputedAfterFreeze (0.16s)
 --- PASS: TestNewLineageKillSwitchOffProducesZeroSideEffectsAcrossEntrySurfaces (0.20s)
 PASS
-ok  	github.com/gentleman-programming/hgtran-ai/v2/internal/cli	0.384s
+ok  	github.com/gentleman-programming/gentle-ai/v2/internal/cli	0.384s
 ```
 
 ### Coverage
@@ -93,7 +93,7 @@ ok  	github.com/gentleman-programming/hgtran-ai/v2/internal/cli	0.384s
 |---|---|---|---|
 | Root tests | `go test ./... -count=1` | 0 | 63 packages `ok`, 0 FAIL |
 | Root build | `go build ./...` | 0 | empty output |
-| Bench module tests | `cd bench && go test ./... -count=1` | 0 | `ok github.com/gentleman-programming/hgtran-ai/bench 0.156s` |
+| Bench module tests | `cd bench && go test ./... -count=1` | 0 | `ok github.com/gentleman-programming/gentle-ai/bench 0.156s` |
 | Deadcode ratchet | `bash scripts/deadcode-ratchet.sh` | 0 | `no new unreachable functions` |
 | Formatter | `gofmt -l .` | 0 | 0 files |
 | Vet | `go vet ./...` | 0 | clean |
@@ -194,7 +194,7 @@ Baseline `TestDerivedObservationWriteGuardHoldsForProductionFiles` → `ok`. App
 --- FAIL: TestDerivedObservationWriteGuardHoldsForProductionFiles/authority_store.go
     authority_store.go marshals or writes a DeriveObservation result:
     [authority_store.go:519:9: writeAtomic is called with a DeriveObservation-derived value (observation)]
-FAIL	github.com/gentleman-programming/hgtran-ai/v2/internal/reviewtransaction
+FAIL	github.com/gentleman-programming/gentle-ai/v2/internal/reviewtransaction
 ```
 
 Reverted byte-identically: file sha256 returned to `ff0663e8a81c710d896ff02122c9ea13002b824ed8d5d57dd73d51d7f677a1ef`, `git status --porcelain` empty, `git diff` 0 lines, HEAD still `157ab9fd`. The old selector-only resolution provably could not match this shape: `writeAtomic(...)` is a bare `*ast.Ident`, and `shadowCallExprName` only resolves `*ast.SelectorExpr`.
@@ -209,7 +209,7 @@ Reverted byte-identically: file sha256 returned to `ff0663e8a81c710d896ff02122c9
 |---|---|---|---|
 | Root tests | `go test ./... -count=1` | 0 | 63 packages `ok`, 0 FAIL |
 | Root build | `go build ./...` | 0 | empty output |
-| Bench module tests | `cd bench && go test ./... -count=1` | 0 | `ok github.com/gentleman-programming/hgtran-ai/bench 0.176s` |
+| Bench module tests | `cd bench && go test ./... -count=1` | 0 | `ok github.com/gentleman-programming/gentle-ai/bench 0.176s` |
 | Targeted C1–C6/W11/W14 suite | `go test ./internal/cli ./internal/reviewtransaction -run '<12 names>' -v` | 0 | 35 PASS, 0 FAIL |
 | Deadcode ratchet | `bash scripts/deadcode-ratchet.sh` | 0 | `no new unreachable functions` |
 | Refusal-resolution ratchet | `TestEveryProductionRefusalNamesResolutionOrDeclaresByDesign` | 0 | PASS |
@@ -220,19 +220,19 @@ Reverted byte-identically: file sha256 returned to `ff0663e8a81c710d896ff02122c9
 Root test tail (verbatim):
 
 ```
-ok  	github.com/gentleman-programming/hgtran-ai/v2/internal/reviewtransaction	123.618s
-ok  	github.com/gentleman-programming/hgtran-ai/v2/internal/sddstatus	25.088s
-ok  	github.com/gentleman-programming/hgtran-ai/v2/internal/skillregistry	0.120s
-ok  	github.com/gentleman-programming/hgtran-ai/v2/internal/state	0.102s
-ok  	github.com/gentleman-programming/hgtran-ai/v2/internal/storage	0.002s
-ok  	github.com/gentleman-programming/hgtran-ai/v2/internal/system	0.010s
-ok  	github.com/gentleman-programming/hgtran-ai/v2/internal/tui	2.052s
-ok  	github.com/gentleman-programming/hgtran-ai/v2/internal/tui/screens	0.060s
-?   	github.com/gentleman-programming/hgtran-ai/v2/internal/tui/styles	[no test files]
-ok  	github.com/gentleman-programming/hgtran-ai/v2/internal/update	8.657s
-ok  	github.com/gentleman-programming/hgtran-ai/v2/internal/update/upgrade	6.931s
-ok  	github.com/gentleman-programming/hgtran-ai/v2/internal/verify	0.002s
-ok  	github.com/gentleman-programming/hgtran-ai/v2/internal/versions	0.002s
+ok  	github.com/gentleman-programming/gentle-ai/v2/internal/reviewtransaction	123.618s
+ok  	github.com/gentleman-programming/gentle-ai/v2/internal/sddstatus	25.088s
+ok  	github.com/gentleman-programming/gentle-ai/v2/internal/skillregistry	0.120s
+ok  	github.com/gentleman-programming/gentle-ai/v2/internal/state	0.102s
+ok  	github.com/gentleman-programming/gentle-ai/v2/internal/storage	0.002s
+ok  	github.com/gentleman-programming/gentle-ai/v2/internal/system	0.010s
+ok  	github.com/gentleman-programming/gentle-ai/v2/internal/tui	2.052s
+ok  	github.com/gentleman-programming/gentle-ai/v2/internal/tui/screens	0.060s
+?   	github.com/gentleman-programming/gentle-ai/v2/internal/tui/styles	[no test files]
+ok  	github.com/gentleman-programming/gentle-ai/v2/internal/update	8.657s
+ok  	github.com/gentleman-programming/gentle-ai/v2/internal/update/upgrade	6.931s
+ok  	github.com/gentleman-programming/gentle-ai/v2/internal/verify	0.002s
+ok  	github.com/gentleman-programming/gentle-ai/v2/internal/versions	0.002s
 ```
 
 Named tests re-run individually, all PASS: `TestResolveGoverningAuthorityInFlightDeniesEveryGate`, `TestResolveGoverningAuthorityApprovedWithoutReceiptDenies`, `TestResolveGoverningAuthorityApprovedWithValidReceiptAllowsExactCandidate`, `TestReviewCoreFinalizeRequiresTerminalState`, `TestReviewCoreFinalizeAdvancesNonTerminalWithAdvanceRequest`, `TestReviewCoreFinalizeAdvanceEscalatesOnFailedOrAdmittedFindings`, `TestReviewCoreFinalizeRefusesNonTerminalWithoutAdvanceRequest`, `TestReviewFacadeFinalizeNewLineageCorrectingStateReachesReceipt`, plus the C1–C4 closure set (`TestNewLineageReasonTaxonomyCoversLegacyRefusalsClosedMatrix`, `TestAdmitCandidateCausalFindingsBlocksOnlyCandidateCaused`, `TestNewLineageFivePersistedStatesLifecycleNeverPersistsDerivedCategory`, `TestDerivedObservationWriteGuardCatchesMarshalShapes`, `TestDerivedObservationWriteGuardHoldsForProductionFiles`) — C1–C4 remain closed.
@@ -578,7 +578,7 @@ No slice breaches the design's 1000-authored-line hard budget. S2/S4/S5 each exc
 
 **Tests**: PASSED — `go test ./... -count=1`, exit 0, 63 packages ok, 0 FAIL, output `sha256:486cce84…`. Slowest: `internal/cli` 162.8s, `internal/reviewtransaction` 123.9s.
 
-**Bench module** (separate Go module `github.com/gentleman-programming/hgtran-ai/bench`, own `go.mod`; NOT covered by root `go test ./...`): `go build ./...` clean, `gofmt -l .` clean, `go vet ./...` clean, `go test ./... -count=1` ok (`sha256:728e517c…`).
+**Bench module** (separate Go module `github.com/gentleman-programming/gentle-ai/bench`, own `go.mod`; NOT covered by root `go test ./...`): `go build ./...` clean, `gofmt -l .` clean, `go vet ./...` clean, `go test ./... -count=1` ok (`sha256:728e517c…`).
 
 **Ratchets**: `scripts/deadcode-ratchet.sh` → "no new unreachable functions". `TestEveryProductionRefusalNamesResolutionOrDeclaresByDesign` → ok.
 

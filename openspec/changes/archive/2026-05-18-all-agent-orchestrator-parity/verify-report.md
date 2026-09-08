@@ -30,13 +30,13 @@ go vet ./...
 
 ```text
 go test ./internal/assets -run 'Test.*SDDOrchestrator.*'
-ok  	github.com/gentleman-programming/hgtran-ai/internal/assets	(cached)
+ok  	github.com/gentleman-programming/gentle-ai/internal/assets	(cached)
 
 go test ./internal/components/sdd -run 'TestInject(Kimi|Qwen|Gemini|OpenClaw|.*Windsurf|.*Antigravity|.*Kiro)'
-ok  	github.com/gentleman-programming/hgtran-ai/internal/components/sdd	(cached)
+ok  	github.com/gentleman-programming/gentle-ai/internal/components/sdd	(cached)
 
 go test ./internal/components -run 'TestGoldenSDD_(Codex|Gemini|Windsurf|Kiro|Antigravity|Cursor|VSCode)|TestGoldenCombined_Windsurf'
-ok  	github.com/gentleman-programming/hgtran-ai/internal/components	1.792s
+ok  	github.com/gentleman-programming/gentle-ai/internal/components	1.792s
 ```
 
 **Broad tests**: ✅ Passed

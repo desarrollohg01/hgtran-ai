@@ -73,6 +73,6 @@ FLAGS
   --help, -h    Show global help; every review subcommand also supports help
 
 Run 'hgtran-ai help' for this message.
-Documentation: https://github.com/Gentleman-Programming/hgtran-ai
+Documentation: https://github.com/Gentleman-Programming/gentle-ai
 `, version)
 }

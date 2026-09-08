@@ -57,15 +57,15 @@ $ go vet ./...
 ```text
 $ go test ./... -count=1
 ...
-ok  	github.com/gentleman-programming/hgtran-ai/v2/internal/reviewtransaction	124.880s
-ok  	github.com/gentleman-programming/hgtran-ai/v2/internal/sddstatus	24.201s
-ok  	github.com/gentleman-programming/hgtran-ai/v2/internal/update/upgrade	7.115s
-ok  	github.com/gentleman-programming/hgtran-ai/v2/internal/verify	0.002s
-ok  	github.com/gentleman-programming/hgtran-ai/v2/internal/versions	0.002s
+ok  	github.com/gentleman-programming/gentle-ai/v2/internal/reviewtransaction	124.880s
+ok  	github.com/gentleman-programming/gentle-ai/v2/internal/sddstatus	24.201s
+ok  	github.com/gentleman-programming/gentle-ai/v2/internal/update/upgrade	7.115s
+ok  	github.com/gentleman-programming/gentle-ai/v2/internal/verify	0.002s
+ok  	github.com/gentleman-programming/gentle-ai/v2/internal/versions	0.002s
 ROOT_EXIT=0
 
 $ cd bench && go test ./... -count=1
-ok  	github.com/gentleman-programming/hgtran-ai/bench	0.178s
+ok  	github.com/gentleman-programming/gentle-ai/bench	0.178s
 BENCH_EXIT=0
 ```
 
@@ -77,10 +77,10 @@ no new unreachable functions
 RATCHET_EXIT=0
 
 $ go test ./internal/cli/ -run 'RefusalResolution|EveryProductionRefusal' -count=1
-ok  	github.com/gentleman-programming/hgtran-ai/v2/internal/cli	0.134s
+ok  	github.com/gentleman-programming/gentle-ai/v2/internal/cli	0.134s
 
 $ go test ./internal/components/ -run Golden -count=1     # no -update
-ok  	github.com/gentleman-programming/hgtran-ai/v2/internal/components	0.564s
+ok  	github.com/gentleman-programming/gentle-ai/v2/internal/components	0.564s
 ```
 
 **Coverage**: not collected — no coverage threshold configured for this repo.
@@ -227,7 +227,7 @@ Call sites: `internal/cli/sdd_attempt.go:117` (production) + `runtime_compact_te
 --- PASS: TestAdapterForbiddenConstructionGuardCatchesKnownShapes (4 subtests)
 --- PASS: TestAdapterForbiddenConstructionGuardHoldsForProductionFiles (5 production files)
 $ go test ./internal/components/ -run Golden -count=1
-ok  	github.com/gentleman-programming/hgtran-ai/v2/internal/components	0.564s
+ok  	github.com/gentleman-programming/gentle-ai/v2/internal/components	0.564s
 ```
 
 Pin corrected to `hgtran-ai.review-integration/v2` in both `sdd-apply.md` assets; goldens match without `-update`.
@@ -552,10 +552,10 @@ Pre-corrective binary, same fixture: `reviewOffer present: False`, `reVerify pre
 ```text
 --- PASS: TestNewLineageFrozenTierIsNeverRecomputedAfterFreeze (0.11s)
 --- PASS: TestNewLineageKillSwitchOffProducesZeroSideEffectsAcrossEntrySurfaces (0.15s)
-ok  	github.com/gentleman-programming/hgtran-ai/v2/internal/cli	0.286s
+ok  	github.com/gentleman-programming/gentle-ai/v2/internal/cli	0.286s
 --- PASS: TestNewLineageActivationSwitchIdentityNeverOverloadsAnotherSwitch (0.00s)
 --- PASS: TestNewLineageActivationSwitchIndependentOfKillSwitch (0.03s)
-ok  	github.com/gentleman-programming/hgtran-ai/v2/internal/reviewtransaction	0.049s
+ok  	github.com/gentleman-programming/gentle-ai/v2/internal/reviewtransaction	0.049s
 ```
 
 **PASS.**
@@ -580,15 +580,15 @@ Stripping the guard body of `blockArchiveForUnsatisfiedReVerify` (`if true { ret
 ```text
     review_reverify_test.go:304: reason = "", want a non-empty blocked reason
 --- FAIL: TestBlockArchiveForUnsatisfiedReVerify (0.00s)
-FAIL	github.com/gentleman-programming/hgtran-ai/v2/internal/sddstatus	0.007s
+FAIL	github.com/gentleman-programming/gentle-ai/v2/internal/sddstatus	0.007s
 ```
 
 Genuine RED. **But** stripping the two *call sites* in `Resolve()`/`resolveEngramStatus()` instead leaves everything green:
 
 ```text
-ok  github.com/gentleman-programming/hgtran-ai/v2/internal/sddstatus       22.237s
-ok  github.com/gentleman-programming/hgtran-ai/v2/internal/cli            176.419s
-ok  github.com/gentleman-programming/hgtran-ai/v2/e2e/organicruntime       13.022s
+ok  github.com/gentleman-programming/gentle-ai/v2/internal/sddstatus       22.237s
+ok  github.com/gentleman-programming/gentle-ai/v2/internal/cli            176.419s
+ok  github.com/gentleman-programming/gentle-ai/v2/e2e/organicruntime       13.022s
 ```
 
 Restore verified byte-identical: `git diff` empty, `git status --porcelain` empty, HEAD `0a5f13b9`.
@@ -1424,9 +1424,9 @@ forbidden constructions. That is exactly the scenario's "does not self-construct
 of any kind" clause, covered by a test that passes at runtime:
 
 ```text
-ok  github.com/gentleman-programming/hgtran-ai/v2/internal/agents                    0.007s
-ok  github.com/gentleman-programming/hgtran-ai/v2/internal/agents/pi                 0.007s
-ok  github.com/gentleman-programming/hgtran-ai/v2/internal/agents/capabilitymanifest 0.003s
+ok  github.com/gentleman-programming/gentle-ai/v2/internal/agents                    0.007s
+ok  github.com/gentleman-programming/gentle-ai/v2/internal/agents/pi                 0.007s
+ok  github.com/gentleman-programming/gentle-ai/v2/internal/agents/capabilitymanifest 0.003s
 ```
 
 The "enters unavailable mode" clause is the provider-side fail-closed path I measured in cycle 3
@@ -1585,7 +1585,7 @@ already established in this wave, and it matches the resolution cycle 5 prescrib
   ```text
   --- PASS: TestAdapterForbiddenConstructionGuardCatchesKnownShapes (0.00s)
   --- PASS: TestAdapterForbiddenConstructionGuardHoldsForProductionFiles (0.00s)
-  ok  github.com/gentleman-programming/hgtran-ai/v2/internal/agents  0.003s
+  ok  github.com/gentleman-programming/gentle-ai/v2/internal/agents  0.003s
   ```
 
 The amendment's claim is therefore **true and independently verified**. The stale SHA is a citation-accuracy

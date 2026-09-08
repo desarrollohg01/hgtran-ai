@@ -250,7 +250,7 @@ because nothing catches it.
 - `8b62f106`'s subject is *"ci: run the Darwin release-blocker manifest natively, **required
   for merge**."* The job exists, runs `macos-latest`, and executes a 46-entry manifest. It
   is **not a required status check.** Verified against the live ruleset
-  (`repos/Gentleman-Programming/hgtran-ai/rulesets/13932547`), the complete required set is:
+  (`repos/Gentleman-Programming/gentle-ai/rulesets/13932547`), the complete required set is:
   `Check Issue Has status:approved`, `Check Issue Reference`, `Check PR Has type:* Label`,
   `Unit Tests`, `E2E Tests (ubuntu)`, `E2E Tests (arch)`, `E2E Tests (fedora)`. Neither
   Darwin Runtime nor Windows Runtime nor Organic Runtime E2E can block a merge; `main` has

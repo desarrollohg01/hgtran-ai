@@ -1370,7 +1370,7 @@ func TestOrganicReviewDefectReportToolFaultVersusUserDecision(t *testing.T) {
 		if !strings.Contains(stderr, reportPath) {
 			t.Fatalf("stderr did not name the report path %q: %q", reportPath, stderr)
 		}
-		if !strings.Contains(stderr, "https://github.com/Gentleman-Programming/hgtran-ai/issues/new/choose") {
+		if !strings.Contains(stderr, "https://github.com/Gentleman-Programming/gentle-ai/issues/new/choose") {
 			t.Fatalf("stderr did not name the issues URL: %q", stderr)
 		}
 

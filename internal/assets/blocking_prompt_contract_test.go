@@ -150,7 +150,7 @@ func TestCoordinatorOrchestratorsCarryGentleAIProviderDefectHandoff(t *testing.T
 		{name: "localized labels", text: "Localize their labels and descriptions without changing these semantics"},
 		{name: "no internal labels", text: "do not expose machine or internal codes in user-facing labels"},
 		{name: "report choice", text: "**Report the Hgtran AI defect**: Only after explicit consent and that final privacy scan"},
-		{name: "fixed repository", text: "`Gentleman-Programming/hgtran-ai`"},
+		{name: "fixed repository", text: "`Gentleman-Programming/gentle-ai`"},
 		{name: "open and closed duplicate search", text: "search open and closed issues"},
 		{name: "create new automated report", text: "create a new automated provider-defect report"},
 		{name: "confirmed creation label precondition", text: "Confirmed creation is a HARD precondition for labeling: apply `gentle-report` only when the GitHub create operation confirms a newly-created issue identity/URL."},

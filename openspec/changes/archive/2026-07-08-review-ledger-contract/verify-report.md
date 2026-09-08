@@ -18,7 +18,7 @@
 
 ```text
 $ go test ./... -count=1
-ok  github.com/gentleman-programming/hgtran-ai/internal/... (all 50 tested packages)
+ok  github.com/gentleman-programming/gentle-ai/internal/... (all 50 tested packages)
 ```
 
 Targeted ledger-contract test run (verbose):

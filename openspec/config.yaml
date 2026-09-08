@@ -2,7 +2,7 @@
 schema: spec-driven
 
 context: |
-  Repo: desarrollohg01/hgtran-ai — HG Transportaciones fork of Gentleman-Programming/hgtran-ai
+  Repo: desarrollohg01/hgtran-ai — HG Transportaciones fork of Gentleman-Programming/gentle-ai
   Tech stack: Go (go.mod 1.25.10, local toolchain 1.26.2), Bubbletea TUI v1.3.10, bubbles v1.0.0, lipgloss v1.1.0
   Architecture: cmd/hgtran-ai is the product entrypoint, but NOT the only main package — go list reports three in the root module: cmd/hgtran-ai, internal/gofmtcheck and internal/releasepolicycmd. There are NO .go files at the repo root, so CONTRIBUTING.md:98 "go build -o gga ." fails with "no Go files" — use go build ./cmd/hgtran-ai. 29 top-level internal/ directories holding 64 Go packages per go list ./internal/... (agentbuilder, agents, app, assets, backup, catalog, cli, components, doctor, gofmtcheck, installcmd, model, opencode, pathidentity, pipeline, planner, recoverytrace, releasepolicy, releasepolicycmd, reviewtransaction, sddstatus, skillregistry, state, storage, system, tui, update, verify, versions)
   Domain: RDD (receipt-driven development) — review authority, receipts/lineage, delivery gates, kill switches
