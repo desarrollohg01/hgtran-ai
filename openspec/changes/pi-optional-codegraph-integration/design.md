@@ -6,7 +6,7 @@ Observed read-only on 2026-07-10; these contracts become fixtures.
 
 | Evidence | Observed contract |
 |---|---|
-| `pi --version`; `pi install/list --help`; `pi list` | Pi `0.80.6`; packages live in user/project `settings.json`; installed `gentle-pi@0.15.0`, `pi-mcp-adapter@2.11.0`, and `pi-subagents-j0k3r@1.1.3`. |
+| `pi --version`; `pi install/list --help`; `pi list` | Pi `0.80.6`; packages live in user/project `settings.json`; installed `hgtran-pi@0.15.0`, `pi-mcp-adapter@2.11.0`, and `pi-subagents-j0k3r@1.1.3`. |
 | Pi MCP adapter README/source | Config precedence is `~/.config/mcp/mcp.json`, `$PI_CODING_AGENT_DIR/mcp.json`, `.mcp.json`, `.pi/mcp.json`. Schema is `mcpServers.<name>.command/args`; proxy tool is `mcp`. |
 | Pi subagent README/source | Effective definitions are resolved from `$PI_CODING_AGENT_DIR/{agents,subagents}/*.md` then `.pi/{agents,subagents}/*.md`; later/project definitions override normalized names. Frontmatter `tools` is passed to `createAgentSession`; lean sessions retain allowlisted extension tools. |
 | `codegraph --version`; `install/serve/init --help` | CodeGraph `1.2.0`; MCP command is `codegraph serve --mcp`; `init [path]` indexes by default. `codegraph install --print-config pi` returns `Unknown target "pi"` (known targets exclude Pi). |
@@ -15,16 +15,16 @@ Observed read-only on 2026-07-10; these contracts become fixtures.
 
 ## Technical Approach
 
-Add a Pi-specific reconciler owning a minimal Pi MCP key, child overlays/marker blocks, and `~/.hgtran-ai/pi-codegraph.json`. It never changes `gentle-pi`; install and sync invoke one transaction after refreshes.
+Add a Pi-specific reconciler owning a minimal Pi MCP key, child overlays/marker blocks, and `~/.hgtran-ai/pi-codegraph.json`. It never changes `hgtran-pi`; install and sync invoke one transaction after refreshes.
 
 ## Architecture Decisions
 
 | Decision | Alternatives / tradeoff | Rationale |
 |---|---|---|
 | Merge only `mcpServers.codegraph = {command:"codegraph", args:["serve","--mcp"]}` into Pi's global override. | Upstream installer cannot target Pi; a new adapter duplicates MCP. | Exact intersection of observed CodeGraph and Pi schemas. Existing unowned equivalent entries are preserved/adopted; conflicts are `misconfigured`, never overwritten. |
-| Discover effective children using the observed four-directory precedence. | Scanning only gentle-pi assets misses user/project children. | Matches runtime identity; unreadable/shadowed candidates are reported `unavailable`. |
+| Discover effective children using the observed four-directory precedence. | Scanning only hgtran-pi assets misses user/project children. | Matches runtime identity; unreadable/shadowed candidates are reported `unavailable`. |
 | A child is `compatible` only with parseable explicit `tools`, existing `bash`, detectable MCP proxy, and injectable `mcp`. | Adding `bash` broadens privilege; direct tools need warm cache. | Least privilege. Other readable children are `guidance-only`. |
-| Never edit package-owned gentle-pi files. Create owned same-name overlays in `$PI_CODING_AGENT_DIR/subagents`; bounded-edit user/project effective files. | Editing gentle-pi files invalidates its hash ownership manifest. | Preserves upstream ownership and survives refresh. Tool and body blocks use ignored comments `hgtran-ai:pi-codegraph-tool/guidance`; the manifest records source/target hashes and ownership mode. |
+| Never edit package-owned hgtran-pi files. Create owned same-name overlays in `$PI_CODING_AGENT_DIR/subagents`; bounded-edit user/project effective files. | Editing hgtran-pi files invalidates its hash ownership manifest. | Preserves upstream ownership and survives refresh. Tool and body blocks use ignored comments `hgtran-ai:pi-codegraph-tool/guidance`; the manifest records source/target hashes and ownership mode. |
 | Uninstall removes only owned MCP key/overlays/blocks/manifest. | `codegraph uninstall` would affect unrelated agents. | Preserve external MCP entries, user content, CLI, and project `.codegraph/` data. Hash drift becomes a manual action, not deletion. |
 
 ## Data Flow and Contracts
@@ -68,7 +68,7 @@ Unit fixtures pin observed schemas, precedence, classifications, markers, drift,
 
 ## Migration / Rollout
 
-No gentle-pi migration or default. Existing Pi parent-only markers become `misconfigured` until selected reconciliation succeeds. Rollback is uninstall plus transaction restore.
+No hgtran-pi migration or default. Existing Pi parent-only markers become `misconfigured` until selected reconciliation succeeds. Rollback is uninstall plus transaction restore.
 
 ## Open Questions
 

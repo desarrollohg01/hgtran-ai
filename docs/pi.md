@@ -27,9 +27,9 @@ Hgtran AI runs exactly these Pi setup steps:
 
 ```bash
 pi install npm:hgtran-pi
-pi install npm:gentle-engram
+pi install npm:hgtran-engram
 pi install npm:pi-mcp-adapter
-npm exec --yes --package gentle-engram@latest -- pi-engram init
+npm exec --yes --package hgtran-engram@latest -- pi-engram init
 pi install npm:pi-subagents-j0k3r
 pi install npm:@juicesharp/rpiv-ask-user-question
 pi install npm:pi-web-access
@@ -40,9 +40,9 @@ pi install npm:pi-btw
 | Package                                                  | What it adds                                                                                                              |
 | -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
 | [`hgtran-pi`](https://www.npmjs.com/package/hgtran-pi)   | Gentleman persona, SDD/OpenSpec workflow, strict TDD support, safety policy, skills, prompts, SDD agents, and SDD chains. |
-| [`gentle-engram`](https://pi.dev/packages/gentle-engram) | Pi integration for Engram session memory and MCP tools. It is not the Engram binary itself.                               |
+| [`hgtran-engram`](https://pi.dev/packages/hgtran-engram) | Pi integration for Engram session memory and MCP tools. It is not the Engram binary itself.                               |
 | `pi-mcp-adapter`                                         | Lets Pi expose MCP servers, including Engram, through Pi's MCP runtime.                                                   |
-| `pi-engram init`                                         | Initializes the Pi Engram MCP config shape owned by `gentle-engram`.                                                      |
+| `pi-engram init`                                         | Initializes the Pi Engram MCP config shape owned by `hgtran-engram`.                                                      |
 | `pi-subagents-j0k3r`                                      | Runs SDD agents discovered from `.pi/agents/`; installed from the published Pi package `npm:pi-subagents-j0k3r`.                 |
 | `@juicesharp/rpiv-ask-user-question`                     | Lets Pi child agents ask the active user session for clarification when they need human input.                            |
 | `pi-web-access`                                          | Adds web access tools for Pi.                                                                                             |
@@ -51,7 +51,7 @@ pi install npm:pi-btw
 
 `hgtran-pi` owns Pi's runtime behavior. Its current harness enforces parent-only delegation triggers: delegate exploration after 4+ files, use one writer for multi-file changes, require fresh review before PRs, run fresh audits after incidents, and pause long monolithic sessions before they drift.
 
-The real Engram component is provisioned separately by Hgtran AI so `gentle-engram` has an Engram runtime to talk to.
+The real Engram component is provisioned separately by Hgtran AI so `hgtran-engram` has an Engram runtime to talk to.
 During that Engram provisioning step, Hgtran AI declares `npm:pi-mcp-adapter` in Pi's agent settings and adds the npm dependency. Existing unrelated Pi settings, package entries, and npm dependencies are preserved.
 
 Files updated by Hgtran AI's Engram provisioning:
@@ -61,7 +61,7 @@ Files updated by Hgtran AI's Engram provisioning:
 .pi/npm/package.json       # dependencies.pi-mcp-adapter = ^2.6.0
 ```
 
-`gentle-engram` owns the MCP schema itself. The installer runs `pi-engram init`, which initializes Pi's Engram MCP config under the Pi agent config directory instead of having Hgtran AI hand-write that file.
+`hgtran-engram` owns the MCP schema itself. The installer runs `pi-engram init`, which initializes Pi's Engram MCP config under the Pi agent config directory instead of having Hgtran AI hand-write that file.
 
 ## Optional CodeGraph
 
@@ -85,10 +85,10 @@ Run these inside Pi after installing the package stack.
 | Command                          | What it does                                                                                                    |
 | -------------------------------- | --------------------------------------------------------------------------------------------------------------- |
 | `/hgtran-ai:status`              | Shows package, SDD asset, OpenSpec, and model config status.                                                    |
-| `/gentleman:persona`             | Switches between `gentleman` and `neutral` personas.                                                            |
-| `/hgtran-ai:persona`             | Compatibility alias for `/gentleman:persona`.                                                                   |
-| `/gentleman:models`              | Opens the Pi-native model assignment modal.                                                                     |
-| `/hgtran-ai:models`              | Compatibility alias for `/gentleman:models`.                                                                    |
+| `/hgtran:persona`             | Switches between `hgtran` and `neutral` personas.                                                            |
+| `/hgtran-ai:persona`             | Compatibility alias for `/hgtran:persona`.                                                                   |
+| `/hgtran:models`              | Opens the Pi-native model assignment modal.                                                                     |
+| `/hgtran-ai:models`              | Compatibility alias for `/hgtran:models`.                                                                    |
 | `/sdd-init`                      | Bootstraps or refreshes `openspec/config.yaml`.                                                                 |
 | `/hgtran-ai:install-sdd`         | Reinstalls SDD assets without overwriting local files.                                                          |
 | `/hgtran-ai:install-sdd --force` | Force-refreshes installed SDD assets. Use this when you explicitly want package assets to replace local copies. |
@@ -98,12 +98,12 @@ Run these inside Pi after installing the package stack.
 Pi persona selection belongs to `hgtran-pi`, not the Hgtran AI installer.
 
 ```text
-/gentleman:persona
+/hgtran:persona
 ```
 
 | Persona     | Behavior                                                                                                                   |
 | ----------- | -------------------------------------------------------------------------------------------------------------------------- |
-| `gentleman` | Teaching-oriented senior architect persona with Rioplatense Spanish/voseo when the user writes Spanish.                    |
+| `hgtran` | Teaching-oriented senior architect persona with Rioplatense Spanish/voseo when the user writes Spanish.                    |
 | `neutral`   | Same senior architect discipline and teaching philosophy, but with warm professional language and no regional expressions. |
 
 The selection is saved at:
@@ -119,7 +119,7 @@ Run `/reload` or start a new Pi session after switching if the current session a
 Pi model assignment belongs to `hgtran-pi`, not the Hgtran AI installer.
 
 ```text
-/gentleman:models
+/hgtran:models
 ```
 
 The modal discovers project, user, and built-in agents. SDD agents are shown first so you can tune the phases that matter most.
@@ -169,9 +169,9 @@ If you start Pi with `pi -ns`, Pi skips startup skill loading/hooks. That mode i
 | Hgtran AI says Pi is missing                           | Install Pi first and make sure `pi` is on `PATH`.                                                                                                                    |
 | SDD agents are missing in Pi                           | Start Pi normally in the project so `hgtran-pi` can run `session_start`, or run `/hgtran-ai:install-sdd`. If you used `pi -ns`, startup hooks were skipped.          |
 | Persona did not change immediately                     | Run `/reload` or start a new Pi session.                                                                                                                             |
-| Model override should be removed                       | Open `/gentleman:models` and choose `Inherit active/default model`.                                                                                                  |
+| Model override should be removed                       | Open `/hgtran:models` and choose `Inherit active/default model`.                                                                                                  |
 | Memory tools or `/mcp` are missing                     | Re-run `hgtran-ai install --agent pi` to refresh `.pi/agent/settings.json`, `.pi/npm/package.json`, and the `pi-engram init` wiring, then check `/hgtran-ai:status`. |
-| `gentle-engram` is installed but Engram is unavailable | Re-run `hgtran-ai install --agent pi` so the real Engram component is provisioned.                                                                                   |
+| `hgtran-engram` is installed but Engram is unavailable | Re-run `hgtran-ai install --agent pi` so the real Engram component is provisioned.                                                                                   |
 
 ## Next Steps
 

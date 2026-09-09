@@ -1,4 +1,5 @@
 package reviewtransaction
+<<<<<<< HEAD
 
 import (
 	"context"
@@ -1035,3 +1036,5 @@ func matchesAuthoritativeReceipt(repo string, state CompactState, path string) b
 	}
 	return CompactReceiptEqual(mirror, authoritative)
 }
+=======
+>>>>>>> v2.5.0

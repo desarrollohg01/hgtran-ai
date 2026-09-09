@@ -67,7 +67,7 @@ T6 = A+B atomic (removal + injection in same commit — not independently testab
 ## Phase 4 — Persona Directive Injection (A+B atomic)
 
 - [x] **T5** `[RED]` Add `TestPersonasContainContextualSkillLoadingDirective` to `internal/assets/assets_test.go`.
-  - Check all 6 persona paths: `claude/persona-gentleman.md`, `opencode/persona-gentleman.md`, `generic/persona-gentleman.md`, `generic/persona-neutral.md`, `kiro/persona-gentleman.md`, `kimi/persona-gentleman.md`.
+  - Check all 6 persona paths: `claude/persona-hgtran.md`, `opencode/persona-hgtran.md`, `generic/persona-hgtran.md`, `generic/persona-neutral.md`, `kiro/persona-hgtran.md`, `kimi/persona-hgtran.md`.
   - Assert each contains: `## Contextual Skill Loading (MANDATORY)`, `<available_skills>`, `Self-check BEFORE every response`.
   - Commit: `test(assets): require contextual skill loading directive in personas` — DONE 131707f
 

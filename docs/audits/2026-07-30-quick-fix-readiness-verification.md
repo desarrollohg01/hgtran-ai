@@ -236,7 +236,7 @@ git describe --tags --always HEAD
 For each concrete ID below, exactly one command was submitted in listed order:
 
 ```powershell
-gh issue view <N> --repo Gentleman-Programming/gentle-ai --json number,url,title,state,labels,author,createdAt,updatedAt,closedAt
+gh issue view <N> --repo Gentleman-Programming/hgtran-ai --json number,url,title,state,labels,author,createdAt,updatedAt,closedAt
 ```
 
 Concrete `N` values, in submission order:
@@ -246,7 +246,7 @@ Concrete `N` values, in submission order:
 For each concrete ID below, exactly one command was submitted in listed order:
 
 ```powershell
-gh pr view <N> --repo Gentleman-Programming/gentle-ai --json number,url,title,state,isDraft,author,createdAt,updatedAt,closedAt,mergedAt,headRefName,baseRefName
+gh pr view <N> --repo Gentleman-Programming/hgtran-ai --json number,url,title,state,isDraft,author,createdAt,updatedAt,closedAt,mergedAt,headRefName,baseRefName
 ```
 
 Concrete `N` values, in submission order:
@@ -258,7 +258,7 @@ Concrete `N` values, in submission order:
 For each concrete ID below, exactly one command was submitted in listed order:
 
 ```powershell
-gh api -H "Accept: application/vnd.github+json" repos/Gentleman-Programming/gentle-ai/issues/<N>/timeline --paginate --jq '.[] | select(.event == "cross-referenced") | {number: .source.issue.number, state: .source.issue.state, url: .source.issue.html_url}'
+gh api -H "Accept: application/vnd.github+json" repos/Gentleman-Programming/hgtran-ai/issues/<N>/timeline --paginate --jq '.[] | select(.event == "cross-referenced") | {number: .source.issue.number, state: .source.issue.state, url: .source.issue.html_url}'
 ```
 
 Concrete `N` values, in submission order:
@@ -270,7 +270,7 @@ Concrete `N` values, in submission order:
 For each concrete ID below, exactly one command was submitted in listed order, except `1644`, which was submitted twice exactly as shown:
 
 ```powershell
-gh search prs --repo Gentleman-Programming/gentle-ai --state open --match title,body --json number,title,url,updatedAt -- "#<N>"
+gh search prs --repo Gentleman-Programming/hgtran-ai --state open --match title,body --json number,title,url,updatedAt -- "#<N>"
 ```
 
 Concrete `N` values, in submission order:
@@ -280,12 +280,12 @@ Concrete `N` values, in submission order:
 ## Focused Live Verification Commands
 
 ```powershell
-gh issue view 1770 --repo Gentleman-Programming/gentle-ai --json number,title,state,body,comments,labels,author,createdAt,updatedAt,url
-gh issue view 1806 --repo Gentleman-Programming/gentle-ai --json number,title,state,body,comments,labels,author,createdAt,updatedAt,url
-gh issue view 1834 --repo Gentleman-Programming/gentle-ai --json number,title,state,body,comments,labels,author,createdAt,updatedAt,url
-gh issue view 1839 --repo Gentleman-Programming/gentle-ai --json number,title,state,body,comments,labels,author,createdAt,updatedAt,url
-gh pr view 1073 --repo Gentleman-Programming/gentle-ai --json number,title,state,body,files,commits,closingIssuesReferences,url
-gh pr view 973 --repo Gentleman-Programming/gentle-ai --json number,title,state,body,files,commits,closingIssuesReferences,url
+gh issue view 1770 --repo Gentleman-Programming/hgtran-ai --json number,title,state,body,comments,labels,author,createdAt,updatedAt,url
+gh issue view 1806 --repo Gentleman-Programming/hgtran-ai --json number,title,state,body,comments,labels,author,createdAt,updatedAt,url
+gh issue view 1834 --repo Gentleman-Programming/hgtran-ai --json number,title,state,body,comments,labels,author,createdAt,updatedAt,url
+gh issue view 1839 --repo Gentleman-Programming/hgtran-ai --json number,title,state,body,comments,labels,author,createdAt,updatedAt,url
+gh pr view 1073 --repo Gentleman-Programming/hgtran-ai --json number,title,state,body,files,commits,closingIssuesReferences,url
+gh pr view 973 --repo Gentleman-Programming/hgtran-ai --json number,title,state,body,files,commits,closingIssuesReferences,url
 git status --short
 git branch --show-current
 git rev-parse HEAD

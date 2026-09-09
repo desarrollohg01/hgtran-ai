@@ -4,12 +4,12 @@
 **Type**: MODIFIED (section replaced) + REMOVED (table content)
 **Status**: SHIPPED — commit 9bd58d9
 **Files**:
-- `internal/assets/claude/persona-gentleman.md`
-- `internal/assets/opencode/persona-gentleman.md`
-- `internal/assets/generic/persona-gentleman.md`
+- `internal/assets/claude/persona-hgtran.md`
+- `internal/assets/opencode/persona-hgtran.md`
+- `internal/assets/generic/persona-hgtran.md`
 - `internal/assets/generic/persona-neutral.md`
-- `internal/assets/kiro/persona-gentleman.md`
-- `internal/assets/kimi/persona-gentleman.md`
+- `internal/assets/kiro/persona-hgtran.md`
+- `internal/assets/kimi/persona-hgtran.md`
 
 ## Context
 

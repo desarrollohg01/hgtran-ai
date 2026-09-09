@@ -6,11 +6,11 @@ import (
 	"os/exec"
 	"path/filepath"
 	"regexp"
+	"runtime"
 	"strings"
 	"testing"
 	"time"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/symlinktest"
 	"gopkg.in/yaml.v3"
 )
 
@@ -70,7 +70,7 @@ func TestWindowsInstallAndUpgradeContainNoRemoteBinaryOrScriptPath(t *testing.T)
 	}
 	for _, required := range []string{
 		"Windows binary distribution and Scoop are temporarily unavailable",
-		"go install bitbucket.org/hgt_development/hgtran-ai/v2/cmd/hgtran-ai@latest",
+		"go install github.com/hgtran-programming/hgtran-ai/v2/cmd/hgtran-ai@latest",
 	} {
 		if !strings.Contains(installer, required) {
 			t.Errorf("Windows installer is missing safe source guidance %q", required)
@@ -104,6 +104,24 @@ func TestReleaseDistributionPolicyAssertionFailsClosed(t *testing.T) {
 			name: "extra archive format",
 			mutate: func(t *testing.T, root string) {
 				replaceReleasePolicyFile(t, root, ".goreleaser.yaml", "      - tar.gz\n", "      - tar.gz\n      - zip\n")
+			},
+		},
+		{
+			name: "missing release provenance archive",
+			mutate: func(t *testing.T, root string) {
+				replaceReleasePolicyFile(t, root, filepath.Join("dist", "artifacts.json"), "  {\"name\":\"hgtran-ai-release-provenance-v1.tar.gz\",\"path\":\"dist/hgtran-ai-release-provenance-v1.tar.gz\",\"type\":\"Archive\",\"extra\":{\"Binaries\":[],\"Format\":\"tar.gz\",\"ID\":\"release-provenance\"}},\n", "")
+			},
+		},
+		{
+			name: "extra release provenance archive",
+			mutate: func(t *testing.T, root string) {
+				replaceReleasePolicyFile(t, root, filepath.Join("dist", "artifacts.json"), "\n]", ",\n  {\"name\":\"hgtran-ai-release-provenance-v1-copy.tar.gz\",\"path\":\"dist/hgtran-ai-release-provenance-v1-copy.tar.gz\",\"type\":\"Archive\",\"extra\":{\"Binaries\":[],\"Format\":\"tar.gz\",\"ID\":\"release-provenance\"}}\n]")
+			},
+		},
+		{
+			name: "provider contract archive version differs from committed semver",
+			mutate: func(t *testing.T, root string) {
+				replaceReleasePolicyFile(t, root, filepath.Join("dist", "artifacts.json"), "hgtran-ai-review-provider-contract-1.1.0.tar.gz", "hgtran-ai-review-provider-contract-2.0.0.tar.gz")
 			},
 		},
 		{
@@ -195,7 +213,12 @@ func TestReleaseDistributionPolicyAssertionFailsClosed(t *testing.T) {
 				if err := os.WriteFile(outside, []byte("stale external binary"), 0o600); err != nil {
 					t.Fatal(err)
 				}
-				symlinktest.MustSymlink(t, outside, output)
+				if err := os.Symlink(outside, output); err != nil {
+					if runtime.GOOS == "windows" {
+						t.Skipf("Windows runner cannot create symlink fixture: %v", err)
+					}
+					t.Fatal(err)
+				}
 			},
 		},
 		{
@@ -275,7 +298,7 @@ func TestReleaseDistributionPolicyAssertionFailsClosed(t *testing.T) {
 			mutate: func(t *testing.T, root string) {
 				replaceReleasePolicyFile(t, root, filepath.Join(".github", "workflows", "release.yml"),
 					"      - name: Verify published assets from GitHub\n",
-					"      - name: Create release through GitHub API\n        run: gh api --method POST repos/desarrollohg01/hgtran-ai/releases\n\n      - name: Verify published assets from GitHub\n")
+					"      - name: Create release through GitHub API\n        run: gh api --method POST repos/Gentleman-Programming/hgtran-ai/releases\n\n      - name: Verify published assets from GitHub\n")
 			},
 		},
 	} {
@@ -309,7 +332,7 @@ func TestModifiedReleaseVerifierCannotGainWriteAuthority(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if _, err := file.WriteString("\ngh api --method POST repos/desarrollohg01/hgtran-ai/releases\n"); err != nil {
+	if _, err := file.WriteString("\ngh api --method POST repos/Gentleman-Programming/hgtran-ai/releases\n"); err != nil {
 		_ = file.Close()
 		t.Fatal(err)
 	}
@@ -391,8 +414,9 @@ func newReleasePolicyFixture(t *testing.T) string {
 	}
 	files := map[string]string{
 		".goreleaser.yaml": readRepositoryFile(t, ".goreleaser.yaml"),
-		"go.mod":           readRepositoryFile(t, "go.mod"),
-		"go.sum":           readRepositoryFile(t, "go.sum"),
+		filepath.Join("contracts", "review-provider-contract", "CONTRACT_SEMVER"): readRepositoryFile(t, "contracts", "review-provider-contract", "CONTRACT_SEMVER"),
+		"go.mod": readRepositoryFile(t, "go.mod"),
+		"go.sum": readRepositoryFile(t, "go.sum"),
 		filepath.Join(".github", "workflows", "release.yml"):              readRepositoryFile(t, ".github", "workflows", "release.yml"),
 		filepath.Join("internal", "releasepolicy", "policy.go"):           readRepositoryFile(t, "internal", "releasepolicy", "policy.go"),
 		filepath.Join("internal", "releasepolicycmd", "main.go"):          readRepositoryFile(t, "internal", "releasepolicycmd", "main.go"),
@@ -494,8 +518,10 @@ const releasePolicyArtifactsFixture = `[
   {"name":"hgtran-ai_0.0.0-SNAPSHOT_linux_arm64.tar.gz","path":"dist/hgtran-ai_0.0.0-SNAPSHOT_linux_arm64.tar.gz","goos":"linux","goarch":"arm64","target":"linux_arm64_v8.0","type":"Archive","extra":{"Binaries":["hgtran-ai"],"Format":"tar.gz","ID":"default"}},
   {"name":"hgtran-ai_0.0.0-SNAPSHOT_darwin_amd64.tar.gz","path":"dist/hgtran-ai_0.0.0-SNAPSHOT_darwin_amd64.tar.gz","goos":"darwin","goarch":"amd64","target":"darwin_amd64_v1","type":"Archive","extra":{"Binaries":["hgtran-ai"],"Format":"tar.gz","ID":"default"}},
   {"name":"hgtran-ai_0.0.0-SNAPSHOT_darwin_arm64.tar.gz","path":"dist/hgtran-ai_0.0.0-SNAPSHOT_darwin_arm64.tar.gz","goos":"darwin","goarch":"arm64","target":"darwin_arm64_v8.0","type":"Archive","extra":{"Binaries":["hgtran-ai"],"Format":"tar.gz","ID":"default"}},
+  {"name":"hgtran-ai-review-provider-contract-1.1.0.tar.gz","path":"dist/hgtran-ai-review-provider-contract-1.1.0.tar.gz","type":"Archive","extra":{"Binaries":[],"Format":"tar.gz","ID":"review-provider-contract"}},
+  {"name":"hgtran-ai-release-provenance-v1.tar.gz","path":"dist/hgtran-ai-release-provenance-v1.tar.gz","type":"Archive","extra":{"Binaries":[],"Format":"tar.gz","ID":"release-provenance"}},
   {"name":"checksums.txt","path":"dist/checksums.txt","type":"Checksum","extra":{}},
-  {"name":"hgtran-ai.rb","path":"dist/homebrew/Formula/hgtran-ai.rb","type":"Homebrew Formula","extra":{"BrewConfig":{"name":"hgtran-ai","repository":{"owner":"desarrollohg01","name":"homebrew-tap","token":"{{ .Env.HOMEBREW_TAP_TOKEN }}"},"directory":"Formula"}}}
+  {"name":"hgtran-ai.rb","path":"dist/homebrew/Formula/hgtran-ai.rb","type":"Homebrew Formula","extra":{"BrewConfig":{"name":"hgtran-ai","repository":{"owner":"Gentleman-Programming","name":"homebrew-tap","token":"{{ .Env.HOMEBREW_TAP_TOKEN }}"},"directory":"Formula"}}}
 ]`
 
 const releasePolicyRunID = "release-policy-test-run"

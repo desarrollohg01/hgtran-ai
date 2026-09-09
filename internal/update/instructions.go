@@ -53,6 +53,10 @@ func openCodeRegisteredNotMaterializedHint(tool ToolInfo) string {
 	return fmt.Sprintf("registered in ~/.config/opencode/tui.json; pending npm dependency materialization for %s. Run hgtran-ai upgrade to install/update ~/.config/opencode dependencies, then restart or reload OpenCode; if it stays pending, check OpenCode logs for package or peer dependency errors.", pkg)
 }
 
+// gentleAIHint is the stable-channel instruction only. When the checker
+// resolves a main-head beta target, applyBetaMainHeadStatus overrides this
+// hint with GentleAISourceInstallCommand so the printed instruction installs
+// the advertised target instead of the latest stable release.
 func gentleAIHint(profile system.PlatformProfile) string {
 	if profile.PackageManager == "brew" && homebrewPackageInstalled("hgtran-ai") {
 		return "brew upgrade hgtran-ai"
@@ -60,7 +64,7 @@ func gentleAIHint(profile system.PlatformProfile) string {
 
 	switch profile.OS {
 	case "linux":
-		return "curl -fsSL https://raw.githubusercontent.com/Gentleman-Programming/gentle-ai/main/scripts/install.sh | bash"
+		return "curl -fsSL https://raw.githubusercontent.com/Gentleman-Programming/hgtran-ai/main/scripts/install.sh | bash"
 	case "darwin":
 		return "hgtran-ai upgrade (downloads pre-built binary)"
 	case "windows":
@@ -81,5 +85,5 @@ func ggaHint(profile system.PlatformProfile) string {
 	if profile.PackageManager == "brew" && homebrewPackageInstalled("hga") {
 		return "brew upgrade gga"
 	}
-	return "See https://github.com/Gentleman-Programming/gentleman-guardian-angel"
+	return "See https://github.com/Gentleman-Programming/hgtran-guardian-angel"
 }

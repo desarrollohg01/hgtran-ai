@@ -32,11 +32,11 @@ hgtran-ai wires the external `engram` binary into 16 AgentID targets. `internal/
 
 ## Recommendation
 
-Two-phase: (1) internal dedup now — consolidate the Codex triplication via the existing `extractModelSection` section-marker mechanism into a single canonical asset; low risk, no external dependency. (2) Cross-agent capability tiering as a follow-up, blocked on (a) defining a capability signal for agents that lack one and (b) upstream coordination with the gentle-engram project for the SessionStart hook and MCP-instructions channels.
+Two-phase: (1) internal dedup now — consolidate the Codex triplication via the existing `extractModelSection` section-marker mechanism into a single canonical asset; low risk, no external dependency. (2) Cross-agent capability tiering as a follow-up, blocked on (a) defining a capability signal for agents that lack one and (b) upstream coordination with the hgtran-engram project for the SessionStart hook and MCP-instructions channels.
 
 ## Risks
 
-- SessionStart hook + MCP instructions are externally owned — tiering those channels requires upstream gentle-engram changes.
+- SessionStart hook + MCP instructions are externally owned — tiering those channels requires upstream hgtran-engram changes.
 - No "primary interactive model" signal for most agents; adding one risks bloating `Selection`/`SyncOverrides`.
 - Codex `model_instructions_file` replaces built-in instructions — consolidation must not drop Codex-only content (PASSIVE CAPTURE section).
 - 7 golden files + ~44 tests assert current text; strict TDD requires red→green updates.

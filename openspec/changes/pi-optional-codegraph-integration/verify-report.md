@@ -14,6 +14,8 @@ build_exit_code: 0
 build_output_hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
 ```
 
+> **Superseded historical review-routing claim:** This report's statements that a missing approved review receipt blocks archive or routes to `resolve-review` are retained only as historical evidence. The current #3417 policy is apply → independent verify → optional review offer → archive; review state is informational and cannot block verification, archive, or delivery.
+
 ## Verification Report
 
 **Change**: `pi-optional-codegraph-integration`
@@ -115,7 +117,7 @@ No BLOCKER or CRITICAL ledger row remains open. Final review approval is not cla
 
 | Decision | Followed? | Evidence |
 | --- | --- | --- |
-| Keep gentle-pi CodeGraph-agnostic | Yes | No gentle-pi path changed; package-source preservation test passed |
+| Keep hgtran-pi CodeGraph-agnostic | Yes | No hgtran-pi path changed; package-source preservation test passed |
 | Use the observed Pi MCP contract | Yes | Canonical server merge plus strict adapter and tools/list validation |
 | Discover effective user/project/package children | Yes | Precedence, workspace target, package overlay, and unreadable discovery tests |
 | Inject least-privilege tools | Yes | Only compatible children receive `mcp`; all readable children receive guidance |

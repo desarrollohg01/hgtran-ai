@@ -13,7 +13,7 @@ Neutral should provide Gentleman-equivalent mentor behavior without Rioplatense/
 
 ### Out of Scope
 - Changing Gentleman regional voice or mentor contract.
-- Reworking OpenCode/Kilocode residual `agent.gentleman` behavior unless needed to prevent neutral regressions.
+- Reworking OpenCode/Kilocode residual `agent.hgtran` behavior unless needed to prevent neutral regressions.
 - Code/test implementation in this proposal phase.
 
 ## Capabilities
@@ -35,7 +35,7 @@ Treat neutral as a level-neutral variant of the same behavior contract, not an u
 | `internal/components/persona/` | Modified | Persona injection, cleanup, neutral asset behavior. |
 | `internal/cli/sync.go` | Modified | `applyResolvedPersona` fallback when persisted persona is missing/invalid. |
 | `internal/assets/**/persona*`, `internal/assets/**/output-style*` | Modified/New | Cross-agent neutral contract and output-style parity. |
-| OpenCode/Kilocode sync assets | Investigate | Confirm residual `agent.gentleman` behavior is intentional and not a neutral regression. |
+| OpenCode/Kilocode sync assets | Investigate | Confirm residual `agent.hgtran` behavior is intentional and not a neutral regression. |
 
 ## Risks
 

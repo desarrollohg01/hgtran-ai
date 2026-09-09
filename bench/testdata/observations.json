@@ -123,7 +123,7 @@
       "--order",
       "0",
       "--input",
-      "/tmp/claude-1000/-home-gentleman-work-hgtran-ai/d938102f-af94-4eba-9b94-980ae31d79b1/scratchpad/bad.json"
+      "/tmp/claude-1000/-home-hgtran-work-hgtran-ai/d938102f-af94-4eba-9b94-980ae31d79b1/scratchpad/bad.json"
     ],
     "stdout": "",
     "stderr": "Error: reviewer artifact admission binding_mismatch: reviewer result echoed a different artifact subject",

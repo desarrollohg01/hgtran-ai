@@ -18,12 +18,12 @@ The `contextual-skill-loading` change successfully injected a mandatory skill-lo
 ### Personas Affected (6 files)
 
 All 6 persona assets received the mandatory directive injection:
-1. `internal/assets/claude/persona-gentleman.md` — Claude variant (names `Skill` tool)
-2. `internal/assets/opencode/persona-gentleman.md` — non-Claude variant
-3. `internal/assets/generic/persona-gentleman.md` — non-Claude variant
+1. `internal/assets/claude/persona-hgtran.md` — Claude variant (names `Skill` tool)
+2. `internal/assets/opencode/persona-hgtran.md` — non-Claude variant
+3. `internal/assets/generic/persona-hgtran.md` — non-Claude variant
 4. `internal/assets/generic/persona-neutral.md` — non-Claude variant
-5. `internal/assets/kiro/persona-gentleman.md` — non-Claude variant
-6. `internal/assets/kimi/persona-gentleman.md` — non-Claude variant
+5. `internal/assets/kiro/persona-hgtran.md` — non-Claude variant
+6. `internal/assets/kimi/persona-hgtran.md` — non-Claude variant
 
 ### SKILL.md Files (21 total)
 
@@ -37,13 +37,13 @@ All 21 embedded SKILL.md files under `internal/assets/skills/*/` had their `desc
 ### Goldens Updated (21 files)
 
 9 persona goldens:
-- `persona-claude-gentleman.golden`
+- `persona-claude-hgtran.golden`
 - `persona-claude-neutral.golden`
-- `persona-opencode-gentleman.golden`
+- `persona-opencode-hgtran.golden`
 - `persona-opencode-neutral.golden`
-- `persona-windsurf-gentleman.golden`
-- `persona-kiro-gentleman.golden`
-- `persona-antigravity-gentleman.golden`
+- `persona-windsurf-hgtran.golden`
+- `persona-kiro-hgtran.golden`
+- `persona-antigravity-hgtran.golden`
 - `combined-claude-claudemd.golden`
 - `combined-windsurf-global-rules.golden`
 

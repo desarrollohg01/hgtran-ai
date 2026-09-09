@@ -1,6 +1,58 @@
 package model
 
+import "fmt"
+
 type AgentID string
+
+// OpenCodeBackgroundIntent is OpenCode's unresolved auto/on/off preference.
+type OpenCodeBackgroundIntent string
+
+const (
+	OpenCodeBackgroundAuto OpenCodeBackgroundIntent = "auto"
+	OpenCodeBackgroundOn   OpenCodeBackgroundIntent = "on"
+	OpenCodeBackgroundOff  OpenCodeBackgroundIntent = "off"
+)
+
+func (i OpenCodeBackgroundIntent) Valid() bool {
+	return i == OpenCodeBackgroundAuto || i == OpenCodeBackgroundOn || i == OpenCodeBackgroundOff
+}
+
+// ParseOpenCodeBackgroundIntent validates the persisted and user-supplied
+// control vocabulary without selecting a runtime behavior.
+func ParseOpenCodeBackgroundIntent(raw string) (OpenCodeBackgroundIntent, error) {
+	intent := OpenCodeBackgroundIntent(raw)
+	if intent.Valid() {
+		return intent, nil
+	}
+	return "", fmt.Errorf("invalid OpenCode background-subagent intent %q (valid values: auto, on, off)", raw)
+}
+
+// PiBackgroundIntent is Pi's unresolved auto/on/off background-subagent
+// preference. It deliberately mirrors OpenCodeBackgroundIntent instead of
+// generalizing it: each type's JSON state key is baked into persisted state
+// files, so sharing one type would couple two independent persistence
+// contracts.
+type PiBackgroundIntent string
+
+const (
+	PiBackgroundAuto PiBackgroundIntent = "auto"
+	PiBackgroundOn   PiBackgroundIntent = "on"
+	PiBackgroundOff  PiBackgroundIntent = "off"
+)
+
+func (i PiBackgroundIntent) Valid() bool {
+	return i == PiBackgroundAuto || i == PiBackgroundOn || i == PiBackgroundOff
+}
+
+// ParsePiBackgroundIntent validates the persisted and user-supplied control
+// vocabulary without selecting a runtime behavior.
+func ParsePiBackgroundIntent(raw string) (PiBackgroundIntent, error) {
+	intent := PiBackgroundIntent(raw)
+	if intent.Valid() {
+		return intent, nil
+	}
+	return "", fmt.Errorf("invalid Pi background-subagent intent %q (valid values: auto, on, off)", raw)
+}
 
 const (
 	AgentClaudeCode    AgentID = "claude-code"
@@ -44,7 +96,7 @@ const (
 	ComponentGGA                ComponentID = "hga"
 	ComponentTheme              ComponentID = "theme"
 	ComponentClaudeTheme        ComponentID = "claude-theme"
-	ComponentOpenCodeGentleLogo ComponentID = "opencode-gentle-logo"
+	ComponentOpenCodeGentleLogo ComponentID = "opencode-hgtran-logo"
 )
 
 type UninstallMode string
@@ -66,6 +118,7 @@ const (
 type SkillID string
 
 const (
+<<<<<<< HEAD
 	SkillSDDInit           SkillID = "sdd-init"
 	SkillSDDApply          SkillID = "sdd-apply"
 	SkillSDDVerify         SkillID = "sdd-verify"
@@ -94,13 +147,43 @@ const (
 	SkillDBChange          SkillID = "db-change-standard"
 	SkillRealVerification  SkillID = "real-system-verification"
 	SkillPatternStandard   SkillID = "pattern-to-standard"
+=======
+	SkillSDDInit             SkillID = "sdd-init"
+	SkillSDDApply            SkillID = "sdd-apply"
+	SkillSDDVerify           SkillID = "sdd-verify"
+	SkillSDDExplore          SkillID = "sdd-explore"
+	SkillSDDResearch         SkillID = "sdd-research"
+	SkillSDDPropose          SkillID = "sdd-propose"
+	SkillSDDSpec             SkillID = "sdd-spec"
+	SkillSDDDesign           SkillID = "sdd-design"
+	SkillSDDTasks            SkillID = "sdd-tasks"
+	SkillSDDArchive          SkillID = "sdd-archive"
+	SkillSDDOnboard          SkillID = "sdd-onboard"
+	SkillGoTesting           SkillID = "go-testing"
+	SkillCreator             SkillID = "skill-creator"
+	SkillImprover            SkillID = "skill-improver"
+	SkillJudgmentDay         SkillID = "judgment-day"
+	SkillBranchPR            SkillID = "branch-pr"
+	SkillIssueCreation       SkillID = "issue-creation"
+	SkillSkillRegistry       SkillID = "skill-registry"
+	SkillChainedPR           SkillID = "chained-pr"
+	SkillCognitiveDoc        SkillID = "cognitive-doc-design"
+	SkillCommentWriter       SkillID = "comment-writer"
+	SkillWorkUnitCommits     SkillID = "work-unit-commits"
+	SkillRDDDefectWorkflow   SkillID = "rdd-defect-workflow"
+	SkillSystemicIssueTriage SkillID = "systemic-issue-triage"
+	SkillGentleAIBench       SkillID = "hgtran-ai-bench"
+>>>>>>> v2.5.0
 )
 
 type PersonaID string
 
 const (
-	PersonaGentleman                 PersonaID = "gentleman"
-	PersonaGentlemanNeutralArtifacts PersonaID = "gentleman-neutral-artifacts"
+	PersonaGentleman PersonaID = "hgtran"
+	// PersonaGentlemanNeutralArtifacts is a legacy alias accepted for backward
+	// compatibility. The CLI and sync normalization treat it as PersonaNeutral,
+	// and it is never offered as a selectable choice.
+	PersonaGentlemanNeutralArtifacts PersonaID = "hgtran-neutral-artifacts"
 	PersonaNeutral                   PersonaID = "neutral"
 	PersonaCustom                    PersonaID = "custom"
 )
@@ -147,7 +230,7 @@ const (
 type PresetID string
 
 const (
-	PresetFullGentleman PresetID = "full-gentleman"
+	PresetFullGentleman PresetID = "full-hgtran"
 	PresetEcosystemOnly PresetID = "ecosystem-only"
 	PresetMinimal       PresetID = "minimal"
 	PresetCustom        PresetID = "custom"
@@ -179,7 +262,7 @@ type OpenCodeCommunityPluginID string
 const (
 	OpenCodePluginSubAgentStatusline OpenCodeCommunityPluginID = "sub-agent-statusline"
 	OpenCodePluginSDDEngramManage    OpenCodeCommunityPluginID = "sdd-engram-plugin"
-	OpenCodePluginGentleLogo         OpenCodeCommunityPluginID = "gentle-logo"
+	OpenCodePluginGentleLogo         OpenCodeCommunityPluginID = "hgtran-logo"
 )
 
 type CommunityToolID string

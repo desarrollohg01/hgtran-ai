@@ -8,14 +8,14 @@ Define optional CodeGraph support for Pi.
 
 ### Requirement: Optional selection boundary
 
-The system MUST provision Pi CodeGraph integration only when selected. Otherwise, Pi MUST NOT install CodeGraph CLI, MCP, or extension assets; modify Pi configuration; add guidance; or create an index. gentle-pi MUST remain CodeGraph-agnostic.
+The system MUST provision Pi CodeGraph integration only when selected. Otherwise, Pi MUST NOT install CodeGraph CLI, MCP, or extension assets; modify Pi configuration; add guidance; or create an index. hgtran-pi MUST remain CodeGraph-agnostic.
 
 #### Scenario: Pi unselected
 
 - GIVEN Pi is selected and CodeGraph is not selected
 - WHEN installation completes
 - THEN no owned artifact or new `.codegraph/` is created
-- AND gentle-pi contains no CodeGraph content
+- AND hgtran-pi contains no CodeGraph content
 
 #### Scenario: Selection records ownership
 
@@ -68,7 +68,7 @@ Lazy-init guidance MUST require a child handling structural work to resolve the 
 
 ### Requirement: Reconciliation, idempotence, and recovery
 
-The system MUST reconcile after gentle-pi sync, restoring missing or overwritten owned artifacts and re-verifying every child. Repeated valid provision or reconciliation MUST produce no duplicates or changes. On failure, it MUST restore affected owned configuration and report failure without verification success.
+The system MUST reconcile after hgtran-pi sync, restoring missing or overwritten owned artifacts and re-verifying every child. Repeated valid provision or reconciliation MUST produce no duplicates or changes. On failure, it MUST restore affected owned configuration and report failure without verification success.
 
 #### Scenario: Sync drift
 
@@ -91,14 +91,14 @@ The system MUST reconcile after gentle-pi sync, restoring missing or overwritten
 
 ### Requirement: Ownership-safe removal
 
-The system MUST remove only hgtran-ai-owned Pi CodeGraph artifacts during uninstall or deselection. It MUST preserve user-managed and gentle-pi artifacts, restore bounded backups where applicable, and remain idempotent.
+The system MUST remove only hgtran-ai-owned Pi CodeGraph artifacts during uninstall or deselection. It MUST preserve user-managed and hgtran-pi artifacts, restore bounded backups where applicable, and remain idempotent.
 
 #### Scenario: User-config uninstall
 
 - GIVEN a child contains both hgtran-ai-owned and user-managed configuration
 - WHEN the integration is uninstalled
 - THEN only owned artifacts are removed or restored
-- AND user-managed and gentle-pi artifacts remain unchanged
+- AND user-managed and hgtran-pi artifacts remain unchanged
 
 #### Scenario: Repeat uninstall
 

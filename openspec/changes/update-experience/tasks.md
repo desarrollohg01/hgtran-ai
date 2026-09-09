@@ -153,7 +153,7 @@ Chain strategy: pending
 - [ ] 7.5 `internal/update/advisory_test.go` — add test: `FetchAdvisory` with empty `message` field returns `Advisory{}, false` (nothing to display)
 
 ### Phase 2 — Green (implementation)
-- [ ] 7.6 `internal/update/advisory.go` (create) — define `Advisory{Message, Severity, URL string}`; implement `FetchAdvisory(ctx context.Context) (Advisory, bool)` with 2s timeout, GET to advisory tag asset URL (`https://github.com/Gentleman-Programming/gentle-ai/releases/download/advisory/advisory.json`), JSON decode, fail-open on any error
+- [ ] 7.6 `internal/update/advisory.go` (create) — define `Advisory{Message, Severity, URL string}`; implement `FetchAdvisory(ctx context.Context) (Advisory, bool)` with 2s timeout, GET to advisory tag asset URL (`https://github.com/Gentleman-Programming/hgtran-ai/releases/download/advisory/advisory.json`), JSON decode, fail-open on any error
 - [ ] 7.7 `internal/app/app.go` — launch `update.FetchAdvisory` in background goroutine alongside `update.CheckAll` at TUI init; collect result; display non-empty `Advisory.Message` as informational text on Welcome screen or after prompt (never gate launch)
 
 ### Phase 3 — Refactor

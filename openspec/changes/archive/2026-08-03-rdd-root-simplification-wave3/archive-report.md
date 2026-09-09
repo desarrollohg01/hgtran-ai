@@ -13,7 +13,7 @@ Wave 3 of the RDD root simplification is complete and merged to main. The change
 
 ### Final Merged State
 
-- **Main checkout**: `/home/gentleman/work/hgtran-ai`, HEAD `4ca5715a` — Wave 3 merged
+- **Main checkout**: `/home/hgtran/work/hgtran-ai`, HEAD `4ca5715a` — Wave 3 merged
 - **PR chain**: #2309–#2314 (S1–S5 plus PR0/remediation slices), merged into the `feature/rdd-root-simplification` tracker branch via tracker PR #2318, which merged to `main`
 - **Feature branch**: `feature/rdd-root-simplification` continues on main for Wave 4/5
 

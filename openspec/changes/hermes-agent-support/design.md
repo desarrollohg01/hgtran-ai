@@ -19,7 +19,7 @@ comment-preserving YAML string helpers (no new module dependency).
   is the exact precedent: pure string-based, strip-then-re-append, comment-preserving outside
   managed blocks. Hermes's YAML usage (flat keys + one nested `mcp_servers` table) is structurally
   simple enough for the same approach.
-- The generic persona assets — BOTH `generic/persona-gentleman.md` AND `generic/persona-neutral.md` —
+- The generic persona assets — BOTH `generic/persona-hgtran.md` AND `generic/persona-neutral.md` —
   contain a `## Contextual Skill Loading (MANDATORY)` block that assumes a Claude-Code-style
   `<available_skills>` system-prompt mechanism. Hermes loads skills from `~/.hermes/skills/` by
   category via its own native loop, so this block does not apply as-is (Option B decision, #4747).
@@ -30,7 +30,7 @@ comment-preserving YAML string helpers (no new module dependency).
 - Inject context7 + engram MCP into `~/.hermes/config.yaml` idempotently, without destroying
   user content or comments outside hgtran-ai-managed server blocks.
 - Inject engram-protocol / SDD-orchestrator / strict-TDD into `~/.hermes/SOUL.md` via markdown markers.
-- Inject the correct Hermes-specific persona (gentleman AND neutral) with the skill-loading block
+- Inject the correct Hermes-specific persona (hgtran AND neutral) with the skill-loading block
   rewritten for Hermes's native skill model.
 - Document the complementary engram-vs-Hermes-native-memory relationship in SOUL.md (via the persona
   asset and/or engram protocol section — see Decision 7).
@@ -86,19 +86,19 @@ comment-preserving YAML string helpers (no new module dependency).
 | **Alternatives** | Copy OpenClaw verbatim including workspace logic — rejected: Hermes has no workspace-first config, so that code would be dead and misleading. |
 | **Rationale** | Detect-only + manual-install error is identical to OpenClaw; the YAML MCP strategy is the only structural novelty. Global scope means no `run.go`/`sync.go` routing changes. |
 
-### Decision 5 — Persona Option B: dedicated Hermes assets for BOTH gentleman AND neutral
+### Decision 5 — Persona Option B: dedicated Hermes assets for BOTH hgtran AND neutral
 
 This is the core persona decision and resolves the neutral question explicitly.
 
 **Finding (verified in code):** `generic/persona-neutral.md` (lines 50-56) ALSO contains the
 `## Contextual Skill Loading (MANDATORY)` block referencing `<available_skills>`. The mismatch
-affects BOTH personas, not just gentleman. Today `personaContent()` (`persona/inject.go`) handles
+affects BOTH personas, not just hgtran. Today `personaContent()` (`persona/inject.go`) handles
 `PersonaNeutral` with a single non-per-agent `assets.MustRead("generic/persona-neutral.md")` and
-has NO per-agent neutral switch — gentleman is the only per-agent branch.
+has NO per-agent neutral switch — hgtran is the only per-agent branch.
 
 | | |
 |---|---|
-| **Choice** | Create TWO Hermes persona assets and refactor `personaContent()` to support per-agent neutral: <br>• `internal/assets/hermes/persona-gentleman.md` (copy of generic gentleman, skill-loading block rewritten) <br>• `internal/assets/hermes/persona-neutral.md` (copy of generic neutral, skill-loading block rewritten) |
+| **Choice** | Create TWO Hermes persona assets and refactor `personaContent()` to support per-agent neutral: <br>• `internal/assets/hermes/persona-hgtran.md` (copy of generic hgtran, skill-loading block rewritten) <br>• `internal/assets/hermes/persona-neutral.md` (copy of generic neutral, skill-loading block rewritten) |
 | **Alternatives** | (a) Keep neutral on the generic asset (Option b in #4747) — rejected: neutral users would still get the wrong `<available_skills>` instruction for Hermes; that is exactly the bug Option B exists to fix. (b) Strip the skill-loading block entirely for Hermes instead of rewriting it — rejected: Hermes DOES have skills (`~/.hermes/skills/`); we want a correct instruction, not a missing one. |
 | **Rationale** | The skill-loading mismatch is persona-independent, so the fix must be persona-independent. In Hermes, `SOUL.md` IS the agent identity, so persona→SOUL maps cleanly for both variants. |
 
@@ -134,17 +134,17 @@ func personaContent(agent model.AgentID, persona model.PersonaID) string {
 		// Gentleman persona — try agent-specific asset, then generic fallback.
 		switch agent {
 		case model.AgentClaudeCode:
-			return assets.MustRead("claude/persona-gentleman.md")
+			return assets.MustRead("claude/persona-hgtran.md")
 		...
 		default:
-			return assets.MustRead("generic/persona-gentleman.md")
+			return assets.MustRead("generic/persona-hgtran.md")
 		}
 	}
 }
 ```
 
-Change the `PersonaNeutral` case to a per-agent inner switch (mirroring the gentleman branch),
-and add a Hermes case to the gentleman branch:
+Change the `PersonaNeutral` case to a per-agent inner switch (mirroring the hgtran branch),
+and add a Hermes case to the hgtran branch:
 
 ```go
 	case model.PersonaNeutral:
@@ -157,17 +157,17 @@ and add a Hermes case to the gentleman branch:
 ```
 
 ```go
-		// inside the gentleman (default) branch's inner agent switch:
+		// inside the hgtran (default) branch's inner agent switch:
 		case model.AgentHermes:
-			return assets.MustRead("hermes/persona-gentleman.md")
+			return assets.MustRead("hermes/persona-hgtran.md")
 ```
 
 **Persona variant behavior (must all work):**
 
 | Install persona | `personaContent` returns for Hermes | Notes |
 |---|---|---|
-| `gentleman` | `hermes/persona-gentleman.md` | `isGentlemanConversationPersona` = true |
-| `gentleman-neutral-artifacts` | `hermes/persona-gentleman.md` | same gentleman branch (falls into default) |
+| `hgtran` | `hermes/persona-hgtran.md` | `isGentlemanConversationPersona` = true |
+| `hgtran-neutral-artifacts` | `hermes/persona-hgtran.md` | same hgtran branch (falls into default) |
 | `neutral` | `hermes/persona-neutral.md` | NEW per-agent neutral path |
 | `custom` | `""` (no-op) | unchanged |
 
@@ -209,7 +209,7 @@ stableEngramCommandForMergedConfig(path, AgentHermes)
 
 | | |
 |---|---|
-| **Choice** | Document the complementary relationship inside the **Hermes persona asset** (`hermes/persona-gentleman.md` and `hermes/persona-neutral.md`) as a short subsection, NOT in the shared `claude/engram-protocol.md`. |
+| **Choice** | Document the complementary relationship inside the **Hermes persona asset** (`hermes/persona-hgtran.md` and `hermes/persona-neutral.md`) as a short subsection, NOT in the shared `claude/engram-protocol.md`. |
 | **Alternatives** | (a) Add it to `claude/engram-protocol.md` — rejected: that asset is shared by every agent; Hermes-specific text would leak into all of them. (b) A separate `<!-- hgtran-ai:hermes-memory-note -->` marker section injected by the engram component — rejected: adds a Hermes-only branch to the engram injector for one paragraph; the persona asset is already Hermes-specific and always present. |
 | **Rationale** | Keeps Hermes-specific prose in Hermes-specific assets; avoids polluting shared engram content and avoids new injector branches. No duplication because the engram protocol section and the persona memory note address different things (the protocol = how to use engram tools; the note = how engram and Hermes-native memory coexist). |
 
@@ -469,9 +469,9 @@ The adapter struct mirrors OpenClaw: injectable `lookPath`/`statPath`, a package
 | `internal/agents/factory.go` | import hermes; add to `NewAdapter()` + default registry |
 | `internal/catalog/agents.go` | `{ID: AgentHermes, Name: "Hermes", Tier: TierFull, ConfigPath: "~/.hermes"}` |
 | `internal/assets/assets.go` | add `all:hermes` to the `//go:embed` directive |
-| `internal/assets/hermes/` | NEW: `persona-gentleman.md`, `persona-neutral.md`, `sdd-orchestrator.md` |
+| `internal/assets/hermes/` | NEW: `persona-hgtran.md`, `persona-neutral.md`, `sdd-orchestrator.md` |
 | `internal/components/sdd/inject.go` | `case model.AgentHermes: return "hermes/sdd-orchestrator.md"` in `sddOrchestratorAsset()` |
-| `internal/components/persona/inject.go` | per-agent neutral switch + `AgentHermes` gentleman case (Decision 5) |
+| `internal/components/persona/inject.go` | per-agent neutral switch + `AgentHermes` hgtran case (Decision 5) |
 | `internal/components/engram/inject.go` | `StrategyMergeIntoYAML` case + `AgentHermes` in `isStandardAgent` (Decision 6) |
 | `internal/components/engram/setup.go` | `case model.AgentHermes: return "", false` |
 | `internal/components/mcp/inject.go` | `StrategyMergeIntoYAML` case + `injectYAMLFile` |
@@ -496,7 +496,7 @@ Planner: standard component order (persona → engram → context7 → sdd → s
   ▼
 Pipeline (all paths use ~/.hermes/ — global, no workspace dir):
   ├── persona:  inject <!-- hgtran-ai:persona --> into SOUL.md
-  │             (hermes/persona-gentleman.md OR hermes/persona-neutral.md)
+  │             (hermes/persona-hgtran.md OR hermes/persona-neutral.md)
   ├── engram:   stableEngramCommandForMergedConfig (recovers prior YAML command via
   │             ReadYAMLMCPServerCommand) → UpsertHermesEngramBlock → config.yaml
   │             mcp_servers.engram + InjectMarkdownSection engram-protocol → SOUL.md
@@ -537,7 +537,7 @@ Verify: SOUL.md contains persona + engram-protocol + sdd-orchestrator markers;
 | Unit | `Detect()` — binary found/missing, stat error, config dir present/absent | Table-driven with injected `lookPath`/`statPath` mocks (mirror OpenClaw/qwen) |
 | Unit | `InstallCommand()` returns `AgentNotInstallableError` | Explicit error-type assertion |
 | Unit | Config paths + capabilities + strategies | Table-driven name/expected pairs |
-| Unit | `personaContent()` — gentleman/neutral/gentleman-neutral-artifacts/custom for Hermes | Table-driven; assert Hermes assets selected and skill-loading block rewritten |
+| Unit | `personaContent()` — hgtran/neutral/hgtran-neutral-artifacts/custom for Hermes | Table-driven; assert Hermes assets selected and skill-loading block rewritten |
 | Integration | engram MCP YAML inject (`engram/inject_test.go`) | `t.TempDir()`; call `Inject`; assert `mcp_servers.engram` present + idempotent on re-run |
 | Integration | engram YAML command recovery (`engram/inject_test.go`) | `t.TempDir()` with a `config.yaml` whose `mcp_servers.engram.command` is a custom absolute path; call `Inject`; assert the custom command is preserved (not replaced with bare `engram`); a versioned cellar command is stabilized to `engram`/stable path |
 | Integration | context7 MCP YAML inject (`mcp/inject_test.go`) | `t.TempDir()`; assert `mcp_servers.context7` present |

@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Define the activation switch that gates new-lineage transitions, the coexistence precedence between legacy and new authority (Amendment C), the additive (non-cutover) shape of the gate branch, and rollback semantics that never strand an in-flight new lineage.
+Define the activation switch that gates new-lineage review transitions, the separation between legacy and new review evidence, the additive (non-cutover) shape of review-context evaluation, and rollback semantics that never strand an in-flight new lineage. A lineage and its receipt govern review activity only; ordinary repository and SDD policy govern delivery and archive readiness.
 
 ## Requirements
 
@@ -32,50 +32,58 @@ When the user-owned RDD kill switch is off, the facade MUST create no artifact a
 - WHEN the facade is invoked at any observed call site
 - THEN no artifact is created, and no error path is reachable
 
-### Requirement: Coexistence Precedence Matrix (Amendment C)
+### Requirement: Shared Review-Context Evaluation Replaces The Additive Gate Branch
 
-For each gate, the per-gate precedence matrix over {legacy authority, new-lineage authority} × {exists, absent} MUST decide authorization. A legacy-only authority record MUST NEVER authorize a new-lineage candidate.
+Each of the five integration hooks (`post-apply`, `pre-commit`, `pre-push`, `pre-pr`, `release`) MUST evaluate review context for every lineage — legacy and new — through the single shared relation-algebra path defined by `rdd-receipt-only-gates`. Wave 5 performs the legacy-to-new review-context cutover Wave 3 deferred: the legacy branch is no longer a separate switch-keyed code path. The shared result is informational review evidence only; it MUST NOT authorize, deny, block, or route commit, push, PR, release, or archive delivery. Outcome equivalence for legacy candidates MUST be proven by the 35-cell boundary matrix, not by switch-off byte-equivalence of a preserved legacy branch.
 
-#### Scenario: Legacy authority alone denies a new-lineage candidate
+#### Scenario: Cutover replaces the additive review-context branch
 
-- GIVEN only legacy authority exists for a candidate and the candidate is being evaluated as a new lineage
-- WHEN a gate checks authorization
-- THEN it denies, even though legacy authority is present
+- GIVEN Wave 5 has landed
+- WHEN any hook evaluates review context for a legacy candidate
+- THEN it uses the same relation-algebra path as a new-lineage candidate, not an isolated legacy branch
+- AND its result changes no ordinary delivery decision
 
-#### Scenario: New-lineage receipt authorizes a new-lineage candidate
+#### Scenario: Outcome equivalence is proven by matrix, not byte diff
 
-- GIVEN a new-lineage receipt exists and no legacy authority is required
-- WHEN a gate checks authorization for that candidate
-- THEN it authorizes using the new-lineage receipt
+- GIVEN a legacy candidate evaluated before and after cutover
+- WHEN the two review-context results are compared
+- THEN equivalence is proven by the 35-cell boundary matrix, not by asserting the executed code path is byte-identical
+- AND a mismatched or missing receipt remains review-lifecycle evidence only
 
-### Requirement: Additive Gate Branch, Switch-Off Byte-Equivalence, Not a Cutover
+> **Amendment (Wave 5 fix cycle 3, verify-report #10186 cycle 2, W-2): letter-vs-intent divergence closed by amendment, coordinator-accepted.** The matrix is 9/35 wired and every wired cell drives the compact/v2 path — zero cells drive legacy v1 or new-lineage v3 — so the scenario's historical letter was not satisfied by the matrix alone. Its intent — equivalent review-context results for a legacy candidate across all five hooks — is supported today by `TestEvaluateLegacyGateAllowsExactAtAllFiveGates` and its siblings (`TestEvaluateLegacyGateAllowsExactAndDeniesChanged`, `TestEvaluateLegacyGateValidatesReceiptFromAnInFlightCorrection`), which drive `EvaluateLegacyGate` directly. Their historical `allow` and denial names describe review-integrity outcomes only; they never authorize or deny delivery. The matrix remains the incremental, long-term vehicle this requirement points at, and its wired-cell count remains tracked in `tasks.md`.
 
-Each of the five gates (`post-apply`, `pre-commit`, `pre-push`, `pre-pr`, `release`) MUST receive a strictly additive branch keyed on lineage kind. The legacy branch MUST remain byte-identical when the switch is off. This wave MUST NOT perform a legacy-to-new cutover.
+### Requirement: Lineage-Scoped Review Evidence
 
-#### Scenario: Switch-off byte-equivalence at every gate
+An immutable, boundary-validated receipt of the correct lineage kind MAY be surfaced as matching review evidence. Its absence, staleness, ambiguity, or invalidity MUST remain visible and repairable inside the review lifecycle, but MUST NOT deny or otherwise control delivery. A legacy-only authority record MUST NEVER be treated as matching evidence for a new-lineage candidate. Post-cutover, legacy and new records use the same lineage-scoped relation rule; there is no separate per-hook `{legacy, new} x {exists, absent}` delivery branch table.
 
-- GIVEN the activation switch off
-- WHEN each of the five gates evaluates a legacy candidate
-- THEN its decision is byte-identical to the pre-Wave-3 baseline
+#### Scenario: Legacy authority alone is not evidence for a new-lineage candidate
 
-#### Scenario: New branch never touches legacy code path
+- GIVEN only legacy authority exists for a candidate being evaluated as a new lineage
+- WHEN review context is resolved
+- THEN it reports no matching new-lineage evidence and offers only applicable review-lifecycle repair or explicit review work
+- AND ordinary repository policy alone decides delivery
 
-- GIVEN the activation switch on and a new-lineage candidate
-- WHEN a gate evaluates it
-- THEN only the lineage-kind-keyed new branch executes; the legacy branch's code path is not entered
+#### Scenario: Receipt context is lineage scoped across kinds
 
-### Requirement: Rollback Disables New Starts Only
+- GIVEN any lineage kind
+- WHEN review context is resolved
+- THEN an immutable, boundary-validated receipt is reported only when it matches that lineage under the shared relation check
+- AND its presence or absence does not authorize, deny, block, or route delivery
 
-Disabling the activation switch MUST stop new lineage `start` calls only. Already-created new lineages MUST remain readable and MUST be able to finalize.
+### Requirement: Rollback Restores The Additive Branch, Never Invalidation Writes
 
-#### Scenario: In-flight new lineage still finalizes after rollback
+Rollback for the review-context cutover is hook-scoped and one-directional: a hook MAY report a review-integrity mismatch or escalation (fail closed within the review lifecycle), but it MUST NOT revive legacy mutation such as invalidation writes, receipt-graph composition, or decline authorization. Reverting Wave 5 restores the Wave 3/4 additive-branch shape by re-adding the lineage-keyed branch; it MUST NOT be implemented by re-enabling any removed invalidation write. No rollback result becomes a delivery gate.
 
-- GIVEN a new lineage in `correcting` state and the activation switch then turned off
-- WHEN that lineage's `finalize` is invoked
-- THEN it completes and issues its receipt
+#### Scenario: Rollback re-adds the additive branch, not invalidation writes
 
-#### Scenario: Rollback blocks only new starts
+- GIVEN Wave 5 is rolled back
+- WHEN review-context hooks are restored to the additive-branch shape
+- THEN no hook regains the ability to mutate authority or delete a receipt file
+- AND ordinary delivery policy remains unchanged
 
-- GIVEN the activation switch turned off
-- WHEN a brand-new `start` is requested
-- THEN it takes the legacy path, while any already-open new lineage remains executable
+#### Scenario: In-flight correction at cutover finalizes under the prior lifecycle
+
+- GIVEN a correction opened before cutover
+- WHEN it finalizes after cutover
+- THEN it completes under the pre-cutover correction lifecycle, and its receipt remains available as review evidence through the new read-only path
+- AND that evidence does not govern delivery

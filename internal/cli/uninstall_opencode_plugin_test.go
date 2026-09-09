@@ -13,6 +13,8 @@ import (
 // ─── ParseUninstallOpenCodePluginFlags ──────────────────────────────────────
 
 func TestParseUninstallOpenCodePluginFlagsAcceptsValidID(t *testing.T) {
+	t.Parallel()
+
 	flags, err := ParseUninstallOpenCodePluginFlags([]string{"sub-agent-statusline", "--yes"})
 	if err != nil {
 		t.Fatalf("ParseUninstallOpenCodePluginFlags() unexpected error: %v", err)
@@ -26,6 +28,8 @@ func TestParseUninstallOpenCodePluginFlagsAcceptsValidID(t *testing.T) {
 }
 
 func TestParseUninstallOpenCodePluginFlagsAcceptsShortYesFlag(t *testing.T) {
+	t.Parallel()
+
 	flags, err := ParseUninstallOpenCodePluginFlags([]string{"sdd-engram-plugin", "-y"})
 	if err != nil {
 		t.Fatalf("ParseUninstallOpenCodePluginFlags(-y) unexpected error: %v", err)
@@ -39,6 +43,8 @@ func TestParseUninstallOpenCodePluginFlagsAcceptsShortYesFlag(t *testing.T) {
 }
 
 func TestParseUninstallOpenCodePluginFlagsAssignedFalseDoesNotBypassConfirmation(t *testing.T) {
+	t.Parallel()
+
 	flags, err := ParseUninstallOpenCodePluginFlags([]string{"sub-agent-statusline", "--yes=false"})
 	if err != nil {
 		t.Fatalf("ParseUninstallOpenCodePluginFlags() error = %v", err)
@@ -52,9 +58,11 @@ func TestParseUninstallOpenCodePluginFlagsAssignedFalseDoesNotBypassConfirmation
 }
 
 func TestParseUninstallOpenCodePluginFlagsAcceptsGentleLogo(t *testing.T) {
-	flags, err := ParseUninstallOpenCodePluginFlags([]string{"gentle-logo"})
+	t.Parallel()
+
+	flags, err := ParseUninstallOpenCodePluginFlags([]string{"hgtran-logo"})
 	if err != nil {
-		t.Fatalf("ParseUninstallOpenCodePluginFlags(gentle-logo) unexpected error: %v", err)
+		t.Fatalf("ParseUninstallOpenCodePluginFlags(hgtran-logo) unexpected error: %v", err)
 	}
 	if flags.PluginID != model.OpenCodePluginGentleLogo {
 		t.Fatalf("PluginID = %q, want %q", flags.PluginID, model.OpenCodePluginGentleLogo)
@@ -62,6 +70,8 @@ func TestParseUninstallOpenCodePluginFlagsAcceptsGentleLogo(t *testing.T) {
 }
 
 func TestParseUninstallOpenCodePluginFlagsRejectsUnknownID(t *testing.T) {
+	t.Parallel()
+
 	_, err := ParseUninstallOpenCodePluginFlags([]string{"not-a-real-plugin", "--yes"})
 	if err == nil {
 		t.Fatal("expected error for unknown plugin id")
@@ -72,7 +82,7 @@ func TestParseUninstallOpenCodePluginFlagsRejectsUnknownID(t *testing.T) {
 	for _, valid := range []string{
 		"sub-agent-statusline",
 		"sdd-engram-plugin",
-		"gentle-logo",
+		"hgtran-logo",
 	} {
 		if !strings.Contains(err.Error(), valid) {
 			t.Fatalf("error %q should mention valid id %q", err, valid)
@@ -81,6 +91,8 @@ func TestParseUninstallOpenCodePluginFlagsRejectsUnknownID(t *testing.T) {
 }
 
 func TestParseUninstallOpenCodePluginFlagsRequiresPositional(t *testing.T) {
+	t.Parallel()
+
 	if _, err := ParseUninstallOpenCodePluginFlags(nil); err == nil {
 		t.Fatal("expected error when no positional id given")
 	}
@@ -95,6 +107,8 @@ func TestParseUninstallOpenCodePluginFlagsRequiresPositional(t *testing.T) {
 // ─── RenderUninstallOpenCodePluginReport ────────────────────────────────────
 
 func TestRenderUninstallOpenCodePluginReportSurfacesLayers(t *testing.T) {
+	t.Parallel()
+
 	out := RenderUninstallOpenCodePluginReport(opencodeplugin.UninstallResult{
 		PluginID:           model.OpenCodePluginSubAgentStatusline,
 		ChangedTUI:         true,
@@ -120,11 +134,13 @@ func TestRenderUninstallOpenCodePluginReportSurfacesLayers(t *testing.T) {
 }
 
 func TestRenderUninstallOpenCodePluginReportSurfacesTSXPath(t *testing.T) {
+	t.Parallel()
+
 	out := RenderUninstallOpenCodePluginReport(opencodeplugin.UninstallResult{
 		PluginID: model.OpenCodePluginGentleLogo,
-		TSXPath:  "/home/me/.config/opencode/tui-plugins/gentle-logo.tsx",
+		TSXPath:  "/home/me/.config/opencode/tui-plugins/hgtran-logo.tsx",
 	})
-	if !strings.Contains(out, "gentle-logo.tsx") {
+	if !strings.Contains(out, "hgtran-logo.tsx") {
 		t.Fatalf("report missing TSX path; got:\n%s", out)
 	}
 }
@@ -235,6 +251,8 @@ func (e ioErrHome) Error() string { return string(e) }
 // entry removal that always runs) and additively disclose the .tsx removal,
 // not claim "Layer 1 (only)".
 func TestPromptUninstallOpenCodePluginConfirmGentleLogoBranch(t *testing.T) {
+	t.Parallel()
+
 	var stdout bytes.Buffer
 	ok, err := promptUninstallOpenCodePluginConfirm(model.OpenCodePluginGentleLogo, &stdout, strings.NewReader("yes\n"))
 	if err != nil {
@@ -247,7 +265,7 @@ func TestPromptUninstallOpenCodePluginConfirmGentleLogoBranch(t *testing.T) {
 	wantSubstrings := []string{
 		"Hgtran Logo",
 		"Layer 1: removes entry from ~/.config/opencode/tui.json",
-		"Plus: removes the local .tsx file ~/.config/opencode/tui-plugins/gentle-logo.tsx",
+		"Plus: removes the local .tsx file ~/.config/opencode/tui-plugins/hgtran-logo.tsx",
 	}
 	for _, want := range wantSubstrings {
 		if !strings.Contains(out, want) {

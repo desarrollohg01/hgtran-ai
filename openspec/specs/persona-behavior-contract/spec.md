@@ -15,7 +15,7 @@ The system MUST treat `neutral` as a level-neutral variant of the Gentleman ment
 
 #### Scenario: Gentleman keeps regional mentor behavior when explicitly selected
 
-- GIVEN an agent persona asset is rendered with persona `gentleman`
+- GIVEN an agent persona asset is rendered with persona `hgtran`
 - WHEN the generated instruction content is inspected
 - THEN it preserves the Gentleman mentor behavior contract
 - AND it preserves the Gentleman regional voice constraints
@@ -67,7 +67,7 @@ Persona voice MUST govern only direct chat replies to the user. Generated techni
 
 #### Scenario: Gentleman voice does not leak into artifacts
 
-- GIVEN persona `gentleman` is active
+- GIVEN persona `hgtran` is active
 - WHEN the system generates a technical artifact without an explicit request for regional language or tone
 - THEN the artifact does not include Rioplatense slang, voseo, Gentleman stylistic emphasis, or regional persona voice
 - AND the artifact defaults to English unless project conventions require otherwise
@@ -88,7 +88,7 @@ Claude-specific neutral output-style content MUST be meaningful and MUST NOT fal
 
 #### Scenario: Claude explicit Gentleman output-style remains honored
 
-- GIVEN Claude assets are generated with persona `gentleman`
+- GIVEN Claude assets are generated with persona `hgtran`
 - WHEN the output-style content is inspected
 - THEN it preserves Gentleman-specific mentor and regional voice instructions
 - AND it is not replaced by neutral output-style content
@@ -145,27 +145,27 @@ All neutral consumers that are not covered by an agent-specific override MUST re
 
 ### Requirement: Safe Persona Fallback Semantics
 
-When persisted persona state is missing, empty, unreadable, or invalid, sync and persona resolution MUST NOT silently select or reactivate `gentleman`. The fallback MUST be neutral/default-safe behavior that does not introduce Gentleman regional voice unless the user explicitly selected Gentleman.
+When persisted persona state is missing, empty, unreadable, or invalid, sync and persona resolution MUST NOT silently select or reactivate `hgtran`. The fallback MUST be neutral/default-safe behavior that does not introduce Gentleman regional voice unless the user explicitly selected Gentleman.
 
 #### Scenario: Missing persisted persona does not reactivate Gentleman
 
 - GIVEN persisted persona state is absent
 - WHEN sync resolves the persona to apply
-- THEN it does not select `gentleman` implicitly
+- THEN it does not select `hgtran` implicitly
 - AND it applies neutral/default-safe persona behavior without regional voice
 
 #### Scenario: Invalid persisted persona does not reactivate Gentleman
 
 - GIVEN persisted persona state contains an unknown or invalid value
 - WHEN sync resolves the persona to apply
-- THEN it does not select `gentleman` implicitly
+- THEN it does not select `hgtran` implicitly
 - AND it applies neutral/default-safe persona behavior without regional voice
 
 #### Scenario: Unreadable persisted persona does not reactivate Gentleman
 
 - GIVEN persisted persona state cannot be read
 - WHEN sync resolves the persona to apply
-- THEN it does not select `gentleman` implicitly
+- THEN it does not select `hgtran` implicitly
 - AND it applies neutral/default-safe persona behavior without regional voice
 - AND it may surface a warning if the sync command already reports recoverable configuration issues
 
@@ -177,7 +177,7 @@ Explicit persona selections MUST remain authoritative. When the user explicitly 
 
 #### Scenario: Explicit Gentleman selection remains honored during sync
 
-- GIVEN the user has explicitly selected persona `gentleman`
+- GIVEN the user has explicitly selected persona `hgtran`
 - WHEN sync resolves and applies persona assets
 - THEN Gentleman persona assets are selected
 - AND Gentleman regional voice instructions remain present
@@ -204,7 +204,7 @@ For any adapter with an active output-style channel — Claude Code (gated by `S
 
 #### Scenario: Claude and Kimi residual sections carry no tone content
 
-- GIVEN Claude or Kimi assets are generated with persona `gentleman` or `neutral`
+- GIVEN Claude or Kimi assets are generated with persona `hgtran` or `neutral`
 - WHEN the CLAUDE.md or KIMI.md-included persona section is inspected
 - THEN it contains only Rules, Expertise, Contextual Skill Loading, a pointer to the output style, and any agent-native tooling section identified in the design's disposition tables (Kimi: `## Kimi-native notes`)
 - AND it contains no tone, language, or philosophy prose

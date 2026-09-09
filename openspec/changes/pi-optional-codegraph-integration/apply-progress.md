@@ -18,7 +18,7 @@ next_recommended: sdd-verify
     {
       "command": "go test -count=1 ./internal/agents/pi ./internal/components/communitytool ./internal/components/uninstall -run 'Test(DiscoverCodeGraphChildrenReturnsUnreadableDirectoryError|PiCodeGraph(UninstallPreservesPreexistingMarkedUserChildWithoutManifest|FailureRemovesNewPackageOverlayWithoutVerificationSuccess|RootValidationRejectsUnsafeRoots)|ExecutePlanPiUninstall)' -v",
       "exit_code": 0,
-      "result": "6 focused task-contract tests passed: unreadable discovery, absolute/relative git -C root validation, preexisting marked user-child preservation, new-overlay rollback without success evidence, service uninstall preservation, drift preservation, and gentle-pi source preservation."
+      "result": "6 focused task-contract tests passed: unreadable discovery, absolute/relative git -C root validation, preexisting marked user-child preservation, new-overlay rollback without success evidence, service uninstall preservation, drift preservation, and hgtran-pi source preservation."
     },
     {
       "command": "go test -count=1 ./internal/components/communitytool ./internal/components/uninstall -v",
@@ -34,7 +34,7 @@ next_recommended: sdd-verify
   "runtime_harness": {
     "status": "passed",
     "command": "TestExecutePlanPiUninstallPreservesPreexistingMarkedUserChildAndUserMCP and TestExecutePlanPiUninstallPreservesDriftedChildAndGentlePiSource",
-    "result": "t.TempDir() Pi homes exercise Service.executePlan's real AgentPi uninstall hook: user MCP keys and preexisting marked blocks are preserved exactly; drift is retained as a manual action; package-owned gentle-pi source remains unchanged; repeat uninstall succeeds.",
+    "result": "t.TempDir() Pi homes exercise Service.executePlan's real AgentPi uninstall hook: user MCP keys and preexisting marked blocks are preserved exactly; drift is retained as a manual action; package-owned hgtran-pi source remains unchanged; repeat uninstall succeeds.",
     "na_reason": ""
   },
   "rollback": {
@@ -72,7 +72,7 @@ Rollback boundary: `internal/components/communitytool/pi_codegraph.go`, `interna
 | 1.1 | `internal/agents/pi/adapter_test.go` | Unit | Existing Pi focused tests passed | New unreadable-directory fixture failed to compile before the injectable walk seam existed | `TestDiscoverCodeGraphChildrenReturnsUnreadableDirectoryError` passed | Existing precedence/shadowing/override fixture plus injected permission failure | Minimal `piWalkDir` seam only; no discovery behavior changed |
 | 2.3 | `internal/components/communitytool/pi_codegraph_test.go` | Runtime fixture | Existing root validation test passed | Existing coverage lacked actual Git-root resolution evidence | `TestPiCodeGraphRootValidationRejectsUnsafeRoots` now creates a Git repo, proves `git -C` resolution, and validates absolute and relative roots | Unsafe home/root/temp plus valid absolute/relative Git roots | No production refactor needed |
 | 3.3 | `internal/components/communitytool/pi_codegraph_test.go` | Integration fixture | Existing rollback test passed | `TestPiCodeGraphFailureRemovesNewPackageOverlayWithoutVerificationSuccess` failed because a failed reconcile returned successful MCP evidence | Same test passed after clearing result MCP evidence in the rollback defer | Existing child/MCP rollback plus new package-overlay deletion and no-success result | No further refactor needed |
-| 4.1 | `internal/components/communitytool/pi_codegraph_test.go`, `internal/components/uninstall/service_test.go` | Integration/runtime fixture | Existing community-tool/uninstall packages passed | Missing-manifest preexisting child test failed: uninstall deleted `worker.md`; service-hook coverage did not exist | Direct and Service.executePlan tests passed after adopted user bytes/provenance were recorded | User MCP/marked blocks, drift, gentle-pi source, package overlay, and repeat uninstall paths | Added only adoption capture and `Adopted` manifest provenance |
+| 4.1 | `internal/components/communitytool/pi_codegraph_test.go`, `internal/components/uninstall/service_test.go` | Integration/runtime fixture | Existing community-tool/uninstall packages passed | Missing-manifest preexisting child test failed: uninstall deleted `worker.md`; service-hook coverage did not exist | Direct and Service.executePlan tests passed after adopted user bytes/provenance were recorded | User MCP/marked blocks, drift, hgtran-pi source, package overlay, and repeat uninstall paths | Added only adoption capture and `Adopted` manifest provenance |
 
 ## Work Unit Evidence — Ownership Adoption and Task Evidence
 
@@ -117,7 +117,7 @@ next_recommended: sdd-verify
   },
   "rollback": {
     "boundary": "internal/components/communitytool/pi_codegraph.go and internal/components/communitytool/pi_codegraph_test.go",
-    "evidence": "Reverting these two files restores only the previous required-field validator and its fixtures; no lifecycle, ownership, or gentle-pi behavior is changed."
+    "evidence": "Reverting these two files restores only the previous required-field validator and its fixtures; no lifecycle, ownership, or hgtran-pi behavior is changed."
   }
 }
 ```
@@ -169,7 +169,7 @@ rollback_boundary: recorded
   },
   "rollback": {
     "boundary": "internal/components/communitytool/pi_codegraph.go and the three observed-schema test fixtures in pi_codegraph_test.go, tool_test.go, and run_community_tool_test.go",
-    "evidence": "Reverting those four files restores only the prior optional Pi CodeGraph schema contract; no lifecycle, ownership, or gentle-pi behavior is included."
+    "evidence": "Reverting those four files restores only the prior optional Pi CodeGraph schema contract; no lifecycle, ownership, or hgtran-pi behavior is included."
   }
 }
 ```
@@ -266,7 +266,7 @@ The old grouped table and the incorrect `12/12` status are removed. The rows bel
 | 3.4 | Same rollback contract | Same command — RED: manifest committed before verification/rollback | Same command — GREEN: exit 0 | Journal before-images and delayed manifest commit |
 | 4.1 | `TestPiCodeGraphUninstallRestoresAdoptedAndOwnedArtifacts`, `TestPiCodeGraphDeselectionRemovesOnlyOwnedIntegration` | `go test -count=1 ./internal/components/communitytool -run 'TestPiCodeGraph(UninstallRestoresAdoptedAndOwnedArtifacts|DeselectionRemovesOnlyOwnedIntegration)' -v` — RED: manifest-scoped restore/removal absent | Same command — GREEN: exit 0, 2/2 passed | Adopted MCP, user child, package overlay, and repeat-safe cleanup |
 | 4.2 | `TestInstallRuntimeStagePlanDeselectionCleansOwnedPiIntegration` | `go test -count=1 ./internal/cli -run TestInstallRuntimeStagePlanDeselectionCleansOwnedPiIntegration -v` — RED compile failure: `runtimeState.piCodeGraph undefined` after adding pipeline result assertion | Same command — GREEN: exit 0; pipeline reports cleanup result | Actual install pipeline step, manifest cleanup, result reporting |
-| 4.3 | Documentation assertions in `docs/pi.md` are reviewed with ownership contracts | RED: docs lacked selection/ownership classification and drift contract | GREEN: documentation updated with optional ownership and manual-drift behavior | Matches manifest-scoped lifecycle, no gentle-pi edits |
+| 4.3 | Documentation assertions in `docs/pi.md` are reviewed with ownership contracts | RED: docs lacked selection/ownership classification and drift contract | GREEN: documentation updated with optional ownership and manual-drift behavior | Matches manifest-scoped lifecycle, no hgtran-pi edits |
 | 4.4 | Final quality suite | RED: quality gate not yet executed | `gofmt -w … && go test ./... && go vet ./... && git diff --check` — GREEN: recorded after this remediation | Fresh full suite and clean whitespace required before verify |
 
 ## Work Unit Evidence — Remediation
@@ -279,7 +279,7 @@ The old grouped table and the incorrect `12/12` status are removed. The rows bel
 | RED | `go test -count=1 ./internal/cli -run TestInstallRuntimeStagePlanDeselectionCleansOwnedPiIntegration -v` | exit 1; `runtimeState.piCodeGraph undefined` |
 | GREEN | `go test -count=1 ./internal/cli ./internal/components/communitytool -run 'Test(InstallRuntimeStagePlanDeselectionCleansOwnedPiIntegration|InstallWithHomeReportsWorkspaceChildAndOwnershipTarget|InstallWithHomeReportsEffectiveMCPAdapterSchema|PiCodeGraphReportsMisconfigured(Malformed|Conflicting)Child)' -v` | exit 0; 5/5 tests passed |
 | Runtime harness | Public `InstallWithHome` and `installRuntime.stagePlan` with `t.TempDir()` Pi home/workspace | exit 0; records workspace target ownership, reports effective child/MCP capability, and removes only manifest-owned integration on deselection |
-| Rollback boundary | CLI stage/result plumbing and Pi reconciler/MCP verifier | Independent revert preserves gentle-pi and user-managed entries |
+| Rollback boundary | CLI stage/result plumbing and Pi reconciler/MCP verifier | Independent revert preserves hgtran-pi and user-managed entries |
 
 Changed paths are repository-relative. Intended untracked paths: `internal/components/communitytool/pi_codegraph.go`, `internal/components/communitytool/pi_codegraph_test.go`, and `openspec/changes/pi-optional-codegraph-integration/`. `.codegraph/` must be removed before handoff.
 

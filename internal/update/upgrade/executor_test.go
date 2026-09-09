@@ -12,12 +12,14 @@ import (
 	"strings"
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/backup"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/gga"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/state"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/update"
+	"github.com/hgtran-programming/hgtran-ai/v2/internal/agents"
+	"github.com/hgtran-programming/hgtran-ai/v2/internal/backup"
+	"github.com/hgtran-programming/hgtran-ai/v2/internal/components/gga"
+	"github.com/hgtran-programming/hgtran-ai/v2/internal/components/sdd"
+	"github.com/hgtran-programming/hgtran-ai/v2/internal/model"
+	"github.com/hgtran-programming/hgtran-ai/v2/internal/state"
+	"github.com/hgtran-programming/hgtran-ai/v2/internal/system"
+	"github.com/hgtran-programming/hgtran-ai/v2/internal/update"
 )
 
 // --- helpers ---
@@ -54,7 +56,7 @@ func TestExecute_NoopWhenNothingIsExecutable(t *testing.T) {
 		makeResult("hgtran-ai", update.UpToDate, "1.0.0", "1.0.0", update.InstallBinary),
 		makeResult("engram", update.NotInstalled, "", "0.4.0", update.InstallGoInstall),
 		// gga: CheckFailed — should also be omitted from results.
-		makeResult("hga", update.CheckFailed, "", "", update.InstallScript),
+		makeResult("gga", update.CheckFailed, "", "", update.InstallScript),
 	}
 
 	report := Execute(context.Background(), results, brewProfile(), t.TempDir(), false)
@@ -169,6 +171,13 @@ func TestExecute_RegisteredNotMaterializedIsExecutable(t *testing.T) {
 	execCalled := false
 	execCommand = func(name string, args ...string) *exec.Cmd {
 		execCalled = true
+		pkgDir := filepath.Join(opencodeDir, "node_modules", "opencode-sdd-engram-manage")
+		if err := os.MkdirAll(pkgDir, 0o755); err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(filepath.Join(pkgDir, "package.json"), []byte(`{"version":"1.2.0"}`), 0o644); err != nil {
+			t.Fatal(err)
+		}
 		return mockCmd("true")
 	}
 
@@ -187,8 +196,122 @@ func TestExecute_RegisteredNotMaterializedIsExecutable(t *testing.T) {
 	if report.Results[0].Status != UpgradeSucceeded {
 		t.Fatalf("status = %q, want %q", report.Results[0].Status, UpgradeSucceeded)
 	}
+	if report.Results[0].NewVersion != "1.2.0" {
+		t.Fatalf("new version = %q, want observed materialized version 1.2.0", report.Results[0].NewVersion)
+	}
 	if report.BackupID == "" {
 		t.Fatal("BackupID should be populated before executing registered-pending plugin upgrade")
+	}
+}
+
+func TestExecute_OpenCodePluginPostMutationVerificationFailureIsFailed(t *testing.T) {
+	origExecCommand := execCommand
+	origHomeDir := openCodeHomeDir
+	origLookPath := lookPathCommand
+	t.Cleanup(func() {
+		execCommand = origExecCommand
+		openCodeHomeDir = origHomeDir
+		lookPathCommand = origLookPath
+	})
+
+	home := t.TempDir()
+	opencodeDir := filepath.Join(home, ".config", "opencode")
+	if err := os.MkdirAll(opencodeDir, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(opencodeDir, "tui.json"), []byte(`{"plugin":["opencode-subagent-statusline"]}`), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	openCodeHomeDir = func() (string, error) { return home, nil }
+	lookPathCommand = func(file string) (string, error) {
+		if file == "npm" {
+			return "/usr/bin/npm", nil
+		}
+		return "", errors.New("not found")
+	}
+	execCommand = func(name string, args ...string) *exec.Cmd {
+		// Model a successful npm mutation that leaves the plugin manifest absent.
+		if err := os.WriteFile(filepath.Join(opencodeDir, "package-lock.json"), []byte(`{"packages":{}}`), 0o644); err != nil {
+			t.Fatal(err)
+		}
+		return mockCmd("true")
+	}
+
+	result := makeResult("opencode-subagent-statusline", update.RegisteredNotMaterialized, "0.7.1", "0.8.0", update.InstallOpenCodePlugin)
+	result.Tool.NpmPackage = "opencode-subagent-statusline"
+	toolResult := executeOne(context.Background(), result, linuxProfile(), false)
+
+	if toolResult.Status != UpgradeFailed {
+		t.Fatalf("status = %q, want %q", toolResult.Status, UpgradeFailed)
+	}
+	if toolResult.Err == nil {
+		t.Fatal("Err = nil, want failed postcondition error")
+	}
+	if toolResult.NewVersion != "" {
+		t.Fatalf("new version = %q, want empty when materialization is unverified", toolResult.NewVersion)
+	}
+	if toolResult.ManualHint != "" {
+		t.Fatalf("ManualHint = %q, want empty for a real failure", toolResult.ManualHint)
+	}
+	for _, want := range []string{"after npm mutation", "expected version \"0.8.0\"", "absent", "No automatic rollback", "restore or correct", opencodeDir} {
+		if !strings.Contains(toolResult.Err.Error(), want) {
+			t.Errorf("error %q does not contain %q", toolResult.Err, want)
+		}
+	}
+	if _, err := os.Stat(filepath.Join(opencodeDir, "package-lock.json")); err != nil {
+		t.Fatalf("simulated package-manager mutation should remain inspectable: %v", err)
+	}
+}
+
+func TestExecute_OpenCodePluginUnregisteredSkipsWithoutMutation(t *testing.T) {
+	origExecCommand := execCommand
+	origHomeDir := openCodeHomeDir
+	origLookPath := lookPathCommand
+	t.Cleanup(func() {
+		execCommand = origExecCommand
+		openCodeHomeDir = origHomeDir
+		lookPathCommand = origLookPath
+	})
+
+	home := t.TempDir()
+	opencodeDir := filepath.Join(home, ".config", "opencode")
+	if err := os.MkdirAll(opencodeDir, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(opencodeDir, "tui.json"), []byte(`{"plugin":["other-plugin"]}`), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	openCodeHomeDir = func() (string, error) { return home, nil }
+	lookPathCommand = func(file string) (string, error) {
+		if file == "npm" {
+			return "/usr/bin/npm", nil
+		}
+		return "", errors.New("not found")
+	}
+	execCalled := false
+	execCommand = func(name string, args ...string) *exec.Cmd {
+		execCalled = true
+		return mockCmd("true")
+	}
+
+	result := makeResult("opencode-subagent-statusline", update.UpdateAvailable, "0.7.1", "0.8.0", update.InstallOpenCodePlugin)
+	result.Tool.NpmPackage = "opencode-subagent-statusline"
+	toolResult := executeOne(context.Background(), result, linuxProfile(), false)
+
+	if toolResult.Status != UpgradeSkipped {
+		t.Fatalf("status = %q, want %q", toolResult.Status, UpgradeSkipped)
+	}
+	if toolResult.Err != nil {
+		t.Fatalf("Err = %v, want nil for a zero-mutation skip", toolResult.Err)
+	}
+	if toolResult.ManualHint == "" {
+		t.Fatal("ManualHint = empty, want an actionable pre-mutation hint")
+	}
+	if execCalled {
+		t.Fatal("package manager must not run for an unregistered, unmaterialized plugin")
+	}
+	if _, err := os.Stat(filepath.Join(opencodeDir, "package-lock.json")); !os.IsNotExist(err) {
+		t.Fatalf("package manager state exists after zero-mutation skip, stat err: %v", err)
 	}
 }
 
@@ -232,7 +355,7 @@ func TestExecute_BackupBeforeExecution(t *testing.T) {
 	results := []update.UpdateResult{
 		makeResult("engram", update.UpdateAvailable, "0.3.0", "0.4.0", update.InstallGoInstall),
 	}
-	results[0].Tool.GoImportPath = "github.com/desarrollohg01/engram/cmd/engram"
+	results[0].Tool.GoImportPath = "github.com/Gentleman-Programming/engram/cmd/engram"
 
 	report := Execute(context.Background(), results, linuxProfile(), t.TempDir(), false)
 
@@ -269,7 +392,7 @@ func TestExecuteProgressDoesNotIncludeBackupExclusionDiagnostics(t *testing.T) {
 	results := []update.UpdateResult{
 		makeResult("engram", update.UpdateAvailable, "0.3.0", "0.4.0", update.InstallGoInstall),
 	}
-	results[0].Tool.GoImportPath = "github.com/desarrollohg01/engram/cmd/engram"
+	results[0].Tool.GoImportPath = "github.com/Gentleman-Programming/engram/cmd/engram"
 
 	var progress bytes.Buffer
 	report := Execute(context.Background(), results, linuxProfile(), home, false, &progress)
@@ -303,7 +426,7 @@ func TestExecute_DryRunNeverExecs(t *testing.T) {
 	results := []update.UpdateResult{
 		makeResult("engram", update.UpdateAvailable, "0.3.0", "0.4.0", update.InstallGoInstall),
 	}
-	results[0].Tool.GoImportPath = "github.com/desarrollohg01/engram/cmd/engram"
+	results[0].Tool.GoImportPath = "github.com/Gentleman-Programming/engram/cmd/engram"
 
 	report := Execute(context.Background(), results, linuxProfile(), t.TempDir(), true)
 
@@ -334,7 +457,7 @@ func TestExecute_PerToolSuccessAndFailure(t *testing.T) {
 
 	execCommand = func(name string, args ...string) *exec.Cmd {
 		// engram go install succeeds, gga curl/download attempt fails — we simulate
-		// the failure by having execCommand return false for "hga" detection.
+		// the failure by having execCommand return false for "gga" detection.
 		if name == "go" {
 			return mockCmd("echo", "go install ok")
 		}
@@ -345,7 +468,7 @@ func TestExecute_PerToolSuccessAndFailure(t *testing.T) {
 	results := []update.UpdateResult{
 		makeResult("engram", update.UpdateAvailable, "0.3.0", "0.4.0", update.InstallGoInstall),
 	}
-	results[0].Tool.GoImportPath = "github.com/desarrollohg01/engram/cmd/engram"
+	results[0].Tool.GoImportPath = "github.com/Gentleman-Programming/engram/cmd/engram"
 
 	report := Execute(context.Background(), results, linuxProfile(), t.TempDir(), false)
 
@@ -376,7 +499,7 @@ func TestExecute_DevBuildIsSkipped(t *testing.T) {
 		makeResult("hgtran-ai", update.DevBuild, "dev", "1.0.0", update.InstallBinary),
 		makeResult("engram", update.UpdateAvailable, "0.3.0", "0.4.0", update.InstallGoInstall),
 	}
-	results[1].Tool.GoImportPath = "github.com/desarrollohg01/engram/cmd/engram"
+	results[1].Tool.GoImportPath = "github.com/Gentleman-Programming/engram/cmd/engram"
 
 	report := Execute(context.Background(), results, linuxProfile(), t.TempDir(), false)
 
@@ -429,7 +552,7 @@ func TestExecute_FailureDoesNotImplyConfigLoss(t *testing.T) {
 	results := []update.UpdateResult{
 		makeResult("engram", update.UpdateAvailable, "0.3.0", "0.4.0", update.InstallGoInstall),
 	}
-	results[0].Tool.GoImportPath = "github.com/desarrollohg01/engram/cmd/engram"
+	results[0].Tool.GoImportPath = "github.com/Gentleman-Programming/engram/cmd/engram"
 
 	report := Execute(context.Background(), results, linuxProfile(), t.TempDir(), false)
 
@@ -472,7 +595,7 @@ func TestExecute_DevBuildSurfacedAsSkipped(t *testing.T) {
 		makeResult("hgtran-ai", update.DevBuild, "dev", "1.0.0", update.InstallBinary),
 		makeResult("engram", update.UpdateAvailable, "0.3.0", "0.4.0", update.InstallGoInstall),
 	}
-	results[1].Tool.GoImportPath = "github.com/desarrollohg01/engram/cmd/engram"
+	results[1].Tool.GoImportPath = "github.com/Gentleman-Programming/engram/cmd/engram"
 
 	report := Execute(context.Background(), results, linuxProfile(), t.TempDir(), false)
 
@@ -548,7 +671,7 @@ func TestExecute_ConfigNotMutatedDuringUpgrade(t *testing.T) {
 	results := []update.UpdateResult{
 		makeResult("engram", update.UpdateAvailable, "0.3.0", "0.4.0", update.InstallGoInstall),
 	}
-	results[0].Tool.GoImportPath = "github.com/desarrollohg01/engram/cmd/engram"
+	results[0].Tool.GoImportPath = "github.com/Gentleman-Programming/engram/cmd/engram"
 
 	profile := linuxProfile()
 
@@ -599,12 +722,16 @@ func TestConfigPathsForBackup_CoversManagedAgentPaths(t *testing.T) {
 	homeDir := t.TempDir()
 
 	managedFiles := map[string]string{
-		".claude.json":                   `{"oauthAccount":{"emailAddress":"user@example.com"},"mcpServers":{"engram":{"command":"engram"}}}`,
-		".claude/CLAUDE.md":              "# Claude",
-		".config/opencode/AGENTS.md":     "# OpenCode",
-		".config/opencode/opencode.json": `{"model":"claude"}`,
-		".gemini/GEMINI.md":              "# Gemini",
-		".cursor/rules/hgtran-ai.mdc":    "# Cursor rules",
+		".claude.json":                                `{"oauthAccount":{"emailAddress":"user@example.com"},"mcpServers":{"engram":{"command":"engram"}}}`,
+		".claude/CLAUDE.md":                           "# Claude",
+		".claude/themes/hgtran.json":               `{"name":"hgtran"}`,
+		".claude/themes/hgtran-cute.json":          `{"name":"Gentleman Cute"}`,
+		".config/opencode/AGENTS.md":                  "# OpenCode",
+		".config/opencode/themes/hgtran.json":      `{"theme":{}}`,
+		".config/opencode/themes/hgtran-cute.json": `{"theme":{}}`,
+		".config/opencode/opencode.json":              `{"model":"claude"}`,
+		".gemini/GEMINI.md":                           "# Gemini",
+		".cursor/rules/hgtran-ai.mdc":                 "# Cursor rules",
 	}
 	unmanagedFile := filepath.Join(homeDir, ".claude", "conversation-transcript.md")
 
@@ -685,7 +812,7 @@ func TestExecute_ForcedSnapshotFailureSurfacesWarningEndToEnd(t *testing.T) {
 	results := []update.UpdateResult{
 		makeResult("engram", update.UpdateAvailable, "0.3.0", "0.4.0", update.InstallGoInstall),
 	}
-	results[0].Tool.GoImportPath = "github.com/desarrollohg01/engram/cmd/engram"
+	results[0].Tool.GoImportPath = "github.com/Gentleman-Programming/engram/cmd/engram"
 
 	report := Execute(context.Background(), results, linuxProfile(), t.TempDir(), false)
 
@@ -754,7 +881,7 @@ func TestExecute_UpgradeBackupManifestHasUpgradeMetadata(t *testing.T) {
 	results := []update.UpdateResult{
 		makeResult("engram", update.UpdateAvailable, "0.3.0", "0.4.0", update.InstallGoInstall),
 	}
-	results[0].Tool.GoImportPath = "github.com/desarrollohg01/engram/cmd/engram"
+	results[0].Tool.GoImportPath = "github.com/Gentleman-Programming/engram/cmd/engram"
 
 	report := Execute(context.Background(), results, linuxProfile(), homeDir, false)
 
@@ -803,7 +930,7 @@ func TestExecute_SuccessfulSnapshotHasNoWarning(t *testing.T) {
 	results := []update.UpdateResult{
 		makeResult("engram", update.UpdateAvailable, "0.3.0", "0.4.0", update.InstallGoInstall),
 	}
-	results[0].Tool.GoImportPath = "github.com/desarrollohg01/engram/cmd/engram"
+	results[0].Tool.GoImportPath = "github.com/Gentleman-Programming/engram/cmd/engram"
 
 	report := Execute(context.Background(), results, linuxProfile(), t.TempDir(), false)
 
@@ -1453,4 +1580,40 @@ func mockCmd(name string, args ...string) *exec.Cmd {
 		}
 	}
 	return exec.Command(name, args...)
+}
+
+// TestManagedAgentBackupPathsOpenCodePluginsFollowXDGConfigHome pins #3219 for
+// the pre-upgrade snapshot: the managed OpenCode plugins live wherever the
+// adapter resolves the config directory, so the backup must snapshot them
+// there, and it must cover the current managed plugin set.
+func TestManagedAgentBackupPathsOpenCodePluginsFollowXDGConfigHome(t *testing.T) {
+	homeDir := t.TempDir()
+	xdg := filepath.Join(homeDir, ".xdg")
+	t.Setenv("HOME", homeDir)
+	t.Setenv("USERPROFILE", homeDir)
+	t.Setenv("XDG_CONFIG_HOME", xdg)
+
+	reg, err := agents.NewDefaultRegistry()
+	if err != nil {
+		t.Fatal(err)
+	}
+	adapter, ok := reg.Get(model.AgentOpenCode)
+	if !ok {
+		t.Fatal("opencode adapter not found in registry")
+	}
+
+	paths := managedAgentBackupPaths(homeDir, adapter, log.Writer())
+	pathSet := make(map[string]struct{}, len(paths))
+	for _, p := range paths {
+		pathSet[p] = struct{}{}
+		if strings.HasPrefix(p, filepath.Join(homeDir, ".config", "opencode", "plugins")) {
+			t.Fatalf("backup path %q ignores XDG_CONFIG_HOME", p)
+		}
+	}
+	for _, name := range append([]string{"background-agents.ts"}, sdd.OpenCodePluginLifecycleNames(model.AgentOpenCode)...) {
+		want := filepath.Join(xdg, "opencode", "plugins", name)
+		if _, ok := pathSet[want]; !ok {
+			t.Fatalf("backup paths miss managed plugin %q; got %v", want, paths)
+		}
+	}
 }

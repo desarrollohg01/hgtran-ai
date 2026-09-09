@@ -13,10 +13,10 @@
 # Scope, stated plainly so nobody trusts it further than it goes. This handles
 # the MECHANICAL classes: module path, binary/command name, repository URLs and
 # the state-root directory. It deliberately does NOT touch the bare words
-# "gentleman"/"Gentleman", because three live things wear them and each is a
+# "hgtran"/"Gentleman", because three live things wear them and each is a
 # product decision rather than a substitution:
 #
-#   - the Homebrew tap `gentleman-programming/tap/...`, which is a real formula
+#   - the Homebrew tap `hgtran-programming/tap/...`, which is a real formula
 #     published under that name; rewriting it points at a formula that does not
 #     exist (see internal/update/upgrade/strategy.go)
 #   - the persona component, which installs a persona named after the upstream
@@ -60,7 +60,7 @@ EXCLUDE_PATHS=(
 
 # --- historical links are not ours to repoint --------------------------------
 #
-# A URL like github.com/Gentleman-Programming/gentle-ai/pull/1801 is a citation
+# A URL like github.com/Gentleman-Programming/hgtran-ai/pull/1801 is a citation
 # of the upstream's own pull request. Repointing it produces a link into HG's
 # repository where that number means something else, or nothing.
 #
@@ -76,18 +76,41 @@ HISTORICAL_LINK='github\.com/[Gg]entleman-[Pp]rogramming/[a-z-]*/(pull|issues|co
 # --- the substitutions, longest first ---------------------------------------
 #
 # Order is load-bearing: the URL forms must run before the bare binary name, or
-# `gentle-ai` inside a URL gets rewritten first and the longer patterns stop
+# `hgtran-ai` inside a URL gets rewritten first and the longer patterns stop
 # matching.
 declare -a SUBS=(
-  's|github\.com/gentleman-programming/gentle-ai|bitbucket.org/hgt_development/hgtran-ai|g'
-  's|github\.com/Gentleman-Programming/gentle-ai|github.com/desarrollohg01/hgtran-ai|g'
-  's|Gentleman-Programming/gentle-ai|desarrollohg01/hgtran-ai|g'
-  's|gentleman-programming/gentle-ai|hgt_development/hgtran-ai|g'
-  's|\.gentle-ai|.hgtran-ai|g'
-  's|gentle-ai|hgtran-ai|g'
-  's|Gentle-AI|HGTran-AI|g'
-  's|Gentle AI|HGTran AI|g'
+  's|github\.com/hgtran-programming/hgtran-ai|bitbucket.org/hgt_development/hgtran-ai|g'
+  's|github\.com/Gentleman-Programming/hgtran-ai|github.com/desarrollohg01/hgtran-ai|g'
+  's|Gentleman-Programming/hgtran-ai|desarrollohg01/hgtran-ai|g'
+  's|hgtran-programming/hgtran-ai|hgt_development/hgtran-ai|g'
+  's|GENTLE_AI_CHANNEL|HGTRAN_AI_CHANNEL|g'
+  's|\.hgtran-ai|.hgtran-ai|g'
+  's|hgtran-ai|hgtran-ai|g'
+  's|Hgtran-AI|HGTran-AI|g'
+  's|Hgtran AI|HGTran AI|g'
 )
+
+# --- deliberate non-renames -------------------------------------------------
+#
+# These look like gaps in the table above and are not. Each was checked; adding
+# a rule for it would break something that currently works. Listed here so the
+# next reader — human or agent — does not "complete" the table and regress:
+#
+#   GGA_SKIP_FILE_CHECK, GGA_TEST_CAPTURE, GGA_TEST_EXIT
+#       Environment variables this repository sets to drive the external `hga`
+#       binary. They are a contract with that program, which deliberately kept
+#       its GGA_* names because they are also written into user git hooks and
+#       matched by exact string. Renaming them here breaks the integration.
+#
+#   hgtran-engram, hgtran-pi, hgtran-sdd
+#       Published package and harness names — `hgtran-engram@latest` is what npm
+#       resolves. Renaming produces an install command for a package that does
+#       not exist.
+#
+#   bare `gga` in prose
+#       The binary is now `hga`, so documentation SHOULD say hga — but a blanket
+#       substitution cannot tell prose from the GGA_* variables above. Prose is
+#       corrected by hand when the file is touched, never by this script.
 
 # Guard: refuse to run if the substitution table has itself been rewritten.
 #
@@ -107,7 +130,7 @@ done
 
 # Files git tracks that still carry the pre-fork identity, minus the exclusions.
 targets() {
-  git grep -I -l -e 'gentle-ai' -e 'Gentle-AI' -e 'Gentle AI' \
+  git grep -I -l -e 'hgtran-ai' -e 'Hgtran-AI' -e 'Hgtran AI' \
     -- . "${EXCLUDE_PATHS[@]}" 2>/dev/null | sort -u
 }
 
@@ -121,7 +144,7 @@ fi
 if [[ "$MODE" == "--check" ]]; then
   dim "Would rewrite ${#FILES[@]} file(s):"
   for f in "${FILES[@]}"; do
-    n=$(grep -c -e 'gentle-ai' -e 'Gentle-AI' -e 'Gentle AI' "$f" 2>/dev/null || echo 0)
+    n=$(grep -c -e 'hgtran-ai' -e 'Hgtran-AI' -e 'Hgtran AI' "$f" 2>/dev/null || echo 0)
     printf '  %-72s %s\n' "$f" "$n"
   done
   dim ""

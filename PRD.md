@@ -814,7 +814,7 @@ graph TD
     subgraph SOURCES["Source Repositories (fetched at install time)"]
         REPO_SDD[Gentleman-Programming/<br/>sdd-agent-team]
         REPO_ENGRAM[desarrollohg01/<br/>engram]
-        REPO_HGA[Gentleman-Programming/<br/>gentleman-guardian-angel]
+        REPO_HGA[Gentleman-Programming/<br/>hgtran-guardian-angel]
         REPO_SKILLS[Skills Registry<br/>30+ skill files]
     end
 

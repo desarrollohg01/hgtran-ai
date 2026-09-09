@@ -16,7 +16,7 @@
 **Focused coverage remediation**: ✅ Passed
 ```text
 go test -count=1 -coverprofile=/private/tmp/persona-reverify.cover ./internal/components/persona
-ok   github.com/gentleman-programming/gentle-ai/internal/components/persona 3.293s coverage: 81.0% of statements
+ok   github.com/desarrollohg01/hgtran-ai/internal/components/persona 3.293s coverage: 81.0% of statements
 
 go tool cover -func=/private/tmp/persona-reverify.cover | tail -20
 internal/components/persona/inject.go:546: mergeJSONFileToleratingMalformed 100.0%
@@ -28,17 +28,17 @@ total:                                           80.9% of statements
 **Focused package tests**: ✅ Passed
 ```text
 go test -count=1 ./internal/cli ./internal/components/persona ./internal/assets
-ok   github.com/gentleman-programming/gentle-ai/internal/cli 28.186s
-ok   github.com/gentleman-programming/gentle-ai/internal/components/persona 3.279s
-ok   github.com/gentleman-programming/gentle-ai/internal/assets 0.099s
+ok   github.com/desarrollohg01/hgtran-ai/internal/cli 28.186s
+ok   github.com/desarrollohg01/hgtran-ai/internal/components/persona 3.279s
+ok   github.com/desarrollohg01/hgtran-ai/internal/assets 0.099s
 ```
 
 **Focused changed-area coverage**: ✅ Passed
 ```text
 go test -count=1 -coverprofile=/private/tmp/level-neutral-final.cover ./internal/assets ./internal/components/persona ./internal/cli
-ok   github.com/gentleman-programming/gentle-ai/internal/assets 0.161s coverage: 63.6% of statements
-ok   github.com/gentleman-programming/gentle-ai/internal/components/persona 6.584s coverage: 81.0% of statements
-ok   github.com/gentleman-programming/gentle-ai/internal/cli 76.389s coverage: 80.2% of statements
+ok   github.com/desarrollohg01/hgtran-ai/internal/assets 0.161s coverage: 63.6% of statements
+ok   github.com/desarrollohg01/hgtran-ai/internal/components/persona 6.584s coverage: 81.0% of statements
+ok   github.com/desarrollohg01/hgtran-ai/internal/cli 76.389s coverage: 80.2% of statements
 
 go tool cover -func=/private/tmp/level-neutral-final.cover | grep -E 'applyResolvedPersona|injectInternal|mergeJSONFileToleratingMalformed|removeJSONKeyIfValue|total:'
 internal/cli/sync.go:781: applyResolvedPersona 85.7%
@@ -132,11 +132,11 @@ go vet ./...
 |------------|--------|-------|
 | Neutral mentor parity without regional voice | ✅ Implemented | Generic and Hermes neutral assets include brevity, one-question, no-menu, verification, concepts-first, and artifact language boundaries without regional wording. |
 | Claude/Kimi output-style semantics | ✅ Implemented | New Claude and Kimi neutral output-style assets are meaningful and wired. |
-| Managed output-style planning/remediation | ✅ Implemented | Sync/install planning declares `gentleman.md` for Gentleman and `neutral.md` for Neutral, plus settings. |
+| Managed output-style planning/remediation | ✅ Implemented | Sync/install planning declares `hgtran.md` for Gentleman and `neutral.md` for Neutral, plus settings. |
 | Kiro wrapping and JSON cleanup remediation | ✅ Implemented | Added focused tests cover Kiro frontmatter, malformed JSON tolerance, valid merge, managed cleanup, user-value preservation, and read-error propagation. |
-| OpenCode/Kilocode cleanup clobber risk | ✅ Implemented | Sync cleanup removes only `agent.gentleman`, preserves sibling `agent` entries, and tolerates malformed JSON. |
+| OpenCode/Kilocode cleanup clobber risk | ✅ Implemented | Sync cleanup removes only `agent.hgtran`, preserves sibling `agent` entries, and tolerates malformed JSON. |
 | Safe sync fallback | ✅ Implemented | `applyResolvedPersona` preserves explicit persona, honors valid persisted persona, and falls back to `model.PersonaNeutral` otherwise. |
-| Gentleman explicit behavior | ✅ Preserved | Gentleman path still writes `gentleman.md`, selects `outputStyle: Gentleman`, and uses regional assets. |
+| Gentleman explicit behavior | ✅ Preserved | Gentleman path still writes `hgtran.md`, selects `outputStyle: Gentleman`, and uses regional assets. |
 
 ### Coherence (Design)
 | Decision | Followed? | Notes |
@@ -144,7 +144,7 @@ go vet ./...
 | Neutral output-style twin | ✅ Yes | Claude and Kimi neutral output-style assets added and wired. |
 | Asset strategy | ✅ Yes | Generic/Hermes neutral assets updated; no unnecessary per-agent neutral persona duplication added. |
 | Sync fallback | ✅ Yes | Missing/invalid/unreadable persisted persona no longer defaults to Gentleman. |
-| OpenCode/Kilocode residuals | ✅ Yes | Sync cleanup removes only `agent.gentleman` and preserves sibling settings. |
+| OpenCode/Kilocode residuals | ✅ Yes | Sync cleanup removes only `agent.hgtran` and preserves sibling settings. |
 
 ### Issues Found
 **CRITICAL**: None.  

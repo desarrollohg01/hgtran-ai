@@ -19,14 +19,14 @@ design's File Changes table.
 
 **Decision 1's Implementation paragraph vs. File Changes/tasks.md conflict for
 Gentleman residual filenames.** design.md's Decision 1 dispatch table lists
-`claude/persona-gentleman-residual.md` / `kimi/persona-gentleman-residual.md`
+`claude/persona-hgtran-residual.md` / `kimi/persona-hgtran-residual.md`
 as new residual asset filenames. This directly conflicts with the same
-document's **File Changes** table (`claude/persona-gentleman.md` /
-`kimi/persona-gentleman.md` marked **Modify**, not Create) and with
+document's **File Changes** table (`claude/persona-hgtran.md` /
+`kimi/persona-hgtran.md` marked **Modify**, not Create) and with
 tasks.md 2.3/2.4 ("Slim in place"). I followed the **File Changes table +
 tasks.md** (the more specific, doubly-corroborated instruction) and did
-**NOT** create `*-gentleman-residual.md` files — `claude/persona-gentleman.md`
-and `kimi/persona-gentleman.md` are slimmed in place and serve both the
+**NOT** create `*-hgtran-residual.md` files — `claude/persona-hgtran.md`
+and `kimi/persona-hgtran.md` are slimmed in place and serve both the
 residual and (in practice, unreachable for Claude/Kimi) full-dispatch code
 paths, since `residualChannel()` evaluates `true` unconditionally for both
 adapters today. Neutral correctly uses new `*-neutral-residual.md` files per
@@ -34,8 +34,8 @@ both parts of the design (no conflict there).
 
 **Unlisted test-suite scope**: `internal/assets/assets_test.go` and
 `internal/assets/language_contract_test.go` contain additional
-language/tone/voice assertions directly against `claude/persona-gentleman.md`
-and `kimi/persona-gentleman.md` that were not enumerated in tasks.md or the
+language/tone/voice assertions directly against `claude/persona-hgtran.md`
+and `kimi/persona-hgtran.md` that were not enumerated in tasks.md or the
 review ledger. These are a real consequence of correctly implementing the
 design (the residual no longer carries tone content) and were fixed using the
 same "combined persona-residual + output-style channel" principle the delta
@@ -48,8 +48,8 @@ functions updated: `TestGentlemanLanguageInstructionsDoNotBiasEnglishSessions`,
 
 **Merged-bullet ripple**: Decision 4/JD-013's merge of the two near-duplicate
 "reply fully in English" bullets changed the exact wording of that one line in
-`claude/output-style-gentleman.md` (and, via the byte-identical overwrite,
-`kimi/output-style-gentleman.md`). This broke 2 additional pre-existing
+`claude/output-style-hgtran.md` (and, via the byte-identical overwrite,
+`kimi/output-style-hgtran.md`). This broke 2 additional pre-existing
 literal-string assertions outside the enumerated test scope
 (`TestInjectKimiGentlemanIncludesProjectInstructionsAndLoadedSkills` in
 inject_test.go, and the output-style-guardrail check inside
@@ -68,12 +68,12 @@ verbatim line — no normative content was lost, confirmed by
 | 1.4 | same file (`TestInjectKimiGentlemanIncludesProjectInstructionsAndLoadedSkills`) | Unit | N/A (rewrite) | ✅ Written | ✅ Passed after 2.4/2.7 | ➖ Single | ✅ Clean |
 | 1.5 | same file (`TestPersonaContentNonHermesNeutralUnchanged`) | Unit | N/A (rewrite) | ✅ Written | ✅ Passed after 1.6/2.7 | ✅ 4 remaining agent cases | ✅ Clean |
 | 1.6 | same file (4 call sites) | Unit (compile gate) | N/A | ✅ `go vet ./internal/components/persona/...` failed: "too many arguments in call to personaContent" | ✅ Passed after 2.7 | N/A | N/A |
-| 1.7 | same file (`TestPersonaContentResidualDispatchAllAgents`, new) | Unit (table, 16 agents × 2 personas = 32 subtests) | N/A (new) | ✅ Written (compile-blocked until 2.7) | ✅ All 32 subtests passed after 2.7 | ✅ 32 cases (16 agents × gentleman/neutral) | ✅ Clean |
-| 1.8 | same file (`TestKimiOutputStyleSupersetOfLegacyKimiCopy`, new) | Unit (regression, frozen fixture) | N/A (new) | ✅ Failed against unreconciled kimi assets (claude≠kimi) | ✅ Passed after 2.1/2.2 (1 fixture edge case fixed — merged bullet, see Deviation) | ✅ 2 subtests (gentleman, neutral) | ✅ Clean |
-| 2.1 | `internal/assets/claude/output-style-gentleman.md`, `internal/assets/kimi/output-style-gentleman.md` | Asset | N/A | (RED = 1.8/existing tests) | ✅ 1.8 gentleman subtest PASS | ➖ | ✅ |
+| 1.7 | same file (`TestPersonaContentResidualDispatchAllAgents`, new) | Unit (table, 16 agents × 2 personas = 32 subtests) | N/A (new) | ✅ Written (compile-blocked until 2.7) | ✅ All 32 subtests passed after 2.7 | ✅ 32 cases (16 agents × hgtran/neutral) | ✅ Clean |
+| 1.8 | same file (`TestKimiOutputStyleSupersetOfLegacyKimiCopy`, new) | Unit (regression, frozen fixture) | N/A (new) | ✅ Failed against unreconciled kimi assets (claude≠kimi) | ✅ Passed after 2.1/2.2 (1 fixture edge case fixed — merged bullet, see Deviation) | ✅ 2 subtests (hgtran, neutral) | ✅ Clean |
+| 2.1 | `internal/assets/claude/output-style-hgtran.md`, `internal/assets/kimi/output-style-hgtran.md` | Asset | N/A | (RED = 1.8/existing tests) | ✅ 1.8 hgtran subtest PASS | ➖ | ✅ |
 | 2.2 | `internal/assets/claude/output-style-neutral.md`, `internal/assets/kimi/output-style-neutral.md` | Asset | N/A | (RED = 1.8/existing tests) | ✅ 1.8 neutral subtest PASS | ➖ | ✅ |
-| 2.3 | `internal/assets/claude/persona-gentleman.md` (slim in place) | Asset | N/A | (RED = 1.1) | ✅ 1.1 PASS | ➖ | ✅ |
-| 2.4 | `internal/assets/kimi/persona-gentleman.md` (slim in place) | Asset | N/A | (RED = 1.4) | ✅ 1.4 PASS | ➖ | ✅ |
+| 2.3 | `internal/assets/claude/persona-hgtran.md` (slim in place) | Asset | N/A | (RED = 1.1) | ✅ 1.1 PASS | ➖ | ✅ |
+| 2.4 | `internal/assets/kimi/persona-hgtran.md` (slim in place) | Asset | N/A | (RED = 1.4) | ✅ 1.4 PASS | ➖ | ✅ |
 | 2.5 | `internal/assets/claude/persona-neutral-residual.md` (new) | Asset | N/A | (RED = 1.2) | ✅ 1.2 PASS | ➖ | ✅ |
 | 2.6 | `internal/assets/kimi/persona-neutral-residual.md` (new) | Asset | N/A | (RED = 1.7 table coverage) | ✅ 1.7 kimi/neutral subtest PASS | ➖ | ✅ |
 | 2.7 | `internal/components/persona/inject.go` (`residualChannel`, `personaContent` signature) | Unit (compile + behavior) | ✅ `go vet` baseline captured RED at 1.6 | ✅ (see 1.6) | ✅ `go vet ./internal/components/persona/...` clean; full persona package `go test` green | ✅ exercised via 1.1–1.8 | ✅ Boy-Scout: extracted `residualChannel` helper, added doc comments |
@@ -95,8 +95,8 @@ verbatim line — no normative content was lost, confirmed by
 
 ```
 $ go vet ./internal/components/persona/...
-# github.com/gentleman-programming/gentle-ai/internal/components/persona
-# [github.com/gentleman-programming/gentle-ai/internal/components/persona]
+# github.com/desarrollohg01/hgtran-ai/internal/components/persona
+# [github.com/desarrollohg01/hgtran-ai/internal/components/persona]
 vet: internal/components/persona/inject_test.go:2031:61: too many arguments in call to personaContent
 	have (model.AgentID, model.PersonaID, bool)
 	want (model.AgentID, model.PersonaID)
@@ -104,7 +104,7 @@ vet: internal/components/persona/inject_test.go:2031:61: too many arguments in c
 
 ```
 $ go test ./internal/components/persona/... -run TestKimiOutputStyleSupersetOfLegacyKimiCopy -v
-    inject_test.go:2308: reconciled kimi/output-style-gentleman.md lost legacy line
+    inject_test.go:2308: reconciled kimi/output-style-hgtran.md lost legacy line
     "- When replying to the user in English, keep the full response in English
     unless the user explicitly asks for another language or you are translating/quoting."
 --- FAIL: TestKimiOutputStyleSupersetOfLegacyKimiCopy (0.00s)
@@ -161,23 +161,23 @@ Claude Gentleman (measured gross: 3,616/4 ≈ 904 tokens).
 | `internal/components/golden_test.go` | Modified | +5 (new neutral outputstyle golden assertion) |
 | `internal/assets/assets_test.go` | Modified | +46/-17 (combined-channel fixes, unlisted scope) |
 | `internal/assets/language_contract_test.go` | Modified | +47/-13 (combined-channel fixes, unlisted scope) |
-| `internal/assets/claude/persona-gentleman.md` | Modified (slim in place) | 76→32 lines |
-| `internal/assets/kimi/persona-gentleman.md` | Modified (slim in place) | 75→34 lines |
+| `internal/assets/claude/persona-hgtran.md` | Modified (slim in place) | 76→32 lines |
+| `internal/assets/kimi/persona-hgtran.md` | Modified (slim in place) | 75→34 lines |
 | `internal/assets/claude/persona-neutral-residual.md` | Created | 32 lines |
 | `internal/assets/kimi/persona-neutral-residual.md` | Created | 33 lines |
 | `internal/assets/generic/persona-neutral.md` | Unchanged (Decision 2) | — |
-| `internal/assets/claude/output-style-gentleman.md` | Modified | +6/-3 |
-| `internal/assets/kimi/output-style-gentleman.md` | Modified (overwritten, byte-identical to claude) | +8/-3 |
+| `internal/assets/claude/output-style-hgtran.md` | Modified | +6/-3 |
+| `internal/assets/kimi/output-style-hgtran.md` | Modified (overwritten, byte-identical to claude) | +8/-3 |
 | `internal/assets/claude/output-style-neutral.md` | Modified | +4 |
 | `internal/assets/kimi/output-style-neutral.md` | Modified (overwritten, byte-identical to claude) | +10/-3 |
 | `e2e/e2e_test.sh` | Modified | +39/-8 (3 test functions rewritten) |
 | `docs/agents.md` | Modified | +4/-1 (Kimi row + footnote) |
-| `testdata/golden/persona-claude-gentleman.golden` | Regenerated | — |
+| `testdata/golden/persona-claude-hgtran.golden` | Regenerated | — |
 | `testdata/golden/persona-claude-neutral.golden` | Regenerated | — |
-| `testdata/golden/persona-claude-gentleman-outputstyle.golden` | Regenerated | — |
+| `testdata/golden/persona-claude-hgtran-outputstyle.golden` | Regenerated | — |
 | `testdata/golden/combined-claude-claudemd.golden` | Regenerated (base verified via `git log` = `0fe7d51`) | — |
 | `testdata/golden/persona-claude-neutral-outputstyle.golden` | Created | — |
-| Byte-stable (confirmed via empty `git status --short`) | Unchanged | `combined-windsurf-global-rules.golden`, `persona-{antigravity,kiro,windsurf}-gentleman.golden`, `persona-opencode-{gentleman,neutral}.golden` |
+| Byte-stable (confirmed via empty `git status --short`) | Unchanged | `combined-windsurf-global-rules.golden`, `persona-{antigravity,kiro,windsurf}-hgtran.golden`, `persona-opencode-{hgtran,neutral}.golden` |
 
 Total tracked diff: 19 files changed, 571 insertions(+), 365 deletions(-)
 (`git diff --stat`), plus 3 new untracked files (2 residual assets + 1 golden).
@@ -241,10 +241,10 @@ structurally blind to the gap:
   overwriting `kimi/output-style-neutral.md` byte-identical.
 - **JD-017 (CRITICAL)**: the Gentleman `## Behavior` rule "Use
   construction/architecture analogies when they clarify the point, not by
-  default" (HEAD `claude/persona-gentleman.md:66`) was dropped from every
+  default" (HEAD `claude/persona-hgtran.md:66`) was dropped from every
   current Claude/Kimi asset (`rg -i analog` = zero hits pre-fix). Fixed by
-  appending it as item 6 of `claude/output-style-gentleman.md`'s `## Behavior`
-  list, then overwriting `kimi/output-style-gentleman.md` byte-identical.
+  appending it as item 6 of `claude/output-style-hgtran.md`'s `## Behavior`
+  list, then overwriting `kimi/output-style-hgtran.md` byte-identical.
 - **Root cause**: `TestKimiOutputStyleSupersetOfLegacyKimiCopy` (the only
   regression net for Decision 4) diffs style-vs-style (Kimi pre- vs
   post-reconciliation). It cannot detect content that should have MOVED from
@@ -254,7 +254,7 @@ structurally blind to the gap:
   `TestReconciledStylesCarryAllMovedPersonaRules` (JD-018), which freezes
   every normative rule from the HEAD MOVE-tagged persona sections
   (Personality/Persona Scope/Language/Tone/Philosophy/Behavior, for
-  `claude/persona-gentleman.md`, `kimi/persona-gentleman.md`, and
+  `claude/persona-hgtran.md`, `kimi/persona-hgtran.md`, and
   `generic/persona-neutral.md`) and asserts each rule is still discoverable —
   verbatim, or via a documented merged-form exception — in the corresponding
   reconciled style. This test was written FIRST and confirmed RED against the
@@ -286,7 +286,7 @@ structurally blind to the gap:
   asserts an actual tone phrase (`"Push back when user asks for code without
   context or understanding"`, added by the JD-016 fix). The stale comment
   at the second call site (claiming "Senior Architect" appears in the neutral
-  style) was corrected. The delta spec's `kimi/persona-gentleman.md:71-75`
+  style) was corrected. The delta spec's `kimi/persona-hgtran.md:71-75`
   line pin (stale post-apply; the section is now at `:22-26`) was dropped,
   keeping only the section-name reference (`## Kimi-native notes`).
 

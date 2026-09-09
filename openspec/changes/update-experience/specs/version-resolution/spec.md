@@ -7,15 +7,15 @@
 
 ### Requirement: Engram Always-Latest Resolution
 
-The system MUST resolve engram-core and gentle-engram at runtime by fetching the list of available tags from the upstream repository and selecting the highest version that matches the stable tag pattern `^v\d+\.\d+\.\d+$`.
+The system MUST resolve engram-core and hgtran-engram at runtime by fetching the list of available tags from the upstream repository and selecting the highest version that matches the stable tag pattern `^v\d+\.\d+\.\d+$`.
 
-The system MUST NOT hard-pin engram-core or gentle-engram to a specific version at compile time.
+The system MUST NOT hard-pin engram-core or hgtran-engram to a specific version at compile time.
 
 The system MUST use the same tag-filtered result as both the download source and the update-check source of truth so the two are always consistent.
 
-Prerelease, release-candidate, and shared-stream tags (e.g., `gentle-engram/v*`, `pi/*`) MUST be invisible to the resolver — they MUST NOT be selected even if they sort higher than the latest stable tag.
+Prerelease, release-candidate, and shared-stream tags (e.g., `hgtran-engram/v*`, `pi/*`) MUST be invisible to the resolver — they MUST NOT be selected even if they sort higher than the latest stable tag.
 
-(Previously: engram-core and gentle-engram were pinned to a fixed version in `versions.go`; updating either required a new hgtran-ai release.)
+(Previously: engram-core and hgtran-engram were pinned to a fixed version in `versions.go`; updating either required a new hgtran-ai release.)
 
 #### Scenario: Stable tags present
 
@@ -34,7 +34,7 @@ Prerelease, release-candidate, and shared-stream tags (e.g., `gentle-engram/v*`,
 
 #### Scenario: Shared-stream tags must not be selected
 
-- GIVEN the upstream tag list contains tags from shared streams (e.g., `gentle-engram/v1.0.0`, `pi/v1.0.0`)
+- GIVEN the upstream tag list contains tags from shared streams (e.g., `hgtran-engram/v1.0.0`, `pi/v1.0.0`)
 - WHEN the resolver runs the tag filter
 - THEN those tags do not match `^v\d+\.\d+\.\d+$` and are excluded
 - AND only clean `vX.Y.Z` tags are eligible
@@ -46,9 +46,9 @@ Prerelease, release-candidate, and shared-stream tags (e.g., `gentle-engram/v*`,
 - THEN the resolver returns an appropriate error or falls back to the current installed version
 - AND no download or update is attempted
 
-#### Scenario: gentle-engram `@latest` behavior
+#### Scenario: hgtran-engram `@latest` behavior
 
-- GIVEN gentle-engram is configured to resolve at `@latest`
+- GIVEN hgtran-engram is configured to resolve at `@latest`
 - WHEN the resolver fetches tags and applies the stable filter
 - THEN `@latest` resolves to the highest tag matching `^v\d+\.\d+\.\d+$`
 - AND the resolved version is used for both install and update-check

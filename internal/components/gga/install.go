@@ -16,7 +16,7 @@ func InstallCommand(profile system.PlatformProfile) ([][]string, error) {
 }
 
 func CleanupInstallDir() error {
-	return cleanupInstallDir(filepath.Join(os.TempDir(), "gentleman-guardian-angel"))
+	return cleanupInstallDir(filepath.Join(os.TempDir(), "hgtran-guardian-angel"))
 }
 
 func cleanupInstallDir(path string) error {

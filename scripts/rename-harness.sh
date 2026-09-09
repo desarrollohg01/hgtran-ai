@@ -52,16 +52,16 @@ countfiles() {
 #
 # They are variables rather than literals because a bulk rename already ate this
 # file once. Commit 4ab09a59 renamed the repository and, in the same pass,
-# rewrote these patterns: `gentleman-programming/gentle-ai` became
-# `gentleman-programming/gentle-ai` (a pattern that cannot match anything, so
-# I2_module read 0 forever), `Gentle AI` became `Hgtran AI`, and TOTAL started
+# rewrote these patterns: `hgtran-programming/hgtran-ai` became
+# `hgtran-programming/hgtran-ai` (a pattern that cannot match anything, so
+# I2_module read 0 forever), `Hgtran AI` became `Hgtran AI`, and TOTAL started
 # counting how much of the NEW identity existed. Progress read as regression.
 # The SELF exclusion below keeps this file out of the count; it never kept it
 # out of the edit.
-OLD_MODULE='gentleman-programming/gentle-ai'
-OLD_BINARY='gentle-ai'
-OLD_BRAND='Gentle AI'
-OLD_STATEROOT='\.gentle-ai'
+OLD_MODULE='hgtran-programming/hgtran-ai'
+OLD_BINARY='hgtran-ai'
+OLD_BRAND='Hgtran AI'
+OLD_STATEROOT='\.hgtran-ai'
 OLD_OWNER='github.com/Gentleman-Programming'
 
 # Guard: fail loudly rather than report a number nobody can interpret.
@@ -81,15 +81,15 @@ census() {
   echo "I3_gga=$(count '\bgga\b')"
   echo "I4_urls=$(count "$OLD_OWNER")"
   echo "I5_brand=$(count "$OLD_BRAND")"
-  echo "I6_golden=$(countfiles "\(gentleman\|${OLD_BINARY}\)" '*.golden')"
+  echo "I6_golden=$(countfiles "\(hgtran\|${OLD_BINARY}\)" '*.golden')"
   # The user state root, tracked apart from the binary name because it is the
   # one class where getting it wrong orphans data instead of breaking a build.
   # The quoted form excludes the three filename prefixes that merely start with
-  # the old name (.gentle-ai-*.tmp, .gentle-ai-default-agent.json, and the
+  # the old name (.hgtran-ai-*.tmp, .hgtran-ai-default-agent.json, and the
   # OpenCode uninstall marker) — those are brand, not the state root.
   echo "I7_stateroot=$(count "\"${OLD_STATEROOT}\"")"
-  echo "TOTAL=$(count "\(gentleman\|${OLD_BINARY}\|Gentleman\|${OLD_BRAND}\)")"
-  echo "FILES=$(countfiles "\(gentleman\|${OLD_BINARY}\|Gentleman\|${OLD_BRAND}\)")"
+  echo "TOTAL=$(count "\(hgtran\|${OLD_BINARY}\|Gentleman\|${OLD_BRAND}\)")"
+  echo "FILES=$(countfiles "\(hgtran\|${OLD_BINARY}\|Gentleman\|${OLD_BRAND}\)")"
 }
 
 # --- functional state -------------------------------------------------------

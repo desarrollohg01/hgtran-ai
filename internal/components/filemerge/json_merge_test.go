@@ -7,7 +7,7 @@ import (
 
 func TestMergeJSONObjectsRecursively(t *testing.T) {
 	base := []byte(`{"plugins":["a"],"settings":{"theme":"default","flags":{"x":true}}}`)
-	overlay := []byte(`{"settings":{"theme":"gentleman","flags":{"y":true}},"extra":1}`)
+	overlay := []byte(`{"settings":{"theme":"hgtran","flags":{"y":true}},"extra":1}`)
 
 	merged, err := MergeJSONObjects(base, overlay)
 	if err != nil {
@@ -22,7 +22,7 @@ func TestMergeJSONObjectsRecursively(t *testing.T) {
 	settings := got["settings"].(map[string]any)
 	flags := settings["flags"].(map[string]any)
 
-	if settings["theme"] != "gentleman" {
+	if settings["theme"] != "hgtran" {
 		t.Fatalf("theme = %v", settings["theme"])
 	}
 

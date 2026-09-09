@@ -30,9 +30,9 @@ The cached strategy remains one PR. Before apply, a maintainer must approve a `s
 ## Phase 1: Pi Contracts and Selection Boundary
 
 - [x] 1.1 RED: Add `internal/agents/pi/adapter_test.go` fixtures for MCP/child precedence, shadowing, unreadable children, and `PI_CODING_AGENT_DIR` resolution.
-- [x] 1.2 GREEN: Extend `internal/agents/pi/adapter.go` with deterministic Pi MCP/child path discovery; do not read or modify gentle-pi assets.
+- [x] 1.2 GREEN: Extend `internal/agents/pi/adapter.go` with deterministic Pi MCP/child path discovery; do not read or modify hgtran-pi assets.
 - [x] 1.3 RED: Prove in `pi_codegraph_test.go` Pi-unselected selection creates no CLI/MCP/overlay/guidance/index artifact or ownership record.
-- [x] 1.4 GREEN: Add Pi gating and ownership manifest in `pi_codegraph.go`; retain gentle-pi agnosticism.
+- [x] 1.4 GREEN: Add Pi gating and ownership manifest in `pi_codegraph.go`; retain hgtran-pi agnosticism.
 
 ## Phase 2: Provisioning and Direct Verification
 
@@ -50,9 +50,9 @@ The cached strategy remains one PR. Before apply, a maintainer must approve a `s
 
 ## Phase 4: Ownership-Safe Removal and Evidence
 
-- [x] 4.1 RED: Add `service_test.go` cases preserving user MCP keys/blocks, gentle-pi files, drifted hashes, and repeat uninstall.
+- [x] 4.1 RED: Add `service_test.go` cases preserving user MCP keys/blocks, hgtran-pi files, drifted hashes, and repeat uninstall.
 - [x] 4.2 GREEN: Add manifest-scoped Pi cleanup to `service.go`; restore bounded backups and report drift as manual action.
 - [x] 4.3 Document selection, ownership, classifications, sync recovery, and manual drift in `docs/pi.md`.
-- [x] 4.4 Run `gofmt`, `go test ./...`, and `go vet ./...`; verification covers every scenario, including gentle-pi non-modification.
+- [x] 4.4 Run `gofmt`, `go test ./...`, and `go vet ./...`; verification covers every scenario, including hgtran-pi non-modification.
 
 > **Verification bookkeeping correction (2026-07-10):** This artifact has 16 numbered tasks (1.1–4.4), not 12 or 14. The checked boxes record task completion; `apply-progress.md` preserves the corresponding per-task evidence and remediation RED/GREEN evidence.

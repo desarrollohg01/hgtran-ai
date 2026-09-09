@@ -379,22 +379,22 @@ The engram protocol section injected into `~/.hermes/SOUL.md` MUST explicitly ex
 
 ### Requirement: Hermes-Specific Persona Asset for Gentleman Options
 
-For the `gentleman` and `gentleman-neutral-artifacts` persona options, `personaContent()` MUST return the content of a dedicated Hermes asset (e.g., `hermes/persona-gentleman.md`), not the generic `generic/persona-gentleman.md`.
+For the `hgtran` and `hgtran-neutral-artifacts` persona options, `personaContent()` MUST return the content of a dedicated Hermes asset (e.g., `hermes/persona-hgtran.md`), not the generic `generic/persona-hgtran.md`.
 
 The Hermes-specific asset MUST be a copy of the generic persona with the "Contextual Skill Loading (MANDATORY)" block rewritten to reference Hermes's native skill model (`~/.hermes/skills/` by category), removing the `<available_skills>` system-prompt assumption that is specific to Claude Code.
 
 #### Scenario: Gentleman persona uses Hermes-specific asset
 
-- GIVEN persona option is `gentleman` or `gentleman-neutral-artifacts`
+- GIVEN persona option is `hgtran` or `hgtran-neutral-artifacts`
 - WHEN `personaContent(model.AgentHermes, personaOption)` is called
-- THEN it returns content from `hermes/persona-gentleman.md`
+- THEN it returns content from `hermes/persona-hgtran.md`
 - AND the content does NOT contain `<available_skills>` as an injection mechanism
 
-#### Scenario: Generic asset not used for Hermes gentleman
+#### Scenario: Generic asset not used for Hermes hgtran
 
-- GIVEN persona option is `gentleman`
+- GIVEN persona option is `hgtran`
 - WHEN `personaContent(model.AgentHermes, ...)` is called
-- THEN it does NOT return content from `generic/persona-gentleman.md`
+- THEN it does NOT return content from `generic/persona-hgtran.md`
 
 ### Requirement: Hermes-Specific Persona Asset for Neutral Option
 
@@ -433,9 +433,9 @@ When persona injection runs for Hermes, the persona content MUST be written into
 
 #### Scenario: Persona injected into SOUL.md
 
-- GIVEN persona option is `gentleman` and Hermes adapter is selected
+- GIVEN persona option is `hgtran` and Hermes adapter is selected
 - WHEN persona injection runs
-- THEN `~/.hermes/SOUL.md` contains the Hermes-specific gentleman persona content within `<!-- hgtran-ai:persona -->` markers
+- THEN `~/.hermes/SOUL.md` contains the Hermes-specific hgtran persona content within `<!-- hgtran-ai:persona -->` markers
 
 ### Requirement: Persona Language Contract — Technical Artifacts in English
 
@@ -603,7 +603,7 @@ The following are out of scope for this change and MUST NOT be implemented:
 
 `internal/components/persona/inject_test.go` MUST include:
 
-- Hermes with `gentleman` option uses `hermes/persona-gentleman.md`
+- Hermes with `hgtran` option uses `hermes/persona-hgtran.md`
 - Hermes with `neutral` option uses `hermes/persona-neutral.md`
 - Non-Hermes agents with `neutral` option still use byte-identical `generic/persona-neutral.md` (no regression)
 - Hermes with `custom` option injects no persona content

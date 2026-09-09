@@ -14,7 +14,7 @@ func TestReadCurrentModelAssignments(t *testing.T) {
 
 	content := `{
   "agent": {
-    "gentle-orchestrator": { "model": "anthropic:claude-sonnet-4-20250514" },
+    "hgtran-orchestrator": { "model": "anthropic:claude-sonnet-4-20250514" },
     "sdd-apply": { "model": "openai:gpt-4o" },
     "sdd-verify": { "model": "anthropic:claude-haiku-3-20240307" },
     "some-other-agent": { "model": "anthropic:claude-sonnet-4-20250514" }
@@ -34,9 +34,10 @@ func TestReadCurrentModelAssignments(t *testing.T) {
 		providerID string
 		modelID    string
 	}{
-		{"gentle-orchestrator", "anthropic", "claude-sonnet-4-20250514"},
+		{"hgtran-orchestrator", "anthropic", "claude-sonnet-4-20250514"},
 		{"sdd-apply", "openai", "gpt-4o"},
 		{"sdd-verify", "anthropic", "claude-haiku-3-20240307"},
+		{"some-other-agent", "anthropic", "claude-sonnet-4-20250514"},
 	}
 
 	for _, tt := range tests {
@@ -52,10 +53,75 @@ func TestReadCurrentModelAssignments(t *testing.T) {
 			t.Errorf("phase %q: ModelID = %q, want %q", tt.phase, a.ModelID, tt.modelID)
 		}
 	}
+}
 
-	// unrelated agents must not be included.
-	if _, ok := got["some-other-agent"]; ok {
-		t.Error("non-SDD agent should not be in result")
+func TestDiscoverCustomAgents(t *testing.T) {
+	dir := t.TempDir()
+	settingsPath := filepath.Join(dir, "opencode.json")
+
+	content := `{
+  "agent": {
+    "hgtran-orchestrator": { "model": "anthropic/claude-sonnet-4" },
+    "sdd-apply": { "model": "openai/gpt-4o" },
+    "z-custom-agent": { "model": "anthropic/claude-haiku-3" },
+    "a-custom-agent": { "model": "openai/gpt-4o-mini" }
+  }
+}`
+	if err := os.WriteFile(settingsPath, []byte(content), 0o644); err != nil {
+		t.Fatalf("write settings: %v", err)
+	}
+
+	custom, err := DiscoverCustomAgents(settingsPath)
+	if err != nil {
+		t.Fatalf("DiscoverCustomAgents() error = %v", err)
+	}
+
+	want := []string{"a-custom-agent", "z-custom-agent"}
+	if len(custom) != len(want) {
+		t.Fatalf("DiscoverCustomAgents() len = %d, want %d; got %v", len(custom), len(want), custom)
+	}
+	for i := range want {
+		if custom[i] != want[i] {
+			t.Errorf("custom[%d] = %q, want %q", i, custom[i], want[i])
+		}
+	}
+}
+
+func TestDiscoverCustomAgentsExcludesReservedRolesAndDeduplicates(t *testing.T) {
+	dir := t.TempDir()
+	settingsPath := filepath.Join(dir, "opencode.json")
+
+	content := `{
+  "agent": {
+    "build": { "model": "openai/gpt-5" },
+    "plan": { "model": "openai/gpt-5-mini" },
+    "general": { "model": "openai/gpt-5" },
+    "explore": { "model": "openai/gpt-5-mini" },
+    "hgtran-reviewer": { "model": "openai/gpt-5" },
+    "hgtran-worker": { "model": "openai/gpt-5-mini" },
+    "sdd-orchestrator": { "model": "openai/gpt-5" },
+    "review-validator": { "model": "openai/gpt-5-mini" },
+    "a-custom-agent": { "model": "openai/gpt-5-mini" },
+    "z-custom-agent": { "model": "openai/gpt-5" },
+    "a-custom-agent": { "model": "openai/gpt-5" }
+  }
+}`
+	if err := os.WriteFile(settingsPath, []byte(content), 0o644); err != nil {
+		t.Fatalf("write settings: %v", err)
+	}
+
+	got, err := DiscoverCustomAgents(settingsPath)
+	if err != nil {
+		t.Fatalf("DiscoverCustomAgents() error = %v", err)
+	}
+	want := []string{"a-custom-agent", "z-custom-agent"}
+	if len(got) != len(want) {
+		t.Fatalf("DiscoverCustomAgents() = %v, want %v", got, want)
+	}
+	for i := range want {
+		if got[i] != want[i] {
+			t.Errorf("DiscoverCustomAgents()[%d] = %q, want %q", i, got[i], want[i])
+		}
 	}
 }
 
@@ -70,6 +136,7 @@ func TestReadCurrentModelAssignmentsIncludesReviewAgentsFromJSONC(t *testing.T) 
     "review-reliability": { "model": "openai/gpt-5" },
     "review-resilience": { "model": "anthropic/claude-sonnet-4" },
     "review-refuter": { "model": "openai/gpt-5", "variant": "high" },
+    "review-validator": { "model": "openai/gpt-5-mini" },
   },
 }`
 	if err := os.WriteFile(settingsPath, []byte(content), 0o644); err != nil {
@@ -80,7 +147,7 @@ func TestReadCurrentModelAssignmentsIncludesReviewAgentsFromJSONC(t *testing.T) 
 	if err != nil {
 		t.Fatalf("ReadCurrentModelAssignments() error = %v", err)
 	}
-	for _, agent := range []string{"review-risk", "review-readability", "review-reliability", "review-resilience", "review-refuter"} {
+	for _, agent := range []string{"review-risk", "review-readability", "review-reliability", "review-resilience", "review-refuter", "review-validator"} {
 		if got[agent].ProviderID == "" || got[agent].ModelID == "" {
 			t.Errorf("review assignment %q missing: %v", agent, got)
 		}
@@ -121,8 +188,8 @@ func TestReadCurrentModelAssignmentsMapsLegacyOrchestratorToGentleOrchestrator(t
 		t.Fatal("legacy sdd-orchestrator key should be normalized")
 	}
 	want := model.ModelAssignment{ProviderID: "anthropic", ModelID: "claude-opus-4-5"}
-	if got["gentle-orchestrator"] != want {
-		t.Fatalf("gentle-orchestrator assignment = %+v, want %+v", got["gentle-orchestrator"], want)
+	if got["hgtran-orchestrator"] != want {
+		t.Fatalf("hgtran-orchestrator assignment = %+v, want %+v", got["hgtran-orchestrator"], want)
 	}
 }
 
@@ -151,7 +218,7 @@ func TestReadCurrentModelAssignmentsPartialModels(t *testing.T) {
 	// Some agents have model, some don't
 	content := `{
   "agent": {
-    "gentle-orchestrator": { "model": "anthropic:claude-opus-4-5" },
+    "hgtran-orchestrator": { "model": "anthropic:claude-opus-4-5" },
     "sdd-apply": { "prompt": "You are a coder" },
     "sdd-verify": {}
   }
@@ -165,18 +232,18 @@ func TestReadCurrentModelAssignmentsPartialModels(t *testing.T) {
 		t.Fatalf("ReadCurrentModelAssignments() error = %v", err)
 	}
 
-	// Only gentle-orchestrator has a model — only it should appear
+	// Only hgtran-orchestrator has a model — only it should appear
 	if len(got) != 1 {
 		t.Errorf("ReadCurrentModelAssignments() len = %d, want 1; got %v", len(got), got)
 	}
 
-	a, ok := got["gentle-orchestrator"]
+	a, ok := got["hgtran-orchestrator"]
 	if !ok {
-		t.Fatal("gentle-orchestrator missing from result")
+		t.Fatal("hgtran-orchestrator missing from result")
 	}
 	want := model.ModelAssignment{ProviderID: "anthropic", ModelID: "claude-opus-4-5"}
 	if a != want {
-		t.Errorf("gentle-orchestrator assignment = %+v, want %+v", a, want)
+		t.Errorf("hgtran-orchestrator assignment = %+v, want %+v", a, want)
 	}
 }
 
@@ -187,7 +254,7 @@ func TestReadCurrentModelAssignmentsMalformedModelField(t *testing.T) {
 	// Model without colon — should be skipped without error
 	content := `{
   "agent": {
-    "gentle-orchestrator": { "model": "no-colon-here" },
+    "hgtran-orchestrator": { "model": "no-colon-here" },
     "sdd-apply": { "model": "anthropic:claude-sonnet-4-20250514" }
   }
 }`
@@ -200,8 +267,8 @@ func TestReadCurrentModelAssignmentsMalformedModelField(t *testing.T) {
 		t.Fatalf("ReadCurrentModelAssignments() error = %v", err)
 	}
 
-	// Malformed gentle-orchestrator skipped, sdd-apply parsed
-	if _, ok := got["gentle-orchestrator"]; ok {
+	// Malformed hgtran-orchestrator skipped, sdd-apply parsed
+	if _, ok := got["hgtran-orchestrator"]; ok {
 		t.Error("malformed model 'no-colon-here' should be skipped")
 	}
 	a, ok := got["sdd-apply"]
@@ -222,7 +289,7 @@ func TestReadCurrentModelAssignmentsSlashSeparator(t *testing.T) {
 
 	content := `{
   "agent": {
-    "gentle-orchestrator": { "model": "zai-coding-plan/glm-5-turbo" }
+    "hgtran-orchestrator": { "model": "zai-coding-plan/glm-5-turbo" }
   }
 }`
 	if err := os.WriteFile(settingsPath, []byte(content), 0o644); err != nil {
@@ -234,9 +301,9 @@ func TestReadCurrentModelAssignmentsSlashSeparator(t *testing.T) {
 		t.Fatalf("ReadCurrentModelAssignments() error = %v", err)
 	}
 
-	a, ok := got["gentle-orchestrator"]
+	a, ok := got["hgtran-orchestrator"]
 	if !ok {
-		t.Fatal("gentle-orchestrator missing from result — slash-separated format not parsed")
+		t.Fatal("hgtran-orchestrator missing from result — slash-separated format not parsed")
 	}
 	if a.ProviderID != "zai-coding-plan" {
 		t.Errorf("ProviderID = %q, want %q", a.ProviderID, "zai-coding-plan")
@@ -322,7 +389,7 @@ func TestReadCurrentModelAssignmentsMixedSeparators(t *testing.T) {
 
 	content := `{
   "agent": {
-    "gentle-orchestrator": { "model": "anthropic:claude-sonnet-4-20250514" },
+    "hgtran-orchestrator": { "model": "anthropic:claude-sonnet-4-20250514" },
     "sdd-apply":        { "model": "zai-coding-plan/glm-5-turbo" },
     "sdd-verify":       { "model": "openai:gpt-4o" },
     "sdd-explore":      { "model": "custom-provider/some-model-v2" }
@@ -342,7 +409,7 @@ func TestReadCurrentModelAssignmentsMixedSeparators(t *testing.T) {
 		providerID string
 		modelID    string
 	}{
-		{"gentle-orchestrator", "anthropic", "claude-sonnet-4-20250514"},
+		{"hgtran-orchestrator", "anthropic", "claude-sonnet-4-20250514"},
 		{"sdd-apply", "zai-coding-plan", "glm-5-turbo"},
 		{"sdd-verify", "openai", "gpt-4o"},
 		{"sdd-explore", "custom-provider", "some-model-v2"},

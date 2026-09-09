@@ -1,6 +1,7 @@
 package persona
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -18,6 +19,43 @@ type InjectionResult struct {
 	Files   []string
 }
 
+// PiPersonaConfigPath returns the managed Pi persona state path beneath rootDir.
+// Pi resolves this file relative to the active agent configuration root, which
+// is the user's home for global install and the workspace for workspace install.
+func PiPersonaConfigPath(rootDir string) string {
+	return filepath.Join(rootDir, ".pi", "hgtran-ai", "persona.json")
+}
+
+// InjectPiPersona writes the small runtime config consumed by hgtran-pi.
+// Custom personas remain user-owned and therefore intentionally do nothing.
+func InjectPiPersona(rootDir string, persona model.PersonaID) (InjectionResult, error) {
+	if strings.TrimSpace(rootDir) == "" {
+		return InjectionResult{}, fmt.Errorf("Pi persona root must not be empty")
+	}
+	if persona == model.PersonaCustom {
+		return InjectionResult{}, nil
+	}
+
+	mode := string(persona)
+	if mode == "" {
+		mode = string(model.PersonaGentleman)
+	}
+	content, err := json.MarshalIndent(struct {
+		Mode string `json:"mode"`
+	}{Mode: mode}, "", "  ")
+	if err != nil {
+		return InjectionResult{}, fmt.Errorf("encode Pi persona config: %w", err)
+	}
+	content = append(content, '\n')
+
+	path := PiPersonaConfigPath(rootDir)
+	writeResult, err := filemerge.WriteFileAtomic(path, content, 0o644)
+	if err != nil {
+		return InjectionResult{}, err
+	}
+	return InjectionResult{Changed: writeResult.Changed, Files: []string{path}}, nil
+}
+
 // bootstrapper is an optional adapter capability: if an adapter implements
 // this interface, any injector that writes Jinja modules will first ensure
 // the base template (entry point) exists.
@@ -32,12 +70,13 @@ func outputStyleOverlayJSON(name string) []byte {
 }
 
 // openCodeAgentOverlayJSON defines the Tab-switchable persona agent for OpenCode.
-// SDD is installed separately by the SDD component as "gentle-orchestrator";
+// SDD is installed separately by the SDD component as "hgtran-orchestrator";
 // persona injection must not create legacy SDD conductor keys.
-var openCodeAgentOverlayJSON = []byte("{\n  \"agent\": {\n    \"gentleman\": {\n      \"mode\": \"primary\",\n      \"description\": \"Senior Architect mentor - helpful first, challenging when it matters\",\n      \"prompt\": \"{file:./AGENTS.md}\",\n      \"tools\": {\n        \"write\": true,\n        \"edit\": true\n      }\n    }\n  }\n}\n")
+var openCodeAgentOverlayJSON = []byte("{\n  \"agent\": {\n    \"hgtran\": {\n      \"mode\": \"primary\",\n      \"description\": \"Senior Architect mentor - helpful first, challenging when it matters\",\n      \"prompt\": \"{file:./AGENTS.md}\"\n    }\n  }\n}\n")
+var kilocodeAgentOverlayJSON = []byte("{\n  \"agent\": {\n    \"hgtran\": {\n      \"mode\": \"primary\",\n      \"description\": \"Senior Architect mentor - helpful first, challenging when it matters\",\n      \"prompt\": \"{file:./AGENTS.md}\",\n      \"tools\": {\n        \"write\": true,\n        \"edit\": true\n      }\n    }\n  }\n}\n")
 
 // Inject performs a full persona injection: the marker-bound markdown block,
-// the OpenCode/Kilocode `gentleman` agent definition in settings JSON, AND
+// the OpenCode/Kilocode `hgtran` agent definition in settings JSON, AND
 // the Claude Code output-style overlay. Used by `hgtran-ai install`.
 func Inject(homeDir string, adapter agents.Adapter, persona model.PersonaID) (InjectionResult, error) {
 	return injectInternal(homeDir, adapter, persona, false)
@@ -49,9 +88,9 @@ func Inject(homeDir string, adapter agents.Adapter, persona model.PersonaID) (In
 //   - The Gentleman output-style file + outputStyle settings overlay (Claude
 //     Code only — no conflict with other components).
 //
-// It deliberately skips the OpenCode/Kilocode `gentleman` agent definition in
+// It deliberately skips the OpenCode/Kilocode `hgtran` agent definition in
 // opencode.json/kilocode.json: that JSON merge shares the "agent" key with
-// SDD's gentle-orchestrator overlay, so running both in the same sync clobbers
+// SDD's hgtran-orchestrator overlay, so running both in the same sync clobbers
 // each other's entries and breaks idempotency. That overlay remains an
 // install-only concern.
 func InjectForSync(homeDir string, adapter agents.Adapter, persona model.PersonaID) (InjectionResult, error) {
@@ -61,6 +100,7 @@ func InjectForSync(homeDir string, adapter agents.Adapter, persona model.Persona
 // syncManaged is the internal flag previously called `markdownOnly`.
 // When true the OpenCode/Kilocode agent overlay is skipped (see InjectForSync).
 func injectInternal(homeDir string, adapter agents.Adapter, persona model.PersonaID, syncManaged bool) (InjectionResult, error) {
+	persona = canonicalPersona(persona)
 	if !adapter.SupportsSystemPrompt() {
 		return InjectionResult{}, nil
 	}
@@ -296,7 +336,7 @@ func injectInternal(homeDir string, adapter agents.Adapter, persona model.Person
 		outputStyleContent := ""
 		switch {
 		case isGentlemanConversationPersona(persona):
-			outputStyleContent = assets.MustRead("kimi/output-style-gentleman.md")
+			outputStyleContent = assets.MustRead("kimi/output-style-hgtran.md")
 		case persona == model.PersonaNeutral:
 			outputStyleContent = assets.MustRead("kimi/output-style-neutral.md")
 		}
@@ -311,28 +351,42 @@ func injectInternal(homeDir string, adapter agents.Adapter, persona model.Person
 
 	// 2. OpenCode/Kilocode agent definitions — Tab-switchable agents in settings.
 	// Gentleman overlay creation remains install-only because this overlay shares
-	// the "agent" key in opencode.json with SDD's gentle-orchestrator overlay.
-	// Non-gentleman sync may still do a narrow cleanup of only agent.gentleman so
-	// neutral sync does not leave regional persona state behind.
+	// the "agent" key in opencode.json with SDD's hgtran-orchestrator overlay.
+	// Sync only performs narrow cleanup: OpenCode removes stale hgtran tools,
+	// while non-hgtran personas remove agent.hgtran entirely.
 	if (adapter.Agent() == model.AgentOpenCode || adapter.Agent() == model.AgentKilocode) && persona != model.PersonaCustom {
 		settingsPath := adapter.SettingsPath(homeDir)
 		if settingsPath != "" {
 			if isGentlemanConversationPersona(persona) {
 				if !syncManaged {
-					agentResult, err := mergeJSONFile(settingsPath, openCodeAgentOverlayJSON)
+					overlay, managedAgentNames := openCodeAgentOverlayJSON, []string{"hgtran"}
+					if adapter.Agent() == model.AgentKilocode {
+						overlay, managedAgentNames = kilocodeAgentOverlayJSON, nil
+					}
+					agentResult, err := mergeJSONFile(settingsPath, overlay, managedAgentNames...)
 					if err != nil {
 						return InjectionResult{}, err
 					}
 					changed = changed || agentResult.Changed
 					files = append(files, settingsPath)
 				}
+				if syncManaged && adapter.Agent() == model.AgentOpenCode {
+					cleanupResult, err := removeJSONAgentTools(settingsPath, "hgtran")
+					if err != nil {
+						return InjectionResult{}, fmt.Errorf("clean stale hgtran tools from settings: %w", err)
+					}
+					changed = changed || cleanupResult.Changed
+					if cleanupResult.Changed {
+						files = append(files, settingsPath)
+					}
+				}
 			} else {
-				// Non-gentleman: remove any residual agent.gentleman key left by a
-				// previous gentleman install. Only the "gentleman" sub-key is removed
+				// Non-hgtran: remove any residual agent.hgtran key left by a
+				// previous hgtran install. Only the "hgtran" sub-key is removed
 				// from within "agent" — other user-defined agents are preserved.
-				removed, err := removeJSONNestedSubKey(settingsPath, "agent", "gentleman")
+				removed, err := removeJSONNestedSubKey(settingsPath, "agent", "hgtran")
 				if err != nil {
-					return InjectionResult{}, fmt.Errorf("clean agent.gentleman from settings: %w", err)
+					return InjectionResult{}, fmt.Errorf("clean agent.hgtran from settings: %w", err)
 				}
 				if removed {
 					changed = true
@@ -342,78 +396,37 @@ func injectInternal(homeDir string, adapter agents.Adapter, persona model.Person
 		}
 	}
 
-	// 3. Gentleman-only: write output style + merge into settings (if agent supports it).
-	if isGentlemanConversationPersona(persona) && adapter.Agent() != model.AgentOpenClaw && adapter.SupportsOutputStyles() {
-		outputStyleDir := adapter.OutputStyleDir(homeDir)
-		if outputStyleDir != "" {
-			outputStylePath := outputStyleDir + "/gentleman.md"
-			outputStyleContent := assets.MustRead("claude/output-style-gentleman.md")
-
-			styleResult, err := filemerge.WriteFileAtomic(outputStylePath, []byte(outputStyleContent), 0o644)
+	// 3. Write the selected managed output style, then remove only the retired
+	// resources declared by the persona plan. The backup/verify callers derive
+	// their paths from this same plan.
+	plan := ResourcePlanFor(persona)
+	style, selectedStyle := plan.OutputStyle()
+	if adapter.Agent() != model.AgentOpenClaw && adapter.SupportsOutputStyles() {
+		stylePaths := plan.OutputStylePaths(adapter.OutputStyleDir(homeDir))
+		if selectedStyle && stylePaths.Write != "" {
+			styleResult, err := filemerge.WriteFileAtomic(stylePaths.Write, []byte(assets.MustRead(style.AssetPath)), 0o644)
 			if err != nil {
 				return InjectionResult{}, err
 			}
 			changed = changed || styleResult.Changed
-			files = append(files, outputStylePath)
+			files = append(files, stylePaths.Write)
 		}
 
-		// Merge "outputStyle": "Gentleman" into settings.
 		settingsPath := adapter.SettingsPath(homeDir)
-		if settingsPath != "" {
-			settingsResult, err := mergeJSONFile(settingsPath, outputStyleOverlayJSON("Gentleman"))
+		if selectedStyle && settingsPath != "" {
+			var settingsResult filemerge.WriteResult
+			var err error
+			if persona == model.PersonaNeutral {
+				settingsResult, err = mergeJSONFileToleratingMalformed(settingsPath, outputStyleOverlayJSON(style.Name))
+			} else {
+				settingsResult, err = mergeJSONFile(settingsPath, outputStyleOverlayJSON(style.Name))
+			}
 			if err != nil {
 				return InjectionResult{}, err
 			}
 			changed = changed || settingsResult.Changed
 			files = append(files, settingsPath)
-		}
-	}
-
-	// 3a. Neutral: write the Neutral output-style twin and make it the selected
-	// managed outputStyle for Claude Code.
-	if persona == model.PersonaNeutral && adapter.Agent() != model.AgentOpenClaw && adapter.SupportsOutputStyles() {
-		outputStyleDir := adapter.OutputStyleDir(homeDir)
-		if outputStyleDir != "" {
-			outputStylePath := filepath.Join(outputStyleDir, "neutral.md")
-			outputStyleContent := assets.MustRead("claude/output-style-neutral.md")
-
-			styleResult, err := filemerge.WriteFileAtomic(outputStylePath, []byte(outputStyleContent), 0o644)
-			if err != nil {
-				return InjectionResult{}, err
-			}
-			changed = changed || styleResult.Changed
-			files = append(files, outputStylePath)
-		}
-
-		settingsPath := adapter.SettingsPath(homeDir)
-		if settingsPath != "" {
-			settingsResult, err := mergeJSONFileToleratingMalformed(settingsPath, outputStyleOverlayJSON("Neutral"))
-			if err != nil {
-				return InjectionResult{}, err
-			}
-			changed = changed || settingsResult.Changed
-			files = append(files, settingsPath)
-		}
-	}
-
-	// 3b. Non-gentleman cleanup: remove residual Gentleman output-style artifacts
-	// left by a previous install when the user switches away from the gentleman persona.
-	if !isGentlemanConversationPersona(persona) && adapter.Agent() != model.AgentOpenClaw && adapter.SupportsOutputStyles() {
-		outputStyleDir := adapter.OutputStyleDir(homeDir)
-		if outputStyleDir != "" {
-			outputStylePath := outputStyleDir + "/gentleman.md"
-			styleRemoved, err := removeFileAtomic(outputStylePath)
-			if err != nil {
-				return InjectionResult{}, fmt.Errorf("remove gentleman output style: %w", err)
-			}
-			if styleRemoved {
-				changed = true
-				files = append(files, outputStylePath)
-			}
-		}
-
-		settingsPath := adapter.SettingsPath(homeDir)
-		if settingsPath != "" {
+		} else if settingsPath != "" {
 			removed, err := removeJSONKeyIfValue(settingsPath, "outputStyle", "Gentleman")
 			if err != nil {
 				return InjectionResult{}, fmt.Errorf("clean outputStyle from settings: %w", err)
@@ -421,6 +434,17 @@ func injectInternal(homeDir string, adapter agents.Adapter, persona model.Person
 			if removed {
 				changed = true
 				files = append(files, settingsPath)
+			}
+		}
+
+		for _, retiredPath := range stylePaths.Remove {
+			styleRemoved, err := removeFileAtomic(retiredPath)
+			if err != nil {
+				return InjectionResult{}, fmt.Errorf("remove retired output style: %w", err)
+			}
+			if styleRemoved {
+				changed = true
+				files = append(files, retiredPath)
 			}
 		}
 	}
@@ -463,7 +487,7 @@ func injectOpenClawSoulPersona(workspaceDir, content string) (InjectionResult, e
 // or any other managed marker — their presence does not prove that the
 // pre-marker content is installer-owned.
 // isExactLegacyPersonaAsset returns true when the file content is an exact
-// match of one of the known persona assets (gentleman or neutral). This handles
+// match of one of the known persona assets (hgtran or neutral). This handles
 // the case where an old installer wrote the asset as the entire file with no
 // markers — we can safely replace it because there is zero user content.
 func isExactLegacyPersonaAsset(existing string) bool {
@@ -472,8 +496,8 @@ func isExactLegacyPersonaAsset(existing string) bool {
 		return false
 	}
 	for _, assetPath := range []string{
-		"opencode/persona-gentleman.md",
-		"generic/persona-gentleman.md",
+		"opencode/persona-hgtran.md",
+		"generic/persona-hgtran.md",
 		"generic/persona-neutral.md",
 	} {
 		asset := strings.TrimSpace(assets.MustRead(assetPath))
@@ -488,8 +512,12 @@ func shouldStripManagedLegacyPersona(existing string) bool {
 	return strings.Contains(existing, "<!-- hgtran-ai:persona -->")
 }
 
+// isGentlemanConversationPersona reports whether the persona keeps the voseo
+// conversation tone. The hgtran-neutral-artifacts legacy alias is remapped
+// to neutral (cli.normalizePersona in internal/cli/validate.go, mirrored at
+// the injectInternal entry) and is intentionally NOT hgtran here.
 func isGentlemanConversationPersona(persona model.PersonaID) bool {
-	return persona == model.PersonaGentleman || persona == model.PersonaGentlemanNeutralArtifacts
+	return persona == model.PersonaGentleman
 }
 
 // residualChannel reports whether the adapter already delivers tone/language/
@@ -505,6 +533,7 @@ func residualChannel(adapter agents.Adapter) bool {
 
 // personaContent returns the persona asset for the given agent and persona.
 func personaContent(agent model.AgentID, persona model.PersonaID, residualContentAvailable bool) string {
+	persona = canonicalPersona(persona)
 	switch persona {
 	case model.PersonaNeutral:
 		return neutralPersonaContent(agent, residualContentAvailable)
@@ -535,24 +564,30 @@ func gentlemanPersonaContent(agent model.AgentID) string {
 	// Neutral, there is no separate residual variant to choose here.
 	switch agent {
 	case model.AgentClaudeCode:
-		return assets.MustRead("claude/persona-gentleman.md")
+		return assets.MustRead("claude/persona-hgtran.md")
 	case model.AgentOpenCode, model.AgentKilocode:
-		return assets.MustRead("opencode/persona-gentleman.md")
+		return assets.MustRead("opencode/persona-hgtran.md")
 	case model.AgentKimi:
-		return assets.MustRead("kimi/persona-gentleman.md")
+		return assets.MustRead("kimi/persona-hgtran.md")
 	case model.AgentKiroIDE:
-		return assets.MustRead("kiro/persona-gentleman.md")
+		return assets.MustRead("kiro/persona-hgtran.md")
 	case model.AgentHermes:
-		return assets.MustRead("hermes/persona-gentleman.md")
+		return assets.MustRead("hermes/persona-hgtran.md")
 	default:
-		return assets.MustRead("generic/persona-gentleman.md")
+		return assets.MustRead("generic/persona-hgtran.md")
 	}
 }
 
-func mergeJSONFile(path string, overlay []byte) (filemerge.WriteResult, error) {
+func mergeJSONFile(path string, overlay []byte, managedAgentNames ...string) (filemerge.WriteResult, error) {
 	baseJSON, err := osReadFile(path)
 	if err != nil {
 		return filemerge.WriteResult{}, err
+	}
+	if len(managedAgentNames) > 0 {
+		baseJSON, err = filemerge.RemoveJSONAgentTools(baseJSON, managedAgentNames...)
+		if err != nil {
+			return filemerge.WriteResult{}, err
+		}
 	}
 
 	merged, err := filemerge.MergeJSONObjects(baseJSON, overlay)
@@ -561,6 +596,24 @@ func mergeJSONFile(path string, overlay []byte) (filemerge.WriteResult, error) {
 	}
 
 	return filemerge.WriteFileAtomic(path, merged, 0o644)
+}
+
+func removeJSONAgentTools(path string, names ...string) (filemerge.WriteResult, error) {
+	baseJSON, err := osReadFile(path)
+	if err != nil {
+		return filemerge.WriteResult{}, err
+	}
+	if baseJSON == nil {
+		return filemerge.WriteResult{}, nil
+	}
+	cleaned, err := filemerge.RemoveJSONAgentTools(baseJSON, names...)
+	if err != nil {
+		return filemerge.WriteResult{}, err
+	}
+	if bytes.Equal(cleaned, baseJSON) {
+		return filemerge.WriteResult{}, nil
+	}
+	return filemerge.WriteFileAtomic(path, cleaned, 0o644)
 }
 
 func mergeJSONFileToleratingMalformed(path string, overlay []byte) (filemerge.WriteResult, error) {

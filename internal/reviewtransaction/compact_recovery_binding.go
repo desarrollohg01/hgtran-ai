@@ -1,4 +1,5 @@
 package reviewtransaction
+<<<<<<< HEAD
 
 import (
 	"context"
@@ -344,3 +345,5 @@ func compactRecoveryRelationSnapshot(ctx context.Context, repo string, binding c
 	frozen.PathsDigest = digestPaths(paths)
 	return frozen, nil
 }
+=======
+>>>>>>> v2.5.0

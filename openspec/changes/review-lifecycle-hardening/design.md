@@ -205,7 +205,7 @@ Every issue is RED-first. Unit proof lives next to the seam; each issue addition
 | `TestOrganicReviewRecoveryGraph` | `issue-1744`, `issue-1816`, and `issue-1782` — the last is a **gate** scenario, not a recovery one: build receipts X→A, A→B, B→C with the tracker branch at A, then assert `review validate --gate pre-pr --base-ref origin/tracker` returns allow instead of `"compact receipt chain contains a convergence"`; control case deletes the X→A lineage and must return the same allow |
 | `TestOrganicReviewStoreRobustness` | `issue-1813` |
 
-Each journey builds its fixture once with the existing harness and reuses it across its subtests: `harness.writeFiles`, `harness.startReview`, `harness.runActor`, `harness.approveReview`, `harness.finalize`, `harness.gate` / `harness.gateAllowFailure`, `harness.gentle` / `harness.gentleAllowFailure`. Every journey ends with `harness.assertNoSDDArtifacts()` and `harness.assertSingleReviewLineage()`; byte-identity claims use `harness.lineageDigest(lineage)` captured before and after.
+Each journey builds its fixture once with the existing harness and reuses it across its subtests: `harness.writeFiles`, `harness.startReview`, `harness.runActor`, `harness.approveReview`, `harness.finalize`, `harness.gate` / `harness.gateAllowFailure`, `harness.hgtran` / `harness.gentleAllowFailure`. Every journey ends with `harness.assertNoSDDArtifacts()` and `harness.assertSingleReviewLineage()`; byte-identity claims use `harness.lineageDigest(lineage)` captured before and after.
 
 | Layer | What | Approach |
 |---|---|---|

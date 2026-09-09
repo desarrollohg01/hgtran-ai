@@ -37,7 +37,7 @@ symlink work there cannot be verified until the package finishes.
 ## Phase 3: `e2e/organicruntime`
 
 - [ ] T-10 Establish why it exceeds 10 minutes. It is not the same cause as `reviewtransaction`:
-      its log shows a `git clone` of gentleman-guardian-angel failing on `open /dev/tty`, which
+      its log shows a `git clone` of hgtran-guardian-angel failing on `open /dev/tty`, which
       means it wants an interactive terminal it will never get in a headless run
 - [ ] T-11 Either give it a non-interactive path or take it out of the default gate explicitly
 

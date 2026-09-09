@@ -131,7 +131,7 @@ Strict TDD is active. Required full test runner: `go test ./...`; use targeted p
 
 ## 4. Documentation
 
-### 4.1 Document upstream `gentle-engram` contract handoff
+### 4.1 Document upstream `hgtran-engram` contract handoff
 
 - [x] Add a short contract note (e.g. `docs/engram-protocol-flag-contract.md`, or extend design.md's Decision 5 with an explicit handoff pointer) stating the three guarantees the sibling change MUST provide: (a) `--protocol` MUST appear in `engram setup --help` stdout for the probe to detect support, (b) the probe MUST be able to run with stdin detached/non-TTY without the binary blocking on interactive input, (c) forwarding is per-slug with safest-wins semantics when a slug is shared by adapters with divergent verdicts. This documents the handoff only — the upstream `--protocol` flag implementation itself is out of scope for this change. (Spec: adjacent to Version-gated protocol-verbosity forwarding to engram setup — documents the contract this change depends on)
 - [x] Evidence: file exists and cross-referenced from `proposal.md`'s Dependencies section.

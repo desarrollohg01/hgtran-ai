@@ -772,7 +772,7 @@ func TestDownloadLatestBinaryIgnoresHgtranEngramAndPiTags(t *testing.T) {
 			w.WriteHeader(http.StatusOK)
 			w.Write(tarContent)
 		default:
-			t.Fatalf("unexpected request path (should be core engram v%s, not gentle-engram/pi): %s?%s",
+			t.Fatalf("unexpected request path (should be core engram v%s, not hgtran-engram/pi): %s?%s",
 				binaryVersion, r.URL.Path, r.URL.RawQuery)
 		}
 	}))
@@ -1203,7 +1203,7 @@ func TestCanonicalEngramGoInstallPackagePreservesDeclaredModuleCasing(t *testing
 		},
 		{
 			name: "upstream owner is redirected at a pinned version",
-			pkg:  "github.com/gentleman-programming/engram/cmd/engram@v1.2.3",
+			pkg:  "github.com/hgtran-programming/engram/cmd/engram@v1.2.3",
 			want: "github.com/desarrollohg01/engram/cmd/engram@v1.2.3",
 		},
 		{

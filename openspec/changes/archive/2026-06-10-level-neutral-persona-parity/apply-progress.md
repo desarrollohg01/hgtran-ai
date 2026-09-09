@@ -8,7 +8,7 @@ success
 
 - [x] 1.1 Add failing asset tests in `internal/assets/language_contract_test.go` for generic/hermes neutral parity, interaction discipline, artifact language, and banned regional voice.
 - [x] 1.2 Add failing embed coverage in `internal/assets/assets_test.go` for `claude/output-style-neutral.md` and `kimi/output-style-neutral.md`.
-- [x] 1.3 Replace neutral expectations in `internal/components/persona/inject_test.go`: Claude writes Neutral style/settings, Kimi style is non-empty, OpenCode/Kilocode sync cleanup removes only `agent.gentleman`.
+- [x] 1.3 Replace neutral expectations in `internal/components/persona/inject_test.go`: Claude writes Neutral style/settings, Kimi style is non-empty, OpenCode/Kilocode sync cleanup removes only `agent.hgtran`.
 - [x] 1.4 Update `internal/cli/sync_test.go` fallback cases to expect neutral for missing/invalid state and preserve explicit selections.
 - [x] 2.1 Update `internal/assets/generic/persona-neutral.md` with mentor parity, short replies, one-question stop, no-menu default, verification-first, and artifact-language boundary.
 - [x] 2.2 Update `internal/assets/hermes/persona-neutral.md` with the same contract while preserving Hermes identity, skill, and memory mechanics.
@@ -16,7 +16,7 @@ success
 - [x] 2.4 Create `internal/assets/kimi/output-style-neutral.md` with meaningful non-empty neutral output-style content.
 - [x] 3.1 Update `internal/components/persona/inject.go` to write Claude `neutral.md`, set `outputStyle: "Neutral"`, remove stale Gentleman managed artifacts, preserve other settings, and remain idempotent.
 - [x] 3.2 Update Kimi Jinja module injection to write neutral output style from `kimi/output-style-neutral.md`.
-- [x] 3.3 Update OpenCode/Kilocode sync-managed neutral cleanup to remove only `agent.gentleman` while preserving sibling `agent` entries and tolerating malformed JSON.
+- [x] 3.3 Update OpenCode/Kilocode sync-managed neutral cleanup to remove only `agent.hgtran` while preserving sibling `agent` entries and tolerating malformed JSON.
 - [x] 3.4 Update `internal/cli/sync.go` `applyResolvedPersona` comments and fallback logic so missing/invalid/unreadable persisted persona resolves to `model.PersonaNeutral`.
 - [x] 4.1 Refactor duplicated test assertions into small helpers without weakening failure messages.
 - [x] 4.2 Update golden fixtures affected by neutral persona output.

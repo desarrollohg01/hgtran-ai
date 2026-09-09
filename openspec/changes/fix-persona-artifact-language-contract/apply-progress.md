@@ -16,7 +16,7 @@
 - Added OpenCode/Kilocode generated settings regression coverage for known leak terms.
 - Added OpenCode shared prompt coverage for delegated SDD phase prompt files.
 - Added installed `comment-writer` coverage through the skills component.
-- Added `gentleman-neutral-artifacts` model, CLI validation, TUI option, review label, and persona injection support.
+- Added `hgtran-neutral-artifacts` model, CLI validation, TUI option, review label, and persona injection support.
 - Normalized all SDD orchestrator assets with the three-domain language contract.
 - Replaced OpenCode Spanish preflight voseo leaks with neutral/professional Spanish.
 - Updated preserved OpenCode preflight migration text to avoid regenerating old voseo wording.
@@ -29,7 +29,7 @@
 
 - `internal/assets/language_contract_test.go`
 - `internal/assets/*/sdd-orchestrator.md`
-- `internal/assets/*/persona-gentleman.md`
+- `internal/assets/*/persona-hgtran.md`
 - `internal/assets/generic/persona-neutral.md`
 - `internal/assets/skills/comment-writer/SKILL.md`
 - `internal/assets/skills/sdd-*/SKILL.md`
@@ -56,7 +56,7 @@
 | SDD asset language contract | `internal/assets/language_contract_test.go` | Unit/asset guard | N/A new test file | Failed on all orchestrator assets missing contract | Passed after adding contract to all SDD orchestrators | Covered direct asset enumeration and supported-agent matrix | `gofmt`, helpers reused |
 | Comment-writer contract | `internal/assets/language_contract_test.go`, `internal/components/skills/inject_test.go` | Unit/install component | N/A new tests | Failed on root/embedded/installed skill missing target-context wording | Passed after root and embedded skill update | Covered source files and installed OpenCode output | `gofmt` |
 | OpenCode/Kilocode generated prompts | `internal/components/sdd/inject_test.go`, `internal/components/sdd/prompts_test.go` | Component | Existing package later run | Failed on generated settings/shared prompts missing contract and asset selection missing Kilocode | Passed after SDD asset selection, migration text, and phase skill updates | Covered OpenCode, Kilocode, and shared prompt files | `gofmt`, golden regeneration |
-| `gentleman-neutral-artifacts` support | `internal/cli/persona_language_contract_test.go`, `internal/tui/screens/persona_language_contract_test.go`, `internal/components/persona/persona_language_contract_test.go` | Unit/component | N/A new tests | Compile failed because `PersonaGentlemanNeutralArtifacts` was undefined | Passed after model, CLI, TUI, and persona injection support | Covered CLI normalization, TUI rendering, and OpenCode persona injection | `gofmt` |
+| `hgtran-neutral-artifacts` support | `internal/cli/persona_language_contract_test.go`, `internal/tui/screens/persona_language_contract_test.go`, `internal/components/persona/persona_language_contract_test.go` | Unit/component | N/A new tests | Compile failed because `PersonaGentlemanNeutralArtifacts` was undefined | Passed after model, CLI, TUI, and persona injection support | Covered CLI normalization, TUI rendering, and OpenCode persona injection | `gofmt` |
 | Golden fixtures | existing `internal/components/golden_test.go` | Golden/integration | Failed after behavior changes | Golden mismatches showed generated outputs needed update | Passed after `go test ./internal/components/ -run 'TestGolden' -update` | Covered SDD/persona outputs across agent families | Full component and full suite rerun |
 
 ## Test Commands Run
@@ -80,7 +80,7 @@
 
 ## Deviations From Design
 
-- Implemented `gentleman-neutral-artifacts` support because discovery confirmed it was missing and tasks marked it conditional in scope.
+- Implemented `hgtran-neutral-artifacts` support because discovery confirmed it was missing and tasks marked it conditional in scope.
 - OpenClaw and Trae markdown-section SDD injection now route through `sddOrchestratorAsset(adapter.Agent())`, so they receive the generic SDD orchestrator instead of the Claude-specific asset.
 - Root and embedded `comment-writer` are behaviorally aligned, not byte-for-byte identical.
 

@@ -3,30 +3,26 @@
 // This file used to be shadow_identity.go, part of the read-only shadow of
 // the target RDD relation model
 // (docs/architecture/rdd-root-simplification-design.md). Promotion means it
+<<<<<<< HEAD
 // now serves both the shadow observer (shadow_observer.go, still gated by
 // HGTRAN_AI_RDD_SHADOW) and the live ReviewCore (Wave 3 Slice 3+). It
 // reuses live production primitives (OpenRepositoryIdentityLease,
+=======
+// now serves the live ReviewCore (Wave 3 Slice 3+) directly — the Wave 1
+// shadow observer that used to independently resolve candidate identity
+// from a selector (shadowSelector/shadowCandidateIdentity and everything
+// they called) retired in Wave 7 S2a, along with that whole resolver
+// subsystem, since FreezeCandidateIdentity (review_core.go) never used it —
+// it already holds a Snapshot and calls only shadowChangedPathsModesDigest
+// below. It reuses live production primitives (OpenRepositoryIdentityLease,
+>>>>>>> v2.5.0
 // SnapshotBuilder) rather than restating their logic, and must still never
 // mutate authority state, a Store, or a CompactState — see
-// candidate_readonly_guard_test.go (promoted files) and
-// shadow_readonly_guard_test.go (remaining shadow_*.go files) for the AST
-// guards that enforce this.
+// candidate_readonly_guard_test.go for the AST guard that enforces this.
 //
 // CandidateIdentity is the only symbol this slice exports (design decision
-// 1); everything else here stays unexported until the relation algebra
-// (Slice 3) and observer (Slice 5) need it. Its unexported helper names
-// (shadowSelector, shadowCandidateIdentity, etc.) are unchanged by this
-// promotion — design decision 2 renames only shadowRelate/ShadowRelation.
+// 1).
 package reviewtransaction
-
-import (
-	"context"
-	"crypto/sha256"
-	"encoding/hex"
-	"errors"
-	"fmt"
-	"strings"
-)
 
 // CandidateIdentity is the canonical shadow candidate identity computed from
 // any of the four Wave 1 selector variants (workspace, staged,
@@ -50,6 +46,7 @@ type CandidateIdentity struct {
 	// caller has no live policy hash to supply.
 	PolicyHash string
 }
+<<<<<<< HEAD
 
 // shadowSelectorKind names one of the four Wave 1 selector variants. It
 // normalizes into the same CandidateIdentity shape without a distinct
@@ -359,3 +356,5 @@ func nonNilShadowPaths(paths []string) []string {
 	}
 	return paths
 }
+=======
+>>>>>>> v2.5.0

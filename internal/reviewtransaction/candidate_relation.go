@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // Package reviewtransaction — candidate relation algebra (Wave 1 Slice 3;
 // promoted out of the shadow gate in Wave 3 Slice 1, design decision 2).
 // This file used to be shadow_relation.go, part of the read-only shadow of
@@ -16,21 +17,11 @@
 // CandidateRelation is the second symbol this slice exports (design
 // decision 1, after Slice 2's CandidateIdentity); everything else here
 // stays unexported until the observer (Slice 5) or ReviewCore need it.
+=======
+>>>>>>> v2.5.0
 package reviewtransaction
 
-import (
-	"context"
-	"sync"
-)
-
-// CandidateRelation is the exact seven-value relation vocabulary
-// (Requirement: Seven-Value Relation Output,
-// openspec/changes/rdd-root-simplification-wave1/specs/rdd-candidate-relation-algebra/spec.md:9-11).
-// No eighth value is ever produced.
-//
-// ShadowRelation is a type alias (Wave 3 Slice 1, design decision 2) kept
-// so shadow_observer.go and Wave 1's tests keep compiling unchanged after
-// the promotion rename — it is the exact same type, not a distinct one.
+// CandidateRelation is the closed relation vocabulary used by compact gate verdicts.
 type CandidateRelation string
 
 type ShadowRelation = CandidateRelation
@@ -44,6 +35,7 @@ const (
 	ShadowRelationAmbiguous             CandidateRelation = "ambiguous"
 	ShadowRelationUnknown               CandidateRelation = "unknown"
 )
+<<<<<<< HEAD
 
 // shadowRelationInput is the pure evaluation input (design.md "Interfaces /
 // Contracts"). LiveUnresolvable is a design elaboration beyond the design's
@@ -233,3 +225,5 @@ func shadowRelationHasNoLiveCounterpart(relation ShadowRelation) bool {
 		return false
 	}
 }
+=======
+>>>>>>> v2.5.0

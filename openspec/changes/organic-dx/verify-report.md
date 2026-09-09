@@ -27,7 +27,7 @@ build_output_hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca49599
 | `go run ./internal/gofmtcheck` | 0 | *(empty)* |
 | `go vet ./...` | 0 | *(empty)* |
 | `go test ./... -count=1` | 0 | 64 packages `ok`, 0 `FAIL`. Key timings: `e2e/organicruntime` 80.504s, `internal/cli` 91.022s, `internal/reviewtransaction` 111.494s, `internal/sddstatus` 20.588s, `internal/components` 1.321s, `internal/assets` 0.030s |
-| `go test ./e2e/organicruntime -count=1 -timeout=15m` | 0 | `ok github.com/gentleman-programming/gentle-ai/e2e/organicruntime 79.228s` |
+| `go test ./e2e/organicruntime -count=1 -timeout=15m` | 0 | `ok github.com/desarrollohg01/hgtran-ai/e2e/organicruntime 79.228s` |
 
 Whole-repo run confirms task 7.6's golden-fixture fix holds: `internal/components` (the package whose `testdata/golden/*.golden` still pinned the pre-Phase-1 "default to **Interactive**" sentence) is green.
 

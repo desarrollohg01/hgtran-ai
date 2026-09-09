@@ -2,7 +2,7 @@
 
 ## Intent
 
-The Gentleman/Neutral persona tone is injected TWICE per session on Claude Code and Kimi: once as a system-prompt section (`persona-*.md`) and again as an output style (`output-style-*.md`, a Jinja module on Kimi). Beyond token waste, the two copies have DRIFTED — `claude/persona-gentleman.md` and `claude/output-style-gentleman.md` are independently-authored paraphrases, not copies. Make the output style the single canonical channel for tone/language/philosophy, reconcile the drift, and slim the system-prompt section to action/tooling residuals only.
+The Gentleman/Neutral persona tone is injected TWICE per session on Claude Code and Kimi: once as a system-prompt section (`persona-*.md`) and again as an output style (`output-style-*.md`, a Jinja module on Kimi). Beyond token waste, the two copies have DRIFTED — `claude/persona-hgtran.md` and `claude/output-style-hgtran.md` are independently-authored paraphrases, not copies. Make the output style the single canonical channel for tone/language/philosophy, reconcile the drift, and slim the system-prompt section to action/tooling residuals only.
 
 ## Scope
 
@@ -35,7 +35,7 @@ The Gentleman/Neutral persona tone is injected TWICE per session on Claude Code 
 | Area | Impact | Description |
 |------|--------|-------------|
 | `internal/components/persona/inject.go` | Modified | Residual selection for Claude + Kimi carve-out. |
-| `internal/assets/claude/persona-gentleman.md`, `generic/persona-neutral.md` | Modified | Slim to residual block. |
+| `internal/assets/claude/persona-hgtran.md`, `generic/persona-neutral.md` | Modified | Slim to residual block. |
 | `internal/assets/kimi/persona-*.md` | Modified | Slim to residual block. |
 | `internal/assets/claude/output-style-*.md`, `kimi/output-style-*.md` | Modified | Absorb reconciled canonical tone (drift fix). |
 | `internal/components/persona/inject_test.go` | Modified | Rewrite persona assertions RED-first. |

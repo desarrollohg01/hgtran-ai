@@ -8,7 +8,7 @@ For any adapter with an active output-style channel — Claude Code (gated by `S
 
 #### Scenario: Claude and Kimi residual sections carry no tone content
 
-- GIVEN Claude or Kimi assets are generated with persona `gentleman` or `neutral`
+- GIVEN Claude or Kimi assets are generated with persona `hgtran` or `neutral`
 - WHEN the CLAUDE.md or KIMI.md-included persona section is inspected
 - THEN it contains only Rules, Expertise, Contextual Skill Loading, a pointer to the output style, and any agent-native tooling section identified in the design's disposition tables (Kimi: `## Kimi-native notes`)
 - AND it contains no tone, language, or philosophy prose

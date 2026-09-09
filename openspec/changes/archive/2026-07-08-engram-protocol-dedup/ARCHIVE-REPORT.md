@@ -82,7 +82,7 @@ All change folder contents preserved in archive:
 ## Key Design Decisions
 
 1. **Single canonical asset** (`internal/assets/engram/protocol.md`) with 4 paired markers (full, slim, passive-capture, compact)
-2. **Version floor for Claude Code**: engram ≥ v1.4.0 (researched in gentle-engram repo, verified commit 281bb1e)
+2. **Version floor for Claude Code**: engram ≥ v1.4.0 (researched in hgtran-engram repo, verified commit 281bb1e)
 3. **Per-adapter slim/full selection**: Claude Code → slim (gated on version floor); 15 adapters → full; Pi → no protocol text (precedent)
 4. **Probe-and-forward strategy**: `ProbeProtocolFlag(ctx)` side-effect-free `--help` probe with 5s deadline, stdin detached; timeout/error → omit flag (safe default)
 5. **Per-slug forwarding**: safest-wins (full-wins) reduction across adapters sharing a setup slug
@@ -90,7 +90,7 @@ All change folder contents preserved in archive:
 ## Upstream Dependencies
 
 **Pending Sibling Change** (out of scope for this change):
-- gentle-engram: `engram setup --protocol=<slim|full>` implementation
+- hgtran-engram: `engram setup --protocol=<slim|full>` implementation
 - Contract documented in `upstream-protocol-flag-contract.md` (3 guarantees: discoverability via `--help`, stdin-detached non-blocking probe, per-slug safest-wins semantics)
 - This change ships independently; `--protocol` flag activates once upstream binary supports it
 

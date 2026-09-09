@@ -14,12 +14,12 @@ Root cause: all six persona assets across `claude/`, `opencode/`, `generic/`, `k
 
 | File | Variant | Directive wording |
 |------|---------|-------------------|
-| `internal/assets/claude/persona-gentleman.md` | Claude | Names the built-in `Skill` tool |
-| `internal/assets/opencode/persona-gentleman.md` | non-Claude | "read the matching SKILL.md (using your agent's read mechanism)" |
-| `internal/assets/generic/persona-gentleman.md` | non-Claude | same as opencode |
+| `internal/assets/claude/persona-hgtran.md` | Claude | Names the built-in `Skill` tool |
+| `internal/assets/opencode/persona-hgtran.md` | non-Claude | "read the matching SKILL.md (using your agent's read mechanism)" |
+| `internal/assets/generic/persona-hgtran.md` | non-Claude | same as opencode |
 | `internal/assets/generic/persona-neutral.md` | non-Claude | same as opencode |
-| `internal/assets/kiro/persona-gentleman.md` | non-Claude | same as opencode |
-| `internal/assets/kimi/persona-gentleman.md` | non-Claude | same as opencode |
+| `internal/assets/kiro/persona-hgtran.md` | non-Claude | same as opencode |
+| `internal/assets/kimi/persona-hgtran.md` | non-Claude | same as opencode |
 
 ## Work Units
 

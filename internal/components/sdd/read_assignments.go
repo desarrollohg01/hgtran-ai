@@ -2,6 +2,7 @@ package sdd
 
 import (
 	"os"
+	"sort"
 
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/filemerge"
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
@@ -12,13 +13,26 @@ import (
 // opencode.json. It includes SDD, Judgment Day, review, and coordinator agents.
 var configurableAgentSet = buildConfigurableAgentSet()
 
+// reservedAgentSet contains native and package-owned roles that must not be
+// reclassified as user-defined custom agents when their config entries exist.
+var reservedAgentSet = map[string]bool{
+	"build":               true,
+	"plan":                true,
+	"general":             true,
+	"explore":             true,
+	"hgtran-reviewer":     true,
+	"hgtran-worker":       true,
+	"hgtran-orchestrator": true,
+	"sdd-orchestrator":    true,
+}
+
 func buildConfigurableAgentSet() map[string]bool {
 	phases := opencode.ConfigurableAgentPhases()
 	set := make(map[string]bool, len(phases)+1)
 	for _, p := range phases {
 		set[p] = true
 	}
-	set["gentle-orchestrator"] = true
+	set["hgtran-orchestrator"] = true
 	// Backward-compatible read alias for configs that have not been synced yet.
 	set["sdd-orchestrator"] = true
 	return set
@@ -32,15 +46,13 @@ func ReadCurrentProfiles(settingsPath string) ([]model.Profile, error) {
 }
 
 // ReadCurrentModelAssignments reads the agent definitions from opencode.json
-// at settingsPath and extracts the "model" field for each configurable agent.
+// at settingsPath and extracts the "model" field for each configurable or custom agent.
 //
-// Only agents whose names match a configurable agent phase (SDD phases, JD agents
-// via opencode.ConfigurableAgentPhases()) or "gentle-orchestrator" are included.
 // Agents without a "model" field, or with a malformed model value, are silently
 // skipped.
 //
 // Returns an empty map (no error) when the file does not exist, contains no
-// "agent" key, or has no matching phase agents with a valid model field.
+// "agent" key, or has no phase/custom agents with a valid model field.
 func ReadCurrentModelAssignments(settingsPath string) (map[string]model.ModelAssignment, error) {
 	data, err := os.ReadFile(settingsPath)
 	if err != nil {
@@ -67,9 +79,6 @@ func ReadCurrentModelAssignments(settingsPath string) (map[string]model.ModelAss
 
 	result := make(map[string]model.ModelAssignment)
 	for name, defRaw := range agentMap {
-		if !configurableAgentSet[name] {
-			continue
-		}
 		defMap, ok := defRaw.(map[string]any)
 		if !ok {
 			continue
@@ -84,7 +93,7 @@ func ReadCurrentModelAssignments(settingsPath string) (map[string]model.ModelAss
 		}
 		assignmentKey := name
 		if name == "sdd-orchestrator" {
-			assignmentKey = "gentle-orchestrator"
+			assignmentKey = "hgtran-orchestrator"
 			if _, hasGentleOrchestrator := result[assignmentKey]; hasGentleOrchestrator {
 				continue
 			}
@@ -98,4 +107,43 @@ func ReadCurrentModelAssignments(settingsPath string) (map[string]model.ModelAss
 	}
 
 	return result, nil
+}
+
+// DiscoverCustomAgents inspects opencode.json at settingsPath and returns a sorted
+// slice of custom agent keys defined under "agent" that are not part of the standard
+// configurable agent set.
+func DiscoverCustomAgents(settingsPath string) ([]string, error) {
+	data, err := os.ReadFile(settingsPath)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return nil, nil
+		}
+		return nil, err
+	}
+
+	root, err := filemerge.UnmarshalJSONObject(data)
+	if err != nil {
+		return nil, nil
+	}
+
+	agentRaw, ok := root["agent"]
+	if !ok {
+		return nil, nil
+	}
+	agentMap, ok := agentRaw.(map[string]any)
+	if !ok {
+		return nil, nil
+	}
+
+	var custom []string
+	for name := range agentMap {
+		if !configurableAgentSet[name] && !reservedAgentSet[name] {
+			custom = append(custom, name)
+		}
+	}
+
+	sort.Slice(custom, func(i, j int) bool {
+		return custom[i] < custom[j]
+	})
+	return custom, nil
 }

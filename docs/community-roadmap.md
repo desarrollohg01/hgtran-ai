@@ -4,7 +4,7 @@ Where to find work that is ready to be picked up, and what "ready" means here.
 
 ## Start here
 
-**[→ Every issue currently up for grabs](https://github.com/Gentleman-Programming/gentle-ai/issues?q=is%3Aissue+is%3Aopen+label%3Aup-for-grabs)**
+**[→ Every issue currently up for grabs](https://github.com/Gentleman-Programming/hgtran-ai/issues?q=is%3Aissue+is%3Aopen+label%3Aup-for-grabs)**
 
 That link is the roadmap. It is a live query, not a list maintained by hand, so
 it can never go stale the way a copied table does.
@@ -52,7 +52,7 @@ explanation; some low-priority ones touch a lot of surface.
 
 ## If you have a Windows machine
 
-[#1983](https://github.com/Gentleman-Programming/gentle-ai/issues/1983) is the
+[#1983](https://github.com/Gentleman-Programming/hgtran-ai/issues/1983) is the
 most valuable thing an outside contributor can do right now, and it is hard for
 the maintainers to do well because it needs a real Windows box.
 
@@ -68,7 +68,7 @@ gating releases. When they are green it moves back and gates again.
 ## If you want something smaller
 
 Sort the query by
-[`type:docs`](https://github.com/Gentleman-Programming/gentle-ai/issues?q=is%3Aissue+is%3Aopen+label%3Aup-for-grabs+label%3Atype%3Adocs)
+[`type:docs`](https://github.com/Gentleman-Programming/hgtran-ai/issues?q=is%3Aissue+is%3Aopen+label%3Aup-for-grabs+label%3Atype%3Adocs)
 or look for issues whose body already contains the diagnosis — several name the
 exact function and the reason the current code is wrong, which turns the work
 into applying a decision rather than making one.
@@ -77,12 +77,13 @@ into applying a decision rather than making one.
 
 Before changing review, delivery or SDD behaviour, read:
 
-- [Organic RDD architecture](architecture/organic-rdd.md) — how a candidate
-  becomes a receipt, and what each gate validates
+- [Organic RDD architecture](architecture/organic-rdd.md) — how a candidate is
+  reviewed as evidence while ordinary repository policy controls delivery
 - [Review authority threat model](review-authority-threat-model.md) — what the
   authority store defends against, and what it deliberately does not
 - [Organic implementation routing](trigger-rules.md) — how work is routed
   before review ever runs
 
-RDD is **Receipt-Driven Development**. The receipt is what every delivery gate
-validates; reviewing is one step on the way to producing it.
+RDD is **Receipt-Driven Development**. Its review evidence never authorizes
+commit, push, PR, release, or archive; reviewing is separate from ordinary
+repository delivery policy.

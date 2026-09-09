@@ -29,7 +29,7 @@
 ## Phase 3: Registration & Wiring
 
 - [ ] T-07 Modify `internal/agents/factory.go`:
-  - Import `github.com/gentleman-programming/gentle-ai/internal/agents/qwen`
+  - Import `github.com/desarrollohg01/hgtran-ai/internal/agents/qwen`
   - Add `case model.AgentQwenCode: return qwen.NewAdapter(), nil` in `NewAdapter()`
   - Add `model.AgentQwenCode` to `NewDefaultRegistry()` agent list
   - Update registry capacity from 8 to 9

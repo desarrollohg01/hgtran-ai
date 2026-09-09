@@ -1,6 +1,6 @@
 version: "1"
 agent:
-  name: gentleman
+  name: hgtran
   extend: default
   system_prompt_path: ../KIMI.md
   subagents:

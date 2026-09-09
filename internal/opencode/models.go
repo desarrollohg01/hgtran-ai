@@ -1,28 +1,17 @@
 package opencode
 
 import (
-	"context"
-	"encoding/json"
-	"errors"
-	"fmt"
-	"net/http"
 	"os"
 	"path/filepath"
 	"sort"
+<<<<<<< HEAD
 	"strings"
 	"time"
 
 	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/statepath"
+=======
+>>>>>>> v2.5.0
 )
-
-// DefaultCachePath returns the default path to the OpenCode models cache file.
-func DefaultCachePath() string {
-	home, err := os.UserHomeDir()
-	if err != nil {
-		return ""
-	}
-	return filepath.Join(home, ".cache", "opencode", "models.json")
-}
 
 // DefaultSettingsPath returns the default path to the OpenCode settings file.
 func DefaultSettingsPath() string {
@@ -31,15 +20,6 @@ func DefaultSettingsPath() string {
 		return ""
 	}
 	return filepath.Join(home, ".config", "opencode", "opencode.json")
-}
-
-// DefaultAuthPath returns the default path to the OpenCode auth credentials file.
-func DefaultAuthPath() string {
-	home, err := os.UserHomeDir()
-	if err != nil {
-		return ""
-	}
-	return filepath.Join(home, ".local", "share", "opencode", "auth.json")
 }
 
 // ModelCost holds the per-million-token pricing.
@@ -63,196 +43,14 @@ type Model struct {
 	Reasoning bool       `json:"reasoning"`
 	Cost      ModelCost  `json:"cost"`
 	Limit     ModelLimit `json:"limit"`
-	Variants  []string   `json:"-"` // populated by EnrichWithVariants from plugin cache
+	Variants  []string   `json:"-"`
 }
 
-// Provider represents a model provider with its env vars and model catalog.
+// Provider represents a runtime model provider and its catalog.
 type Provider struct {
 	ID     string           `json:"id"`
 	Name   string           `json:"name"`
-	Env    []string         `json:"env"`
 	Models map[string]Model `json:"models"`
-}
-
-// LoadModels parses the OpenCode models cache JSON file and returns providers keyed by ID.
-func LoadModels(cachePath string) (map[string]Provider, error) {
-	data, err := os.ReadFile(cachePath)
-	if err != nil {
-		return nil, fmt.Errorf("read models cache %q: %w", cachePath, err)
-	}
-
-	var raw map[string]json.RawMessage
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return nil, fmt.Errorf("parse models cache: %w", err)
-	}
-
-	providers := make(map[string]Provider, len(raw))
-	for id, providerJSON := range raw {
-		var p Provider
-		if err := json.Unmarshal(providerJSON, &p); err != nil {
-			// Skip malformed providers.
-			continue
-		}
-		p.ID = id
-		providers[id] = p
-	}
-
-	FixOpenRouterModels(providers)
-
-	return providers, nil
-}
-
-// FixOpenRouterModels remaps OpenRouter models that OpenCode incorrectly catalogs
-// under its own "opencode" provider back to the "openrouter" provider.
-func FixOpenRouterModels(providers map[string]Provider) {
-	opencodeProv, ok := providers["opencode"]
-	if !ok {
-		return
-	}
-
-	// Mappings: opencode model ID -> openrouter model ID
-	openRouterMappings := map[string]string{
-		"qwen3.6-plus-free": "qwen/qwen3.6-plus:free",
-	}
-
-	openrouterProv, ok := providers["openrouter"]
-	if !ok {
-		openrouterProv = Provider{
-			ID:     "openrouter",
-			Name:   "OpenRouter",
-			Models: make(map[string]Model),
-		}
-	} else if openrouterProv.Models == nil {
-		openrouterProv.Models = make(map[string]Model)
-	}
-
-	var hasMoves bool
-	for opencodeID, openRouterID := range openRouterMappings {
-		m, ok := opencodeProv.Models[opencodeID]
-		if !ok {
-			continue
-		}
-		if _, exists := openrouterProv.Models[openRouterID]; exists {
-			continue
-		}
-
-		hasMoves = true
-		delete(opencodeProv.Models, opencodeID)
-
-		m.ID = openRouterID
-		openrouterProv.Models[m.ID] = m
-	}
-
-	if hasMoves {
-		providers["opencode"] = opencodeProv
-		providers["openrouter"] = openrouterProv
-	}
-}
-
-// LoadModelsOrEmpty parses the OpenCode models cache when it exists and falls
-// back to an empty provider set when OpenCode has not populated the cache yet.
-func LoadModelsOrEmpty(cachePath string) (map[string]Provider, error) {
-	providers, err := LoadModels(cachePath)
-	if err != nil {
-		if errors.Is(err, os.ErrNotExist) {
-			return map[string]Provider{}, nil
-		}
-		return nil, err
-	}
-	return providers, nil
-}
-
-// loadAuthProviders reads the OpenCode auth.json and returns authenticated provider IDs.
-func loadAuthProviders(authPath string) map[string]bool {
-	data, err := os.ReadFile(authPath)
-	if err != nil {
-		return nil
-	}
-
-	var raw map[string]json.RawMessage
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return nil
-	}
-
-	result := make(map[string]bool, len(raw))
-	for id := range raw {
-		result[id] = true
-	}
-	return result
-}
-
-// envLookup is a package-level variable for testing.
-var envLookup = os.Getenv
-
-// authPath is a package-level variable for testing.
-var authPath = DefaultAuthPath
-
-// DetectAvailableProviders returns provider IDs that the user has access to and
-// that have at least one model with tool_call support. Detection sources:
-//  1. OAuth credentials in ~/.local/share/opencode/auth.json
-//  2. Environment variables (e.g. ANTHROPIC_API_KEY)
-//  3. The "opencode" provider is always included if present (built-in subscription)
-//
-// Results are sorted alphabetically.
-func DetectAvailableProviders(providers map[string]Provider, customProviderIDs ...string) []string {
-	authProviders := loadAuthProviders(authPath())
-
-	customSet := make(map[string]bool, len(customProviderIDs))
-	for _, id := range customProviderIDs {
-		customSet[id] = true
-	}
-
-	var available []string
-	for id, provider := range providers {
-		if !hasToolCallModel(provider) {
-			continue
-		}
-
-		// Check: explicitly configured custom provider (always available).
-		if customSet[id] {
-			available = append(available, id)
-			continue
-		}
-
-		// Check: authenticated via OAuth?
-		if authProviders[id] {
-			available = append(available, id)
-			continue
-		}
-
-		// Check: built-in "opencode" provider (always available with subscription)
-		if id == "opencode" {
-			available = append(available, id)
-			continue
-		}
-
-		// Check: env vars set?
-		if len(provider.Env) > 0 && allEnvVarsSet(provider.Env) {
-			available = append(available, id)
-			continue
-		}
-	}
-
-	sort.Strings(available)
-	return available
-}
-
-func hasToolCallModel(provider Provider) bool {
-	for _, m := range provider.Models {
-		if m.ToolCall {
-			return true
-		}
-	}
-	return false
-}
-
-func allEnvVarsSet(envVars []string) bool {
-	for _, v := range envVars {
-		if envLookup(v) == "" {
-			return false
-		}
-	}
-	return true
 }
 
 // FilterModelsForSDD returns models from a provider that support tool_call (required for SDD phases).
@@ -281,6 +79,7 @@ func (m Model) EffortLevels() []string {
 	return m.Variants
 }
 
+<<<<<<< HEAD
 // DefaultVariantsCachePath returns the path to the plugin-generated model variants file.
 func DefaultVariantsCachePath() string {
 	home, err := os.UserHomeDir()
@@ -477,11 +276,14 @@ func MergeCustomProviders(providers map[string]Provider, config map[string]Confi
 	return merged
 }
 
+=======
+>>>>>>> v2.5.0
 // SDDPhases returns the ordered list of SDD phase sub-agent names.
 func SDDPhases() []string {
 	return []string{
 		"sdd-init",
 		"sdd-explore",
+		"sdd-research",
 		"sdd-propose",
 		"sdd-spec",
 		"sdd-design",
@@ -505,7 +307,10 @@ func JDPhases() []string {
 	}
 }
 
-const ReviewRefuterAgent = "review-refuter"
+const (
+	ReviewRefuterAgent   = "review-refuter"
+	ReviewValidatorAgent = "review-validator"
+)
 
 // ReviewLensPhases returns the ordered native bounded-review lens agents.
 func ReviewLensPhases() []string {
@@ -520,7 +325,7 @@ func ReviewLensPhases() []string {
 // ReviewPhases returns every agent invoked by the native review lifecycle.
 func ReviewPhases() []string {
 	phases := ReviewLensPhases()
-	return append(phases, ReviewRefuterAgent)
+	return append(phases, ReviewRefuterAgent, ReviewValidatorAgent)
 }
 
 // ConfigurableAgentPhases returns all agent names that support per-agent
