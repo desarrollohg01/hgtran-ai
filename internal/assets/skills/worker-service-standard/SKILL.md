@@ -229,3 +229,25 @@ posterior en una discusión sobre quién la causó.
   inicializados.
 - **Ningún secreto versionado.** `git ls-files` no debe devolver ningún archivo con una credencial.
 - Proyecto de pruebas: **pendiente, depende del caso** y todavía no es requisito.
+
+## Despliegue y release
+
+Seis reglas duras. El detalle y el error que motivó cada una están en la referencia.
+
+- **`<Version>` en un solo lugar**: `Directory.Build.props` si existe, si no el `.csproj` del Worker.
+  Formato `MAYOR.MENOR.PARCHE`, sin prefijo. Es la fuente para nombrar artefactos, nunca a mano.
+- **Tres scripts en la raíz**: `build.bat`, `install.bat`, `uninstall.bat`. `build.bat` publica,
+  copia los otros dos dentro del `publish/`, y genera `VERSION.txt` y `CAMBIOS.txt`.
+- **Orden del release**: bump de `<Version>` → commit → `git tag vX.Y.Z` → `build.bat`. El tag acota
+  el changelog de la versión siguiente, así que taguear después de compilar lo deja mal.
+- **7-Zip como compresor**, con `winget` para instalarlo y PowerShell como último recurso.
+  `Compress-Archive` aborta el ZIP entero por un archivo retenido; 7-Zip solo advierte.
+- **Exclusiones en `delivery-exclude.txt`**, pasado como `-x@`. Nunca un `!` en la línea de comandos
+  del `.bat`: `delayed expansion` lo consume y 7-Zip recibe un `-x` pelado.
+- **El aviso de arranque lleva la agenda**: qué jobs están habilitados, su cron y el próximo disparo
+  calculado con `CronExpression`. Si no hay ninguno, lo dice. El resumen nunca lanza.
+
+## References
+
+- [references/deployment-and-release.md](references/deployment-and-release.md) — detalle de las seis
+  reglas de despliegue, con la falla real que motivó cada una y la verificación del paquete.
