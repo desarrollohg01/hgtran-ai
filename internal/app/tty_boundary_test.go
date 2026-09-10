@@ -14,8 +14,8 @@ import (
 	"time"
 
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/state"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/system"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/state"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/system"
 )
 
 func assumeInteractiveTTY(t *testing.T) {

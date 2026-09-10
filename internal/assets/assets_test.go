@@ -647,7 +647,7 @@ func TestOpenCodeReviewTransportPluginContract(t *testing.T) {
 			t.Fatalf("transport plugin missing %q", want)
 		}
 	}
-	for _, forbidden := range []string{"GENTLE_AI_REVIEW_BINDING", "repository_context", "review lens-context", "capture-result", "preserve-result", "opencode_runtime_provenance", "JSON.parse(output.output)", "writeFile", "link(", "chmod("} {
+	for _, forbidden := range []string{"HGTRAN_AI_REVIEW_BINDING", "repository_context", "review lens-context", "capture-result", "preserve-result", "opencode_runtime_provenance", "JSON.parse(output.output)", "writeFile", "link(", "chmod("} {
 		if strings.Contains(source, forbidden) {
 			t.Fatalf("transport plugin retains Go-owned behavior %q", forbidden)
 		}
@@ -664,7 +664,7 @@ func TestSDDTaskResultArtifactsPluginContract(t *testing.T) {
 			t.Fatalf("SDD task plugin missing %q", want)
 		}
 	}
-	for _, forbidden := range []string{"GENTLE_AI_REVIEW_BINDING", "opencode-transport", "review lens-context", "capture-result"} {
+	for _, forbidden := range []string{"HGTRAN_AI_REVIEW_BINDING", "opencode-transport", "review lens-context", "capture-result"} {
 		if strings.Contains(source, forbidden) {
 			t.Fatalf("SDD task plugin retains reviewer transport %q", forbidden)
 		}
@@ -1845,9 +1845,9 @@ func TestEmbeddedAssetCount(t *testing.T) {
 		}
 	}
 
-	// We expect 27 skill directories (11 SDD + judgment-day + 13 foundation/review + hermes-ephemeral-delegation + _shared).
-	if skillDirs != 27 {
-		t.Fatalf("expected 27 skill directories, got %d", skillDirs)
+	// We expect 33 skill directories (11 SDD + judgment-day + 13 foundation/review + hermes-ephemeral-delegation + _shared + 6 estandares de HG).
+	if skillDirs != 33 {
+		t.Fatalf("expected 33 skill directories, got %d", skillDirs)
 	}
 
 	// Verify each skill directory has a SKILL.md.

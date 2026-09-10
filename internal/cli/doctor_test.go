@@ -14,8 +14,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/components/engram"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/doctor"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/engram"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/doctor"
 )
 
 // --- checkOneTool ---

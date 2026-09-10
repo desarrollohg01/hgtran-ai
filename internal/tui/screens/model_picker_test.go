@@ -8,8 +8,8 @@ import (
 	"strings"
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/opencode"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/opencode"
 )
 
 // makeTestState builds a minimal ModelPickerState with one provider and models

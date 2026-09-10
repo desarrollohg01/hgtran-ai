@@ -38,19 +38,14 @@ FLAGS
   --persona <name>                   Persona to apply
   --preset <name>                    Preset to apply
   --sdd-mode single|multi            SDD orchestrator mode
-<<<<<<< HEAD
   --scope global|workspace           Install scope (env: HGTRAN_AI_INSTALL_SCOPE)
   --channel stable|beta|nightly      Release channel; nightly is an alias for beta (env: HGTRAN_AI_CHANNEL)
-=======
-  --scope global|workspace           Install scope (env: GENTLE_AI_INSTALL_SCOPE)
-  --channel stable|beta|nightly      Release channel; nightly is an alias for beta (env: GENTLE_AI_CHANNEL)
   --opencode-background-subagents=auto|on|off
-                                     Resolve OpenCode capability and manage a launcher when eligible; env: GENTLE_AI_OPENCODE_BACKGROUND_SUBAGENTS
+                                     Resolve OpenCode capability and manage a launcher when eligible; env: HGTRAN_AI_OPENCODE_BACKGROUND_SUBAGENTS
                                      auto inherits managed on/off, unsupported/unknown stays foreground, off removes only owned launchers
   --pi-background-subagents=auto|on|off
-                                     Project the resolved Pi background-subagent policy for hgtran-pi; env: GENTLE_AI_PI_BACKGROUND_SUBAGENTS
+                                     Project the resolved Pi background-subagent policy for hgtran-pi; env: HGTRAN_AI_PI_BACKGROUND_SUBAGENTS
                                      auto inherits managed on/off and never enables by itself; only managed policy files are ever overwritten
->>>>>>> v2.5.0
   --dry-run                          Preview plan without executing
   --help, -h                         Show this help
 `)

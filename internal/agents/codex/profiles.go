@@ -5,8 +5,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/filemerge"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/filemerge"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
 )
 
 // ProfileAssignment holds the resolved model and reasoning_effort for a

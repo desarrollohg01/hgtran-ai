@@ -6,10 +6,10 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/model"
-	opencodeactivation "github.com/hgtran-programming/hgtran-ai/v2/internal/opencode"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/state"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/verify"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
+	opencodeactivation "github.com/desarrollohg01/hgtran-ai/v2/internal/opencode"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/state"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/verify"
 )
 
 const OpenCodeBackgroundSubagentsEnv = "GENTLE_AI_OPENCODE_BACKGROUND_SUBAGENTS"

@@ -4,7 +4,7 @@ import (
 	"errors"
 	"os"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/reviewtransaction"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/reviewtransaction"
 )
 
 // acquireCooperativeLock backs the cooperative contract with the hardened

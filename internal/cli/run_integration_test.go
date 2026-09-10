@@ -11,14 +11,14 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/agents/kimi"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/backup"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/installcmd"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/model"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/pipeline"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/planner"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/state"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/system"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/kimi"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/backup"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/installcmd"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/pipeline"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/planner"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/state"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/system"
 )
 
 // missingBinaryLookPath simulates all installable binaries (engram, gga) as

@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/tui/styles"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/tui/styles"
 )
 
 func TestSkillPickerCanonicalRowsAndActions(t *testing.T) {

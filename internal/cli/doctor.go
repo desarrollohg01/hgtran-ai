@@ -13,11 +13,11 @@ import (
 	"strings"
 	"time"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/engram"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/doctor"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/state"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/statepath"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/storage"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/engram"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/doctor"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/state"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/statepath"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/storage"
 )
 
 type CheckStatus = doctor.Status

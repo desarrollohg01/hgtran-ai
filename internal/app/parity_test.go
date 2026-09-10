@@ -8,10 +8,10 @@ import (
 	"testing"
 
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/cli"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/planner"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/system"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/tui"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/cli"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/planner"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/system"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/tui"
 )
 
 func TestInstallDefaultsMatchTUIModelDefaults(t *testing.T) {

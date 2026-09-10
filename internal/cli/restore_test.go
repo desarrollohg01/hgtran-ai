@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/backup"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/backup"
 )
 
 // setupRestoreHome creates a temporary home dir with N backup manifests.

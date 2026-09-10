@@ -6,9 +6,9 @@ import (
 	"strings"
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/capabilitymanifest"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/reviewtransaction"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/capabilitymanifest"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/reviewtransaction"
 )
 
 // This file is Wave 4 S4 (design.md decision 5, task 5.1-5.6): transport

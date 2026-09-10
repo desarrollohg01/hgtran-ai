@@ -8,10 +8,10 @@ import (
 	"strings"
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/catalog"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/opencodedefault"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/catalog"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/opencodedefault"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
 )
 
 func TestInjectRoutingInstallsGuidanceForEverySupportedAgent(t *testing.T) {

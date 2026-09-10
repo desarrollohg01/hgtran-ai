@@ -550,9 +550,6 @@ func validateSnapshotFile(root, artifactPath string, markerTime time.Time) error
 }
 
 const expectedGoReleaserYAML = `version: 2
-<<<<<<< HEAD
-project_name: hgtran-ai
-=======
 project_name: hgtran-ai
 before:
   hooks:
@@ -560,7 +557,6 @@ before:
     - rm -rf .goreleaser-provenance
     - mkdir -p .goreleaser-provenance
     - go run ./internal/releaseprovenancecmd --out .goreleaser-provenance/manifest.json --config .goreleaser.yaml --goreleaser-version v2.15.2
->>>>>>> v2.5.0
 builds:
   - main: ./cmd/hgtran-ai
     binary: hgtran-ai
@@ -578,7 +574,7 @@ builds:
       - >-
         -s -w
         -X main.version={{ .Version }}
-        -X bitbucket.org/hgt_development/hgtran-ai/v2/internal/update/upgrade.releaseMinisignPublicKeys={{ .Env.MINISIGN_PUBLIC_KEYS_CANONICAL }}
+        -X github.com/desarrollohg01/hgtran-ai/v2/internal/update/upgrade.releaseMinisignPublicKeys={{ .Env.MINISIGN_PUBLIC_KEYS_CANONICAL }}
 archives:
   - formats:
       - tar.gz
@@ -770,16 +766,11 @@ jobs:
           printf 'canonical=%s\n' "$canonical" >>"$GITHUB_OUTPUT"
       - name: Configure ephemeral signing paths
         run: |
-<<<<<<< HEAD
-          printf 'MINISIGN_SECRET_KEY_FILE=%s/hgtran-ai-release.key\n' "$RUNNER_TEMP" >>"$GITHUB_ENV"
-          printf 'MINISIGN_SIGNING_PUBLIC_KEY_FILE=%s/hgtran-ai-release-signing.pub\n' "$RUNNER_TEMP" >>"$GITHUB_ENV"
-=======
           printf 'MINISIGN_SECRET_KEY_FILE=%s/hgtran-ai-release.key\n' "$RUNNER_TEMP" >>"$GITHUB_ENV"
           printf 'MINISIGN_SIGNING_PUBLIC_KEY_FILE=%s/hgtran-ai-release-signing.pub\n' "$RUNNER_TEMP" >>"$GITHUB_ENV"
           PROVIDER_CONTRACT_SEMVER=$(tr -d '\n' < contracts/review-provider-contract/CONTRACT_SEMVER)
           [[ "$PROVIDER_CONTRACT_SEMVER" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]
           printf 'PROVIDER_CONTRACT_SEMVER=%s\n' "$PROVIDER_CONTRACT_SEMVER" >>"$GITHUB_ENV"
->>>>>>> v2.5.0
       - name: Install Minisign
         run: |
           sudo apt-get update

@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/reviewtransaction"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/reviewtransaction"
 )
 
 // A reviewer result that admission refuses used to be discarded, so a defect

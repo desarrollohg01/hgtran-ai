@@ -12,14 +12,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://bitbucket.org/hgt_development/hgtran-ai.git"
+    "url": "git+https://github.com/desarrollohg01/hgtran-ai.git"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "type": "commonjs",
   "bugs": {
-    "url": "https://bitbucket.org/hgt_development/hgtran-ai/issues"
+    "url": "https://github.com/desarrollohg01/hgtran-ai/issues"
   },
-  "homepage": "https://bitbucket.org/hgt_development/hgtran-ai#readme"
+  "homepage": "https://github.com/desarrollohg01/hgtran-ai#readme"
 }

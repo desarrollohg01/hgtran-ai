@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/reviewtransaction"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/reviewtransaction"
 )
 
 // reviewManifestLineBudget is the per-entry line cost this product accepts for

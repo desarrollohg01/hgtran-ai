@@ -5,8 +5,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/components/persona"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/persona"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
 )
 
 func TestResourcePlanOutputStylePaths(t *testing.T) {

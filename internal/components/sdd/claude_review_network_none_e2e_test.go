@@ -20,7 +20,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/reviewtransaction"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/reviewtransaction"
 )
 
 const (
@@ -145,7 +145,7 @@ func TestClaudeReviewerTransportInNetworkNone(t *testing.T) {
 	subject := "sha256:" + strings.Repeat("a", 64)
 	const evidenceA = "- path_index: 0\n  path: parser.go\n  patch: |\n    -    return ErrMalformedPort\n    +    return nil"
 	const evidenceB = "- path_index: 1\n  path: parser_test.go\n  patch: |\n    -    require.Error(t, err)\n    +    require.NoError(t, err)"
-	prompt := `GENTLE_AI_REVIEW_BINDING {"lineage":"claude-runtime-e2e","target":"fixture","lens":"review-reliability","order":0,"revision":"1","repository_context":"opaque-fixture","subject_hash":"` + subject + `"}
+	prompt := `HGTRAN_AI_REVIEW_BINDING {"lineage":"claude-runtime-e2e","target":"fixture","lens":"review-reliability","order":0,"revision":"1","repository_context":"opaque-fixture","subject_hash":"` + subject + `"}
 GENTLE_AI_REVIEW_CONTEXT
 artifact_subject: {"subject_hash":"` + subject + `"}
 base_tree: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa

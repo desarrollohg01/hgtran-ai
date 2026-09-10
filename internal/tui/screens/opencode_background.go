@@ -3,7 +3,7 @@ package screens
 import (
 	"strings"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/tui/styles"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/tui/styles"
 )
 
 // OpenCodeBackgroundOptions returns the choices shown when the background

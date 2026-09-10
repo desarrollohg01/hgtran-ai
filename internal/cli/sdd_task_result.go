@@ -8,7 +8,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/sddtaskresult"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/sddtaskresult"
 )
 
 // maxSDDTaskResultBytes bounds what a phase result may be before it is refused

@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/reviewtransaction"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/reviewtransaction"
 )
 
 // recoveryCollectBindingFixture is the #3099/#2910 shape: an escalated

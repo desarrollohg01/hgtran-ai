@@ -5,7 +5,7 @@ import (
 	"errors"
 	"os"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/catalog"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/catalog"
 )
 
 // builtinSkills returns the current set of built-in skill names derived from

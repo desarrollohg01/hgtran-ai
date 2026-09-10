@@ -11,7 +11,7 @@ import (
 	"strconv"
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/reviewtransaction"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/reviewtransaction"
 )
 
 // captureReviewCLIResultFiles admits one reviewer result per selected lens,

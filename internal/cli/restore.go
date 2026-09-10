@@ -8,8 +8,8 @@ import (
 	"os"
 	"strings"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/backup"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/statepath"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/backup"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/statepath"
 )
 
 // RestoreFunc is the function signature for restoring a backup from its manifest.

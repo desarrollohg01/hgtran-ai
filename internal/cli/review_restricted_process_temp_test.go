@@ -10,7 +10,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/reviewtransaction"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/reviewtransaction"
 )
 
 // Issues #2044 and #2132: negotiated review status failed in `pre_native` with

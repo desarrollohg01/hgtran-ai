@@ -3,9 +3,9 @@
 // isolated from install, pipeline, planner, and config-sync code paths.
 //
 // Import boundary: this package MUST NOT import:
-//   - bitbucket.org/hgt_development/hgtran-ai/v2/internal/pipeline
-//   - bitbucket.org/hgt_development/hgtran-ai/v2/internal/planner
-//   - bitbucket.org/hgt_development/hgtran-ai/v2/internal/cli
+//   - github.com/desarrollohg01/hgtran-ai/v2/internal/pipeline
+//   - github.com/desarrollohg01/hgtran-ai/v2/internal/planner
+//   - github.com/desarrollohg01/hgtran-ai/v2/internal/cli
 package upgrade
 
 import (
@@ -20,33 +20,19 @@ import (
 	"strings"
 	"time"
 
-<<<<<<< HEAD
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/claude"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/assets"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/backup"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/gga"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/sdd"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/skills"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/state"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/statepath"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/update"
-=======
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/agents"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/agents/claude"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/assets"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/backup"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/components/gga"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/components/sdd"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/components/skills"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/components/theme"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/model"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/state"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/system"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/update"
->>>>>>> v2.5.0
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/claude"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/assets"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/backup"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/gga"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/sdd"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/skills"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/theme"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/state"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/statepath"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/system"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/update"
 )
 
 // Package-level vars for testability — same pattern as internal/update/detect.go.

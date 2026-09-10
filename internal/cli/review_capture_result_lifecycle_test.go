@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/reviewtransaction"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/reviewtransaction"
 )
 
 // startHighRiskCLIReview freezes a candidate the native tier assessment rates

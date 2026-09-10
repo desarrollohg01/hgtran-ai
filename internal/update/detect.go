@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/system"
 )
 
 // Package-level vars for testability (swap in tests via t.Cleanup).

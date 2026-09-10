@@ -8,7 +8,7 @@ import (
 	"runtime"
 	"strconv"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/releaseprovenance"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/releaseprovenance"
 )
 
 func main() {

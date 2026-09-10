@@ -16,7 +16,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/reviewtransaction"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/reviewtransaction"
 )
 
 // lensContextArgv renders the closed lens-context command form from the flags
@@ -61,7 +61,7 @@ func TestReviewLensContextEmitsFinishedReviewerBlockFromTwoTokens(t *testing.T) 
 	if len(lines) < 3 {
 		t.Fatalf("lens context is not a multi-line block:\n%s", block)
 	}
-	bindingJSON, found := strings.CutPrefix(lines[0], "GENTLE_AI_REVIEW_BINDING ")
+	bindingJSON, found := strings.CutPrefix(lines[0], "HGTRAN_AI_REVIEW_BINDING ")
 	if !found {
 		t.Fatalf("first line is not the binding: %q", lines[0])
 	}

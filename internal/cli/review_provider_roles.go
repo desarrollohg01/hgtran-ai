@@ -9,9 +9,9 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/model"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/reviewerprovider"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/reviewtransaction"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/reviewerprovider"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/reviewtransaction"
 )
 
 var errReviewProviderRefuterNotRequired = errors.New("provider refuter request has no inferential findings; continue through the remaining capture route") // refusal:by-design operator-knowledge: the native closure branch consumes this sentinel and derives the remaining capture transition; no caller-selected command exists

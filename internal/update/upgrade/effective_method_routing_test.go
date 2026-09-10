@@ -8,8 +8,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/system"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/update"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/system"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/update"
 )
 
 // TestEffectiveMethodWindowsPrecedenceIsUnchanged pins the rules that run before
@@ -35,14 +35,14 @@ func TestEffectiveMethodWindowsPrecedenceIsUnchanged(t *testing.T) {
 		},
 		{
 			name:          "brew-owned package wins over go-install on Windows",
-			tool:          update.ToolInfo{Name: "hgtran-ai", InstallMethod: update.InstallBinary, GoImportPath: "github.com/hgtran-programming/hgtran-ai/v2/cmd/hgtran-ai"},
+			tool:          update.ToolInfo{Name: "hgtran-ai", InstallMethod: update.InstallBinary, GoImportPath: "github.com/desarrollohg01/hgtran-ai/v2/cmd/hgtran-ai"},
 			profile:       system.PlatformProfile{OS: "windows", PackageManager: "brew", GoAvailable: true},
 			brewInstalled: true,
 			want:          update.InstallBrew,
 		},
 		{
 			name:    "no Go on Windows keeps the declared method",
-			tool:    update.ToolInfo{Name: "hgtran-ai", InstallMethod: update.InstallBinary, GoImportPath: "github.com/hgtran-programming/hgtran-ai/v2/cmd/hgtran-ai"},
+			tool:    update.ToolInfo{Name: "hgtran-ai", InstallMethod: update.InstallBinary, GoImportPath: "github.com/desarrollohg01/hgtran-ai/v2/cmd/hgtran-ai"},
 			profile: system.PlatformProfile{OS: "windows", PackageManager: "winget", GoAvailable: false},
 			want:    update.InstallBinary,
 		},
@@ -67,7 +67,7 @@ func TestEffectiveMethodWindowsPrecedenceIsUnchanged(t *testing.T) {
 // gentleAIImportPath is the module path hgtran-ai publishes its command under.
 // It is asserted against the registry below so the tests and the shipped
 // declaration cannot drift apart.
-const gentleAIImportPath = "github.com/hgtran-programming/hgtran-ai/v2/cmd/hgtran-ai"
+const gentleAIImportPath = "github.com/desarrollohg01/hgtran-ai/v2/cmd/hgtran-ai"
 
 // registryGentleAI returns the shipped hgtran-ai registry entry. Routing tests
 // use the real declaration rather than a hand-built ToolInfo so a regression in
@@ -431,7 +431,7 @@ func TestGentleAIWindowsWithoutGoNamesRunnableSourceInstall(t *testing.T) {
 			Owner:         "Gentleman-Programming",
 			Repo:          "hgtran-ai",
 			InstallMethod: update.InstallBinary,
-			GoImportPath:  "github.com/hgtran-programming/hgtran-ai/v2/cmd/hgtran-ai",
+			GoImportPath:  "github.com/desarrollohg01/hgtran-ai/v2/cmd/hgtran-ai",
 		},
 		LatestVersion: "2.2.0",
 		Status:        update.UpdateAvailable,
@@ -448,7 +448,7 @@ func TestGentleAIWindowsWithoutGoNamesRunnableSourceInstall(t *testing.T) {
 	}
 	for _, required := range []string{
 		"Windows binary distribution and Scoop are temporarily unavailable",
-		"go install github.com/hgtran-programming/hgtran-ai/v2/cmd/hgtran-ai@v2.2.0",
+		"go install github.com/desarrollohg01/hgtran-ai/v2/cmd/hgtran-ai@v2.2.0",
 	} {
 		if !strings.Contains(result.ManualHint, required) {
 			t.Errorf("manual hint is missing %q: %s", required, result.ManualHint)

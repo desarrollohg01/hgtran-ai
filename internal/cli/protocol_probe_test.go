@@ -6,12 +6,12 @@ import (
 	"os"
 	"testing"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/agents/claude"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/agents/gemini"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/agents/kilocode"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/agents/openclaw"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/agents/opencode"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/agents/qwen"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/claude"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/gemini"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/kilocode"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/openclaw"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/opencode"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/qwen"
 )
 
 // TestMain overrides verifyEngramVersion and probeEngramProtocolFlag with

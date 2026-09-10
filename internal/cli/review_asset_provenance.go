@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/assets"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/state"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/assets"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/state"
 )
 
 const managedAssetProvenanceRefusal = "managed reviewer assets are outdated; run `hgtran-ai sync`"

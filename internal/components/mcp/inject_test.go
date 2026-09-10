@@ -11,17 +11,17 @@ import (
 	"strings"
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/antigravity"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/claude"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/codex"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/hermes"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/kilocode"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/kimi"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/openclaw"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/opencode"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/vscode"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/versions"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/antigravity"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/claude"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/codex"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/hermes"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/kilocode"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/kimi"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/openclaw"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/opencode"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/vscode"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/versions"
 )
 
 func cursorAdapter(t *testing.T) agents.Adapter {

@@ -6,8 +6,8 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/consentenvelope"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/pathquote"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/consentenvelope"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/pathquote"
 )
 
 const SDDBudgetConsentSchema = "hgtran-ai.sdd-integration.consent/v1"

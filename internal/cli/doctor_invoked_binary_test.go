@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/doctor"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/doctor"
 )
 
 // TestCheckOneTool_GentleAINamesTheInvokedExecutable closes fisidj finding 5

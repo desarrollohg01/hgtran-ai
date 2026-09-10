@@ -13,8 +13,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/system"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/update"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/system"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/update"
 )
 
 func TestMain(m *testing.M) {
@@ -135,14 +135,14 @@ func TestRunStrategy_BetaGentleAISelfUpgradeUsesGoInstallMain(t *testing.T) {
 	if gotName != "go" {
 		t.Fatalf("exec name = %q, want %q", gotName, "go")
 	}
-	wantArgs := []string{"install", "github.com/hgtran-programming/hgtran-ai/v2/cmd/hgtran-ai@main"}
+	wantArgs := []string{"install", "github.com/desarrollohg01/hgtran-ai/v2/cmd/hgtran-ai@main"}
 	if len(gotArgs) != len(wantArgs) || gotArgs[0] != wantArgs[0] || gotArgs[1] != wantArgs[1] {
 		t.Fatalf("exec args = %v, want %v", gotArgs, wantArgs)
 	}
 	for _, want := range []string{
-		"GONOSUMDB=github.com/hgtran-programming/hgtran-ai/v2",
-		"GOPRIVATE=github.com/hgtran-programming/hgtran-ai/v2",
-		"GONOPROXY=github.com/hgtran-programming/hgtran-ai/v2",
+		"GONOSUMDB=github.com/desarrollohg01/hgtran-ai/v2",
+		"GOPRIVATE=github.com/desarrollohg01/hgtran-ai/v2",
+		"GONOPROXY=github.com/desarrollohg01/hgtran-ai/v2",
 	} {
 		if !envContains(gotCmd.Env, want) {
 			t.Fatalf("go install env missing %q in %v", want, gotCmd.Env)
@@ -160,19 +160,19 @@ func envContains(env []string, want string) bool {
 }
 
 func TestGoProxyBypassEnvPreservesExistingPatterns(t *testing.T) {
-	module := "github.com/hgtran-programming/hgtran-ai/v2"
+	module := "github.com/desarrollohg01/hgtran-ai/v2"
 	env := goProxyBypassEnv([]string{
 		"PATH=/usr/bin",
 		"GONOSUMDB=example.com/private",
 		"GOPRIVATE=github.com/acme/*",
-		"GONOPROXY=github.com/hgtran-programming/hgtran-ai/v2",
+		"GONOPROXY=github.com/desarrollohg01/hgtran-ai/v2",
 	}, module)
 
 	for _, want := range []string{
 		"PATH=/usr/bin",
-		"GONOSUMDB=github.com/hgtran-programming/hgtran-ai/v2,example.com/private",
-		"GOPRIVATE=github.com/hgtran-programming/hgtran-ai/v2,github.com/acme/*",
-		"GONOPROXY=github.com/hgtran-programming/hgtran-ai/v2",
+		"GONOSUMDB=github.com/desarrollohg01/hgtran-ai/v2,example.com/private",
+		"GOPRIVATE=github.com/desarrollohg01/hgtran-ai/v2,github.com/acme/*",
+		"GONOPROXY=github.com/desarrollohg01/hgtran-ai/v2",
 	} {
 		if !envContains(env, want) {
 			t.Fatalf("env missing %q in %v", want, env)
@@ -1195,8 +1195,8 @@ func TestBrewUpgrade_TapsAndTrustsBeforeUpdateAndUpgrade(t *testing.T) {
 	if calls[1].subcommand != "trust" {
 		t.Errorf("second brew call = %q, want %q", calls[1].subcommand, "trust")
 	}
-	if len(calls[1].args) != 2 || calls[1].args[0] != "--cask" || calls[1].args[1] != "hgtran-programming/tap/engram" {
-		t.Errorf("second brew call args = %v, want [--cask hgtran-programming/tap/engram]", calls[1].args)
+	if len(calls[1].args) != 2 || calls[1].args[0] != "--cask" || calls[1].args[1] != "gentleman-programming/tap/engram" {
+		t.Errorf("second brew call args = %v, want [--cask gentleman-programming/tap/engram]", calls[1].args)
 	}
 	if calls[2].subcommand != "update" {
 		t.Errorf("third brew call = %q, want %q", calls[2].subcommand, "update")
@@ -1222,17 +1222,17 @@ func TestBrewUpgrade_FormulaToolUsesFormulaTrust(t *testing.T) {
 		t.Fatalf("brewUpgrade: unexpected error: %v", err)
 	}
 
-	if len(trustArgs) != 2 || trustArgs[0] != "--formula" || trustArgs[1] != "hgtran-programming/tap/hgtran-ai" {
-		t.Fatalf("brew trust args = %v, want [--formula hgtran-programming/tap/hgtran-ai]", trustArgs)
+	if len(trustArgs) != 2 || trustArgs[0] != "--formula" || trustArgs[1] != "gentleman-programming/tap/hgtran-ai" {
+		t.Fatalf("brew trust args = %v, want [--formula gentleman-programming/tap/hgtran-ai]", trustArgs)
 	}
 }
 
 func TestHomebrewFailureAdviceTapTrust(t *testing.T) {
-	output := `Error: Refusing to load formula hgtran-programming/tap/hgtran-ai from untrusted tap.
-Run brew trust --formula hgtran-programming/tap/hgtran-ai to trust it.`
+	output := `Error: Refusing to load formula gentleman-programming/tap/hgtran-ai from untrusted tap.
+Run brew trust --formula gentleman-programming/tap/hgtran-ai to trust it.`
 	advice := homebrewFailureAdvice("hgtran-ai", output)
 	for _, want := range []string{
-		"brew trust --formula hgtran-programming/tap/hgtran-ai",
+		"brew trust --formula gentleman-programming/tap/hgtran-ai",
 		"brew upgrade --formula hgtran-ai",
 	} {
 		if !strings.Contains(advice, want) {
@@ -1242,11 +1242,11 @@ Run brew trust --formula hgtran-programming/tap/hgtran-ai to trust it.`
 }
 
 func TestHomebrewFailureAdviceCaskTapTrust(t *testing.T) {
-	output := `Error: Refusing to load cask hgtran-programming/tap/engram from untrusted tap.
-Run brew trust --cask hgtran-programming/tap/engram to trust it.`
+	output := `Error: Refusing to load cask gentleman-programming/tap/engram from untrusted tap.
+Run brew trust --cask gentleman-programming/tap/engram to trust it.`
 	advice := homebrewFailureAdvice("engram", output)
 	for _, want := range []string{
-		"brew trust --cask hgtran-programming/tap/engram",
+		"brew trust --cask gentleman-programming/tap/engram",
 		"brew upgrade --cask engram",
 	} {
 		if !strings.Contains(advice, want) {

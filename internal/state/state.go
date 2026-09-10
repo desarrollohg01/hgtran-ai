@@ -7,9 +7,9 @@ import (
 	"os"
 	"time"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/filemerge"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/statepath"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/filemerge"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/statepath"
 )
 
 // ModelAssignmentState is the JSON-serialisable form of a provider+model pair
@@ -38,16 +38,6 @@ type ClaudePhaseAssignmentState struct {
 
 // InstallState holds the persisted user selections from the last install run.
 type InstallState struct {
-<<<<<<< HEAD
-	InstalledAgents     []string            `json:"installed_agents"`
-	SelectionConfigured bool                `json:"selection_configured,omitempty"`
-	Components          []model.ComponentID `json:"components,omitempty"`
-	Skills              []model.SkillID     `json:"skills,omitempty"`
-	Preset              model.PresetID      `json:"preset,omitempty"`
-	SDDMode             model.SDDModeID     `json:"sdd_mode,omitempty"`
-	StrictTDD           bool                `json:"strict_tdd,omitempty"`
-	// CommunityTools records optional tools explicitly selected in the Hgtran AI
-=======
 	InstalledAgents        []string            `json:"installed_agents"`
 	InstalledBinaryVersion string              `json:"installed_binary_version,omitempty"`
 	ManagedAssetDigest     string              `json:"managed_asset_digest,omitempty"`
@@ -58,7 +48,6 @@ type InstallState struct {
 	SDDMode                model.SDDModeID     `json:"sdd_mode,omitempty"`
 	StrictTDD              bool                `json:"strict_tdd,omitempty"`
 	// CommunityTools records optional tools explicitly selected in the Hgtran AI
->>>>>>> v2.5.0
 	// installer. Configured distinguishes a completed empty selection from legacy
 	// state files that predate persistence of this choice.
 	CommunityTools           []string `json:"community_tools,omitempty"`

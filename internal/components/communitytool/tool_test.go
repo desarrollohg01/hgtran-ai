@@ -12,10 +12,10 @@ import (
 	"testing"
 	"time"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/claude"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/opencode"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/claude"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/opencode"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
 )
 
 func TestMain(m *testing.M) {

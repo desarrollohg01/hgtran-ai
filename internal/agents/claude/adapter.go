@@ -8,11 +8,11 @@ import (
 	"os/exec"
 	"path/filepath"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/capabilitymanifest"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/filemerge"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/installcmd"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/capabilitymanifest"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/filemerge"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/installcmd"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/system"
 )
 
 var LookPathOverride = exec.LookPath

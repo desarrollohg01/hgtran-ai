@@ -3,8 +3,8 @@ package catalog
 import (
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/skills"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/skills"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
 )
 
 // TestMVPSkillsCoverAllPresetSkills ensures every skill that presets.go would

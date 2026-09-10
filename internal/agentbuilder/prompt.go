@@ -5,7 +5,7 @@ import (
 	"html"
 	"strings"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
 )
 
 const systemPromptBase = `You are an expert AI agent skill designer for the Gentleman AI ecosystem.

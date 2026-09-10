@@ -8,9 +8,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/components/filemerge"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/model"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/state"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/filemerge"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/state"
 )
 
 // PiBackgroundSubagentsEnv is the environment source for the managed Pi

@@ -118,36 +118,6 @@ const (
 type SkillID string
 
 const (
-<<<<<<< HEAD
-	SkillSDDInit           SkillID = "sdd-init"
-	SkillSDDApply          SkillID = "sdd-apply"
-	SkillSDDVerify         SkillID = "sdd-verify"
-	SkillSDDExplore        SkillID = "sdd-explore"
-	SkillSDDPropose        SkillID = "sdd-propose"
-	SkillSDDSpec           SkillID = "sdd-spec"
-	SkillSDDDesign         SkillID = "sdd-design"
-	SkillSDDTasks          SkillID = "sdd-tasks"
-	SkillSDDArchive        SkillID = "sdd-archive"
-	SkillSDDOnboard        SkillID = "sdd-onboard"
-	SkillGoTesting         SkillID = "go-testing"
-	SkillCreator           SkillID = "skill-creator"
-	SkillImprover          SkillID = "skill-improver"
-	SkillJudgmentDay       SkillID = "judgment-day"
-	SkillBranchPR          SkillID = "branch-pr"
-	SkillIssueCreation     SkillID = "issue-creation"
-	SkillSkillRegistry     SkillID = "skill-registry"
-	SkillChainedPR         SkillID = "chained-pr"
-	SkillCognitiveDoc      SkillID = "cognitive-doc-design"
-	SkillCommentWriter     SkillID = "comment-writer"
-	SkillWorkUnitCommits   SkillID = "work-unit-commits"
-	SkillRDDDefectWorkflow SkillID = "rdd-defect-workflow"
-	SkillBackendCRUD       SkillID = "backend-crud-standard"
-	SkillWorkerService     SkillID = "worker-service-standard"
-	SkillFrontendCRUD      SkillID = "frontend-crud-standard"
-	SkillDBChange          SkillID = "db-change-standard"
-	SkillRealVerification  SkillID = "real-system-verification"
-	SkillPatternStandard   SkillID = "pattern-to-standard"
-=======
 	SkillSDDInit             SkillID = "sdd-init"
 	SkillSDDApply            SkillID = "sdd-apply"
 	SkillSDDVerify           SkillID = "sdd-verify"
@@ -173,7 +143,12 @@ const (
 	SkillRDDDefectWorkflow   SkillID = "rdd-defect-workflow"
 	SkillSystemicIssueTriage SkillID = "systemic-issue-triage"
 	SkillGentleAIBench       SkillID = "hgtran-ai-bench"
->>>>>>> v2.5.0
+	SkillBackendCRUD         SkillID = "backend-crud-standard"
+	SkillFrontendCRUD        SkillID = "frontend-crud-standard"
+	SkillDBChange            SkillID = "db-change-standard"
+	SkillWorkerService       SkillID = "worker-service-standard"
+	SkillRealVerification    SkillID = "real-system-verification"
+	SkillPatternStandard     SkillID = "pattern-to-standard"
 )
 
 type PersonaID string

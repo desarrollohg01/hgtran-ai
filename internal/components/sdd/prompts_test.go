@@ -8,11 +8,11 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/agents"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/assets"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/components/communitytool"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/model"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/opencode"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/assets"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/communitytool"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/opencode"
 )
 
 // TestSharedPromptDir verifies the expected directory path is returned.

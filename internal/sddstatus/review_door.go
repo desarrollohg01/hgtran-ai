@@ -3,7 +3,7 @@ package sddstatus
 import (
 	"context"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/reviewtransaction"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/reviewtransaction"
 )
 
 // review_door.go is internal/sddstatus's one door into reviewtransaction's

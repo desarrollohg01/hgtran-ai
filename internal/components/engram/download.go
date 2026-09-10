@@ -17,8 +17,8 @@ import (
 	"strings"
 	"time"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/filemerge"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/filemerge"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/system"
 )
 
 const (
@@ -124,7 +124,7 @@ func canonicalEngramGoInstallPackage(pkg string) string {
 	lowerPkg := strings.ToLower(pkg)
 	for _, lowerPackage := range []string{
 		"github.com/desarrollohg01/engram/cmd/engram",
-		"github.com/hgtran-programming/engram/cmd/engram",
+		"github.com/Gentleman-Programming/engram/cmd/engram",
 	} {
 		if strings.HasPrefix(lowerPkg, lowerPackage) {
 			return engramCanonicalPackage + pkg[len(lowerPackage):]

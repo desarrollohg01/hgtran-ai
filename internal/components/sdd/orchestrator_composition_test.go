@@ -8,9 +8,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/assets"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/catalog"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/assets"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/catalog"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
 )
 
 const testGenericFallbackOnlyNativeRoute = "- Native route: This variant has no classified native question UI for this contract; always use the plain chat or terminal fallback below. When the closed domain of a single-select envelope is unrepresentable here, fall through to the Fallback clause below."

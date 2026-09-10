@@ -8,8 +8,8 @@ import (
 	"slices"
 	"strings"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
 )
 
 const codeGraphUpstreamVersion = "1.4.1"

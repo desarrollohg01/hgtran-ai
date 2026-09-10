@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/catalog"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/catalog"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
 )
 
 // Provenance rule (#2524, root 4 of #2440): a runtime's rendered surface must

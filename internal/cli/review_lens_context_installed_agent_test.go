@@ -9,8 +9,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/agents/claude"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/components/sdd"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/claude"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/sdd"
 )
 
 // gentleAIMarkerToken matches every envelope marker either half of the

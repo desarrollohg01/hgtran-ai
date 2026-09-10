@@ -12,7 +12,7 @@ import (
 	"strings"
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/reviewtransaction"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/reviewtransaction"
 )
 
 func TestFlatReviewStartRejectsBeforeCreatingLegacyAuthority(t *testing.T) {

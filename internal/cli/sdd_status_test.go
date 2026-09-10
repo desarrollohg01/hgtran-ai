@@ -11,7 +11,7 @@ import (
 	"strings"
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/sddstatus"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/sddstatus"
 )
 
 func TestRunSDDStatusAndContinueOmitExpectedPlanningBlockers(t *testing.T) {

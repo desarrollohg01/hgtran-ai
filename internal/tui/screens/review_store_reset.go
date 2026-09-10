@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/reviewtransaction"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/tui/styles"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/reviewtransaction"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/tui/styles"
 )
 
 // ReviewStoreResetConfirmOptionCount reports how many options the confirmation

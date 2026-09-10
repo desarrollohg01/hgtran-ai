@@ -8,7 +8,7 @@ import (
 	"io/fs"
 	"os"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/state"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/state"
 )
 
 // Offer is OfferReviewAfterVerify's complete mode-only result. Available

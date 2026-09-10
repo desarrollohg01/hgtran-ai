@@ -79,7 +79,7 @@ HISTORICAL_LINK='github\.com/[Gg]entleman-[Pp]rogramming/[a-z-]*/(pull|issues|co
 # `hgtran-ai` inside a URL gets rewritten first and the longer patterns stop
 # matching.
 declare -a SUBS=(
-  's|github\.com/hgtran-programming/hgtran-ai|bitbucket.org/hgt_development/hgtran-ai|g'
+  's|github\.com/hgtran-programming/hgtran-ai|github.com/desarrollohg01/hgtran-ai|g'
   's|github\.com/Gentleman-Programming/hgtran-ai|github.com/desarrollohg01/hgtran-ai|g'
   's|Gentleman-Programming/hgtran-ai|desarrollohg01/hgtran-ai|g'
   's|hgtran-programming/hgtran-ai|hgt_development/hgtran-ai|g'

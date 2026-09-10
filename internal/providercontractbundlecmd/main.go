@@ -6,7 +6,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/providercontractbundle"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/providercontractbundle"
 )
 
 const contractSemverFile = "contracts/review-provider-contract/CONTRACT_SEMVER"

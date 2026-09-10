@@ -1,6 +1,6 @@
 package planner
 
-import "bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
+import "github.com/desarrollohg01/hgtran-ai/v2/internal/model"
 
 type Graph struct {
 	dependencies map[model.ComponentID][]model.ComponentID

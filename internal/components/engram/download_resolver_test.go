@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/system"
 )
 
 // TestResolveEngramInstallNonBrewReturnsError verifies that after the fix,

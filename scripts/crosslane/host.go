@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/cli"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/cli"
 )
 
 // hostCommandTimeout bounds every command a --with-host lane runs: real

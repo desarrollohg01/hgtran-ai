@@ -5,11 +5,11 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/assets"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/catalog"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/model"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/reviewerprovider"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/reviewtransaction"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/assets"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/catalog"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/reviewerprovider"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/reviewtransaction"
 )
 
 // boundedReviewRequiredClausesFor is agent-parameterized because two of these
@@ -33,7 +33,7 @@ func captureTransportClausesFor(agent model.AgentID) []string {
 		}
 	}
 	return []string{
-		"exact literal prefix `GENTLE_AI_REVIEW_BINDING `",
+		"exact literal prefix `HGTRAN_AI_REVIEW_BINDING `",
 		"one-line JSON assembled only from that input",
 		"`revision` from `expected-revision`",
 		"`subject_hash` from `artifact_subject.subject_hash`",
@@ -228,7 +228,7 @@ func TestBoundedReviewContractRequiresRuntimeBoundReviewerContext(t *testing.T) 
 			t.Errorf("orchestrator contract missing reviewer context rule %q", want)
 		}
 	}
-	if strings.Contains(content, "`GENTLE_AI_REVIEW_BINDING=") {
+	if strings.Contains(content, "`HGTRAN_AI_REVIEW_BINDING=") {
 		t.Fatal("orchestrator contract permits equals-delimited reviewer bindings")
 	}
 }
@@ -486,7 +486,7 @@ func TestRenderedReviewersAreReadOnlyAndSingleResult(t *testing.T) {
 			path := family + "/agents/review-" + lens + ".md"
 			t.Run(family+"/"+lens, func(t *testing.T) {
 				content := renderBoundedReviewAsset(agentForAssetPath(t, path), path)
-				for _, want := range []string{"Review once", "changed_path_manifest", "base_tree", "candidate_tree", "incomplete inspection", "Never read the live worktree", "## Candidate-Causal Admission", "Return one JSON object and no prose", `"subject_hash":"<artifact_subject.subject_hash>"`, "GENTLE_AI_REVIEW_BINDING.subject_hash", `"inspection":{"status":"completed","paths":["<complete unique unordered set>"]}`, "path:line or path:start-end", "complete unique unordered manifest set", "lens triage", "Emit no unknown fields"} {
+				for _, want := range []string{"Review once", "changed_path_manifest", "base_tree", "candidate_tree", "incomplete inspection", "Never read the live worktree", "## Candidate-Causal Admission", "Return one JSON object and no prose", `"subject_hash":"<artifact_subject.subject_hash>"`, "HGTRAN_AI_REVIEW_BINDING.subject_hash", `"inspection":{"status":"completed","paths":["<complete unique unordered set>"]}`, "path:line or path:start-end", "complete unique unordered manifest set", "lens triage", "Emit no unknown fields"} {
 					if !strings.Contains(content, want) {
 						t.Errorf("%s missing %q", path, want)
 					}

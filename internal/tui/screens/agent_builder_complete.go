@@ -3,8 +3,8 @@ package screens
 import (
 	"strings"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agentbuilder"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/tui/styles"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agentbuilder"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/tui/styles"
 )
 
 // RenderABComplete renders the agent-builder completion screen.

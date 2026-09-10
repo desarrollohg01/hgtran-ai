@@ -10,7 +10,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/system"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/system"
 )
 
 func TestResolveCapabilityVersionTable(t *testing.T) {

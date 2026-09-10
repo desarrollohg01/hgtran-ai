@@ -9,14 +9,14 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/agents"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/assets"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/components/agentguidance"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/components/filemerge"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/components/opencodedefault"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/components/skills"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/model"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/opencode"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/assets"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/agentguidance"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/filemerge"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/opencodedefault"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/skills"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/opencode"
 )
 
 const legacyMandatoryWording = "TOTALMENTE " + "obligatorio"

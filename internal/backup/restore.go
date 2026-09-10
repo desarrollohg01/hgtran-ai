@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/components/filemerge"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/filemerge"
 )
 
 // UserHomeDirFn is the function used to resolve the user's home directory.

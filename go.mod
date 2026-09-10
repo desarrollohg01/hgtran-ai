@@ -1,4 +1,4 @@
-module bitbucket.org/hgt_development/hgtran-ai/v2
+module github.com/desarrollohg01/hgtran-ai/v2
 
 go 1.25.10
 

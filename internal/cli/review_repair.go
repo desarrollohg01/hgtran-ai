@@ -8,7 +8,7 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/reviewtransaction"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/reviewtransaction"
 )
 
 const ReviewIntegrationRepairSchema = "hgtran-ai.review-integration.repair/v1"

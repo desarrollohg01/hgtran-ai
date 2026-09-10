@@ -12,10 +12,10 @@ import (
 
 	"github.com/mattn/go-isatty"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/state"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/update"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/update/upgrade"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/state"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/system"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/update"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/update/upgrade"
 )
 
 // selfUpdateNowFn returns the current time; injected for test determinism.

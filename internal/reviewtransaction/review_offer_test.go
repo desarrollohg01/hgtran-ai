@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/state"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/state"
 )
 
 // TestOfferReviewAfterVerifyDisabledKillSwitchReturnsUnavailableBeforeRepoRead

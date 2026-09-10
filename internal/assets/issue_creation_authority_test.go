@@ -37,28 +37,10 @@ func TestIssueCreationAuthorityBoundary(t *testing.T) {
 		t.Fatal("embedded issue-creation authority must retain canonical frontmatter identity name: issue-creation")
 	}
 
-	collaborationPath := filepath.Join(repositoryRoot, "skills", "hgtran-ai-collab-perfect", "SKILL.md")
-	collaboration, err := os.ReadFile(collaborationPath)
-	if err != nil {
-		t.Fatalf("read collaboration skill: %v", err)
-	}
-	collaborationText := string(collaboration)
-	for _, required := range []string{"internal/assets/skills/issue-creation/SKILL.md", "CONTRIBUTING.md", ".github/ISSUE_TEMPLATE", "discovered GitHub labels"} {
-		if !strings.Contains(collaborationText, required) {
-			t.Fatalf("collaboration skill must reference canonical issue policy source %q", required)
-		}
-	}
-	if strings.Contains(collaborationText, "gh issue create") {
-		t.Fatal("collaboration skill must delegate issue publication to the canonical authority, not carry direct gh issue create mechanics")
-	}
-	for _, stale := range []string{"status:approved` from a maintainer", "| Add `status:approved` to an issue | ❌ | ✅ |"} {
-		if strings.Contains(collaborationText, stale) {
-			t.Fatalf("collaboration skill retains stale approval authority %q", stale)
-		}
-	}
-	if strings.Contains(collaborationText, "## Pending maintainer actions") || !strings.Contains(collaborationText, "## Pending repository workflow actions") {
-		t.Fatal("collaboration skill must use a neutral pending repository workflow heading")
-	}
+	// The upstream's collaboration skill is not shipped by this fork: it exists to
+	// guide contributions back to the upstream repository, and fc52753a removed it
+	// deliberately. The assertions that read it were removed with it rather than
+	// carried as a permanently failing expectation.
 
 	branch, err := os.ReadFile(filepath.Join(repositoryRoot, "skills", "branch-pr", "SKILL.md"))
 	if err != nil {
@@ -72,7 +54,6 @@ func TestIssueCreationAuthorityBoundary(t *testing.T) {
 func TestPRLabelMutationsUseCanonicalIssueCreationAuthority(t *testing.T) {
 	repositoryRoot := filepath.Join("..", "..")
 	for _, path := range []string{
-		filepath.Join(repositoryRoot, "skills", "hgtran-ai-collab-perfect", "SKILL.md"),
 		filepath.Join(repositoryRoot, "skills", "branch-pr", "SKILL.md"),
 	} {
 		content, err := os.ReadFile(path)

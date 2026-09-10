@@ -9,7 +9,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/pathquote"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/pathquote"
 )
 
 // Issue #2547 (S1 of #2540): work units carry no structured target field, so

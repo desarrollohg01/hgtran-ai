@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/update"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/system"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/update"
 )
 
 func TestGentleAIWindowsUpgradeFailsClosedToSourceInstall(t *testing.T) {
@@ -49,7 +49,7 @@ func TestGentleAIWindowsUpgradeFailsClosedToSourceInstall(t *testing.T) {
 			}
 			for _, required := range []string{
 				"Windows binary distribution and Scoop are temporarily unavailable",
-				"go install bitbucket.org/hgt_development/hgtran-ai/v2/cmd/hgtran-ai" + tc.wantTarget,
+				"go install github.com/desarrollohg01/hgtran-ai/v2/cmd/hgtran-ai" + tc.wantTarget,
 			} {
 				if !strings.Contains(hint, required) {
 					t.Errorf("manual hint is missing %q: %s", required, hint)
@@ -73,7 +73,7 @@ func TestGentleAIWindowsUpgradeFailsClosedToSourceInstall(t *testing.T) {
 func TestWindowsBetaGentleAIUpgradeUsesShippedRegistryGoTarget(t *testing.T) {
 	const (
 		mainSHA = "abc1234"
-		module  = "github.com/hgtran-programming/hgtran-ai/v2"
+		module  = "github.com/desarrollohg01/hgtran-ai/v2"
 	)
 
 	var tool update.ToolInfo

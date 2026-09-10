@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/filemerge"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/filemerge"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
 )
 
 // TestProfileLifecycle_FullCRUD exercises the complete profile lifecycle:

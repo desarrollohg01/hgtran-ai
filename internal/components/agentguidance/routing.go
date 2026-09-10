@@ -10,8 +10,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/agents/capabilitymanifest"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/capabilitymanifest"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
 )
 
 // ErrUnknownRoutingPolicy fails closed when the canonical manifest carries a

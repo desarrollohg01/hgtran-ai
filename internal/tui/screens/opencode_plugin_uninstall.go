@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strings"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/opencodeplugin"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/tui/styles"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/opencodeplugin"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/tui/styles"
 )
 
 // RenderOpenCodePluginUninstallSelect renders the list of installed OpenCode

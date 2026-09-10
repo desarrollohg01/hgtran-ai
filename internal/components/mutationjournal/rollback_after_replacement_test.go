@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/components/filemerge"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/filemerge"
 )
 
 // replaceThenFail mimics the one window WriteFileAtomic documents: the rename

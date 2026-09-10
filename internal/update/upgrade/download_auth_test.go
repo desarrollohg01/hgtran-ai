@@ -20,8 +20,8 @@ import (
 
 	minisign "github.com/jedisct1/go-minisign"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/update"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/system"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/update"
 )
 
 const testMinisignKeyDomain = "hgtran-ai issue 359 minisign TEST KEY; never use for releases"

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/sdd"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/tui/styles"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/sdd"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/tui/styles"
 )
 
 // RenderProfileDelete renders the profile delete confirmation screen.

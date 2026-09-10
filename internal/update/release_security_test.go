@@ -353,7 +353,7 @@ func TestGoReleaserSignsBoundManifestAndInjectsTrustAnchors(t *testing.T) {
 		`- "${artifact}"`,
 		`- "${signature}"`,
 		`repo=Gentleman-Programming/hgtran-ai;tag={{ .Tag }}`,
-		`github.com/hgtran-programming/hgtran-ai/v2/internal/update/upgrade.releaseMinisignPublicKeys={{ .Env.MINISIGN_PUBLIC_KEYS_CANONICAL }}`,
+		`github.com/desarrollohg01/hgtran-ai/v2/internal/update/upgrade.releaseMinisignPublicKeys={{ .Env.MINISIGN_PUBLIC_KEYS_CANONICAL }}`,
 		"-trimpath",
 		"go run ./internal/releaseprovenancecmd --out .goreleaser-provenance/manifest.json --config .goreleaser.yaml --goreleaser-version v2.15.2",
 		"id: release-provenance",
@@ -630,7 +630,7 @@ cat "$FAKE_GH_RESPONSE"
 func TestCanonicalReleasePublicKeysControlRealLinkerBuild(t *testing.T) {
 	repoRoot := filepath.Clean(filepath.Join("..", ".."))
 	publicKey := strings.TrimSpace(readRepositoryFile(t, "internal", "update", "upgrade", "testdata", "minisign-test.pub"))
-	const linkerTarget = "github.com/hgtran-programming/hgtran-ai/v2/internal/update/upgrade.releaseMinisignPublicKeys"
+	const linkerTarget = "github.com/desarrollohg01/hgtran-ai/v2/internal/update/upgrade.releaseMinisignPublicKeys"
 	const injectedOverride = "AUDIT_OVERRIDE"
 
 	build := func(t *testing.T, raw string) (string, []byte, error) {

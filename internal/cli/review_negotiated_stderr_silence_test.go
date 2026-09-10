@@ -9,7 +9,7 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/reviewtransaction"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/reviewtransaction"
 )
 
 // captureReviewProcessStderr swaps the process stderr for a pipe so a test can

@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/storage"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/storage"
 )
 
 func TestAvailableBytes_TempDir(t *testing.T) {

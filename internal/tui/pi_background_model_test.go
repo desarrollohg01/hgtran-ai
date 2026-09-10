@@ -5,12 +5,12 @@ import (
 	"testing"
 
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/cli"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/model"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/pipeline"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/planner"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/system"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/tui/screens"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/cli"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/pipeline"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/planner"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/system"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/tui/screens"
 )
 
 func piSDDReviewModel(background model.PiBackgroundIntent) Model {

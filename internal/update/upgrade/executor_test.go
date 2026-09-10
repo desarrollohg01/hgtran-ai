@@ -12,14 +12,14 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/agents"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/backup"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/components/gga"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/components/sdd"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/model"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/state"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/system"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/update"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/backup"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/gga"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/sdd"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/state"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/system"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/update"
 )
 
 // --- helpers ---
@@ -722,16 +722,16 @@ func TestConfigPathsForBackup_CoversManagedAgentPaths(t *testing.T) {
 	homeDir := t.TempDir()
 
 	managedFiles := map[string]string{
-		".claude.json":                                `{"oauthAccount":{"emailAddress":"user@example.com"},"mcpServers":{"engram":{"command":"engram"}}}`,
-		".claude/CLAUDE.md":                           "# Claude",
+		".claude.json":                             `{"oauthAccount":{"emailAddress":"user@example.com"},"mcpServers":{"engram":{"command":"engram"}}}`,
+		".claude/CLAUDE.md":                        "# Claude",
 		".claude/themes/hgtran.json":               `{"name":"hgtran"}`,
 		".claude/themes/hgtran-cute.json":          `{"name":"Gentleman Cute"}`,
-		".config/opencode/AGENTS.md":                  "# OpenCode",
+		".config/opencode/AGENTS.md":               "# OpenCode",
 		".config/opencode/themes/hgtran.json":      `{"theme":{}}`,
 		".config/opencode/themes/hgtran-cute.json": `{"theme":{}}`,
-		".config/opencode/opencode.json":              `{"model":"claude"}`,
-		".gemini/GEMINI.md":                           "# Gemini",
-		".cursor/rules/hgtran-ai.mdc":                 "# Cursor rules",
+		".config/opencode/opencode.json":           `{"model":"claude"}`,
+		".gemini/GEMINI.md":                        "# Gemini",
+		".cursor/rules/hgtran-ai.mdc":              "# Cursor rules",
 	}
 	unmanagedFile := filepath.Join(homeDir, ".claude", "conversation-transcript.md")
 

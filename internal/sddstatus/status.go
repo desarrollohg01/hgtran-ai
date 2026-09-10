@@ -12,20 +12,12 @@ import (
 	"sort"
 	"strings"
 
-<<<<<<< HEAD
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/reviewtransaction"
-)
-
-const SchemaName = "hgtran-ai.sdd-status"
-const SchemaVersion = 1
-=======
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/pathquote"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/reviewtransaction"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/pathquote"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/reviewtransaction"
 )
 
 const SchemaName = "hgtran-ai.sdd-status"
 const SchemaVersion = 2
->>>>>>> v2.5.0
 
 type ArtifactStore string
 
@@ -158,44 +150,7 @@ type RemediationState struct {
 	Required               bool   `json:"required"`
 	Complete               bool   `json:"complete"`
 	FailedEvidenceRevision string `json:"failedEvidenceRevision"`
-<<<<<<< HEAD
-	LineageID              string `json:"lineageId"`
-	Generation             int    `json:"generation"`
-	FixBatch               int    `json:"fixBatch"`
-	// CorrectionBudgetRemaining is CorrectionBudgetTotal minus the compact
-	// review authority's CumulativeCorrectionLines already charged against
-	// it: the correction-line budget still available for this remediation
-	// attempt. Zero when remediation is not compact-bound or not required.
-	CorrectionBudgetRemaining int `json:"correctionBudgetRemaining,omitempty"`
-	// CorrectionBudgetTotal is the frozen total correction-line budget
-	// assigned to the compact review authority at review start
-	// (reviewtransaction.CompactState.CorrectionBudget), unaffected by lines
-	// already spent. Zero when remediation is not compact-bound or not
-	// required.
-	CorrectionBudgetTotal int    `json:"correctionBudgetTotal,omitempty"`
-	Reason                string `json:"reason"`
-}
-
-type ReviewGateState struct {
-	Result reviewtransaction.GateResult `json:"result"`
-	Reason string                       `json:"reason"`
-	// Delivery historically named what governs the change when the review
-	// gate itself could not (RDDDeliveryDisabledUnmanaged, while the kill
-	// switch was off and no review authority existed). Corrective verify
-	// cycle CRITICAL-1 (rdd-post-verify-review-offer's "Kill-Switch-Off Is
-	// Structural Absence" requirement) removed the production path that
-	// populated it: applyReviewGate now returns before status.ReviewGate is
-	// ever set while disabled, so ReviewGate is nil (structural absence)
-	// rather than a populated disabled/unmanaged disposition. Delivery is
-	// therefore never non-empty in production today. The field itself is
-	// kept, unpopulated, for legacy Hgtran Pi wire-shape stability
-	// (rdd-sdd-receipt-consumption's "Legacy reviewGate v1 Field
-	// Compatibility" assumption 5); its removal is deferred to Wave 7 along
-	// with the rest of that requirement's legacy-field retirement.
-	Delivery reviewtransaction.RDDDelivery `json:"delivery,omitempty"`
-=======
 	Reason                 string `json:"reason"`
->>>>>>> v2.5.0
 }
 
 type Status struct {
@@ -277,12 +232,7 @@ func applyReviewOfferRouting(ctx context.Context, status *Status, workspaceRoot 
 	}
 	status.ReviewOffer = &ReviewOfferBlock{
 		Available:  offer.Available,
-<<<<<<< HEAD
-		LineageID:  offer.LineageID,
-		Invocation: fmt.Sprintf("hgtran-ai review start --cwd %q", workspaceRoot),
-=======
 		Invocation: fmt.Sprintf("hgtran-ai review start --cwd %s", pathquote.Quote(workspaceRoot)),
->>>>>>> v2.5.0
 	}
 }
 
@@ -700,40 +650,6 @@ func resolveByPreferenceOrder(options ResolveOptions) (Status, error) {
 			blockedReasons.genuine = append(blockedReasons.genuine, reason)
 		}
 	}
-<<<<<<< HEAD
-	// Stale evidence under a live allow authority needs a fresh verification,
-	// not legacy remediation classification against a missing transaction.
-	// Corrective verify cycle 3, CRITICAL-B: this whole review-authority
-	// consultation (discovery walk, compact remediation lookup, and explicit
-	// governingRef validation/blocking) is gated behind !reviewDisabled,
-	// consulted once here, mirroring applyReviewGate's own fix. Without this,
-	// a stale-verify-totals fixture reached resolveReviewAuthority's
-	// discovery walk and appended "... run the fresh full review ... with
-	// hgtran-ai review start" as a blocked reason while the switch was OFF —
-	// a command the switch itself refuses to run, and archive blocking on
-	// review grounds while OFF at all, both violations of the ratified
-	// "archive consults no reviewGate structured status ... archive cannot
-	// fail or block for review reasons" requirement.
-	staleEvidenceCandidate := governingRef == nil && reviewState == nil && applyState == ApplyAllDone && artifacts["verifyReport"] == ArtifactDone && verifyResult.Stale
-	var staleAllowAuthority *reviewAuthorityEvaluation
-	// staleEvidenceUnmanaged is the disabled-mode analogue of
-	// staleAllowAuthority: internally-complete, non-failing evidence whose
-	// only defect is a totals mismatch needs a fresh verification either
-	// way, but while the switch is off there is no review authority left to
-	// consult to justify that leniency -- so it is granted unconditionally,
-	// the same "please re-verify" outcome, with zero review consultation and
-	// zero blocked reasons. Without this, a disabled run fell through to the
-	// ordinary "no transaction, no compact authority" remediation reason,
-	// which named nextRecommended "resolve-review" for a fixture that has
-	// nothing to do with review governance.
-	staleEvidenceUnmanaged := reviewDisabled && staleEvidenceCandidate
-	if !reviewDisabled && staleEvidenceCandidate {
-		evaluation := resolveReviewAuthority(context.Background(), workspaceRoot, firstPath(artifactPaths.ReviewReceipt), "", changeName)
-		if evaluation.Result == reviewtransaction.GateAllow {
-			staleAllowAuthority = &evaluation
-		} else {
-			blockedReasons.genuine = append(blockedReasons.genuine, evaluation.Reason)
-=======
 	applyState, unauthorizedRoots := applyEditAuthorityBlock(applyState, &blockedReasons, readText(firstPath(artifactPaths.Tasks)), workspaceRoot, append([]string{workspaceRoot}, grantedRoots...))
 	var consent *SDDIntegrationConsentResult
 	if len(unauthorizedRoots) != 0 {
@@ -746,7 +662,6 @@ func resolveByPreferenceOrder(options ResolveOptions) (Status, error) {
 			if instance, err = ensureChangeInstanceMarker(changeRoot); err != nil {
 				return Status{}, err
 			}
->>>>>>> v2.5.0
 		}
 		expectedRevision := ""
 		if runtimeStatus != nil {
@@ -906,13 +821,8 @@ func applyNativeRuntimeErrorRouting(status *Status, runtimeErr error) {
 		change = *status.ChangeName
 	}
 	reason := fmt.Sprintf(
-<<<<<<< HEAD
-		"native SDD runtime authority is unreadable and execution is blocked: %v; do not launch another actor or edit the Git-common-dir authority manually; the compact attempt path reports blocked(corrupt_authority), and full `hgtran-ai sdd-attempt status --cwd %q --change %q` is a maintainer diagnostic only",
-		runtimeErr, status.ActionContext.WorkspaceRoot, change,
-=======
 		"native SDD runtime authority is unreadable and execution is blocked: %v; do not launch another actor or edit the Git-common-dir authority manually; the compact attempt path reports blocked(corrupt_authority), and full `hgtran-ai sdd-attempt status --cwd %s --change %q` is a maintainer diagnostic only",
 		runtimeErr, pathquote.Quote(status.ActionContext.WorkspaceRoot), change,
->>>>>>> v2.5.0
 	)
 	status.Dependencies.Apply = DependencyBlocked
 	status.Dependencies.Verify = DependencyBlocked
@@ -1117,16 +1027,12 @@ func blockedEngramStatus(workspaceRoot string, changeName *string, next string, 
 }
 
 func shouldTryEngram(workspaceRoot string) bool {
-<<<<<<< HEAD
-	if os.Getenv("HGTRAN_AI_SDD_STATUS_ENGRAM") != "" {
-=======
 	// A declaration is authoritative in both directions: it opts a workspace
 	// in, and it also opts one out even when a .engram directory is present.
 	if declared, ok := declaredArtifactStore(workspaceRoot); ok {
 		return declared == ArtifactStoreEngram || declared == ArtifactStoreHybrid
 	}
 	if os.Getenv("GENTLE_AI_SDD_STATUS_ENGRAM") != "" {
->>>>>>> v2.5.0
 		return true
 	}
 	if _, err := os.Stat(filepath.Join(workspaceRoot, ".engram")); err == nil {
@@ -2105,18 +2011,11 @@ func renderPhaseInstructions(status Status) PhaseInstructions {
 
 func nativeRuntimeInstructions(status Status, change string) []string {
 	workspace := status.ActionContext.WorkspaceRoot
-<<<<<<< HEAD
-	return []string{
-		fmt.Sprintf("Before any runtime-bearing apply, verify, or remediation launch, run `hgtran-ai sdd-attempt acquire --cwd %q --change %q --request-id \"<unique-request-id>\" --work-unit \"<label>\" --evidence-goal \"<stable-goal>\" --max-attempts <count> --max-changed-lines <count>`.", workspace, change),
-		"Launch only for state proceed and retain its opaque token. State blocked or complete stops the launch; full runtime status is a diagnostic escape hatch, not normal model context.",
-		fmt.Sprintf("After the external run, call `hgtran-ai sdd-attempt settle --cwd %q --change %q --token \"<acquire-token>\" --request-id \"<unique-request-id>\" --outcome <passed|failed|interrupted> --evidence-revision <sha256> --diagnosis \"<proven-diagnosis>\" --harness-disposition <reused|invalidated> --cleanup-evidence \"<evidence>\" --process-evidence \"<evidence>\"`; add --successor-lineage only for a distinct approved remediation successor.", workspace, change),
-=======
 	instructions := []string{
 		fmt.Sprintf("Before any runtime-bearing apply, verify, or remediation launch, run `hgtran-ai sdd-attempt acquire --cwd %s --change %q --request-id \"<unique-request-id>\" --work-unit \"<label>\" --evidence-goal \"<stable-goal>\" --max-attempts <count> --max-changed-lines <count>`.", pathquote.Quote(workspace), change),
 		"Launch only for state proceed and retain its opaque token. State blocked or complete stops the launch; full runtime status is a diagnostic escape hatch, not normal model context.",
 		fmt.Sprintf("After a failed or passed run, call `hgtran-ai sdd-attempt settle --cwd %s --change %q --token \"<acquire-token>\" --request-id \"<unique-request-id>\" --outcome <passed|failed> --evidence-revision <sha256> --diagnosis \"<proven-diagnosis>\" --harness-disposition <reused|invalidated> --cleanup-evidence \"<evidence>\" --process-evidence \"<evidence>\"`.", pathquote.Quote(workspace), change),
 		fmt.Sprintf("After an interrupted run, call `hgtran-ai sdd-attempt settle --cwd %s --change %q --token \"<acquire-token>\" --request-id \"<unique-request-id>\" --outcome interrupted --diagnosis \"<proven-diagnosis>\" --harness-disposition <reused|invalidated> --cleanup-evidence \"<evidence>\" --process-evidence \"<evidence>\"` and omit --evidence-revision.", pathquote.Quote(workspace), change),
->>>>>>> v2.5.0
 		"Treat settle state proceed as permission for another bounded acquire, blocked as a hard stop, and complete as terminal. Reset is exceptional, requires an explicit maintainer scope decision, and is never automatic.",
 	}
 	if status.RemediationState.Required && status.RuntimeStatus != nil && status.RuntimeStatus.Objective != nil {
@@ -2158,24 +2057,10 @@ func liveRuntimeAttemptInstructions(status Status) []string {
 // blocked reason with no way out — the blocked reason is the entire guidance.
 func nonPhaseRoutingInstructions(status Status) ([]string, bool) {
 	switch status.NextRecommended {
-<<<<<<< HEAD
-	case "review", "resolve-review":
-		return []string{
-			"",
-			"### Next Review Operation",
-			fmt.Sprintf("- Run `hgtran-ai review start --cwd %q`; the facade derives intended untracked scope, lineage, tier, lenses, and correction budget from live Git.", status.ActionContext.WorkspaceRoot),
-			"- Pass reviewer result and verification evidence to `hgtran-ai review finalize`; do not hand-author lifecycle operation JSON.",
-			"- Continue discovered authority instead of starting another budget, and reconcile existing terminal mirrors only after `hgtran-ai review validate --gate post-apply` allows.",
-		}, true
-=======
->>>>>>> v2.5.0
 	case "select-change":
 		return []string{
 			"",
 			"### Next Selection Operation",
-<<<<<<< HEAD
-			fmt.Sprintf("- Rerun with an explicit change name from Blocked Reasons above: `hgtran-ai sdd-status --cwd %q <change-name>` or `hgtran-ai sdd-continue --cwd %q <change-name>`.", status.ActionContext.WorkspaceRoot, status.ActionContext.WorkspaceRoot),
-=======
 			fmt.Sprintf("- Rerun with an explicit change name from Blocked Reasons above: `hgtran-ai sdd-status --cwd %s <change-name>` or `hgtran-ai sdd-continue --cwd %s <change-name>`.", pathquote.Quote(status.ActionContext.WorkspaceRoot), pathquote.Quote(status.ActionContext.WorkspaceRoot)),
 		}, true
 	case "archived":
@@ -2188,7 +2073,6 @@ func nonPhaseRoutingInstructions(status Status) ([]string, bool) {
 			"### Archived Change",
 			fmt.Sprintf("- This change is already archived%s; no phase remains and nothing is blocked.", location),
 			fmt.Sprintf("- Start new work with a fresh change: `hgtran-ai sdd-status --cwd %s` lists what is active.", pathquote.Quote(status.ActionContext.WorkspaceRoot)),
->>>>>>> v2.5.0
 		}, true
 	default:
 		return nil, false

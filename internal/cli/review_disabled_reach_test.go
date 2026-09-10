@@ -9,8 +9,8 @@ import (
 	"strings"
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/reviewtransaction"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/sddstatus"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/reviewtransaction"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/sddstatus"
 )
 
 // The maintainer's rule for this file: while the kill switch is off,

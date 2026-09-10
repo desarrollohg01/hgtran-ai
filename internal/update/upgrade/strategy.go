@@ -15,17 +15,17 @@ import (
 	"strings"
 	"time"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/cli"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/engram"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/update"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/cli"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/engram"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/system"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/update"
 )
 
 // selfModulePath is the module path this binary is built from, and must stay in
 // step with the `module` line of go.mod. `go install` resolves by module path,
 // so the beta self-upgrade target is derived from this rather than from the
 // tool registry, whose Owner/Repo describe a repository host instead.
-const selfModulePath = "bitbucket.org/hgt_development/hgtran-ai/v2"
+const selfModulePath = "github.com/desarrollohg01/hgtran-ai/v2"
 
 // engramDownloadFn is the function used to download the engram binary on the stable channel.
 // Package-level var for testability — swapped in tests to avoid real network calls.
@@ -644,25 +644,7 @@ func isBetaGentleAIUpgrade(r update.UpdateResult) bool {
 // same risk of writing somewhere the shell does not resolve, so it performs the
 // same non-fatal destination verification.
 func goInstallMainUpgrade(tool update.ToolInfo) error {
-<<<<<<< HEAD
-	// `go install` resolves by module path, never by repository host, so this
-	// target must track the module declared in go.mod. Deriving it from the
-	// registry's Owner/Repo only worked while the repository and the module
-	// path happened to coincide; after the move to bitbucket.org they do not,
-	// and the two would silently drift apart.
-	//
-	// The major-version suffix is not decoration: for major 2 and above Go
-	// refuses every resolution of a module path that does not end in /vN,
-	// including the branch pseudo-versions this beta path installs.
-	//
-	// TODO(slice 6, E-UPDATE): tool.Owner/tool.Repo still describe every tool
-	// as living on github.com. That is wrong for this one now, and the registry
-	// rework belongs with the rest of the self-update work.
-	_ = tool
-	module := selfModulePath
-=======
 	module := gentleAIModulePath(tool)
->>>>>>> v2.5.0
 
 	destDir, destErr := goInstallDestinationDir()
 
@@ -681,7 +663,7 @@ func goInstallMainUpgrade(tool update.ToolInfo) error {
 func gentleAIModulePath(tool update.ToolInfo) string {
 	repository := strings.ToLower(fmt.Sprintf("github.com/%s/%s", strings.TrimSpace(tool.Owner), strings.TrimSpace(tool.Repo)))
 	if repository == "github.com//" {
-		repository = "github.com/hgtran-programming/hgtran-ai"
+		repository = "github.com/desarrollohg01/hgtran-ai"
 	}
 	// Go derives the module path from the repository plus the major-version
 	// suffix: for major 2 and above the module path must end in /vN or the

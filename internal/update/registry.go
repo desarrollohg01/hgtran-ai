@@ -29,7 +29,7 @@ var Tools = []ToolInfo{
 		// deliberately NOT a general opt-in to go-install: effectiveMethod routes
 		// hgtran-ai on Linux/macOS to InstallBinary regardless of this field, so
 		// those platforms keep the minisign-verified release download.
-		GoImportPath: "bitbucket.org/hgt_development/hgtran-ai/v2/cmd/hgtran-ai",
+		GoImportPath: "github.com/desarrollohg01/hgtran-ai/v2/cmd/hgtran-ai",
 	},
 	{
 		Name:              "engram",

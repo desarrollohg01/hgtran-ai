@@ -58,7 +58,7 @@ func example() int { return 1 }
 import (
 	"context"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/reviewtransaction"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/reviewtransaction"
 )
 
 func example(ctx context.Context) {

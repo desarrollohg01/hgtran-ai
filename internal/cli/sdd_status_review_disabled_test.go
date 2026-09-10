@@ -11,8 +11,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/reviewtransaction"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/sddstatus"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/reviewtransaction"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/sddstatus"
 )
 
 // The kill switch reaches SDD status through this layer, which owns the single

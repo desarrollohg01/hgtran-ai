@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/symlinktest"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/symlinktest"
 )
 
 func FuzzNormalizeJSON_NoPanic(f *testing.F) {

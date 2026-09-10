@@ -18,7 +18,7 @@ import (
 	"strings"
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/system"
 )
 
 func TestMain(m *testing.M) {
@@ -1203,13 +1203,13 @@ func TestCanonicalEngramGoInstallPackagePreservesDeclaredModuleCasing(t *testing
 		},
 		{
 			name: "upstream owner is redirected at a pinned version",
-			pkg:  "github.com/hgtran-programming/engram/cmd/engram@v1.2.3",
+			pkg:  "github.com/Gentleman-Programming/engram/cmd/engram@v1.2.3",
 			want: "github.com/desarrollohg01/engram/cmd/engram@v1.2.3",
 		},
 		{
 			name: "unrelated package remains unchanged",
-			pkg:  "bitbucket.org/hgt_development/hgtran-ai/v2/cmd/hgtran-ai@latest",
-			want: "bitbucket.org/hgt_development/hgtran-ai/v2/cmd/hgtran-ai@latest",
+			pkg:  "github.com/desarrollohg01/hgtran-ai/v2/cmd/hgtran-ai@latest",
+			want: "github.com/desarrollohg01/hgtran-ai/v2/cmd/hgtran-ai@latest",
 		},
 	}
 

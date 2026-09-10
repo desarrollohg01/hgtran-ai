@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"path/filepath"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/reviewtransaction"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/state"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/reviewtransaction"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/state"
 )
 
 // installStateLockPath is the install-state lock under the real home

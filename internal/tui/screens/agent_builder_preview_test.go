@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agentbuilder"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agentbuilder"
 )
 
 func TestRenderABPreview_NonEmpty(t *testing.T) {

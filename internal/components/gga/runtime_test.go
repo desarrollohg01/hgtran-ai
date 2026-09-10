@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/assets"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/assets"
 )
 
 func TestEnsureRuntimeAssetsCreatesPRModeWhenMissing(t *testing.T) {

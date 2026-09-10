@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/skillregistry"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/skillregistry"
 )
 
 // TestSkillRegistryPluginSkipsNonProjectDirectories runs the real plugin

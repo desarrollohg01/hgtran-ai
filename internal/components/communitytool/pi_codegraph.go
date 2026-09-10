@@ -17,9 +17,9 @@ import (
 	"strings"
 	"time"
 
-	piagent "github.com/hgtran-programming/hgtran-ai/v2/internal/agents/pi"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/components/filemerge"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/system"
+	piagent "github.com/desarrollohg01/hgtran-ai/v2/internal/agents/pi"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/filemerge"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/system"
 )
 
 const (

@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/versions"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/versions"
 )
 
 func TestSDDOrchestratorsRequireSafeFormatterOrdering(t *testing.T) {

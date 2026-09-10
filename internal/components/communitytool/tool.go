@@ -9,11 +9,11 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/agents"
-	piagent "github.com/hgtran-programming/hgtran-ai/v2/internal/agents/pi"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/catalog"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/model"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/system"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents"
+	piagent "github.com/desarrollohg01/hgtran-ai/v2/internal/agents/pi"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/catalog"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/system"
 )
 
 type Availability string

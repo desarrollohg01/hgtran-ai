@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/antigravity"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/antigravity"
 )
 
 func TestRegenerateWritesRegistryAndCacheThenHitsCache(t *testing.T) {

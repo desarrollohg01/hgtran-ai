@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
 )
 
 // AdapterInfo pairs an AgentID with the path to its skills directory.

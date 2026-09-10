@@ -10,7 +10,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/sddstatus"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/sddstatus"
 )
 
 func TestRunSDDAttemptSettleIgnoresUnsafeRDDModeAuthority(t *testing.T) {

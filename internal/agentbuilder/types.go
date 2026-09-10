@@ -3,7 +3,7 @@ package agentbuilder
 import (
 	"time"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
 )
 
 // SDDIntegrationMode defines how a generated agent integrates with SDD phases.

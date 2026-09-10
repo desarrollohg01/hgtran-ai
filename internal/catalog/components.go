@@ -1,6 +1,6 @@
 package catalog
 
-import "bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
+import "github.com/desarrollohg01/hgtran-ai/v2/internal/model"
 
 type Component struct {
 	ID          model.ComponentID

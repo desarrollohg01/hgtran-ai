@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/sddstatus"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/sddstatus"
 )
 
 func sddReviewDisabledForWorkspace(workspaceRoot string) (bool, error) {

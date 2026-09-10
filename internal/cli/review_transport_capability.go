@@ -6,9 +6,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/agents/capabilitymanifest"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/catalog"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/capabilitymanifest"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/catalog"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
 )
 
 const reviewImmutableTransportUnsupportedCode = "immutable_review_transport_unsupported"

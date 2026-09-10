@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
 )
 
 func TestInstallAddsCommunityPluginToTUIConfig(t *testing.T) {

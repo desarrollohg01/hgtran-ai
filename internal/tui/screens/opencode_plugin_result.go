@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/opencodeplugin"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/tui/styles"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/opencodeplugin"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/tui/styles"
 )
 
 func RenderOpenCodePluginResult(results []opencodeplugin.Result, err error) string {

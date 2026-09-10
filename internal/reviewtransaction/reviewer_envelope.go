@@ -8,7 +8,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/reviewerprovider"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/reviewerprovider"
 )
 
 // ReviewerResultSchema is the published input schema for one reviewer result.

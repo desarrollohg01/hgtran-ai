@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/statepath"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/statepath"
 )
 
 // BackupSource identifies what operation created a backup.

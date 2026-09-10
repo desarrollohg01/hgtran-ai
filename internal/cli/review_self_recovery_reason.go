@@ -1,6 +1,6 @@
 package cli
 
-import "bitbucket.org/hgt_development/hgtran-ai/v2/internal/reviewtransaction"
+import "github.com/desarrollohg01/hgtran-ai/v2/internal/reviewtransaction"
 
 // reviewSelfRecoveryShape is a closed enumeration of the deterministic
 // triggering states a self-derived recovery reason may name. It is

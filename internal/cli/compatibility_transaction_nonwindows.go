@@ -2,7 +2,7 @@
 
 package cli
 
-import "github.com/hgtran-programming/hgtran-ai/v2/internal/model"
+import "github.com/desarrollohg01/hgtran-ai/v2/internal/model"
 
 func usesAnchoredCompatibilityTransaction() bool {
 	return false

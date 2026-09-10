@@ -11,9 +11,9 @@ import (
 	"testing"
 	"unicode/utf8"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/assets"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/model"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/opencode"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/assets"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/opencode"
 )
 
 // requiredLedgerClauses is the OpenCode binding of the shared clause set: the
@@ -479,7 +479,14 @@ func TestKilocodeReviewSettingsMatchCurrentMainBaseline(t *testing.T) {
 	// no-hallucination clause in every runtime orchestrator, so a design that
 	// names files apply will create is no longer failed by the gate. Kilo
 	// renders the OpenCode orchestrator asset, so the baseline is rederived.
-	const want = "b3c375b834db28f97daaf05c19b55f088c470e7ed58b0ba3dd965569ef04c74c"
+	// La identidad del fork rederiva la linea base: el agente gestionado pasa a
+	// `hgtran-orchestrator`, la variable de enlace de revision a
+	// `HGTRAN_AI_REVIEW_BINDING`, y los assets de persona y comandos a los
+	// nombres con prefijo `hgtran-`. Kilo renderiza a traves del asset del
+	// orquestador de OpenCode, asi que todas esas sustituciones entran en el
+	// contenido hasheado. Verificado: el hash se movio con cada renombrado y no
+	// por otra causa.
+	const want = "9c1979b04496a10eac983bee582b66dfd530dc5b980027ae7c6a60571cd1d230"
 	if got != want {
 		t.Fatalf("Kilocode settings SHA-256 = %s, want current-main baseline %s", got, want)
 	}
@@ -512,7 +519,7 @@ func TestOpenCodeRenderedReviewProtocolCost(t *testing.T) {
 		maxCharacters int
 	}{
 		// wantChars grew by 110 (7,085 -> 7,195 / 14,078 -> 14,188) when the
-		// review-ledger-contract.md GENTLE_AI_REVIEW_BINDING sentence was
+		// review-ledger-contract.md HGTRAN_AI_REVIEW_BINDING sentence was
 		// corrected: it previously claimed START emits that field verbatim,
 		// which no emitter does; it now says how to assemble it from START's
 		// own lineage_id/target_identity/lens_bindings fields (issue: docs vs
@@ -525,7 +532,7 @@ func TestOpenCodeRenderedReviewProtocolCost(t *testing.T) {
 		// subject_hash and no inspection, and one reported inspection.status
 		// "access_failure" after trying to inspect the candidate and
 		// verify its SHA-256 itself, which its declared read-only tools never
-		// permitted. The prompt now names GENTLE_AI_REVIEW_BINDING as the only
+		// permitted. The prompt now names HGTRAN_AI_REVIEW_BINDING as the only
 		// source of subject_hash, forbids inventing it, says the diff and
 		// manifest arrive in the prompt, and states that there are no
 		// execution tools. This is a deliberate contract change, not drift.

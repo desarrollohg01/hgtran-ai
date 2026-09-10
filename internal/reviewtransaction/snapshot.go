@@ -17,7 +17,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/pathidentity"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/pathidentity"
 )
 
 type TargetKind string

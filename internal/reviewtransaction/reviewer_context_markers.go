@@ -16,7 +16,7 @@ package reviewtransaction
 const (
 	// ReviewerBindingMarker prefixes the one-line binding JSON that opens every
 	// reviewer task.
-	ReviewerBindingMarker = "GENTLE_AI_REVIEW_BINDING"
+	ReviewerBindingMarker = "HGTRAN_AI_REVIEW_BINDING"
 	// ReviewerContextMarker opens the immutable candidate evidence block, and
 	// ReviewerContextTerminator closes it.
 	ReviewerContextMarker     = "GENTLE_AI_REVIEW_CONTEXT"

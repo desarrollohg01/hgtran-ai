@@ -1,6 +1,6 @@
 package skills
 
-import "bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
+import "github.com/desarrollohg01/hgtran-ai/v2/internal/model"
 
 // sddSkills are the SDD orchestrator skills — always included.
 var sddSkills = []model.SkillID{

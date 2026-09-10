@@ -18,16 +18,16 @@ import (
 	"time"
 
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/agents/codex"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/backup"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/model"
-	opencodeactivation "github.com/hgtran-programming/hgtran-ai/v2/internal/opencode"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/planner"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/state"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/system"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/tui"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/update"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/update/upgrade"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/codex"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/backup"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
+	opencodeactivation "github.com/desarrollohg01/hgtran-ai/v2/internal/opencode"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/planner"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/state"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/system"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/tui"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/update"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/update/upgrade"
 )
 
 // TestListBackupsNewestFirst verifies that ListBackups returns manifests sorted

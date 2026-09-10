@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/catalog"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/catalog"
 )
 
 // runtimeIdentityBindingRegexp captures the runtime identity an embedded asset

@@ -3,7 +3,7 @@ package persona
 import (
 	"path/filepath"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
 )
 
 // OutputStylePaths describes the output-style resources owned for one persona.

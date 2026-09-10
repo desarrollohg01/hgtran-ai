@@ -12,7 +12,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/reviewtransaction"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/reviewtransaction"
 )
 
 // TestCandidateDeclineCharacterization_ResolveCandidateDeclineForGate pinned

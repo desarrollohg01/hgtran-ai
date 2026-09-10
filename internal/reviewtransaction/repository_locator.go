@@ -16,7 +16,7 @@ import (
 	"runtime"
 	"strings"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/statepath"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/statepath"
 )
 
 const (
@@ -719,13 +719,8 @@ func reviewRepositoryContextHome() (string, error) {
 	return canonicalLocatorDirectory(home)
 }
 
-<<<<<<< HEAD
-func ensureReviewRepositoryContextStorageRoot(home string, create bool) (string, error) {
-	root := statepath.Root(home)
-=======
 func ensureReviewRepositoryContextStorageRoot(home string) (string, error) {
-	root := filepath.Join(home, ".hgtran-ai")
->>>>>>> v2.5.0
+	root := statepath.Root(home)
 	if !locatorPathWithin(home, root) {
 		return "", errors.New("review repository context storage root escapes HOME")
 	}

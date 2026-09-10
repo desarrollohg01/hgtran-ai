@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/reviewtransaction"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/reviewtransaction"
 )
 
 // reviewAuditActorRepoWithoutIdentity creates a repository with no local Git

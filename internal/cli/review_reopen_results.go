@@ -7,7 +7,7 @@ import (
 	"io"
 	"strings"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/reviewtransaction"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/reviewtransaction"
 )
 
 const ReviewResultReopenSchema = "hgtran-ai.review-result-reopen-result/v1"

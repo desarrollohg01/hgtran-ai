@@ -5,8 +5,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/components/sdd"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/system"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/sdd"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/system"
 )
 
 // TestRunInstallOpenCodeSDDVerifiesUnderXDGConfigHome pins #3219: the SDD

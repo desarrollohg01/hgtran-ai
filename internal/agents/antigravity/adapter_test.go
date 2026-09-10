@@ -7,8 +7,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/system"
 )
 
 // makeStatFn returns a statPath function that reports the given paths as existing

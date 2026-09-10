@@ -93,7 +93,7 @@ func (b *battery) runHostOpenCodeLane() {
 		b.fail(hostOpenCodeLane, "binding assembly", err.Error())
 		return
 	}
-	prompt := "GENTLE_AI_REVIEW_BINDING " + string(binding) + "\nReview this frozen candidate through the assigned lens."
+	prompt := "HGTRAN_AI_REVIEW_BINDING " + string(binding) + "\nReview this frozen candidate through the assigned lens."
 	message := "You are driving a review transport integration test. Call the task tool exactly once with " +
 		"subagent_type set to \"" + args["lens"] + "\" and the prompt argument set to EXACTLY the text between " +
 		"the BEGIN and END marker lines below (marker lines excluded), byte for byte: preserve the JSON exactly " +

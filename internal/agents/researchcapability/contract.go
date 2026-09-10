@@ -3,7 +3,7 @@
 // AgentCapabilityManifest v1 projection.
 package researchcapability
 
-import "github.com/hgtran-programming/hgtran-ai/v2/internal/model"
+import "github.com/desarrollohg01/hgtran-ai/v2/internal/model"
 
 type SchemaVersion string
 

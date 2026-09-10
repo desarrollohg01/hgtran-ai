@@ -11,9 +11,9 @@ import (
 	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/opencode"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/tui"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/tui/screens"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/opencode"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/tui"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/tui/screens"
 )
 
 func runBenchModelPickerCommand(args []string, stdout io.Writer) (bool, error) {

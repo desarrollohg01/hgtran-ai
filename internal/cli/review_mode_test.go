@@ -12,8 +12,8 @@ import (
 	"testing"
 	"time"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/reviewtransaction"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/state"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/reviewtransaction"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/state"
 )
 
 func TestReviewModeStatusReportsBothSourcesWithoutMutating(t *testing.T) {

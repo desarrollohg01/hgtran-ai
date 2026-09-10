@@ -5,7 +5,7 @@ import (
 	"io"
 	"os"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/statepath"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/statepath"
 )
 
 // writeLegacyStateNotice reports an install that predates the identity rename:

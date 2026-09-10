@@ -39,7 +39,7 @@ interface CaseConfig {
 const config = JSON.parse(readFileSync(process.argv[2], "utf8")) as CaseConfig
 const prompt =
   config.prompt ??
-  "GENTLE_AI_REVIEW_BINDING " + JSON.stringify(Object.fromEntries(config.binding_pairs ?? [])) + "\n" + (config.body ?? "")
+  "HGTRAN_AI_REVIEW_BINDING " + JSON.stringify(Object.fromEntries(config.binding_pairs ?? [])) + "\n" + (config.body ?? "")
 
 const hooks = await plugin({
   directory: process.cwd(),

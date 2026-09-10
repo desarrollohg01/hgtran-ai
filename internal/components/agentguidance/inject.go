@@ -8,10 +8,10 @@ import (
 	"path/filepath"
 	"strings"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/filemerge"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/opencodedefault"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/filemerge"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/opencodedefault"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
 )
 
 // RoutingSectionID is the managed marker section that owns routing guidance.

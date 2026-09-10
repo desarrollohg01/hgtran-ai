@@ -19,7 +19,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/pathquote"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/pathquote"
 )
 
 const compactRecoveryEdgeUnchangedTarget = "unchanged_target"

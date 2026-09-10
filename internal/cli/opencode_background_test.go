@@ -10,13 +10,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/agents"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/backup"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/components/sdd"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/model"
-	opencodeactivation "github.com/hgtran-programming/hgtran-ai/v2/internal/opencode"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/state"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/system"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/backup"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/sdd"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
+	opencodeactivation "github.com/desarrollohg01/hgtran-ai/v2/internal/opencode"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/state"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/system"
 )
 
 func TestOpenCodeBackgroundIntentValidation(t *testing.T) {

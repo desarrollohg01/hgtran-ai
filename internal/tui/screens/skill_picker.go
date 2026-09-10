@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strings"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/skills"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/tui/styles"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/skills"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/tui/styles"
 )
 
 // skillLabels maps each SkillID to a human-readable display label.

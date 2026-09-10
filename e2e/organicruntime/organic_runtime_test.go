@@ -32,12 +32,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/agents/opencode"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/assets"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/components/sdd"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/model"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/reviewerprovider"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/versions"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/opencode"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/assets"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/sdd"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/reviewerprovider"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/versions"
 )
 
 const (
@@ -755,7 +755,7 @@ func TestOpenCodeRuntimeIsPinnedForTheLiveProviderTransport(t *testing.T) {
 	}
 	const poison = "OPENCODE_CURRENT_SESSION_POISON_MUST_NOT_REACH_REVIEWER"
 	const reviewerSystemMarker = "GENTLE_AI_OPENCODE_REVIEWER_SYSTEM_MARKER"
-	hostPrompt := "GENTLE_AI_REVIEW_BINDING " + string(boundTask) + "\n" + poison
+	hostPrompt := "HGTRAN_AI_REVIEW_BINDING " + string(boundTask) + "\n" + poison
 	reviewerRaw, err := json.Marshal(map[string]any{
 		"subject_hash": binding["subject-hash"], "inspection": map[string]any{"status": "completed", "paths": []string{"internal/provider/candidate.go"}},
 		"lens": binding["lens"], "findings": []any{}, "evidence": []string{"loopback inspected the frozen candidate"},
@@ -1048,7 +1048,7 @@ func TestOpenCodeRuntimeRunsFourBoundReviewersConcurrently(t *testing.T) {
 		}
 		taskArguments = append(taskArguments, map[string]string{
 			"description": "run the Go-bound reviewer", "subagent_type": binding["lens"],
-			"prompt": "GENTLE_AI_REVIEW_BINDING " + string(payload),
+			"prompt": "HGTRAN_AI_REVIEW_BINDING " + string(payload),
 		})
 		results[binding["lens"]] = string(result)
 		expectedBindings[binding["lens"]] = binding
@@ -1306,7 +1306,7 @@ func writeOpenCodeChatChunk(writer http.ResponseWriter, delta map[string]any, fi
 	_, _ = fmt.Fprintf(writer, "data: %s\n\n", encoded)
 }
 
-const organicReviewBindingPrefix = "GENTLE_AI_REVIEW_BINDING "
+const organicReviewBindingPrefix = "HGTRAN_AI_REVIEW_BINDING "
 
 type organicOpenCodeReviewBinding struct {
 	lineage           string

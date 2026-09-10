@@ -11,7 +11,7 @@ import (
 	"strings"
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/filemerge"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/filemerge"
 )
 
 func TestNewRejectsEmptyRoots(t *testing.T) {

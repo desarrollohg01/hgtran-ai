@@ -9,7 +9,7 @@ import (
 	"os"
 	"strings"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/sddstatus"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/sddstatus"
 )
 
 const maxVerifyReportBytes = sddstatus.MaxVerifyReportBytes

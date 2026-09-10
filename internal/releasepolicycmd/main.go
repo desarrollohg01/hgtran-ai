@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/releasepolicy"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/releasepolicy"
 )
 
 func main() {

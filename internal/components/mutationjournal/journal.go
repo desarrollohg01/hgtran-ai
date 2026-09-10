@@ -15,7 +15,7 @@ import (
 	"slices"
 	"strings"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/filemerge"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/filemerge"
 )
 
 // OwnedFile is the persisted before-image record. It mirrors what an external

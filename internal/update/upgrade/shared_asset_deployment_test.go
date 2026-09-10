@@ -7,8 +7,8 @@ import (
 	"sort"
 	"testing"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/agents/opencode"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/assets"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/opencode"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/assets"
 )
 
 // embeddedSharedFileNames returns the names of every file embedded under

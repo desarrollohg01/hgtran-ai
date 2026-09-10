@@ -14,7 +14,7 @@ import (
 	"sync/atomic"
 	"testing"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/system"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/system"
 )
 
 func TestMain(m *testing.M) {
@@ -631,7 +631,7 @@ func TestCheckSingleToolGentleAIBetaHintNamesAdvertisedTarget(t *testing.T) {
 	if result.UpdateHint != derived {
 		t.Fatalf("UpdateHint = %q, want the instruction derived from the advertised target: %q", result.UpdateHint, derived)
 	}
-	if result.UpdateHint != "go install github.com/hgtran-programming/hgtran-ai/v2/cmd/hgtran-ai@main" {
+	if result.UpdateHint != "go install github.com/desarrollohg01/hgtran-ai/v2/cmd/hgtran-ai@main" {
 		t.Fatalf("UpdateHint = %q, want the go install @main command", result.UpdateHint)
 	}
 }
@@ -1217,7 +1217,7 @@ func TestUpdateHint(t *testing.T) {
 			name:    "hgtran-ai windows",
 			tool:    ToolInfo{Name: "hgtran-ai"},
 			profile: system.PlatformProfile{OS: "windows", PackageManager: "winget"},
-			want:    "Windows binary distribution and Scoop are temporarily unavailable until publicly trusted Authenticode signing is enforced. Install/update from source with Go 1.25.10+: go install github.com/hgtran-programming/hgtran-ai/v2/cmd/hgtran-ai@latest",
+			want:    "Windows binary distribution and Scoop are temporarily unavailable until publicly trusted Authenticode signing is enforced. Install/update from source with Go 1.25.10+: go install github.com/desarrollohg01/hgtran-ai/v2/cmd/hgtran-ai@latest",
 		},
 		{
 			name:          "engram macOS brew-owned",

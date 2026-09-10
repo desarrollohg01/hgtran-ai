@@ -9,11 +9,11 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/backup"
-	componentskills "github.com/hgtran-programming/hgtran-ai/v2/internal/components/skills"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/model"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/pipeline"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/planner"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/backup"
+	componentskills "github.com/desarrollohg01/hgtran-ai/v2/internal/components/skills"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/pipeline"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/planner"
 )
 
 func temporaryUserHome(t *testing.T) string {

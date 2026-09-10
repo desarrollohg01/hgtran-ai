@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	codexagent "bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/codex"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/engram"
+	codexagent "github.com/desarrollohg01/hgtran-ai/v2/internal/agents/codex"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/engram"
 )
 
 type installedDeliveryGuaranteeInvariant struct {

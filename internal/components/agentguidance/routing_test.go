@@ -7,9 +7,9 @@ import (
 	"testing"
 	"unicode"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/capabilitymanifest"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/catalog"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/capabilitymanifest"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/catalog"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
 )
 
 // supportedAgentCount guards the catalog itself: routing is unconditional for

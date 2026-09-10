@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/system"
 )
 
 const WindowsDistributionHoldMessage = "Windows binary distribution and Scoop are temporarily unavailable until publicly trusted Authenticode signing is enforced."
@@ -19,7 +19,7 @@ func GentleAISourceInstallCommand(version string) string {
 	} else if version != "" {
 		target = "v" + strings.TrimPrefix(version, "v")
 	}
-	return "go install bitbucket.org/hgt_development/hgtran-ai/v2/cmd/hgtran-ai@" + target
+	return "go install github.com/desarrollohg01/hgtran-ai/v2/cmd/hgtran-ai@" + target
 }
 
 // updateHint returns a platform-specific instruction string for updating the given tool.

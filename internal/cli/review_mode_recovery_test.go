@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/state"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/state"
 )
 
 // An unreadable kill-switch value is not a disabled switch: it resolves to

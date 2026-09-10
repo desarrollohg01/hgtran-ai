@@ -41,7 +41,7 @@ func TestOwnershipLifecycle(t *testing.T) {
 			t.Fatalf("default %q not restored: %s", want, got)
 		}
 	}
-	write(`{"default_agent":"build","agent":{"gentle-orchestrator":{}},"profile":true}`)
+	write(`{"default_agent":"build","agent":{"hgtran-orchestrator":{}},"profile":true}`)
 	install()
 	install()
 	uninstall()
@@ -52,10 +52,10 @@ func TestOwnershipLifecycle(t *testing.T) {
 	wantDefault("plan")
 	install()
 	check(t, os.Remove(settings))
-	write(`{"default_agent":"gentle-orchestrator","profile":true}`)
+	write(`{"default_agent":"hgtran-orchestrator","profile":true}`)
 	install()
 	uninstall()
-	wantDefault("gentle-orchestrator")
+	wantDefault("hgtran-orchestrator")
 	install()
 	check(t, os.Remove(settings))
 	uninstall()
@@ -89,7 +89,7 @@ func TestUninstallWithoutOwnershipHandlesDefaultAgent(t *testing.T) {
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 			settings := filepath.Join(t.TempDir(), "opencode.json")
-			original := `{"default_agent":"` + tt.defaultAgent + `","agent":{"gentle-orchestrator":{}},"profile":true}`
+			original := `{"default_agent":"` + tt.defaultAgent + `","agent":{"hgtran-orchestrator":{}},"profile":true}`
 			check(t, os.WriteFile(settings, []byte(original), 0o644))
 			plan, err := PrepareUninstall(settings)
 			check(t, err)

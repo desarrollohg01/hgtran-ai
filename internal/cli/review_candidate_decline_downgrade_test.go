@@ -20,7 +20,7 @@ import (
 	"runtime"
 	"testing"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/reviewtransaction"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/reviewtransaction"
 )
 
 // candidateDeclineDowngradeScanRoots mirrors review_pre_pr_composition_deletion_test.go's

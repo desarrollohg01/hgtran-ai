@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/symlinktest"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/symlinktest"
 )
 
 // aliasedRoots returns two different spellings of one directory: the real

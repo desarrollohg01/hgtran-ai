@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/update"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/update/upgrade"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/update"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/update/upgrade"
 )
 
 // ─── RenderUpgrade states ──────────────────────────────────────────────────
@@ -132,7 +132,7 @@ func TestRenderUpgrade_ErrorState(t *testing.T) {
 // containing ": " is split so the command appears on its own line and is not clipped
 // by BubbleTea at the terminal width.
 func TestRenderUpgrade_LongManualHintSplitsAcrossLines(t *testing.T) {
-	longHint := "Windows binary distribution is temporarily unavailable. Install/update from source with Go 1.25.10+:\n  go install bitbucket.org/hgt_development/hgtran-ai/v2/cmd/hgtran-ai@v1.1.0"
+	longHint := "Windows binary distribution is temporarily unavailable. Install/update from source with Go 1.25.10+:\n  go install github.com/desarrollohg01/hgtran-ai/v2/cmd/hgtran-ai@v1.1.0"
 	report := &upgrade.UpgradeReport{
 		Results: []upgrade.ToolUpgradeResult{
 			{

@@ -15,63 +15,34 @@ import (
 	"strings"
 	"time"
 
-<<<<<<< HEAD
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/claude"
-	codexagent "bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/codex"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/kimi"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/assets"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/backup"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/agentguidance"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/communitytool"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/engram"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/filemerge"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/gga"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/mcp"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/opencodedefault"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/opencodeplugin"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/permissions"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/persona"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/sdd"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/skills"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/theme"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/installcmd"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/pipeline"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/planner"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/state"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/statepath"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/verify"
-=======
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/agents"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/agents/claude"
-	codexagent "github.com/hgtran-programming/hgtran-ai/v2/internal/agents/codex"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/agents/kimi"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/assets"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/backup"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/components/agentguidance"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/components/communitytool"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/components/engram"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/components/filemerge"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/components/gga"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/components/mcp"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/components/opencodedefault"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/components/opencodeplugin"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/components/permissions"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/components/persona"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/components/sdd"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/components/skills"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/components/theme"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/installcmd"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/model"
-	opencodeactivation "github.com/hgtran-programming/hgtran-ai/v2/internal/opencode"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/pipeline"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/planner"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/state"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/system"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/verify"
->>>>>>> v2.5.0
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/claude"
+	codexagent "github.com/desarrollohg01/hgtran-ai/v2/internal/agents/codex"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/kimi"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/assets"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/backup"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/agentguidance"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/communitytool"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/engram"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/filemerge"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/gga"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/mcp"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/opencodedefault"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/opencodeplugin"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/permissions"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/persona"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/sdd"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/skills"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/theme"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/installcmd"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
+	opencodeactivation "github.com/desarrollohg01/hgtran-ai/v2/internal/opencode"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/pipeline"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/planner"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/state"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/statepath"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/system"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/verify"
 )
 
 type InstallResult struct {
@@ -732,16 +703,12 @@ func (s *runtimeState) compatibilityChangedFiles() []string {
 }
 
 func newInstallRuntime(homeDir string, scope InstallScope, channel InstallChannel, selection model.Selection, resolved planner.ResolvedPlan, profile system.PlatformProfile) (*installRuntime, error) {
-<<<<<<< HEAD
 	backupRoot := statepath.Backups(homeDir)
-=======
-	backupRoot := filepath.Join(homeDir, ".hgtran-ai", "backups")
 	compatibilityTransaction, err := newCompatibilityRefreshTransaction(homeDir, resolved.OrderedComponents, selection)
 	if err != nil {
 		return nil, err
 	}
 	state := &runtimeState{compatibilityTransaction: compatibilityTransaction}
->>>>>>> v2.5.0
 	if err := os.MkdirAll(backupRoot, 0o755); err != nil {
 		state.cleanupCompatibilityTransaction()
 		return nil, fmt.Errorf("create backup root directory %q: %w", backupRoot, err)
@@ -1139,13 +1106,8 @@ func (s prepareBackupStep) Run() error {
 		if err == nil && checksum != "" {
 			if manifest, duplicate, dupErr := backup.DuplicateManifest(s.backupRoot, checksum); dupErr != nil {
 				log.Printf("backup: check duplicate: %v", dupErr)
-<<<<<<< HEAD
-			} else if dup {
-				rollbackDir, err := os.MkdirTemp("", "hgtran-ai-rollback-*")
-=======
 			} else if duplicate && manifestTargetsMatch(manifest, s.targets) {
 				rollbackDir, err := os.MkdirTemp("", "hgtran-ai-rollback-*")
->>>>>>> v2.5.0
 				if err != nil {
 					return fmt.Errorf("create transaction snapshot directory: %w", err)
 				}
@@ -1830,33 +1792,10 @@ func windowsGoCandidates() []string {
 	}
 }
 
-<<<<<<< HEAD
-// BuildRealStagePlan creates a StagePlan with real backup, agent install, and component apply steps.
-// It is used by both the CLI and TUI paths.
-// scope controls where agent config files are written (ScopeGlobal writes to homeDir, ScopeWorkspace writes to cwd).
-func BuildRealStagePlan(homeDir string, scope InstallScope, selection model.Selection, resolved planner.ResolvedPlan, profile system.PlatformProfile) (pipeline.StagePlan, error) {
-	backupRoot := statepath.Backups(homeDir)
-	if err := os.MkdirAll(backupRoot, 0o755); err != nil {
-		return pipeline.StagePlan{}, fmt.Errorf("create backup root directory %q: %w", backupRoot, err)
-	}
-
-	channel, err := ResolveInstallChannel("")
-	if err != nil {
-		return pipeline.StagePlan{}, err
-	}
-
-	runtime, err := newInstallRuntime(homeDir, scope, channel, selection, resolved, profile)
-	if err != nil {
-		return pipeline.StagePlan{}, err
-	}
-
-	return runtime.stagePlan(), nil
-=======
 // The seam lets native tests add a post-publication failure while still using
 // the public TUI execution boundary and the real compatibility writer.
 var tuiInstallStagePlan = func(runtime *installRuntime) pipeline.StagePlan {
 	return runtime.stagePlan()
->>>>>>> v2.5.0
 }
 
 // ExecuteTUIInstallWithBackgroundAndOrchestrator runs a TUI install and returns

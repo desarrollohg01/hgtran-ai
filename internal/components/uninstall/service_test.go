@@ -10,16 +10,16 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/agents"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/agents/claude"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/agents/codex"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/backup"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/components/communitytool"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/components/engram"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/components/sdd"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/model"
-	opencodeactivation "github.com/hgtran-programming/hgtran-ai/v2/internal/opencode"
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/state"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/claude"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/codex"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/backup"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/communitytool"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/engram"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/sdd"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
+	opencodeactivation "github.com/desarrollohg01/hgtran-ai/v2/internal/opencode"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/state"
 )
 
 type stubSnapshotter struct{}
@@ -331,7 +331,7 @@ func TestPartialUninstallClaudeThemeRemovesOnlyThemeAssets(t *testing.T) {
 	preserved := map[string]string{
 		filepath.Join(homeDir, ".claude", "settings.json"):                     `{"theme":"active","outputStyle":"hgtran"}`,
 		filepath.Join(homeDir, ".claude", "CLAUDE.md"):                         "# persona\n",
-		filepath.Join(homeDir, ".claude", "output-styles", "hgtran.md"):     "# output style\n",
+		filepath.Join(homeDir, ".claude", "output-styles", "hgtran.md"):        "# output style\n",
 		filepath.Join(homeDir, ".claude", "commands", "hgtran-sdd-apply.md"):   "# SDD asset\n",
 		filepath.Join(homeDir, ".config", "opencode", "tui.json"):              `{"plugins":["./tui-plugins/hgtran-logo.tsx"]}`,
 		filepath.Join(homeDir, ".config", "opencode", "themes", "custom.json"): `{"theme":"custom"}`,

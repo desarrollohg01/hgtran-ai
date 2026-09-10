@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/reviewtransaction"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/reviewtransaction"
 )
 
 // prepareReviewFacadeCompactAtomicStart freezes compact state and its immutable

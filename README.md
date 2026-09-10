@@ -112,7 +112,7 @@ Run `hgtran-ai doctor` at any time for a read-only health check of your ecosyste
 
 **Homebrew, Scoop and `go install` are not available yet.**
 
-`go.mod` declares the module as `bitbucket.org/hgt_development/hgtran-ai/v2`, and Go resolves a module by that declared path — not by where a clone came from. Until the repository is published there, `go install` cannot reach this code from either host. HG publishes no Homebrew tap and no Scoop bucket of its own either. Build from source as shown above.
+`go.mod` declares the module as `github.com/desarrollohg01/hgtran-ai/v2`, and Go resolves a module by that declared path — not by where a clone came from. Until the repository is published there, `go install` cannot reach this code from either host. HG publishes no Homebrew tap and no Scoop bucket of its own either. Build from source as shown above.
 
 By default, `hgtran-ai install` writes agent-scoped files to each selected agent's global config directory. To keep the hgtran-ai stack isolated to one project, run:
 

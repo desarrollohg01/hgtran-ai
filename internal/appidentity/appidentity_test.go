@@ -3,7 +3,7 @@ package appidentity_test
 import (
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/appidentity"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/appidentity"
 )
 
 func TestNameIsTheForkBinary(t *testing.T) {

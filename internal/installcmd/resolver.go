@@ -8,9 +8,9 @@ import (
 	"strconv"
 	"strings"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/versions"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/system"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/versions"
 )
 
 // cmdLookPath, osStat, osGetenv, and cmdGoVersion are package-level vars for testability.

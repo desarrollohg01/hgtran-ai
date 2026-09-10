@@ -13,7 +13,7 @@ import (
 	"runtime/debug"
 	"strings"
 
-	"github.com/hgtran-programming/hgtran-ai/v2/internal/reviewtransaction"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/reviewtransaction"
 )
 
 const ReviewIntegrationContractV1 = "hgtran-ai.review-integration/v1"
