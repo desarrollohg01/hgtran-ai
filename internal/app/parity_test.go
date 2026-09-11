@@ -7,11 +7,11 @@ import (
 	"strings"
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/cli"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/planner"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/tui"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/cli"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/planner"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/system"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/tui"
 )
 
 func TestInstallDefaultsMatchTUIModelDefaults(t *testing.T) {
@@ -228,6 +228,16 @@ func TestRunArgsSyncUnknownFlagReturnsError(t *testing.T) {
 	// Must not be "unknown command" — sync IS a known command.
 	if err.Error() == `unknown command "sync"` {
 		t.Fatalf("sync command is not registered in app.go dispatch")
+	}
+}
+
+func TestRunArgsSyncHelpIncludesBackgroundFlag(t *testing.T) {
+	var buf bytes.Buffer
+	if err := RunArgs([]string{"sync", "--help"}, &buf); err != nil {
+		t.Fatalf("RunArgs(sync --help) error = %v", err)
+	}
+	if !strings.Contains(buf.String(), "--opencode-background-subagents=auto|on|off") || !strings.Contains(buf.String(), cli.OpenCodeBackgroundSubagentsEnv) {
+		t.Fatalf("sync help omits background contract: %s", buf.String())
 	}
 }
 

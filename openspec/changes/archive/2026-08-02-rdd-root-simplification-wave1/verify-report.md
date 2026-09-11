@@ -19,7 +19,7 @@ build_output_hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca49599
 **Change**: rdd-root-simplification-wave1
 **Version**: Wave 1 (Shadow Algebra), 4 capability specs — 22 requirements / 28 scenarios
 **Mode**: Strict TDD
-**Candidate**: worktree `/home/gentleman/work/hgtran-ai-worktrees/rdd-wave0`, branch `feat/rdd-wave1-shadow-observer-wiring`, chain tip `3480bcd0`, working tree clean (`git status --short` empty, `git diff HEAD` empty)
+**Candidate**: worktree `/home/hgtran/work/hgtran-ai-worktrees/rdd-wave0`, branch `feat/rdd-wave1-shadow-observer-wiring`, chain tip `3480bcd0`, working tree clean (`git status --short` empty, `git diff HEAD` empty)
 **Prior report**: FAIL at tip `7fbfece3` — 1 CRITICAL (CRITICAL-3), 7 WARNING, 4 SUGGESTION (preserved verbatim below)
 **Verified by**: independent re-execution. Every remediation claim in commit `3480bcd0` and in `apply-progress` was re-derived from source and runtime, including an independent RED reproduction; nothing was trusted.
 **Attempt authority (echoed, not settled)**: `sha256:afd75416724368c9cf8ed95c1be7ac4e36de2cd082f838107e7d2bb3280dc2ff`
@@ -43,7 +43,7 @@ The three assertions map onto the scenario's operative clauses, and assert refus
 
 | Spec clause | Assertion | Line |
 |---|---|---|
-| GIVEN a gentle-pi protocol-1.1 overlay selector | `Kind: shadowSelectorKind("gentle-pi-protocol-1.1-overlay")` — a value outside the closed 4-value enum | `:325` |
+| GIVEN a hgtran-pi protocol-1.1 overlay selector | `Kind: shadowSelectorKind("hgtran-pi-protocol-1.1-overlay")` — a value outside the closed 4-value enum | `:325` |
 | THEN the resolver does not claim to resolve it | `errors.As(err, &failure)` — typed refusal, not a success | `:328` |
 | …as a *supported Wave 1 selector* | `strings.Contains(failure.Reason, "unsupported shadow selector kind")` — binds to the exact refusal at `shadow_identity.go:266`, not to any generic failure | `:331` |
 | AND coverage is not silently assumed working | `identity != (CandidateIdentity{})` fails — the resolver must not fabricate a tuple | `:334` |
@@ -134,7 +134,7 @@ Every other row was re-run inside the green full suite and still holds.
 | Spec requirements | 22 (4 + 5 + 6 + 7 across the four capability specs) |
 | Spec scenarios | 28 (5 + 7 + 9 + 7) |
 
-Task/code agreement re-checked: `tasks.md` 5.3, 5.5 and 5.7 now cite the tests that actually carry the claims, and 5.7's guard text matches `gate.go:361` verbatim. The prior mirror drift is gone — `/home/gentleman/work/hgtran-ai/openspec/changes/rdd-root-simplification-wave1/tasks.md` and the worktree copy are byte-identical (`diff` clean), both 50 checked / 0 unchecked.
+Task/code agreement re-checked: `tasks.md` 5.3, 5.5 and 5.7 now cite the tests that actually carry the claims, and 5.7's guard text matches `gate.go:361` verbatim. The prior mirror drift is gone — `/home/hgtran/work/hgtran-ai/openspec/changes/rdd-root-simplification-wave1/tasks.md` and the worktree copy are byte-identical (`diff` clean), both 50 checked / 0 unchecked.
 
 ### Machine gate
 
@@ -211,7 +211,7 @@ build_output_hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca49599
 **Change**: rdd-root-simplification-wave1
 **Version**: Wave 1 (Shadow Algebra), 4 capability specs — 22 requirements / 28 scenarios
 **Mode**: Strict TDD
-**Candidate**: worktree `/home/gentleman/work/hgtran-ai-worktrees/rdd-wave0`, branch `feat/rdd-wave1-shadow-observer-wiring`, chain tip `7fbfece3`, working tree clean
+**Candidate**: worktree `/home/hgtran/work/hgtran-ai-worktrees/rdd-wave0`, branch `feat/rdd-wave1-shadow-observer-wiring`, chain tip `7fbfece3`, working tree clean
 **Prior report**: FAIL at tip `933fb329` — 2 CRITICAL, 7 WARNING, 3 SUGGESTION (preserved verbatim below)
 **Verified by**: independent re-execution. Remediation claims in commit `7fbfece3` and in `apply-progress` were re-derived from source and runtime, not trusted.
 
@@ -318,7 +318,7 @@ Unchanged rows from the prior report were re-run in the full suite and still hol
 
 **CRITICAL**
 
-1. **CRITICAL-3 — `rdd-candidate-identity` → "Wave 1 Selector Scope" has no covering test.** Scenario *"Pi overlay selector is explicitly out of scope"* (`specs/rdd-candidate-identity/spec.md:70-75`) requires that when the resolver is invoked with a gentle-pi protocol-1.1 overlay selector it *"does not claim to resolve it as a supported Wave 1 selector"*. Exhaustive search finds no test that constructs an unsupported `shadowSelectorKind` and asserts the `unsupported shadow selector kind %q` refusal at `shadow_identity.go:266`. `shadowMatrixNoShadowDecisionCase(shadowSelectorWorkspaceOverlay, …)` covers hgtran-ai's own `workspace-overlay` selector, which is a *supported* Wave 1 selector — a different thing.
+1. **CRITICAL-3 — `rdd-candidate-identity` → "Wave 1 Selector Scope" has no covering test.** Scenario *"Pi overlay selector is explicitly out of scope"* (`specs/rdd-candidate-identity/spec.md:70-75`) requires that when the resolver is invoked with a hgtran-pi protocol-1.1 overlay selector it *"does not claim to resolve it as a supported Wave 1 selector"*. Exhaustive search finds no test that constructs an unsupported `shadowSelectorKind` and asserts the `unsupported shadow selector kind %q` refusal at `shadow_identity.go:266`. `shadowMatrixNoShadowDecisionCase(shadowSelectorWorkspaceOverlay, …)` covers hgtran-ai's own `workspace-overlay` selector, which is a *supported* Wave 1 selector — a different thing.
 
    This is not a new defect: the prior report listed the same gap, but classified it `PARTIAL` and demoted it to WARNING-7. Per `references/report-format.md`, `PARTIAL` means *"test passes but covers only part of the scenario"*; with no test at all the correct status is `UNTESTED`, and the skill's decision gate makes an uncovered scenario CRITICAL ("A spec scenario is compliant only when a covering test passed at runtime"). The classification is corrected here, so this report is internally consistent with its own envelope arithmetic — which is unchanged in method from the prior report (both count PARTIAL/UNTESTED as non-compliant: prior 28−5=23, now 28−1=27).
 
@@ -335,7 +335,7 @@ Unchanged rows from the prior report were re-run in the full suite and still hol
    - 5.5 still generalises post-apply ON/OFF coverage to all five gate kinds without citing the new pre-PR test that actually closes the gap.
    - 5.7 still describes the `shadowDeriveBaseAdvance` call as unconditional ("additionally calls `shadowDeriveBaseAdvance` directly to exercise Amendment A's delegation seam from a live call site") with no mention of either guard conjunct.
    Artifact text contradicts the delivered code state. Documentation-only.
-4. **The main-checkout `tasks.md` mirror is one task behind the worktree.** `/home/gentleman/work/hgtran-ai/openspec/changes/rdd-root-simplification-wave1/tasks.md` has 49 checked tasks; the worktree copy has 50. The mirror carries the 0.1-0.3 fix but is missing "Injected Task 1" and the post-PR6 rewording of task 6.4. Zero unchecked tasks in either copy.
+4. **The main-checkout `tasks.md` mirror is one task behind the worktree.** `/home/hgtran/work/hgtran-ai/openspec/changes/rdd-root-simplification-wave1/tasks.md` has 49 checked tasks; the worktree copy has 50. The mirror carries the 0.1-0.3 fix but is missing "Injected Task 1" and the post-PR6 rewording of task 6.4. Zero unchecked tasks in either copy.
 5. **Assertion-quality correction — one tautology exists and the prior report missed it.** `shadow_identity_test.go:302-304`:
 
    ```go
@@ -395,7 +395,7 @@ build_output_hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca49599
 **Change**: rdd-root-simplification-wave1
 **Version**: Wave 1 (Shadow Algebra), 4 capability specs
 **Mode**: Strict TDD
-**Candidate**: worktree `/home/gentleman/work/hgtran-ai-worktrees/rdd-wave0`, chain tip `933fb329`, working tree clean
+**Candidate**: worktree `/home/hgtran/work/hgtran-ai-worktrees/rdd-wave0`, chain tip `933fb329`, working tree clean
 **Verified by**: independent re-execution (apply-progress claims were not trusted)
 
 ### Completeness

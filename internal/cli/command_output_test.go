@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	componentuninstall "bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/uninstall"
+	componentuninstall "github.com/desarrollohg01/hgtran-ai/v2/internal/components/uninstall"
 )
 
 func TestExecuteCommandQuietModeIncludesCapturedOutputOnFailure(t *testing.T) {

@@ -10,7 +10,7 @@ func TestComponentsForPresetFullGentlemanUsesInstallSafeVisualInventory(t *testi
 		name    string
 		persona PersonaID
 	}{
-		{name: "gentleman persona", persona: PersonaGentleman},
+		{name: "hgtran persona", persona: PersonaGentleman},
 		{name: "custom persona", persona: PersonaCustom},
 	}
 

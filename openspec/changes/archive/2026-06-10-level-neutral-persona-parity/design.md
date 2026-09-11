@@ -2,7 +2,7 @@
 
 ## Technical Approach
 
-Make `neutral` a first-class twin of `gentleman`: the same mentor/verification/response-length contract, but with neutral professional language and no Rioplatense/regional speech rules. Persona injection remains centralized in `internal/components/persona/inject.go`; assets carry the behavioral contract; sync resolves unsafe or missing persisted state to neutral rather than reviving Gentleman.
+Make `neutral` a first-class twin of `hgtran`: the same mentor/verification/response-length contract, but with neutral professional language and no Rioplatense/regional speech rules. Persona injection remains centralized in `internal/components/persona/inject.go`; assets carry the behavioral contract; sync resolves unsafe or missing persisted state to neutral rather than reviving Gentleman.
 
 ## Architecture Decisions
 
@@ -11,7 +11,7 @@ Make `neutral` a first-class twin of `gentleman`: the same mentor/verification/r
 | Neutral output-style twin | Add neutral output-style assets and activate them where Hgtran AI manages output styles: Claude gets `output-styles/neutral.md` plus `settings.json` `outputStyle: "Neutral"`; Kimi gets non-empty generated `.kimi/output-style.md` from a new neutral asset. | Leave neutral output style empty; only update persona files. | Empty/Claude-only behavior is the current parity bug. A named twin keeps the same behavior contract on surfaces where output style is the strongest instruction layer. |
 | Asset strategy | Update `generic/persona-neutral.md` and `hermes/persona-neutral.md`; add `claude/output-style-neutral.md` and `kimi/output-style-neutral.md`; do not add agent-specific neutral persona files unless a platform needs divergent mechanics. | Duplicate neutral persona for Claude/Kimi/OpenCode/Kiro. | Existing `personaContent` already uses generic neutral for all non-Hermes agents. Duplication would increase drift without adding platform-specific behavior. |
 | Sync fallback | `applyResolvedPersona` keeps explicit `selection.Persona`; valid persisted values are honored; missing or invalid persisted persona resolves to `PersonaNeutral`. | Continue missing/invalid fallback to Gentleman; fail sync on invalid state. | Missing/invalid state is not an explicit Gentleman selection. Neutral is safer because it avoids regional voice and surprise persona reactivation while preserving explicit Gentleman installs. |
-| OpenCode/Kilocode residuals | Keep Gentleman agent overlay install-only for merge safety, but allow sync-managed non-Gentleman cleanup to remove only `agent.gentleman` while preserving other `agent` children. | Never touch residuals during sync; fully manage the overlay during sync. | Narrow cleanup prevents neutral regressions without reintroducing the SDD `agent` clobbering risk documented in `InjectForSync`. |
+| OpenCode/Kilocode residuals | Keep Gentleman agent overlay install-only for merge safety, but allow sync-managed non-Gentleman cleanup to remove only `agent.hgtran` while preserving other `agent` children. | Never touch residuals during sync; fully manage the overlay during sync. | Narrow cleanup prevents neutral regressions without reintroducing the SDD `agent` clobbering risk documented in `InjectForSync`. |
 
 ## Data Flow
 
@@ -21,7 +21,7 @@ Selection/persona state ──→ applyResolvedPersona ──→ persona.Inject/
                                       ├─→ personaContent(agent, neutral) ─→ generic/hermes persona asset
                                       ├─→ Claude output style ────────────→ neutral.md + settings outputStyle
                                       ├─→ Kimi Jinja module ──────────────→ .kimi/output-style.md
-                                      └─→ OpenCode/Kilocode cleanup ──────→ remove agent.gentleman only
+                                      └─→ OpenCode/Kilocode cleanup ──────→ remove agent.hgtran only
 ```
 
 ## File Changes
@@ -32,7 +32,7 @@ Selection/persona state ──→ applyResolvedPersona ──→ persona.Inject/
 | `internal/assets/hermes/persona-neutral.md` | Modify | Same contract as generic, preserving Hermes skill/memory/identity sections. |
 | `internal/assets/claude/output-style-neutral.md` | Create | Claude output-style twin named `Neutral`, with behavior parity and neutral language rules. |
 | `internal/assets/kimi/output-style-neutral.md` | Create | Kimi module content for neutral instead of the current empty output-style include. |
-| `internal/components/persona/inject.go` | Modify later | Select neutral output-style assets, write Claude `neutral.md`, set/clean managed `outputStyle` values, populate Kimi output-style module, and permit sync cleanup of OpenCode/Kilocode `agent.gentleman`. |
+| `internal/components/persona/inject.go` | Modify later | Select neutral output-style assets, write Claude `neutral.md`, set/clean managed `outputStyle` values, populate Kimi output-style module, and permit sync cleanup of OpenCode/Kilocode `agent.hgtran`. |
 | `internal/cli/sync.go` | Modify later | Change missing/invalid persisted persona fallback to `PersonaNeutral`, while preserving explicit selections. |
 | `internal/components/persona/*test.go`, `internal/cli/sync_test.go` | Modify later | Update/add regression coverage. |
 
@@ -60,7 +60,7 @@ Managed Claude output-style names are `Gentleman` and `Neutral`; cleanup must re
 
 ## Migration / Rollout
 
-No data migration required. On next sync, old state without persona or with invalid persona will resolve to neutral; explicit persisted `gentleman` remains Gentleman. Rollback is file-level: revert assets and fallback logic.
+No data migration required. On next sync, old state without persona or with invalid persona will resolve to neutral; explicit persisted `hgtran` remains Gentleman. Rollback is file-level: revert assets and fallback logic.
 
 ## Open Questions
 

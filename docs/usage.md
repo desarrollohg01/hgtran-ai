@@ -8,7 +8,7 @@
 
 | Persona   | ID          | Description                                                                       |
 | --------- | ----------- | --------------------------------------------------------------------------------- |
-| Gentleman | `gentleman` | Teaching-oriented mentor persona — pushes back on bad practices, explains the why |
+| Gentleman | `hgtran` | Teaching-oriented mentor persona — pushes back on bad practices, explains the why |
 | Neutral   | `neutral`   | Same teacher, same philosophy, no regional language — warm and professional       |
 | Custom    | `custom`    | Keep your existing persona/config unmanaged — hgtran-ai does not inject a persona |
 
@@ -32,6 +32,16 @@ The uninstall flow is also available from the TUI menu. It lets you:
 
 Before any managed file is modified, `hgtran-ai` creates a backup snapshot so the configuration can be restored later if needed.
 
+### Disable TUI spinner animation
+
+Set `HGTRAN_AI_NO_ANIMATION=1` to keep TUI spinner frames static:
+
+```bash
+HGTRAN_AI_NO_ANIMATION=1 hgtran-ai
+```
+
+This disables only spinner animation; install, update, sync, and uninstall operations continue normally. Unset the variable, or use any value other than `1`, to keep the default animation behavior.
+
 ---
 
 ## CLI Commands
@@ -44,7 +54,7 @@ First-time setup — detects your tools, configures agents, injects all componen
 # Full ecosystem for multiple agents
 hgtran-ai install \
   --agent claude-code,opencode,gemini-cli \
-  --preset full-gentleman
+  --preset full-hgtran
 
 # Minimal setup for Cursor
 hgtran-ai install \
@@ -54,19 +64,19 @@ hgtran-ai install \
 # OpenClaw setup after installing OpenClaw manually
 hgtran-ai install \
   --agent openclaw \
-  --preset full-gentleman
+  --preset full-hgtran
 
 # Pick specific components and skills
 hgtran-ai install \
   --agent claude-code \
   --component engram,sdd,skills,context7,persona,permissions \
   --skill go-testing,skill-creator,branch-pr,issue-creation \
-  --persona gentleman
+  --persona hgtran
 
 # Dry-run first (preview plan without applying changes)
 hgtran-ai install --dry-run \
   --agent claude-code,opencode \
-  --preset full-gentleman
+  --preset full-hgtran
 ```
 
 ### skill-registry refresh
@@ -83,13 +93,15 @@ The command scans project skills first (`skills/`, `.opencode/skills/`, `.claude
 
 The command writes `.atl/skill-registry.md` and `.atl/.skill-registry.cache.json`. The cache fingerprint includes schema version plus each discovered `SKILL.md` file path, mtime, and size, so normal startup is a cheap cache-hit when skills have not changed.
 
-Codex, Claude Code, and OpenCode installs wire this command into startup/plugin hooks. Pi gets the equivalent behavior from `gentle-pi`; keep those hook/plugin scan roots in sync when changing these discovery rules.
+Codex, Claude Code, and OpenCode installs wire this command into startup/plugin hooks. Pi gets the equivalent behavior from `hgtran-pi`; keep those hook/plugin scan roots in sync when changing these discovery rules.
 
 See [Skill Registry](skill-registry.md) for the full index-first flow and diagrams.
 
 ### sync
 
-Refresh managed assets to the current version. Use after `brew upgrade hgtran-ai` or when you want your local configs aligned with the latest release. Does NOT reinstall binaries (engram, GGA) — only updates prompt content, skills, MCP configs, and SDD orchestrators.
+Refresh managed assets to the current version. Run it after replacing or upgrading the `hgtran-ai` binary, including with `brew upgrade`, `hgtran-ai upgrade`, or `go install`. It does NOT reinstall binaries (engram, GGA) — only updates prompt content, skills, MCP configs, and SDD orchestrators.
+
+Managed reviewer and runtime assets are version-bound to the binary. Until sync succeeds, review lifecycle operations fail closed when managed writer provenance is missing or mismatched.
 
 > **Important:** `hgtran-ai sync` updates the agents recorded as installed by Hgtran AI, not every AI agent config directory on your machine.
 >
@@ -157,7 +169,7 @@ hgtran-ai update
 hgtran-ai upgrade
 ```
 
-After upgrading, run `hgtran-ai sync` to refresh all managed assets to the new version's content.
+After any upgrade or manual binary replacement, run `hgtran-ai sync` to refresh all managed assets to the new version's content.
 
 If GitHub rate-limits update checks, export `GITHUB_TOKEN` or `GH_TOKEN` before running `hgtran-ai update`/`upgrade`.
 
@@ -172,6 +184,8 @@ brew upgrade hgtran-ai
 brew trust --cask desarrollohg01/tap/engram
 brew upgrade engram
 ```
+
+If you choose to install several tools from this tap, run `brew trust desarrollohg01/tap` instead. This broader option trusts all current and future formulas, casks, and external commands published in the tap.
 
 **Self-update prompt behavior** (changed in v1.x slice 5 — `HGTRAN_AI_CONFIRM_UPDATE` removed):
 
@@ -226,8 +240,8 @@ hgtran-ai -v
 | `--agent`, `--agents`         | Agents to configure (comma-separated)                                                                             |
 | `--component`, `--components` | Components to install (comma-separated)                                                                           |
 | `--skill`, `--skills`         | Skills to install (comma-separated)                                                                               |
-| `--persona`                   | Persona mode: `gentleman`, `neutral`, `custom` (`custom` keeps your existing persona unmanaged)                   |
-| `--preset`                    | Preset: `full-gentleman`, `ecosystem-only`, `minimal`, `custom` (`custom` means manual component/skill selection) |
+| `--persona`                   | Persona mode: `hgtran`, `neutral`, `custom` (`custom` keeps your existing persona unmanaged)                   |
+| `--preset`                    | Preset: `full-hgtran`, `ecosystem-only`, `minimal`, `custom` (`custom` means manual component/skill selection) |
 | `--sdd-mode`                  | SDD orchestrator mode: `single` or `multi`                                                                        |
 | `--scope`                     | Install scope for agent-scoped files: `global` (default, writes to each selected agent's global config directory) or `workspace` (writes to the current project root). Also settable via `HGTRAN_AI_INSTALL_SCOPE` env var for CI/non-interactive use. |
 | `--dry-run`                   | Preview the install plan without applying changes                                                                 |
@@ -283,7 +297,7 @@ See [OpenCode SDD Profiles](opencode-profiles.md) for the full guide.
 ```bash
 # First time: install everything
 brew install desarrollohg01/tap/hgtran-ai
-hgtran-ai install --agent claude-code,cursor --preset full-gentleman
+hgtran-ai install --agent claude-code,cursor --preset full-hgtran
 
 # After a new release: upgrade + sync
 brew upgrade hgtran-ai
@@ -293,15 +307,16 @@ hgtran-ai sync
 hgtran-ai uninstall --agent claude-code --component sdd,persona
 
 # Adding a new agent later
-hgtran-ai install --agent windsurf --preset full-gentleman
+hgtran-ai install --agent windsurf --preset full-hgtran
 ```
 
 ### Homebrew upgrade troubleshooting
 
 Homebrew 6 can require explicit trust for non-official taps and, on Linux, can
 sandbox builds with Bubblewrap. `hgtran-ai upgrade` and `scripts/install.sh`
-auto-trust only the Hgtran AI formula, but manual upgrades may still need this
-one-time command:
+auto-trust only the Hgtran AI formula. For the broader tap-wide trust option,
+see the [update and upgrade guidance](#update--upgrade). Manual upgrades may
+still need this one-time command:
 
 ```bash
 brew trust --formula desarrollohg01/tap/hgtran-ai

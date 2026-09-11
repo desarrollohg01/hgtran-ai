@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/symlinktest"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/symlinktest"
 )
 
 // TestValidateRunMarkerRejectsAMarkerInsideASymlinkedDist pins the same

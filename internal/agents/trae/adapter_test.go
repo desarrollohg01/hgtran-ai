@@ -8,8 +8,8 @@ import (
 	"runtime"
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/system"
 )
 
 const testHome = "/tmp/home"
@@ -233,9 +233,6 @@ func TestCapabilities(t *testing.T) {
 	}
 	if !a.SupportsMCP() {
 		t.Fatal("Trae should support MCP")
-	}
-	if a.SupportsAutoInstall() {
-		t.Fatal("Trae should NOT support auto-install (desktop app)")
 	}
 	if a.SupportsOutputStyles() {
 		t.Fatal("Trae should NOT support output styles")

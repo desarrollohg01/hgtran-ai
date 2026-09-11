@@ -20,7 +20,7 @@ import (
 	"testing"
 	"time"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/reviewtransaction"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/reviewtransaction"
 )
 
 const (
@@ -141,12 +141,12 @@ func TestClaudeReviewerTransportInNetworkNone(t *testing.T) {
 	if len(parts) != 3 {
 		t.Fatal("installed Claude reviewer has no frontmatter")
 	}
-	agents, _ := json.Marshal(map[string]any{"hgtran-ai-review-transport-e2e": map[string]any{"description": "Exercises the generated Claude reviewer transport.", "prompt": strings.TrimSpace(parts[2]), "model": "sonnet", "tools": []string{"Read", "Grep", "Glob"}}})
+	agents, _ := json.Marshal(map[string]any{"hgtran-ai-review-transport-e2e": map[string]any{"description": "Exercises the generated Claude reviewer transport.", "prompt": strings.TrimSpace(parts[2]), "model": "sonnet", "tools": []string{}}})
 	subject := "sha256:" + strings.Repeat("a", 64)
 	const evidenceA = "- path_index: 0\n  path: parser.go\n  patch: |\n    -    return ErrMalformedPort\n    +    return nil"
 	const evidenceB = "- path_index: 1\n  path: parser_test.go\n  patch: |\n    -    require.Error(t, err)\n    +    require.NoError(t, err)"
 	prompt := `HGTRAN_AI_REVIEW_BINDING {"lineage":"claude-runtime-e2e","target":"fixture","lens":"review-reliability","order":0,"revision":"1","repository_context":"opaque-fixture","subject_hash":"` + subject + `"}
-HGTRAN_AI_CLAUDE_REVIEW_CONTEXT
+HGTRAN_AI_REVIEW_CONTEXT
 artifact_subject: {"subject_hash":"` + subject + `"}
 base_tree: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 candidate_tree: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
@@ -154,7 +154,7 @@ changed_path_manifest: [{"path":"parser.go","status":"M"},{"path":"parser_test.g
 name_status: "M\tparser.go\nM\tparser_test.go"
 numstat: "1\t1\tparser.go\n1\t1\tparser_test.go"
 path_evidence:
-` + evidenceA + "\n" + evidenceB + "\nHGTRAN_AI_CLAUDE_REVIEW_CONTEXT_END"
+` + evidenceA + "\n" + evidenceB + "\nHGTRAN_AI_REVIEW_CONTEXT_END"
 	for _, test := range []struct {
 		name, prompt string
 		unknown      bool
@@ -168,7 +168,7 @@ path_evidence:
 		{"unknown result field", prompt, true},
 	} {
 		t.Run(test.name, func(t *testing.T) {
-			var sawPrompt atomic.Bool
+			var sawPrompt, sawLiveTool atomic.Bool
 			listener, err := net.Listen("tcp4", "127.0.0.1:0")
 			if err != nil {
 				t.Fatal(err)
@@ -188,6 +188,7 @@ path_evidence:
 					return
 				}
 				sawPrompt.Store(bytes.Contains(body, []byte("claude-runtime-e2e")))
+				sawLiveTool.Store(bytes.Contains(body, []byte(`"tools":[{`)))
 				writeClaudeSSE(w, claudeMockResult(subject, claudePromptComplete(body), test.unknown))
 			})}}
 			server.Start()
@@ -204,7 +205,7 @@ path_evidence:
 			if err := os.WriteFile(settings, []byte("{}\n"), 0o600); err != nil {
 				t.Fatal(err)
 			}
-			command := exec.Command(claude, "--bare", "--print", "--agent", "hgtran-ai-review-transport-e2e", "--agents", string(agents), "--tools", "Read,Grep,Glob", "--disallowedTools", "Bash,Write,Edit", "--permission-mode", "dontAsk", "--settings", settings, "--setting-sources=", "--strict-mcp-config", "--disable-slash-commands", "--no-chrome", "--no-session-persistence", "--output-format", "json", "--prompt-suggestions=false", test.prompt)
+			command := exec.Command(claude, "--bare", "--print", "--agent", "hgtran-ai-review-transport-e2e", "--agents", string(agents), "--disallowedTools", "Bash,Write,Edit", "--permission-mode", "dontAsk", "--settings", settings, "--setting-sources=", "--strict-mcp-config", "--disable-slash-commands", "--no-chrome", "--no-session-persistence", "--output-format", "json", "--prompt-suggestions=false", test.prompt)
 			command.Dir = t.TempDir()
 			command.Env = []string{"HOME=" + home, "CLAUDE_CONFIG_DIR=" + filepath.Join(home, ".claude"), "XDG_CONFIG_HOME=" + filepath.Join(home, ".config"), "XDG_CACHE_HOME=" + filepath.Join(home, ".cache"), "TMPDIR=" + command.Dir, "ANTHROPIC_API_KEY=" + claudeRuntimeFakeKey, "ANTHROPIC_BASE_URL=" + server.URL, "NO_PROXY=127.0.0.1,localhost", "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1", "LANG=C", "LC_ALL=C"}
 			output, err := command.Output()
@@ -214,6 +215,9 @@ path_evidence:
 			}
 			if decodeErr := json.Unmarshal(output, &envelope); err != nil || decodeErr != nil || envelope.IsError || !sawPrompt.Load() {
 				t.Fatalf("invalid Claude protocol result: run=%v decode=%v result=%+v prompt=%v", err, decodeErr, envelope, sawPrompt.Load())
+			}
+			if sawLiveTool.Load() {
+				t.Fatal("fresh Claude reviewer request exposed a live tool")
 			}
 			result, err := decodeClaudeRuntimeResult(envelope.Result)
 			if test.unknown {

@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/update"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/update"
 )
 
 var homebrewPackageInstalled = defaultHomebrewPackageInstalled

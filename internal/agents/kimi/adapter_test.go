@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
 )
 
 func TestNewAdapter(t *testing.T) {
@@ -85,7 +85,6 @@ func TestAdapter_Capabilities(t *testing.T) {
 		{"SupportsSlashCommands", a.SupportsSlashCommands(), false},
 		{"SupportsOutputStyles", a.SupportsOutputStyles(), false},
 		{"SupportsSubAgents", a.SupportsSubAgents(), true},
-		{"SupportsAutoInstall", a.SupportsAutoInstall(), true},
 	}
 
 	for _, tc := range tests {
@@ -245,12 +244,12 @@ func TestAdapter_PostInstallMessage(t *testing.T) {
 		{
 			name:     "Unix paths",
 			os:       "linux",
-			expected: "/.kimi/agents/gentleman.yaml",
+			expected: "/.kimi/agents/hgtran.yaml",
 		},
 		{
 			name:     "Windows paths",
 			os:       "windows",
-			expected: `\.kimi\agents\gentleman.yaml`,
+			expected: `\.kimi\agents\hgtran.yaml`,
 		},
 	}
 
@@ -266,9 +265,12 @@ func TestAdapter_PostInstallMessage(t *testing.T) {
 			}
 
 			msg := a.PostInstallMessage(homeDir)
+			if !strings.Contains(msg, "/skill:sdd-explore\n  /skill:sdd-research\n  /skill:sdd-propose") {
+				t.Fatalf("PostInstallMessage() missing research phase order:\n%s", msg)
+			}
 
 			// Construct expected path to verify against quoted output
-			gentlemanYaml := filepath.Join(homeDir, ".kimi", "agents", "gentleman.yaml")
+			gentlemanYaml := filepath.Join(homeDir, ".kimi", "agents", "hgtran.yaml")
 
 			// Normalize the expected string to the current host's separator.
 			// Since the code uses filepath.Join, it will use \ on Windows and / on Linux.
@@ -291,7 +293,7 @@ func TestAdapter_PostInstallMessage(t *testing.T) {
 				if !strings.Contains(msg, normalizedExpected) {
 					t.Errorf("PostInstallMessage() for %s missing expected path: %q\ngot: %q", tt.os, normalizedExpected, msg)
 				}
-				// Verify path is quoted (specifically the gentleman.yaml path)
+				// Verify path is quoted (specifically the hgtran.yaml path)
 				quotedExpected := `"` + gentlemanYaml + `"`
 				if !strings.Contains(msg, quotedExpected) {
 					t.Errorf("PostInstallMessage() for %s: path not quoted: %q", tt.os, quotedExpected)

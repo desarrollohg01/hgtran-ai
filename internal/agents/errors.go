@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
 )
 
 var (

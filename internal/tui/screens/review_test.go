@@ -4,8 +4,8 @@ import (
 	"strings"
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/planner"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/planner"
 )
 
 // ─── Issue #145: Review screen must show individual skills ───────────────────
@@ -158,7 +158,7 @@ func TestRenderReviewSummarizesPersonaConversationAndArtifacts(t *testing.T) {
 		want    string
 	}{
 		{name: "Gentleman", persona: model.PersonaGentleman, want: "Voseo conversation; English technical artifacts"},
-		{name: "Gentleman with English artifacts", persona: model.PersonaGentlemanNeutralArtifacts, want: "Voseo conversation; English technical artifacts (legacy alias)"},
+		{name: "Gentleman with English artifacts", persona: model.PersonaGentlemanNeutralArtifacts, want: "No regional conversation tone; English technical artifacts (legacy alias, remapped)"},
 		{name: "Neutral", persona: model.PersonaNeutral, want: "No regional conversation tone; English technical artifacts"},
 	}
 

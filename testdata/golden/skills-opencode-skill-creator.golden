@@ -3,7 +3,7 @@ name: skill-creator
 description: "Trigger: new skills, agent instructions, documenting AI usage patterns. Create LLM-first skills with valid frontmatter."
 license: Apache-2.0
 metadata:
-  author: gentleman-programming
+  author: hgtran-programming
   version: "1.0"
 ---
 

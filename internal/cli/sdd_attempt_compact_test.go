@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -12,16 +13,23 @@ import (
 	"strings"
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/sddstatus"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/sddstatus"
 )
 
 type compactAttemptOutput struct {
 	State  string `json:"state"`
 	Reason string `json:"reason,omitempty"`
 	Token  string `json:"token,omitempty"`
+	Exit   string `json:"exit,omitempty"`
+	Detail string `json:"detail,omitempty"`
+	// SettleObligation rides the proceed envelope (#2912): what this attempt's
+	// passing settle will already owe, named while the attempt is still
+	// unspent.
+	SettleObligation string `json:"settle_obligation,omitempty"`
 }
 
 func TestRunSDDAttemptCompactOutputStaysBoundedAcrossHistory(t *testing.T) {
+	reviewEnabledHome(t)
 	repo := initReviewCLIRepo(t)
 	const change = "compact-history"
 
@@ -45,9 +53,8 @@ func TestRunSDDAttemptCompactOutputStaysBoundedAcrossHistory(t *testing.T) {
 
 		settled, settlePayload := runCompactSDDAttempt(t, []string{
 			"settle", "--cwd", repo, "--change", change, "--token", acquired.Token,
-			"--request-id", fmt.Sprintf("compact-settle-%d", attempt), "--outcome", "failed",
-			"--evidence-revision", cliAttemptHash(byte('a' + attempt%6)),
-			"--diagnosis", "bounded execution produced retryable evidence", "--harness-disposition", "reused",
+			"--request-id", fmt.Sprintf("compact-settle-%d", attempt), "--outcome", "interrupted",
+			"--diagnosis", "bounded execution was interrupted", "--harness-disposition", "reused",
 			"--cleanup-evidence", "process group exited", "--process-evidence", "no descendants remained",
 		})
 		if settled != (compactAttemptOutput{State: "proceed"}) {
@@ -94,8 +101,7 @@ func TestRunSDDAttemptLegacyStatusJSONIsUnchanged(t *testing.T) {
   "evidence_revision": "",
   "decision_required": false,
   "complete": false,
-  "next_action": "begin",
-  "binding_revision": ""
+  "next_action": "begin"
 }
 `
 	if output.String() != want {
@@ -156,12 +162,101 @@ func TestRunSDDAttemptCompactBlocksWithoutMutation(t *testing.T) {
 			if !reflect.DeepEqual(before, after) {
 				t.Fatalf("blocked operation mutated authority\nbefore=%v\nafter=%v", before, after)
 			}
-			keys := []string{"state", "reason"}
+			// Exit-naming audit fix #2: compactBlocked now names a runnable
+			// continuation for every reason it produces (previously a bare
+			// {"state":"blocked","reason":"<code>"} with nothing behind it —
+			// 21 call sites, zero tests). Every blocked result therefore
+			// carries non-empty exit/detail alongside state/reason.
+			if result.Exit == "" || result.Detail == "" {
+				t.Fatalf("blocked result = %#v, want non-empty Exit/Detail", result)
+			}
+			keys := []string{"state", "reason", "exit", "detail"}
 			if wantToken != "" {
 				keys = append(keys, "token")
 			}
 			assertCompactPayloadKeys(t, payload, keys...)
 		})
+	}
+}
+
+func TestCompactHandoffRefusalPreservesTypedDetailAndRunnableExit(t *testing.T) {
+	repo := initReviewCLIRepo(t)
+	const change = "compact-handoff-refusal"
+	started, _ := runCompactSDDAttempt(t, compactAcquireArgs(repo, change, "handoff-owner", 2))
+	foreign := initReviewCLIRepo(t)
+
+	var output bytes.Buffer
+	if err := RunSDDAttempt([]string{
+		"handoff", "--cwd", repo, "--change", change, "--expected-revision", started.Token,
+		"--request-id", "handoff-foreign", "--destination-worktree", foreign,
+	}, &output); err != nil {
+		t.Fatal(err)
+	}
+	var result compactAttemptOutput
+	if err := json.Unmarshal(output.Bytes(), &result); err != nil {
+		t.Fatal(err)
+	}
+	if result.State != "blocked" || result.Reason != "invalid_continuation" || result.Detail == "" || result.Exit != result.Detail {
+		t.Fatalf("foreign compact handoff = %#v", result)
+	}
+	wantExit := "hgtran-ai sdd-attempt status --cwd \"" + repo + "\" --change \"" + change + "\""
+	if !strings.Contains(result.Exit, wantExit) {
+		t.Fatalf("handoff exit = %q, want runnable %q", result.Exit, wantExit)
+	}
+	var status bytes.Buffer
+	if err := RunSDDAttempt([]string{"status", "--cwd", repo, "--change", change}, &status); err != nil {
+		t.Fatalf("handoff exit did not name a runnable status command: %v", err)
+	}
+}
+
+// TestActiveAttemptBlockedExitNamesAGenuinelyRunnableCommand is the
+// execution-based RED-first proof for adversarial finding F2: the
+// active_attempt Exit text used to print `hgtran-ai sdd-attempt acquire
+// --token <t>` and `hgtran-ai sdd-attempt settle --token <t>` as if those
+// were complete commands, when both actually require five more required
+// flags each (--cwd, --change, then either --request-id/--work-unit/
+// --evidence-goal for acquire or --request-id/--outcome/--evidence-revision/
+// --diagnosis/--harness-disposition/--cleanup-evidence/--process-evidence
+// for settle) -- confirmed by executing both against this real CLI. This
+// test triggers a genuine active_attempt block, then actually EXECUTES the
+// one command the fixed text is required to name in full
+// (`sdd-attempt status --cwd <repo> --change <change>`, with real values
+// substituted for the placeholders) through RunSDDAttempt -- the same
+// dispatch path the compiled binary uses -- and requires the text to never
+// claim the acquire/settle forms are complete on their own.
+func TestActiveAttemptBlockedExitNamesAGenuinelyRunnableCommand(t *testing.T) {
+	repo := initReviewCLIRepo(t)
+	const change = "active-attempt-exit-text"
+	started, _ := runCompactSDDAttempt(t, compactAcquireArgs(repo, change, "exit-text-owner", 2))
+	blocked, _ := runCompactSDDAttempt(t, compactAcquireArgs(repo, change, "exit-text-contender", 2))
+	if blocked.State != "blocked" || blocked.Reason != "active_attempt" || blocked.Token != started.Token {
+		t.Fatalf("active-attempt setup = %#v, want blocked/active_attempt/%s", blocked, started.Token)
+	}
+	if blocked.Exit == "" {
+		t.Fatal("active_attempt result carries no Exit text to verify")
+	}
+
+	// The text must never claim the bare acquire/settle forms are complete:
+	// that is exactly the class of defect this test exists to catch.
+	for _, incomplete := range []string{
+		"run `hgtran-ai sdd-attempt acquire --token",
+		"run `hgtran-ai sdd-attempt settle --token",
+	} {
+		if strings.Contains(blocked.Exit, incomplete) {
+			t.Fatalf("active_attempt Exit still claims an incomplete command is runnable as printed (%q): %q", incomplete, blocked.Exit)
+		}
+	}
+
+	// The one command the text is allowed to print as complete must
+	// actually run. Extract it with real placeholder substitution and
+	// execute it through RunSDDAttempt -- not just parse its flags.
+	const wantCommand = "hgtran-ai sdd-attempt status --cwd <repo> --change <change>"
+	if !strings.Contains(blocked.Exit, wantCommand) {
+		t.Fatalf("active_attempt Exit does not name %q: %q", wantCommand, blocked.Exit)
+	}
+	var statusOutput bytes.Buffer
+	if err := RunSDDAttempt([]string{"status", "--cwd", repo, "--change", change}, &statusOutput); err != nil {
+		t.Fatalf("executing the named command with real --cwd/--change substituted for <repo>/<change> failed: %v\n%s", err, statusOutput.String())
 	}
 }
 
@@ -191,7 +286,7 @@ func TestRunSDDAttemptCompactPreservesTokenCASAndIdempotentReplay(t *testing.T) 
 	settleArgs := compactSettleArgs(repo, change, first.Token, "replay-settle", "passed")
 	completed, completedPayload := runCompactSDDAttempt(t, settleArgs)
 	completedReplay, completedReplayPayload := runCompactSDDAttempt(t, settleArgs)
-	if completed != (compactAttemptOutput{State: "complete"}) || completedReplay != completed || !bytes.Equal(completedPayload, completedReplayPayload) {
+	if completed.State != "complete" || completed.Exit == "" || completed.Detail != completed.Exit || completedReplay != completed || !bytes.Equal(completedPayload, completedReplayPayload) {
 		t.Fatalf("settle replay completed=%#v replayed=%#v", completed, completedReplay)
 	}
 	status, err := store.Status()
@@ -200,6 +295,147 @@ func TestRunSDDAttemptCompactPreservesTokenCASAndIdempotentReplay(t *testing.T) 
 	}
 	if len(status.Attempts) != 1 || status.ActiveAttempt != nil || !status.Complete {
 		t.Fatalf("replayed compact lifecycle status = %#v", status)
+	}
+}
+
+// TestRunSDDAttemptAcquireTokenBreaksParentActorDeadlock reproduces #2291's
+// exact CLI-level deadlock: a parent process runs `sdd-attempt acquire` and
+// gets back proceed + a token, then launches an actor as a distinct process
+// (its own --request-id). Presenting the parent's token via the new --token
+// flag must let the actor proceed under the SAME attempt with zero authority
+// mutation, instead of colliding with active_attempt.
+func TestRunSDDAttemptAcquireTokenBreaksParentActorDeadlock(t *testing.T) {
+	repo := initReviewCLIRepo(t)
+	const change = "deadlock-2291"
+	store, err := sddstatus.OpenRuntimeStore(context.Background(), repo, change)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	parent, _ := runCompactSDDAttempt(t, compactAcquireArgs(repo, change, "deadlock-parent", 2))
+	if parent.State != "proceed" || parent.Token == "" {
+		t.Fatalf("parent acquire = %#v", parent)
+	}
+
+	before := snapshotRuntimeAuthorityFiles(t, store.Dir)
+	actor, actorPayload := runCompactSDDAttempt(t, []string{
+		"acquire", "--cwd", repo, "--change", change, "--request-id", "deadlock-actor",
+		"--work-unit", "compact-unit", "--evidence-goal", "prove compact attempt",
+		"--max-attempts", "2", "--max-changed-lines", "20", "--token", parent.Token,
+	})
+	after := snapshotRuntimeAuthorityFiles(t, store.Dir)
+
+	if actor.State != "proceed" || actor.Token != parent.Token || actor.Reason != "" {
+		t.Fatalf("actor acquire-with-token = %#v, want proceed with parent token %q", actor, parent.Token)
+	}
+	if !reflect.DeepEqual(before, after) {
+		t.Fatalf("actor acquire-with-token mutated authority\nbefore=%v\nafter=%v", before, after)
+	}
+	assertCompactPayloadKeys(t, actorPayload, "state", "token")
+}
+
+// TestRunSDDAttemptAcquireForeignTokenStaysBlockedWithNamedExit covers the
+// converse: a --token that does not match the live active attempt must not
+// grant ownership. It stays blocked with the REAL active token (not the
+// foreign one supplied) and a named Exit/Detail explaining how to proceed,
+// with zero authority mutation for the losing check.
+func TestRunSDDAttemptAcquireForeignTokenStaysBlockedWithNamedExit(t *testing.T) {
+	repo := initReviewCLIRepo(t)
+	const change = "deadlock-2291-foreign"
+	store, err := sddstatus.OpenRuntimeStore(context.Background(), repo, change)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	active, _ := runCompactSDDAttempt(t, compactAcquireArgs(repo, change, "foreign-owner", 2))
+	if active.State != "proceed" || active.Token == "" {
+		t.Fatalf("owner acquire = %#v", active)
+	}
+
+	before := snapshotRuntimeAuthorityFiles(t, store.Dir)
+	blocked, blockedPayload := runCompactSDDAttempt(t, []string{
+		"acquire", "--cwd", repo, "--change", change, "--request-id", "foreign-contender",
+		"--work-unit", "compact-unit", "--evidence-goal", "prove compact attempt",
+		"--max-attempts", "2", "--max-changed-lines", "20", "--token", cliAttemptHash('f'),
+	})
+	after := snapshotRuntimeAuthorityFiles(t, store.Dir)
+
+	if blocked.State != "blocked" || blocked.Reason != "active_attempt" || blocked.Token != active.Token {
+		t.Fatalf("foreign-token acquire = %#v, want blocked active_attempt with owner token %q", blocked, active.Token)
+	}
+	if blocked.Exit == "" || blocked.Detail == "" {
+		t.Fatalf("foreign-token acquire missing named exit: %#v", blocked)
+	}
+	if !reflect.DeepEqual(before, after) {
+		t.Fatalf("foreign-token acquire mutated authority\nbefore=%v\nafter=%v", before, after)
+	}
+	assertCompactPayloadKeys(t, blockedPayload, "state", "reason", "token", "exit", "detail")
+}
+
+// TestRunSDDAttemptSettleSurvivesOffToOnReviewModeTransition proves the CLI
+// keeps attempt authority inside the SDD ledger. It deliberately acquires the
+// correction token while receipt-driven development is off, then turns it on
+// before settling the exact token: if settle consults current review mode or a
+// review successor, it wedges a valid SDD evidence correction.
+func TestRunSDDAttemptSettleSurvivesOffToOnReviewModeTransition(t *testing.T) {
+	reviewModeHome(t)
+	t.Setenv("XDG_CONFIG_HOME", t.TempDir())
+	t.Setenv("XDG_DATA_HOME", t.TempDir())
+	t.Setenv("XDG_CACHE_HOME", t.TempDir())
+	repo := initReviewCLIRepo(t)
+	const change = "mode-transition-settle"
+
+	var modeOutput bytes.Buffer
+	if err := RunReviewMode([]string{"status", "--cwd", repo, "--json"}, &modeOutput); err != nil {
+		t.Fatalf("read initial receipt-driven-development mode: %v", err)
+	}
+	if mode := decodeReviewModeResult(t, modeOutput.Bytes()).Status.Effective; string(mode) != "off" {
+		t.Fatalf("initial receipt-driven-development mode = %q, want off", mode)
+	}
+	failedEvidence := cliAttemptHash('a')
+	failedAttempt, _ := runCompactSDDAttempt(t, compactAcquireArgs(repo, change, "failed-acquire", 1))
+	failed, _ := runCompactSDDAttempt(t, compactSettleArgsWithEvidence(repo, change, failedAttempt.Token, "failed-settle", "failed", failedEvidence))
+	if failed.State != "blocked" || failed.Reason != "maintainer_decision" {
+		t.Fatalf("failed verification did not exhaust its bounded objective: %#v", failed)
+	}
+	failedStatus := runSDDAttemptStatus(t, []string{"status", "--cwd", repo, "--change", change})
+	if !failedStatus.DecisionRequired {
+		t.Fatalf("failed verification status = %#v, want maintainer decision", failedStatus)
+	}
+	if err := RunSDDAttempt([]string{
+		"reset", "--cwd", repo, "--change", change, "--expected-revision", failedStatus.Revision,
+		"--request-id", "failed-reset", "--reason", "remediate exact failed evidence", "--actor", "maintainer",
+	}, io.Discard); err != nil {
+		t.Fatalf("reset failed verification objective: %v", err)
+	}
+
+	correction, _ := runCompactSDDAttempt(t, append(compactAcquireArgs(repo, change, "correction-acquire", 1),
+		"--remediates-evidence-revision", failedEvidence,
+	))
+	if correction.State != "proceed" || correction.Token == "" {
+		t.Fatalf("correction acquire while review is off = %#v", correction)
+	}
+	modeOutput.Reset()
+	if err := RunReviewMode([]string{"enable", "--cwd", repo, "--scope", "global", "--json"}, &modeOutput); err != nil {
+		t.Fatalf("enable receipt-driven development: %v", err)
+	}
+	if mode := decodeReviewModeResult(t, modeOutput.Bytes()).Status.Effective; string(mode) != "on" {
+		t.Fatalf("enabled receipt-driven-development mode = %q, want on", mode)
+	}
+	if err := os.WriteFile(filepath.Join(repo, "tracked.txt"), []byte("corrected\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	settled, _ := runCompactSDDAttempt(t, append(compactSettleArgsWithEvidence(repo, change, correction.Token, "correction-settle", "passed", cliAttemptHash('b')),
+		"--remediates-evidence-revision", failedEvidence,
+	))
+	if settled.State != "complete" || settled.Exit == "" {
+		t.Fatalf("correction settle after off-to-on review transition = %#v", settled)
+	}
+	status := runSDDAttemptStatus(t, []string{"status", "--cwd", repo, "--change", change})
+	if status.ActiveAttempt != nil || !status.Complete || len(status.Attempts) != 2 ||
+		status.Attempts[1].RemediatesEvidenceRevision != failedEvidence {
+		t.Fatalf("settled SDD evidence chain = %#v", status)
 	}
 }
 
@@ -212,9 +448,13 @@ func compactAcquireArgs(repo, change, requestID string, maxAttempts int) []strin
 }
 
 func compactSettleArgs(repo, change, token, requestID, outcome string) []string {
+	return compactSettleArgsWithEvidence(repo, change, token, requestID, outcome, cliAttemptHash('e'))
+}
+
+func compactSettleArgsWithEvidence(repo, change, token, requestID, outcome, evidenceRevision string) []string {
 	return []string{
 		"settle", "--cwd", repo, "--change", change, "--token", token, "--request-id", requestID,
-		"--outcome", outcome, "--evidence-revision", cliAttemptHash('e'),
+		"--outcome", outcome, "--evidence-revision", evidenceRevision,
 		"--diagnosis", "compact attempt produced conclusive evidence", "--harness-disposition", "reused",
 		"--cleanup-evidence", "process group exited", "--process-evidence", "no descendants remained",
 	}

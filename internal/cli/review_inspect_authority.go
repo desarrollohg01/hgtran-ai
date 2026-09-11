@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/reviewtransaction"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/reviewtransaction"
 )
 
 const ReviewInspectAuthoritySchema = "hgtran-ai.review-authority-inspection/v1"

@@ -4,9 +4,9 @@ import (
 	"strings"
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/opencode"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/tui/screens"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/opencode"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/tui/screens"
 )
 
 // ─── RenderProfileCreate step 0 (name input) ─────────────────────────────────
@@ -106,7 +106,7 @@ func TestRenderProfileCreate_Step1_ShowsJDRowsAssignmentAndClearHelp(t *testing.
 		"jd-judge-a": {ProviderID: "openai", ModelID: "gpt-5"},
 	}
 
-	output := screens.RenderProfileCreate(1, draft, "", 0, "", true, assignments, picker, 0)
+	output := screens.RenderProfileCreate(1, draft, "", 0, "", true, assignments, picker, len(screens.ModelPickerRowsForProfile())-1)
 
 	for _, want := range []string{"--- Judgment Day ---", "jd-judge-a", "jd-judge-b", "jd-fix-agent", "OpenAI / GPT-5", "backspace: clear"} {
 		if !strings.Contains(output, want) {

@@ -3,7 +3,7 @@ package kiro
 import (
 	"fmt"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
 )
 
 // AgentNotInstallableError is returned when Kiro IDE cannot be installed automatically.

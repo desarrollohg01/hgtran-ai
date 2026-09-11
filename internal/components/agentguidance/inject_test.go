@@ -8,10 +8,10 @@ import (
 	"strings"
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/catalog"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/opencodedefault"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/catalog"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/opencodedefault"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
 )
 
 func TestInjectRoutingInstallsGuidanceForEverySupportedAgent(t *testing.T) {
@@ -58,6 +58,9 @@ func TestInjectRoutingInstallsGuidanceForEverySupportedAgent(t *testing.T) {
 			}
 			if !strings.Contains(written, "<!-- /hgtran-ai:"+RoutingSectionID+" -->") {
 				t.Fatalf("InjectRouting(%q) did not close the managed section:\n%s", agent.ID, written)
+			}
+			if !strings.Contains(written, "First establish whether the requested outcome explicitly authorizes a change.") {
+				t.Fatalf("InjectRouting(%q) did not deliver the outcome-authorization guard:\n%s", agent.ID, written)
 			}
 		})
 	}

@@ -29,7 +29,7 @@ $GITHUB_OWNER = "Gentleman-Programming"
 $GITHUB_REPO = "hgtran-ai"
 $BINARY_NAME = "hgtran-ai"
 $WINDOWS_DISTRIBUTION_HOLD = "Windows binary distribution and Scoop are temporarily unavailable until publicly trusted Authenticode signing is enforced."
-$STABLE_SOURCE_COMMAND = "go install bitbucket.org/hgt_development/hgtran-ai/v2/cmd/hgtran-ai@latest"
+$STABLE_SOURCE_COMMAND = "go install github.com/desarrollohg01/hgtran-ai/v2/cmd/hgtran-ai@latest"
 
 function Write-Info    { param([string]$Message) Write-Host "[info]    $Message" -ForegroundColor Blue }
 function Write-Success { param([string]$Message) Write-Host "[ok]      $Message" -ForegroundColor Green }
@@ -101,9 +101,9 @@ function Install-ViaGo {
     Write-Info "Running: go install $goPackage"
 
     if ($Channel -eq "beta") {
-        Add-GoEnvPattern -Name "GONOSUMDB" -Pattern "bitbucket.org/hgt_development/hgtran-ai/v2"
-        Add-GoEnvPattern -Name "GOPRIVATE" -Pattern "bitbucket.org/hgt_development/hgtran-ai/v2"
-        Add-GoEnvPattern -Name "GONOPROXY" -Pattern "bitbucket.org/hgt_development/hgtran-ai/v2"
+        Add-GoEnvPattern -Name "GONOSUMDB" -Pattern "github.com/desarrollohg01/hgtran-ai/v2"
+        Add-GoEnvPattern -Name "GOPRIVATE" -Pattern "github.com/desarrollohg01/hgtran-ai/v2"
+        Add-GoEnvPattern -Name "GONOPROXY" -Pattern "github.com/desarrollohg01/hgtran-ai/v2"
     }
 
     & go install $goPackage

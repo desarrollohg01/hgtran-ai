@@ -11,8 +11,8 @@ import (
 	"strings"
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/assets"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/assets"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
 )
 
 // SDD delivery strategy has a producer and a consumer. The producer is the
@@ -357,7 +357,7 @@ func TestInjectOpenCodeMigratesRetiredDeliveryStrategyMapping(t *testing.T) {
 
 	seed := `{
   "agent": {
-    "gentle-orchestrator": {
+    "hgtran-orchestrator": {
       "mode": "primary",
       "prompt": ` + strconv.Quote("# Custom prompt\n"+stalePrompt) + `
     }
@@ -483,7 +483,7 @@ func TestInjectOpenCodeMigratesRetiredChainedPRPreflightOption(t *testing.T) {
 
 	seed := `{
   "agent": {
-    "gentle-orchestrator": {
+    "hgtran-orchestrator": {
       "mode": "primary",
       "prompt": ` + strconv.Quote("# Custom prompt\n"+stalePrompt) + `
     }
@@ -553,9 +553,9 @@ func preservedOrchestratorPrompt(t *testing.T, settingsPath string) string {
 	if err := json.Unmarshal(settingsBytes, &settings); err != nil {
 		t.Fatalf("Unmarshal(opencode.json) error = %v", err)
 	}
-	prompt := settings.Agent["gentle-orchestrator"].Prompt
+	prompt := settings.Agent["hgtran-orchestrator"].Prompt
 	if prompt == "" {
-		t.Fatal("opencode.json lost the preserved gentle-orchestrator prompt")
+		t.Fatal("opencode.json lost the preserved hgtran-orchestrator prompt")
 	}
 	return prompt
 }

@@ -1,11 +1,12 @@
 package skills
 
-import "bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
+import "github.com/desarrollohg01/hgtran-ai/v2/internal/model"
 
 // sddSkills are the SDD orchestrator skills — always included.
 var sddSkills = []model.SkillID{
 	model.SkillSDDInit,
 	model.SkillSDDExplore,
+	model.SkillSDDResearch,
 	model.SkillSDDPropose,
 	model.SkillSDDSpec,
 	model.SkillSDDDesign,
@@ -20,6 +21,7 @@ var sddSkills = []model.SkillID{
 // foundationSkills are baseline learning skills for the "recommended" tier.
 var foundationSkills = []model.SkillID{
 	model.SkillGoTesting,
+	model.SkillGentleAIBench,
 	model.SkillCreator,
 	model.SkillImprover,
 	model.SkillBranchPR,
@@ -30,13 +32,14 @@ var foundationSkills = []model.SkillID{
 	model.SkillCommentWriter,
 	model.SkillWorkUnitCommits,
 	model.SkillRDDDefectWorkflow,
+	model.SkillSystemicIssueTriage,
 }
 
 // SkillsForPreset returns which skills should be installed for a given preset.
 //
 //   - "minimal" / PresetMinimal:       SDD skills only
 //   - "ecosystem-only" / PresetEcosystemOnly: SDD + common framework skills
-//   - "full-gentleman" / PresetFullGentleman: all available skills
+//   - "full-hgtran" / PresetFullGentleman: all available skills
 //   - "custom" / PresetCustom:         empty (caller should provide explicit list)
 func SkillsForPreset(preset model.PresetID) []model.SkillID {
 	switch preset {

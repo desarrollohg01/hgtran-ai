@@ -1,7 +1,6 @@
 package reviewtransaction
 
 import (
-	"bytes"
 	"context"
 	"crypto/sha256"
 	"encoding/hex"
@@ -131,13 +130,17 @@ func TestChainBundleRoundTripBootstrapsRepositoryDerivedStore(t *testing.T) {
 		t.Fatalf("ImportBundle(idempotent) = %#v, %v", again, err)
 	}
 
-	request.StoreRevision = bundle.HeadRevision
-	request.GenesisRevision = bundle.GenesisRevision
-	request.ChainIdentity = bundle.ChainIdentity
-	request.BundleDigest = bundle.BundleDigest
-	if evaluation := EvaluateNativeGate(context.Background(), clone, receipt, request); evaluation.Result != GateAllow {
-		t.Fatalf("EvaluateNativeGate(imported chain) = %#v", evaluation)
-	}
+	// The original dev-branch assertion also fed request.StoreRevision /
+	// GenesisRevision / ChainIdentity / BundleDigest to EvaluateNativeGate and
+	// required GateAllow. That entrypoint (and native_request.go /
+	// compact_gate.go, the files it lived in) was removed wholesale by the
+	// upstream v2.5.0 merge -- Wave 5 (Gate Cutover), see
+	// gate_write_guard_test.go -- and replaced only with an in-progress,
+	// not-yet-wired verdict classifier (gateVerdict / NativeGateEvaluation in
+	// gate.go). No callable function currently takes a GateRequest and
+	// produces a verdict, so that half of this test cannot be restored
+	// without adding production code; the bundle export/import/idempotency
+	// coverage above is the part that is still live and is fully restored.
 }
 
 func TestNonterminalBundleImportsForResumptionWithoutReceipt(t *testing.T) {
@@ -202,13 +205,13 @@ func TestCorrectedChainBundleRoundTripUsesDeliveredContentEquivalence(t *testing
 		t.Fatalf("imported corrected chain = %#v", imported)
 	}
 
-	fixture.Request.StoreRevision = bundle.HeadRevision
-	fixture.Request.GenesisRevision = bundle.GenesisRevision
-	fixture.Request.ChainIdentity = bundle.ChainIdentity
-	fixture.Request.BundleDigest = bundle.BundleDigest
-	if evaluation := EvaluateNativeGate(context.Background(), clone, fixture.Receipt, fixture.Request); evaluation.Result != GateScopeChanged {
-		t.Fatalf("EvaluateNativeGate(imported corrected chain) = %#v", evaluation)
-	}
+	// As in TestChainBundleRoundTripBootstrapsRepositoryDerivedStore above,
+	// the dev-branch original also called EvaluateNativeGate here (expecting
+	// GateScopeChanged) after mutating fixture.Request with the bundle's
+	// revision/identity fields. EvaluateNativeGate was removed by the Wave 5
+	// Gate Cutover merge with no live replacement entrypoint, so that
+	// assertion cannot be restored; the import round-trip and content
+	// equivalence checks above remain fully covered.
 }
 
 func TestChainBundleImportRejectsTamperingTruncationAndWrongBindings(t *testing.T) {
@@ -286,9 +289,19 @@ func TestChainBundleImportRejectsTamperingTruncationAndWrongBindings(t *testing.
 			},
 		},
 		{
+			// The dev-branch original used ModeJudgmentDay here. That Mode
+			// value (and the dual-judge blind-review machinery around it --
+			// JudgeProof, RecordJudgeProofs) was removed from the Transaction
+			// lifecycle entirely: Mode is now a closed two-value enum
+			// (ModeOrdinary4R, ModeOrdinaryBounded) and transaction.validate()
+			// hard-rejects any other value, so there is no live third mode
+			// left to substitute in kind. ModeOrdinaryBounded (the fixture
+			// itself uses ModeOrdinary4R) still exercises the exact same
+			// invariant -- an imported bundle whose receipt mode does not
+			// match the terminal transaction's mode must be rejected.
 			name: "wrong receipt mode",
 			mutate: func(_ *ChainBundle, expectation *BundleImportExpectation) {
-				expectation.Receipt.Mode = ModeJudgmentDay
+				expectation.Receipt.Mode = ModeOrdinaryBounded
 			},
 		},
 		{
@@ -448,36 +461,20 @@ func TestLegacyClassificationBundleRemainsReadable(t *testing.T) {
 	}
 }
 
-func TestChainBundlePreservesHistoricalJudgmentDayFreezeBytes(t *testing.T) {
-	store := Store{Dir: filepath.Join(t.TempDir(), "review-store")}
-	tx := newTestTransaction(t, ModeJudgmentDay)
-	if err := tx.StartReview(); err != nil {
-		t.Fatal(err)
-	}
-	head := writeStoreEvent(t, store, Record{Operation: "review/start", Transaction: *tx})
-	if err := tx.RecordJudgeProofs([]JudgeProof{{JudgeID: "judge-a", ExecutionHash: hash("a"), ResultHash: hash("b"), Blind: true, Confirmed: true}, {JudgeID: "judge-b", ExecutionHash: hash("c"), ResultHash: hash("d"), Blind: true, Confirmed: true}}, hash("e")); err != nil {
-		t.Fatal(err)
-	}
-	head = writeStoreEvent(t, store, Record{Operation: "review/record-judge-proofs", PreviousRevision: head, Transaction: *tx})
-	legacy := historicalFreezeTransition(t, *tx)
-	head = writeStoreEvent(t, store, Record{Operation: "review/freeze-findings", PreviousRevision: head, Transaction: legacy})
-	payload, err := os.ReadFile(filepath.Join(store.Dir, "events", strings.TrimPrefix(head, "sha256:")+".json"))
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	bundle, err := store.ExportBundle()
-	if err != nil {
-		t.Fatalf("ExportBundle() error = %v", err)
-	}
-	last := bundle.Events[len(bundle.Events)-1]
-	if last.Revision != head || !bytes.Equal(last.Payload, payload) {
-		t.Fatalf("bundle changed historical event: %#v", last)
-	}
-	if _, err := ParseChainBundle(mustJSON(t, bundle)); err != nil {
-		t.Fatalf("ParseChainBundle() error = %v", err)
-	}
-}
+// TestChainBundlePreservesHistoricalJudgmentDayFreezeBytes could not be
+// restored: it exercised ModeJudgmentDay plus the dual-judge blind-review
+// machinery (JudgeProof, Transaction.RecordJudgeProofs), all of which were
+// removed from the Transaction lifecycle entirely -- Mode is now a closed
+// two-value enum (ModeOrdinary4R, ModeOrdinaryBounded) and
+// transaction.validate() hard-rejects any other Mode value, including one
+// reconstructed from raw historical JSON bytes. UnmarshalJSON keeps a
+// tolerance shim for the old judge_proof_hash/judge_agreement_hash/
+// judge_proofs field names (transaction.go's persistedTransaction decode
+// struct) so historical records with that shape still parse without
+// DisallowUnknownFields failing, but nothing constructs or validates a live
+// Transaction in that mode anymore. Restoring this test would require
+// reintroducing the removed Mode value and JudgeProof API in production
+// code, which is out of scope here.
 
 func correctedBundleFixture(t *testing.T, repo, lineage string) correctedBundleTestFixture {
 	t.Helper()
@@ -684,4 +681,146 @@ func cloneChainBundle(t *testing.T, bundle ChainBundle) ChainBundle {
 		t.Fatal(err)
 	}
 	return cloned
+}
+
+// nativeGateFixture and appendApprovedStoreChain used to live in
+// gate_test.go, which the upstream v2.5.0 merge reduced to a package-only
+// stub (its own production surface, native_request.go / compact_gate.go, is
+// likewise stubbed -- see the EvaluateNativeGate comment in
+// TestChainBundleRoundTripBootstrapsRepositoryDerivedStore above). Both
+// helpers below only build a Transaction/Receipt/GateRequest and replay a
+// store chain through Store.Append -- pure Transaction/Store production
+// surface that is untouched by that removal -- so they are rebuilt here
+// verbatim for the two bundle tests that still need them.
+func nativeGateFixture(t *testing.T, repo, lineage string) (Transaction, Receipt, GateRequest) {
+	return nativeGateFixtureWithIntended(t, repo, lineage, []string{})
+}
+
+func nativeGateFixtureWithIntended(t *testing.T, repo, lineage string, intended []string) (Transaction, Receipt, GateRequest) {
+	t.Helper()
+	dir := t.TempDir()
+	policyPath := filepath.Join(dir, "policy.md")
+	ledgerPath := filepath.Join(dir, "ledger.json")
+	evidencePath := filepath.Join(dir, "evidence.md")
+	for path, content := range map[string]string{
+		policyPath:   "bounded policy\n",
+		ledgerPath:   CanonicalEmptyLedger,
+		evidencePath: "verified\n",
+	} {
+		if err := os.WriteFile(path, []byte(content), 0o644); err != nil {
+			t.Fatal(err)
+		}
+	}
+	snapshot, err := (SnapshotBuilder{Repo: repo}).Build(context.Background(), Target{Kind: TargetCurrentChanges, IntendedUntracked: intended})
+	if err != nil {
+		t.Fatal(err)
+	}
+	policyHash, _ := HashArtifact(policyPath)
+	ledgerHash, _ := HashArtifact(ledgerPath)
+	evidenceHash, _ := HashArtifact(evidencePath)
+	tx, err := NewTransaction(Start{LineageID: lineage, Mode: ModeOrdinary4R, Generation: 1, Snapshot: snapshot, PolicyHash: policyHash})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := tx.StartReview(); err != nil {
+		t.Fatal(err)
+	}
+	ledger, err := CanonicalLedger([]Finding{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := tx.FreezeFindings([]Finding{}, ledger, ledgerHash); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := tx.ClassifyEvidence([]FindingEvidence{}); err != nil {
+		t.Fatal(err)
+	}
+	if err := tx.BeginFinalVerification(); err != nil {
+		t.Fatal(err)
+	}
+	if err := tx.CompleteFinalVerification(evidenceHash, true); err != nil {
+		t.Fatal(err)
+	}
+	receipt, err := tx.Receipt()
+	if err != nil {
+		t.Fatal(err)
+	}
+	return *tx, receipt, GateRequest{
+		Schema:           GateRequestSchema,
+		Gate:             GatePostApply,
+		Target:           Target{Kind: TargetCurrentChanges, IntendedUntracked: append([]string{}, intended...)},
+		PolicyArtifact:   policyPath,
+		LedgerArtifact:   ledgerPath,
+		EvidenceArtifact: evidencePath,
+	}
+}
+
+func appendApprovedStoreChain(t *testing.T, store Store, approved Transaction) string {
+	t.Helper()
+	reviewing := approved
+	lensResults := append([]LensResult(nil), approved.LensResults...)
+	reviewing.LensResults = nil
+	for _, lens := range supportedLenses {
+		setLensCounter(&reviewing.Counters, lens, 0)
+	}
+	reviewing.State = StateReviewing
+	reviewing.LedgerHash = ""
+	reviewing.EvidenceHash = ""
+	reviewing.Release = nil
+	reviewing.Counters.FinalVerifications = 0
+	revision, err := store.Append("", Record{Operation: "review/start", Transaction: reviewing})
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, result := range lensResults {
+		if err := reviewing.RecordLensResult(result); err != nil {
+			t.Fatal(err)
+		}
+		revision, err = store.Append(revision, Record{Operation: "review/record-lens-result", Transaction: reviewing})
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+	frozen := reviewing
+	ledger, err := CanonicalLedger([]Finding{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := frozen.FreezeFindings([]Finding{}, ledger, approved.LedgerHash); err != nil {
+		t.Fatal(err)
+	}
+	revision, err = store.Append(revision, Record{Operation: "review/freeze-findings", Transaction: frozen})
+	if err != nil {
+		t.Fatal(err)
+	}
+	classified := frozen
+	if _, err := classified.ClassifyEvidence([]FindingEvidence{}); err != nil {
+		t.Fatal(err)
+	}
+	revision, err = store.Append(revision, Record{Operation: "review/classify", Transaction: classified})
+	if err != nil {
+		t.Fatal(err)
+	}
+	verifying := classified
+	if approved.Release != nil {
+		bound := classified
+		bound.Release = cloneReleaseEvidence(approved.Release)
+		revision, err = store.Append(revision, Record{Operation: "review/bind-release-evidence", Transaction: bound})
+		if err != nil {
+			t.Fatal(err)
+		}
+		verifying = bound
+	}
+	if err := verifying.BeginFinalVerification(); err != nil {
+		t.Fatal(err)
+	}
+	revision, err = store.Append(revision, Record{Operation: "review/begin-final-verification", Transaction: verifying})
+	if err != nil {
+		t.Fatal(err)
+	}
+	revision, err = store.Append(revision, Record{Operation: "review/complete-final-verification", Transaction: approved})
+	if err != nil {
+		t.Fatal(err)
+	}
+	return revision
 }

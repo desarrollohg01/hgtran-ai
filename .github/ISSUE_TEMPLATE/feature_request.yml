@@ -19,7 +19,7 @@ body:
     attributes:
       label: Pre-flight Checklist
       options:
-        - label: I have searched [existing issues](https://github.com/Gentleman-Programming/gentle-ai/issues) and this is not a duplicate
+        - label: I have searched [existing issues](https://github.com/desarrollohg01/hgtran-ai/issues) and this is not a duplicate
           required: true
         - label: I understand that PRs will be rejected if the linked issue does not have `status:approved`
           required: true

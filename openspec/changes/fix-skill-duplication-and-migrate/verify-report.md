@@ -30,14 +30,14 @@ PR #458 ships 50 files changed, +2,362 / −6,739 lines (~9,100 changed lines to
 ### Targeted linter
 ```
 go test -run TestSkillFrontmatterIsLintClean ./internal/assets/...
-ok  github.com/gentleman-programming/gentle-ai/internal/assets  0.006s
+ok  github.com/desarrollohg01/hgtran-ai/internal/assets  0.006s
 ```
 PASS.
 
 ### Full assets package
 ```
 go test ./internal/assets/...
-ok  github.com/gentleman-programming/gentle-ai/internal/assets  (cached)
+ok  github.com/desarrollohg01/hgtran-ai/internal/assets  (cached)
 ```
 PASS — includes `assets_test.go` readability assertions for embedded `references/*.md` files.
 

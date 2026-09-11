@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/update"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/update/upgrade"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/update"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/update/upgrade"
 )
 
 // ─── RenderUpgradeSync states ──────────────────────────────────────────────
@@ -98,7 +98,7 @@ func TestRenderUpgradeSync_CombinedResult(t *testing.T) {
 }
 
 func TestRenderUpgradeSync_LongManualHintUsesWidth(t *testing.T) {
-	longHint := "Windows binary distribution is temporarily unavailable. Install/update from source with Go 1.25.10+:\n  go install bitbucket.org/hgt_development/hgtran-ai/v2/cmd/hgtran-ai@v1.1.0"
+	longHint := "Windows binary distribution is temporarily unavailable. Install/update from source with Go 1.25.10+:\n  go install github.com/desarrollohg01/hgtran-ai/v2/cmd/hgtran-ai@v1.1.0"
 	report := &upgrade.UpgradeReport{Results: []upgrade.ToolUpgradeResult{
 		{ToolName: "hgtran-ai", Status: upgrade.UpgradeSkipped, ManualHint: longHint},
 	}}

@@ -66,7 +66,7 @@ install / sync ──► sdd.Inject(adapter)  [runs once per adapter in the regi
         ▼             ▼                                     ▼
   Jinja agents   system-prompt agents                OpenCode / Kilocode
    write module +   InjectMarkdownSection(            append marker-wrapped block
-   {% include %}    existing,"trigger-rules",block)   to gentle-orchestrator prompt
+   {% include %}    existing,"trigger-rules",block)   to hgtran-orchestrator prompt
         └─────────────┴───────────────────────────────────┘
                       ▼
           idempotent: re-run REPLACES the marker section (no dup)

@@ -4,7 +4,7 @@ import (
 	"context"
 	"os"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
 )
 
 // InstalledAgent pairs an agent ID with its resolved config root directory.

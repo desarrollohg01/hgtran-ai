@@ -6,9 +6,9 @@ import (
 	"reflect"
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/capabilitymanifest"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/capabilitymanifest"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/system"
 )
 
 type mockAdapter struct {
@@ -19,9 +19,6 @@ func (m mockAdapter) Agent() model.AgentID    { return m.agent }
 func (m mockAdapter) Tier() model.SupportTier { return model.TierFull }
 func (m mockAdapter) CapabilityManifest() capabilitymanifest.AgentCapabilityManifest {
 	return capabilitymanifest.MustForAgent(m.agent)
-}
-func (m mockAdapter) SupportsAutoInstall() bool {
-	return m.CapabilityManifest().Features.AutoInstall
 }
 func (m mockAdapter) Detect(_ context.Context, _ string) (bool, string, string, bool, error) {
 	return false, "", "", false, nil

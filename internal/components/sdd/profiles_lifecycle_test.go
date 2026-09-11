@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/filemerge"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/filemerge"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
 )
 
 // TestProfileLifecycle_FullCRUD exercises the complete profile lifecycle:
@@ -93,8 +93,8 @@ func TestProfileLifecycle_FullCRUD(t *testing.T) {
 			t.Errorf("merged agent map missing key %q", key)
 		}
 	}
-	if len(expectedCheapKeys) != 11 {
-		t.Errorf("expected 11 cheap SDD profile keys, got %d", len(expectedCheapKeys))
+	if len(expectedCheapKeys) != 12 {
+		t.Errorf("expected 12 cheap SDD profile keys, got %d", len(expectedCheapKeys))
 	}
 
 	// Step 5: DetectProfiles → verify 1 profile detected with correct model.

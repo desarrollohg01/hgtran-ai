@@ -3,9 +3,9 @@ package screens
 import (
 	"strings"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/catalog"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/tui/styles"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/catalog"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/tui/styles"
 )
 
 func AgentOptions() []model.AgentID {

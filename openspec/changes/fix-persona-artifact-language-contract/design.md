@@ -148,7 +148,7 @@ sequenceDiagram
 | Agent ID | SDD asset source | Install surface | Delegation/prompt risk | Required coverage |
 |----------|------------------|-----------------|------------------------|-------------------|
 | `claude-code` | `internal/assets/claude/sdd-orchestrator.md` | Markdown section in `CLAUDE.md` plus Claude commands/agents | Native Agent/Task prompts must forward contract without OpenCode persistence claims | Asset guard, install/sync output, delegation wording |
-| `opencode` | `internal/assets/opencode/sdd-orchestrator.md` | `opencode.json` `gentle-orchestrator` prompt plus commands, overlays, shared prompts | Known leak path; overlay inlining and shared prompt files can regenerate stale wording | Strongest regression coverage, including exact banned terms |
+| `opencode` | `internal/assets/opencode/sdd-orchestrator.md` | `opencode.json` `hgtran-orchestrator` prompt plus commands, overlays, shared prompts | Known leak path; overlay inlining and shared prompt files can regenerate stale wording | Strongest regression coverage, including exact banned terms |
 | `kilocode` | OpenCode SDD asset path | Kilocode settings using OpenCode-compatible overlay behavior | Same known leak path via OpenCode asset reuse | Explicit install/sync test or shared helper case |
 | `gemini-cli` | `internal/assets/gemini/sdd-orchestrator.md` | File-replace prompt asset plus OpenCode-compatible commands | Generic prompt delegation must forward contract | Asset guard and install/sync smoke |
 | `cursor` | `internal/assets/cursor/sdd-orchestrator.md` | File-replace prompt plus Cursor agents | Cursor phase agent prompts can miss forwarded artifact rule | Asset guard plus phase-agent wording check if agents contain phase prompts |

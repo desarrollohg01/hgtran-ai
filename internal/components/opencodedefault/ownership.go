@@ -8,12 +8,12 @@ import (
 	"os"
 	"path/filepath"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/filemerge"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/mutationjournal"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/filemerge"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/mutationjournal"
 )
 
 const (
-	ManagedAgent = "gentle-orchestrator"
+	ManagedAgent = "hgtran-orchestrator"
 	schema       = "hgtran-ai.opencode-default-agent"
 	version      = 1
 )

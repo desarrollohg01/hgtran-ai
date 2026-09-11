@@ -8,8 +8,8 @@ import (
 	"strings"
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/system"
 )
 
 func TestDetect(t *testing.T) {
@@ -120,13 +120,6 @@ func TestInstallCommand(t *testing.T) {
 	}
 	if got := err.Error(); !strings.Contains(got, "must be installed manually") {
 		t.Fatalf("InstallCommand() error = %q, want message containing 'must be installed manually'", got)
-	}
-}
-
-func TestSupportsAutoInstall(t *testing.T) {
-	a := NewAdapter()
-	if a.SupportsAutoInstall() {
-		t.Fatalf("SupportsAutoInstall() = true, want false")
 	}
 }
 

@@ -14,12 +14,12 @@ import (
 	"path/filepath"
 	"runtime"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/capabilitymanifest"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/assets"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/filemerge"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/installcmd"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/capabilitymanifest"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/assets"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/filemerge"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/installcmd"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/system"
 )
 
 var LookPathOverride = exec.LookPath
@@ -113,10 +113,6 @@ func (a *Adapter) findKimi() (string, error) {
 
 func (a *Adapter) CapabilityManifest() capabilitymanifest.AgentCapabilityManifest {
 	return capabilitymanifest.MustForAgent(model.AgentKimi)
-}
-
-func (a *Adapter) SupportsAutoInstall() bool {
-	return a.CapabilityManifest().Features.AutoInstall
 }
 
 func (a *Adapter) InstallCommand(profile system.PlatformProfile) ([][]string, error) {
@@ -224,7 +220,7 @@ func (a *Adapter) EmbeddedSubAgentsDir() string {
 }
 
 func (a *Adapter) PostInstallMessage(homeDir string) string {
-	gentlemanYaml := filepath.Join(homeDir, ".kimi", "agents", "gentleman.yaml")
+	gentlemanYaml := filepath.Join(homeDir, ".kimi", "agents", "hgtran.yaml")
 	skillsRoot := filepath.Join(homeDir, ".config", "agents", "skills")
 
 	return fmt.Sprintf(`Kimi Code configured!
@@ -235,6 +231,7 @@ Usage:
 Native SDD entrypoints:
   /skill:sdd-init
   /skill:sdd-explore
+  /skill:sdd-research
   /skill:sdd-propose
   /skill:sdd-spec
   /skill:sdd-design

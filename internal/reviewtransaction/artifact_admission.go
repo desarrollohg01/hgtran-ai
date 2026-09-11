@@ -85,10 +85,12 @@ func (err *ArtifactAdmissionError) Unwrap() error { return err.cause }
 
 // ArtifactAdmissionDiagnostic contains bounded, non-sensitive recovery fields.
 type ArtifactAdmissionDiagnostic struct {
-	Code      string `json:"code"`
-	FindingID string `json:"finding_id,omitempty"`
-	Location  string `json:"location,omitempty"`
-	Reason    string `json:"reason"`
+	Code             string `json:"code"`
+	FindingID        string `json:"finding_id,omitempty"`
+	Location         string `json:"location,omitempty"`
+	Reason           string `json:"reason"`
+	MissingPathCount int    `json:"missing_path_count,omitempty"`
+	ForeignPathCount int    `json:"foreign_path_count,omitempty"`
 }
 
 func safeAdmissionLocation(code, value, reason string) string {
@@ -104,9 +106,19 @@ func safeAdmissionLocation(code, value, reason string) string {
 	if !artifactAdmissionLocationSuffix.MatchString(suffix) {
 		return ""
 	}
-	_, _, locationErr := parseFindingLocation(value)
+	_, locationErr := parseFindingLocation(value)
 	if code == "candidate_causality_unproven" {
 		if reason != "line_not_changed_by_candidate" || locationErr != nil {
+			return ""
+		}
+		return value
+	}
+	if code == "evidence_path_out_of_scope" || code == "proof_path_out_of_scope" {
+		// The offending citation names an unknown repository path, so the token
+		// itself must still parse as a clean path:line shape before it may be
+		// echoed; malformed tokens (absolute paths, traversal, punctuation) stay
+		// scrubbed and are named only by the generic reason.
+		if reason != "unknown_or_malformed_repository_path" || locationErr != nil {
 			return ""
 		}
 		return value
@@ -117,6 +129,78 @@ func safeAdmissionLocation(code, value, reason string) string {
 		return ""
 	}
 	return value
+}
+
+// InspectionCoverageError gives advisory and direct callers scrubbed coverage counts.
+type InspectionCoverageError struct {
+	MissingPathCount int
+	ForeignPathCount int
+}
+
+func (err *InspectionCoverageError) reason() string {
+	switch {
+	case err.MissingPathCount > 0 && err.ForeignPathCount > 0:
+		return "missing_and_foreign_inspection_paths"
+	case err.MissingPathCount > 0:
+		return "missing_frozen_manifest_paths"
+	default:
+		return "foreign_inspection_paths"
+	}
+}
+
+func (err *InspectionCoverageError) Error() string {
+	count := err.ForeignPathCount
+	if err.MissingPathCount > 0 {
+		count = err.MissingPathCount
+	}
+	return fmt.Sprintf("reviewer inspection coverage: %s=%d", err.reason(), count)
+}
+
+func inspectionCoverageDiagnostic(coverage *InspectionCoverageError) *ArtifactAdmissionDiagnostic {
+	return &ArtifactAdmissionDiagnostic{
+		Code:             "inspection_coverage",
+		Reason:           coverage.reason(),
+		MissingPathCount: coverage.MissingPathCount,
+		ForeignPathCount: coverage.ForeignPathCount,
+	}
+}
+
+func validateCompleteInspectionCoverage(paths []string, manifest []ChangedPathManifestEntry) (*InspectionCoverageError, error) {
+	inspected, err := canonicalPaths(paths)
+	if err != nil {
+		return nil, err
+	}
+	wantPaths := make([]string, len(manifest))
+	for index, entry := range manifest {
+		wantPaths[index] = entry.Path
+	}
+	want, err := canonicalPaths(wantPaths)
+	if err != nil {
+		return nil, errors.New("frozen changed-path manifest is not canonical") // refusal:by-design world-action: a frozen manifest that does not canonicalize cannot safely bind reviewer coverage
+	}
+	wantSet := make(map[string]struct{}, len(want))
+	for _, path := range want {
+		wantSet[path] = struct{}{}
+	}
+	coverage := &InspectionCoverageError{}
+	for _, path := range inspected {
+		if _, ok := wantSet[path]; !ok {
+			coverage.ForeignPathCount++
+		}
+	}
+	inspectedSet := make(map[string]struct{}, len(inspected))
+	for _, path := range inspected {
+		inspectedSet[path] = struct{}{}
+	}
+	for _, path := range want {
+		if _, ok := inspectedSet[path]; !ok {
+			coverage.MissingPathCount++
+		}
+	}
+	if coverage.MissingPathCount == 0 && coverage.ForeignPathCount == 0 {
+		return nil, nil
+	}
+	return coverage, coverage
 }
 
 func findingAdmissionDiagnostic(code, findingID, location, reason string) *ArtifactAdmissionDiagnostic {
@@ -247,28 +331,31 @@ func AdmitArtifact(ctx context.Context, request ArtifactAdmissionRequest) (LensR
 		return fail(ArtifactAdmissionBindingMismatch, "frozen changed-path manifest does not match the artifact subject")
 	}
 	wantPaths := make([]string, len(request.FrozenContext.ChangedPathManifest))
-	allowed := make(map[string]struct{}, len(wantPaths))
 	for index, entry := range request.FrozenContext.ChangedPathManifest {
 		wantPaths[index] = entry.Path
-		allowed[entry.Path] = struct{}{}
 	}
 	if request.Inspection.Status != ArtifactInspectionCompleted {
 		return fail(ArtifactAdmissionIncomplete, "reviewer did not report completed candidate inspection")
 	}
-	inspectionPaths, err := canonicalPaths(request.Inspection.Paths)
-	if err != nil || !equalStrings(inspectionPaths, request.Inspection.Paths) {
-		return fail(ArtifactAdmissionOutOfScope, "reviewer inspection paths are not canonical candidate paths")
-	}
-	for _, path := range inspectionPaths {
-		if _, ok := allowed[path]; !ok {
-			return fail(ArtifactAdmissionOutOfScope, "reviewer inspection includes a path outside the frozen candidate")
+	coverage, coverageErr := validateCompleteInspectionCoverage(request.Inspection.Paths, request.FrozenContext.ChangedPathManifest)
+	if coverageErr != nil {
+		if coverage == nil {
+			return fail(ArtifactAdmissionOutOfScope, "reviewer inspection paths are not canonical candidate paths")
 		}
+		decision := ArtifactAdmissionIncomplete
+		diagnostic := "reviewer inspection did not cover the complete frozen path manifest"
+		if coverage.ForeignPathCount > 0 {
+			decision = ArtifactAdmissionOutOfScope
+			diagnostic = "reviewer inspection includes paths outside the frozen candidate"
+		}
+		return failFinding(decision, diagnostic, inspectionCoverageDiagnostic(coverage), coverageErr)
 	}
-	if !equalStrings(inspectionPaths, wantPaths) {
-		return fail(ArtifactAdmissionIncomplete, "reviewer inspection did not cover the complete frozen path manifest")
-	}
-	canonical, err := CanonicalCompactLensResult(request.Result)
+	canonical, err := canonicalReviewerResult(request.Result, request.ExpectedSubject.Lens)
 	if err != nil {
+		var shapeErr *reviewerResultShapeError
+		if errors.As(err, &shapeErr) {
+			return fail(shapeErr.decision, shapeErr.message)
+		}
 		return fail(ArtifactAdmissionIncomplete, err.Error())
 	}
 	repository, cleanup, err := newFrozenRepositoryPathLookup(ctx, request.FrozenContext)
@@ -276,33 +363,29 @@ func AdmitArtifact(ctx context.Context, request ArtifactAdmissionRequest) (LensR
 		return fail(ArtifactAdmissionBindingMismatch, "frozen repository path lookup is unavailable")
 	}
 	defer cleanup()
-	wantPrefix := map[string]string{LensRisk: "R1-", LensReadability: "R2-", LensReliability: "R3-", LensResilience: "R4-"}[canonical.Lens]
+	resolveBasename := candidateBasenameResolver(request.FrozenContext.ChangedPathManifest)
 	seenFindingIDs := make(map[string]struct{}, len(canonical.Findings))
 	wantCandidateCausalIDs := make([]string, 0)
 	for _, evidence := range canonical.Evidence {
 		if evidenceReportsUnavailableInspection(evidence) {
 			return fail(ArtifactAdmissionIncomplete, "reviewer evidence reports that candidate inspection was unavailable")
 		}
-		outside, lookupErr := referenceOutsideRepository(evidence, repository.contains)
+		outside, offender, lookupErr := referenceOutsideRepository(evidence, repository.contains, resolveBasename)
 		if lookupErr != nil {
 			return fail(ArtifactAdmissionBindingMismatch, "frozen repository path lookup failed")
 		}
 		if outside {
-			return fail(ArtifactAdmissionOutOfScope, "reviewer evidence references a path outside the frozen repository")
+			detail := findingAdmissionDiagnostic("evidence_path_out_of_scope", "", offender, "unknown_or_malformed_repository_path")
+			return failFinding(ArtifactAdmissionOutOfScope, "reviewer evidence references a path outside the frozen repository",
+				detail, outOfScopeCitationCause(detail.Location))
 		}
 	}
 	for _, finding := range canonical.Findings {
-		if !artifactFindingID.MatchString(finding.ID) {
-			return fail(ArtifactAdmissionBindingMismatch, "reviewer finding ID does not match the native ASCII schema")
-		}
-		if !strings.HasPrefix(finding.ID, wantPrefix) {
-			return fail(ArtifactAdmissionBindingMismatch, "reviewer finding ID is not bound to the selected lens")
-		}
 		if _, duplicate := seenFindingIDs[finding.ID]; duplicate {
 			return fail(ArtifactAdmissionAmbiguous, "reviewer result repeats a finding ID")
 		}
 		seenFindingIDs[finding.ID] = struct{}{}
-		logicalPath, _, locationErr := parseFindingLocation(finding.Location)
+		location, locationErr := parseFindingLocation(finding.Location)
 		if locationErr != nil {
 			var typedLocationErr *FindingLocationError
 			reason := "invalid_location"
@@ -312,23 +395,35 @@ func AdmitArtifact(ctx context.Context, request ArtifactAdmissionRequest) (LensR
 			return failFinding(ArtifactAdmissionOutOfScope, "reviewer finding location is invalid",
 				findingAdmissionDiagnostic("invalid_finding_location", finding.ID, finding.Location, reason), locationErr)
 		}
-		if stringIndex(wantPaths, logicalPath) < 0 {
-			return fail(ArtifactAdmissionOutOfScope, "reviewer finding location is outside the frozen candidate")
+		if stringIndex(wantPaths, location.Path) < 0 {
+			// The same citation shape reaches a finding's own location, and
+			// resolving it in evidence and proofs but not here would refuse the
+			// exact artifact the rest of this admission just accepted.
+			resolved, unique, resolveErr := resolveBasename(location.Path)
+			if resolveErr != nil {
+				return fail(ArtifactAdmissionBindingMismatch, "frozen repository path lookup failed")
+			}
+			if !unique || stringIndex(wantPaths, resolved) < 0 {
+				return fail(ArtifactAdmissionOutOfScope, "reviewer finding location is outside the frozen candidate")
+			}
+			// The citation is left as the reviewer wrote it. Normalizing it here
+			// would rewrite the reviewer's own text for no consumer: nothing
+			// downstream reads this location, and an unobserved rewrite is a
+			// claim no test can hold.
 		}
 		for _, proof := range finding.ProofRefs {
-			outside, lookupErr := referenceOutsideRepository(proof, repository.contains)
+			outside, offender, lookupErr := referenceOutsideRepository(proof, repository.contains, resolveBasename)
 			if lookupErr != nil {
 				return fail(ArtifactAdmissionBindingMismatch, "frozen repository path lookup failed")
 			}
 			if outside {
-				return fail(ArtifactAdmissionOutOfScope, "reviewer proof references a path outside the frozen repository")
+				detail := findingAdmissionDiagnostic("proof_path_out_of_scope", finding.ID, offender, "unknown_or_malformed_repository_path")
+				return failFinding(ArtifactAdmissionOutOfScope, "reviewer proof references a path outside the frozen repository",
+					detail, outOfScopeCitationCause(detail.Location))
 			}
 		}
 		if !isSevereSeverity(finding.Severity) {
 			continue
-		}
-		if !isSupportedEvidenceClass(finding.EvidenceClass) || !isSupportedCausalDisposition(finding.CausalDisposition) {
-			return fail(ArtifactAdmissionIncomplete, "severe reviewer finding requires supported evidence_class and causal_disposition")
 		}
 		switch finding.CausalDisposition {
 		case CausalIntroduced, CausalBehaviorActivated, CausalWorsened:
@@ -380,10 +475,15 @@ func ExtractBoundedSingleJSONObject(payload []byte, limit int) ([]byte, Artifact
 	candidates := []candidate{}
 	start, depth := -1, 0
 	inString, escaped := false, false
+	// The census below is what a truncated payload reports (issue #2791): a
+	// bare "no complete object" could not say whether an array, a nested
+	// object, or the whole payload was left open, nor where the scan stopped.
+	var census jsonStructuralCensus
 	for index, value := range payload {
 		if depth == 0 {
 			if value == '{' {
 				start, depth, inString, escaped = index, 1, false, false
+				census.count(index, &census.objectsOpened)
 			}
 			continue
 		}
@@ -403,10 +503,16 @@ func ExtractBoundedSingleJSONObject(payload []byte, limit int) ([]byte, Artifact
 		switch value {
 		case '"':
 			inString = true
+		case '[':
+			census.count(index, &census.arraysOpened)
+		case ']':
+			census.count(index, &census.arraysClosed)
 		case '{':
 			depth++
+			census.count(index, &census.objectsOpened)
 		case '}':
 			depth--
+			census.count(index, &census.objectsClosed)
 			if depth == 0 {
 				var object map[string]json.RawMessage
 				fragment := bytes.TrimSpace(payload[start : index+1])
@@ -418,7 +524,7 @@ func ExtractBoundedSingleJSONObject(payload []byte, limit int) ([]byte, Artifact
 		}
 	}
 	if depth != 0 || len(candidates) == 0 {
-		return nil, ArtifactAdmissionIncomplete, errors.New("reviewer payload contains no complete JSON object")
+		return nil, ArtifactAdmissionIncomplete, fmt.Errorf("reviewer payload contains no complete JSON object: %s", census.describe(len(payload))) // refusal:by-design operator-knowledge: only the reviewer runtime can return one complete JSON object; the census names what it left open
 	}
 	if len(candidates) != 1 {
 		return nil, ArtifactAdmissionAmbiguous, errors.New("reviewer payload contains multiple JSON objects")
@@ -427,20 +533,90 @@ func ExtractBoundedSingleJSONObject(payload []byte, limit int) ([]byte, Artifact
 	return append([]byte(nil), bytes.TrimSpace(payload[match.start:match.end])...), ArtifactAdmissionCompleted, nil
 }
 
+// jsonStructuralCensus counts the structural tokens ExtractBoundedSingleJSONObject
+// consumed outside strings and remembers how far the scan got, so an
+// incomplete payload is refused with a diagnosis instead of a verdict.
+type jsonStructuralCensus struct {
+	objectsOpened, objectsClosed, arraysOpened, arraysClosed int
+	lastStructuralEnd                                        int
+}
+
+func (census *jsonStructuralCensus) count(index int, counter *int) {
+	*counter++
+	census.lastStructuralEnd = index + 1
+}
+
+func (census jsonStructuralCensus) describe(length int) string {
+	if census.objectsOpened == 0 {
+		return fmt.Sprintf("no object start was found in %d bytes", length)
+	}
+	return fmt.Sprintf("%s opened, %d closed; %s opened, %d closed; scan ended at byte %d",
+		pluralCount(census.objectsOpened, "object"), census.objectsClosed,
+		pluralCount(census.arraysOpened, "array"), census.arraysClosed, census.lastStructuralEnd)
+}
+
+func pluralCount(count int, noun string) string {
+	if count == 1 {
+		return fmt.Sprintf("1 %s", noun)
+	}
+	return fmt.Sprintf("%d %ss", count, noun)
+}
+
 var artifactFindingID = regexp.MustCompile(`^R[1-4]-[A-Za-z0-9][A-Za-z0-9._-]*$`)
-var artifactAdmissionLocationSuffix = regexp.MustCompile(`^[A-Za-z0-9+.-]*$`)
+var artifactAdmissionLocationSuffix = regexp.MustCompile(`^[A-Za-z0-9+,.-]*$`)
 
 type artifactReferenceToken struct {
 	value  string
 	quoted bool
 }
 
+// frozenRepositoryPathListingLimit bounds the one full path listing the
+// basename index needs. The frozen trees are a reviewed candidate, not an
+// arbitrary repository, and an unbounded listing here would be a way to make
+// admission allocate on a caller's schedule.
 type frozenRepositoryPathLookup struct {
 	ctx       context.Context
 	repo      string
 	isolation []string
 	trees     []string
 	cache     map[string]bool
+}
+
+// candidateBasenameResolver answers the one citation shape a Go-owned reviewer
+// produces that a literal lookup cannot satisfy (#3042): a file of the
+// candidate named by its basename rather than its repository-relative path. The
+// path IS in the frozen candidate, so refusing it as outside is both wrong and
+// unrecoverable -- the reviewer is locked down, so no caller can correct the
+// citation and every retry reproduces it.
+//
+// It resolves against the frozen changed-path manifest rather than the tree:
+// that is the exact set the reviewer was shown, it is bounded by construction,
+// and it costs no Git call on a path that is deliberately bounded.
+//
+// Exactly one match resolves. Two or more do not, because choosing between them
+// would attach a finding to a file the reviewer never read, which is worse than
+// the refusal. A citation that already carries a directory prefix said where it
+// meant, so it is not eligible: being wrong about that is not ambiguity.
+func candidateBasenameResolver(manifest []ChangedPathManifestEntry) func(string) (string, bool, error) {
+	index := make(map[string]string, len(manifest))
+	for _, entry := range manifest {
+		base := entry.Path[strings.LastIndex(entry.Path, "/")+1:]
+		if base == "" || base == entry.Path {
+			continue
+		}
+		if existing, seen := index[base]; seen && existing != entry.Path {
+			index[base] = ""
+			continue
+		}
+		index[base] = entry.Path
+	}
+	return func(name string) (string, bool, error) {
+		if name == "" || strings.ContainsRune(name, '/') {
+			return "", false, nil
+		}
+		resolved := index[name]
+		return resolved, resolved != "", nil
+	}
 }
 
 func newFrozenRepositoryPathLookup(ctx context.Context, frozen FrozenCandidateContext) (*frozenRepositoryPathLookup, func(), error) {
@@ -460,7 +636,7 @@ func newFrozenRepositoryPathLookup(ctx context.Context, frozen FrozenCandidateCo
 	}
 	return &frozenRepositoryPathLookup{
 		ctx: ctx, repo: frozen.repositoryRoot, isolation: isolation, trees: trees, cache: make(map[string]bool),
-	}, cleanup, nil
+	}, func() { _ = cleanup() }, nil
 }
 
 func (lookup *frozenRepositoryPathLookup) contains(logicalPath string) (bool, error) {
@@ -501,24 +677,53 @@ func (lookup *frozenRepositoryPathLookup) contains(logicalPath string) (bool, er
 // universe. Bare root names need a dot; extensionless root paths remain
 // available through quoting. This keeps status:500 and digest/timestamp labels
 // out of the path grammar while rejecting malformed or unknown path claims.
-func referenceOutsideRepository(value string, lookup func(string) (bool, error)) (bool, error) {
+// The offender return names the first malformed or unknown token verbatim so
+// a rejection is diagnosable after the fact; detection semantics are
+// unchanged.
+func referenceOutsideRepository(value string, lookup func(string) (bool, error), resolveBasename func(string) (string, bool, error)) (outside bool, offender string, err error) {
 	for _, token := range artifactReferenceTokens(value) {
 		path, malformed := artifactRepositoryPathReference(token)
 		if malformed {
-			return true, nil
+			return true, token.value, nil
 		}
 		if path == "" {
 			continue
 		}
 		known, err := lookup(path)
 		if err != nil {
-			return false, err
+			return false, "", err
+		}
+		if known {
+			continue
+		}
+		// A literal miss is not yet proof the citation left the candidate: it
+		// may be a bare basename that exactly one candidate path answers.
+		resolved, unique, err := resolveBasename(path)
+		if err != nil {
+			return false, "", err
+		}
+		if !unique {
+			return true, token.value, nil
+		}
+		known, err = lookup(resolved)
+		if err != nil {
+			return false, "", err
 		}
 		if !known {
-			return true, nil
+			return true, token.value, nil
 		}
 	}
-	return false, nil
+	return false, "", nil
+}
+
+// outOfScopeCitationCause names the already-scrubbed offending citation in the
+// admission error chain. It receives the bounded safeAdmissionLocation output,
+// never the raw token, so an unsafe token degrades to the generic message.
+func outOfScopeCitationCause(safeToken string) error {
+	if safeToken == "" {
+		return errors.New("reviewer citation names an unknown or malformed repository path") // refusal:by-design world-action: the reviewer's free text cited a path the frozen repository does not contain; only a re-run lens with corrected citations can continue
+	}
+	return fmt.Errorf("reviewer citation %q names an unknown or malformed repository path", safeToken) // refusal:by-design world-action: the reviewer's free text cited a path the frozen repository does not contain; only a re-run lens with corrected citations can continue
 }
 
 func artifactRepositoryPathReference(token artifactReferenceToken) (string, bool) {
@@ -620,7 +825,19 @@ func evidenceReportsUnavailableInspection(value string) bool {
 		"inspection blocked", "inspection was blocked", "access denied", "permission denied",
 		"candidate unavailable", "candidate was unavailable", "immutable candidate unavailable",
 		"could not inspect", "unable to inspect", "was not inspected", "not inspected",
+		// Passive constructions (issue #3378). "not inspected" cannot cover
+		// these: every one of them puts an auxiliary verb between the two
+		// words. They are still narrow enough that a completed inspection
+		// reporting a real defect ("Inspected the tree: the loop still stops
+		// one entry short") never matches.
+		"could not be inspected", "cannot be inspected", "can not be inspected",
+		"was not able to be inspected", "were not able to be inspected",
 		"no candidate contents were available", "no candidate content was available",
+		// Read failures reported as such (issue #1867). "read the manifest"
+		// alone would match a completed inspection, so every phrase here
+		// carries its own negation.
+		"read denied", "denied by filesystem", "cannot read diff", "cannot read manifest",
+		"could not read the candidate", "unable to read the candidate",
 	} {
 		if strings.Contains(value, phrase) {
 			return true

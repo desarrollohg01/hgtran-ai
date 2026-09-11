@@ -2,12 +2,14 @@ package upgrade
 
 import (
 	"context"
+	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/update"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/system"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/update"
 )
 
 // TestEffectiveMethodWindowsPrecedenceIsUnchanged pins the rules that run before
@@ -33,14 +35,14 @@ func TestEffectiveMethodWindowsPrecedenceIsUnchanged(t *testing.T) {
 		},
 		{
 			name:          "brew-owned package wins over go-install on Windows",
-			tool:          update.ToolInfo{Name: "hgtran-ai", InstallMethod: update.InstallBinary, GoImportPath: "bitbucket.org/hgt_development/hgtran-ai/v2/cmd/hgtran-ai"},
+			tool:          update.ToolInfo{Name: "hgtran-ai", InstallMethod: update.InstallBinary, GoImportPath: "github.com/desarrollohg01/hgtran-ai/v2/cmd/hgtran-ai"},
 			profile:       system.PlatformProfile{OS: "windows", PackageManager: "brew", GoAvailable: true},
 			brewInstalled: true,
 			want:          update.InstallBrew,
 		},
 		{
 			name:    "no Go on Windows keeps the declared method",
-			tool:    update.ToolInfo{Name: "hgtran-ai", InstallMethod: update.InstallBinary, GoImportPath: "bitbucket.org/hgt_development/hgtran-ai/v2/cmd/hgtran-ai"},
+			tool:    update.ToolInfo{Name: "hgtran-ai", InstallMethod: update.InstallBinary, GoImportPath: "github.com/desarrollohg01/hgtran-ai/v2/cmd/hgtran-ai"},
 			profile: system.PlatformProfile{OS: "windows", PackageManager: "winget", GoAvailable: false},
 			want:    update.InstallBinary,
 		},
@@ -65,7 +67,7 @@ func TestEffectiveMethodWindowsPrecedenceIsUnchanged(t *testing.T) {
 // gentleAIImportPath is the module path hgtran-ai publishes its command under.
 // It is asserted against the registry below so the tests and the shipped
 // declaration cannot drift apart.
-const gentleAIImportPath = "bitbucket.org/hgt_development/hgtran-ai/v2/cmd/hgtran-ai"
+const gentleAIImportPath = "github.com/desarrollohg01/hgtran-ai/v2/cmd/hgtran-ai"
 
 // registryGentleAI returns the shipped hgtran-ai registry entry. Routing tests
 // use the real declaration rather than a hand-built ToolInfo so a regression in
@@ -180,12 +182,13 @@ func TestGentleAILegacyScriptDeclarationNeverReachesScriptUpgradeOnWindows(t *te
 	}
 }
 
-// TestGentleAIWindowsGoInstallVerifiesDestination proves the destination check
-// is reached on the new Windows go-install path and that a mismatch names both
-// absolute paths. No real Windows execution happens here: the platform profile
-// and detectOS are synthetic, which is the only way to exercise the Windows
-// ".exe" naming and case-insensitive comparison from a Linux host.
-func TestGentleAIWindowsGoInstallVerifiesDestination(t *testing.T) {
+// TestGentleAIUpgradeWindowsPreservesResolvedAppDataDestination proves the
+// public upgrade boundary refuses before a backup or go install can create a
+// filesystem mutation.
+// No real Windows execution happens here: the platform profile and detectOS are
+// synthetic, which is the only way to exercise Windows ".exe" behavior from a
+// Linux host.
+func TestGentleAIUpgradeWindowsPreservesResolvedAppDataDestination(t *testing.T) {
 	origHomebrewPackageInstalled := homebrewPackageInstalled
 	t.Cleanup(func() { homebrewPackageInstalled = origHomebrewPackageInstalled })
 	homebrewPackageInstalled = func(string) bool { return false }
@@ -194,23 +197,26 @@ func TestGentleAIWindowsGoInstallVerifiesDestination(t *testing.T) {
 	t.Cleanup(func() { detectOS = origDetectOS })
 	detectOS = func() string { return "windows" }
 
-	gobin := t.TempDir()
-	stale := t.TempDir()
-	installed := writeFakeBinary(t, gobin, "hgtran-ai.exe")
-	shadowing := writeFakeBinary(t, stale, "hgtran-ai.exe")
+	appDataBin := filepath.Join(t.TempDir(), "AppData", "Local", "hgtran-ai", "bin")
+	active := writeFakeBinary(t, appDataBin, "hgtran-ai.exe")
+	goPath := t.TempDir()
+	destination := filepath.Join(goPath, "bin", "hgtran-ai.exe")
 
-	var installTarget string
+	var goInstallCalls int
 	origExecCommand := execCommand
 	t.Cleanup(func() { execCommand = origExecCommand })
 	execCommand = func(name string, args ...string) *exec.Cmd {
 		if name == "go" && len(args) == 2 && args[0] == "env" {
-			if args[1] == "GOBIN" {
-				return mockCmd("echo", gobin)
+			switch args[1] {
+			case "GOBIN":
+				return mockCmd("echo", "")
+			case "GOPATH":
+				return mockCmd("echo", goPath)
 			}
-			return mockCmd("echo", "")
 		}
 		if name == "go" && len(args) == 2 && args[0] == "install" {
-			installTarget = args[1]
+			goInstallCalls++
+			writeFakeBinary(t, filepath.Dir(destination), filepath.Base(destination))
 			return mockCmd("true")
 		}
 		t.Fatalf("Windows go-install path executed unexpected command %s %v", name, args)
@@ -219,7 +225,7 @@ func TestGentleAIWindowsGoInstallVerifiesDestination(t *testing.T) {
 
 	origLookPath := lookPathFn
 	t.Cleanup(func() { lookPathFn = origLookPath })
-	lookPathFn = func(string) (string, error) { return shadowing, nil }
+	lookPathFn = func(string) (string, error) { return active, nil }
 
 	r := update.UpdateResult{
 		Tool:          registryGentleAI(t),
@@ -227,25 +233,183 @@ func TestGentleAIWindowsGoInstallVerifiesDestination(t *testing.T) {
 		Status:        update.UpdateAvailable,
 	}
 	profile := system.PlatformProfile{OS: "windows", PackageManager: "winget", Supported: true, GoAvailable: true}
+	homeDir := t.TempDir()
 
-	var upgradeErr error
-	stderr := captureStderr(t, func() {
-		_, upgradeErr = runStrategy(context.Background(), r, profile)
-	})
-
-	if upgradeErr != nil {
-		t.Fatalf("Windows go-install upgrade returned error: %v", upgradeErr)
+	report := ExecuteWithOptions(context.Background(), []update.UpdateResult{r}, profile, homeDir, false, ExecuteOptions{})
+	if len(report.Results) != 1 {
+		t.Fatalf("upgrade results = %#v, want one result", report.Results)
 	}
-	if want := gentleAIImportPath + "@v2.2.0"; installTarget != want {
-		t.Errorf("go install target = %q, want the pinned release %q", installTarget, want)
+	result := report.Results[0]
+	if result.Status != UpgradeSkipped || result.Err != nil {
+		t.Fatalf("upgrade result = %#v, want manual-fallback skip", result)
 	}
-	if !strings.Contains(stderr, "WARNING") {
-		t.Fatalf("a destination mismatch on Windows must warn; stderr = %q", stderr)
+	if result.ExitRequested || report.ExitRequested {
+		t.Fatalf("manual fallback requested exit: result = %#v, report = %#v", result, report)
 	}
-	for _, want := range []string{installed, shadowing} {
-		if !strings.Contains(stderr, want) {
-			t.Errorf("warning must name %q; stderr = %q", want, stderr)
+	if goInstallCalls != 0 {
+		t.Errorf("go install calls = %d, want 0 before provenance is resolved", goInstallCalls)
+	}
+	if _, err := os.Stat(destination); !os.IsNotExist(err) {
+		t.Errorf("go install destination %s exists after refusal: %v", destination, err)
+	}
+	if report.BackupID != "" || report.BackupWarning != "" {
+		t.Errorf("manual fallback created a backup result: %#v", report)
+	}
+	backupRoot := filepath.Join(homeDir, ".hgtran-ai", "backups")
+	if _, err := os.Stat(backupRoot); !os.IsNotExist(err) {
+		t.Errorf("manual fallback created or pruned backup tree %s: %v", backupRoot, err)
+	}
+	for _, want := range []string{active, destination, "go install ", "No files were changed"} {
+		if !strings.Contains(result.ManualHint, want) {
+			t.Errorf("manual fallback must contain %q: %s", want, result.ManualHint)
 		}
+	}
+}
+
+func TestGentleAIUpgradeWindowsAllowsResolvedGoDestination(t *testing.T) {
+	origHomebrewPackageInstalled := homebrewPackageInstalled
+	t.Cleanup(func() { homebrewPackageInstalled = origHomebrewPackageInstalled })
+	homebrewPackageInstalled = func(string) bool { return false }
+
+	origDetectOS := detectOS
+	t.Cleanup(func() { detectOS = origDetectOS })
+	detectOS = func() string { return "windows" }
+
+	goPath := t.TempDir()
+	destination := writeFakeBinary(t, filepath.Join(goPath, "bin"), "hgtran-ai.exe")
+	var goInstallCalls int
+	goEnvCalls := map[string]int{}
+	origExecCommand := execCommand
+	t.Cleanup(func() { execCommand = origExecCommand })
+	execCommand = func(name string, args ...string) *exec.Cmd {
+		if name == "go" && len(args) == 2 && args[0] == "env" {
+			goEnvCalls[args[1]]++
+			switch args[1] {
+			case "GOBIN":
+				return mockCmd("echo", "")
+			case "GOPATH":
+				return mockCmd("echo", goPath)
+			}
+		}
+		if name == "go" && len(args) == 2 && args[0] == "install" {
+			goInstallCalls++
+			return mockCmd("true")
+		}
+		t.Fatalf("Windows go-owned upgrade executed unexpected command %s %v", name, args)
+		return nil
+	}
+
+	origLookPath := lookPathFn
+	t.Cleanup(func() { lookPathFn = origLookPath })
+	lookPathFn = func(string) (string, error) { return destination, nil }
+
+	homeDir := t.TempDir()
+	report := ExecuteWithOptions(context.Background(), []update.UpdateResult{{
+		Tool:          registryGentleAI(t),
+		LatestVersion: "2.2.0",
+		Status:        update.UpdateAvailable,
+	}}, system.PlatformProfile{OS: "windows", PackageManager: "winget", Supported: true, GoAvailable: true}, homeDir, false, ExecuteOptions{})
+	if len(report.Results) != 1 || report.Results[0].Status != UpgradeSucceeded || report.Results[0].ExitRequested || report.ExitRequested {
+		t.Fatalf("upgrade results = %#v, want a successful Go-owned upgrade", report.Results)
+	}
+	if goInstallCalls != 1 {
+		t.Errorf("go install calls = %d, want 1 for the resolved Go-owned binary", goInstallCalls)
+	}
+	for _, key := range []string{"GOBIN", "GOPATH"} {
+		if got := goEnvCalls[key]; got != 1 {
+			t.Errorf("go env %s calls = %d, want 1 after preflight", key, got)
+		}
+	}
+	if report.BackupID == "" {
+		t.Errorf("successful Go-owned upgrade did not create a backup: %#v", report)
+	}
+}
+
+func TestGentleAIUpgradeWindowsRefusesUnresolvedGoProvenance(t *testing.T) {
+	tests := []struct {
+		name          string
+		goEnvFails    bool
+		lookPathFails bool
+		wantHint      string
+	}{
+		{name: "Go destination", goEnvFails: true, wantHint: "could not determine the Go installation destination"},
+		{name: "active executable", lookPathFails: true, wantHint: "could not resolve the active hgtran-ai executable"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			origHomebrewPackageInstalled := homebrewPackageInstalled
+			t.Cleanup(func() { homebrewPackageInstalled = origHomebrewPackageInstalled })
+			homebrewPackageInstalled = func(string) bool { return false }
+
+			origDetectOS := detectOS
+			t.Cleanup(func() { detectOS = origDetectOS })
+			detectOS = func() string { return "windows" }
+
+			var goInstallCalls int
+			origExecCommand := execCommand
+			t.Cleanup(func() { execCommand = origExecCommand })
+			execCommand = func(name string, args ...string) *exec.Cmd {
+				if name == "go" && len(args) == 2 && args[0] == "env" {
+					if tt.goEnvFails {
+						return mockCmd("false")
+					}
+					switch args[1] {
+					case "GOBIN":
+						return mockCmd("echo", "")
+					case "GOPATH":
+						return mockCmd("echo", t.TempDir())
+					}
+				}
+				if name == "go" && len(args) == 2 && args[0] == "install" {
+					goInstallCalls++
+					return mockCmd("true")
+				}
+				t.Fatalf("Windows unresolved provenance executed unexpected command %s %v", name, args)
+				return nil
+			}
+
+			origLookPath := lookPathFn
+			t.Cleanup(func() { lookPathFn = origLookPath })
+			lookPathFn = func(string) (string, error) {
+				if tt.lookPathFails {
+					return "", exec.ErrNotFound
+				}
+				return filepath.Join(t.TempDir(), "hgtran-ai.exe"), nil
+			}
+
+			homeDir := t.TempDir()
+			report := ExecuteWithOptions(context.Background(), []update.UpdateResult{{
+				Tool:          registryGentleAI(t),
+				LatestVersion: "2.2.0",
+				Status:        update.UpdateAvailable,
+			}}, system.PlatformProfile{OS: "windows", PackageManager: "winget", Supported: true, GoAvailable: true}, homeDir, false, ExecuteOptions{})
+			if len(report.Results) != 1 {
+				t.Fatalf("upgrade results = %#v, want one result", report.Results)
+			}
+			result := report.Results[0]
+			if result.Status != UpgradeSkipped || result.Err != nil {
+				t.Fatalf("upgrade result = %#v, want manual-fallback skip", result)
+			}
+			if result.ExitRequested || report.ExitRequested {
+				t.Fatalf("manual fallback requested exit: result = %#v, report = %#v", result, report)
+			}
+			if goInstallCalls != 0 {
+				t.Errorf("go install calls = %d, want 0 without resolved provenance", goInstallCalls)
+			}
+			if report.BackupID != "" || report.BackupWarning != "" {
+				t.Errorf("manual fallback created a backup result: %#v", report)
+			}
+			backupRoot := filepath.Join(homeDir, ".hgtran-ai", "backups")
+			if _, err := os.Stat(backupRoot); !os.IsNotExist(err) {
+				t.Errorf("manual fallback created or pruned backup tree %s: %v", backupRoot, err)
+			}
+			for _, want := range []string{tt.wantHint, "go install ", "No files were changed"} {
+				if !strings.Contains(result.ManualHint, want) {
+					t.Errorf("manual fallback must contain %q: %s", want, result.ManualHint)
+				}
+			}
+		})
 	}
 }
 
@@ -264,10 +428,10 @@ func TestGentleAIWindowsWithoutGoNamesRunnableSourceInstall(t *testing.T) {
 	r := update.UpdateResult{
 		Tool: update.ToolInfo{
 			Name:          "hgtran-ai",
-			Owner:         "desarrollohg01",
+			Owner:         "Gentleman-Programming",
 			Repo:          "hgtran-ai",
 			InstallMethod: update.InstallBinary,
-			GoImportPath:  "bitbucket.org/hgt_development/hgtran-ai/v2/cmd/hgtran-ai",
+			GoImportPath:  "github.com/desarrollohg01/hgtran-ai/v2/cmd/hgtran-ai",
 		},
 		LatestVersion: "2.2.0",
 		Status:        update.UpdateAvailable,
@@ -284,7 +448,7 @@ func TestGentleAIWindowsWithoutGoNamesRunnableSourceInstall(t *testing.T) {
 	}
 	for _, required := range []string{
 		"Windows binary distribution and Scoop are temporarily unavailable",
-		"go install bitbucket.org/hgt_development/hgtran-ai/v2/cmd/hgtran-ai@v2.2.0",
+		"go install github.com/desarrollohg01/hgtran-ai/v2/cmd/hgtran-ai@v2.2.0",
 	} {
 		if !strings.Contains(result.ManualHint, required) {
 			t.Errorf("manual hint is missing %q: %s", required, result.ManualHint)

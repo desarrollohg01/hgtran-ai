@@ -65,7 +65,7 @@
 **Injection**: `internal/components/sdd/inject.go` step 1c — Injects rendered block under section ID `hgtran-ai:trigger-rules` into all supported agents (claude, opencode, cursor, codex, gemini, vscode, windsurf, antigravity). Per-adapter routes:
 - Jinja agents (Kimi/Qwen): write standalone module `trigger-rules.md`, add `{% include %}` to template
 - System-prompt agents: InjectMarkdownSection(existing, "trigger-rules", rendered)
-- OpenCode/Kilocode: append marker-wrapped block to gentle-orchestrator prompt
+- OpenCode/Kilocode: append marker-wrapped block to hgtran-orchestrator prompt
 
 **Kimi Template**: `internal/assets/kimi/KIMI.md` — Add `{% include "trigger-rules.md" ignore missing %}` line.
 

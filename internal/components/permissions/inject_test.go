@@ -8,16 +8,16 @@ import (
 	"testing"
 	"time"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/antigravity"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/claude"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/codex"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/cursor"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/gemini"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/hermes"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/opencode"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/vscode"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/antigravity"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/claude"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/codex"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/cursor"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/gemini"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/hermes"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/opencode"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/vscode"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
 )
 
 func claudeAdapter() agents.Adapter      { return claude.NewAdapter() }

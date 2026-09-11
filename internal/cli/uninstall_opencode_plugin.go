@@ -9,8 +9,8 @@ import (
 	"strconv"
 	"strings"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/opencodeplugin"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/opencodeplugin"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
 )
 
 // UninstallOpenCodePluginFlags are the parsed flags for the

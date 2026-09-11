@@ -15,9 +15,9 @@ import (
 	"testing"
 	"time"
 
-	piagent "bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/pi"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/filemerge"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/symlinktest"
+	piagent "github.com/desarrollohg01/hgtran-ai/v2/internal/agents/pi"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/filemerge"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/symlinktest"
 )
 
 func TestPiCodeGraphUnselectedIsNoOp(t *testing.T) {

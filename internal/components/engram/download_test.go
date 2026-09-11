@@ -18,7 +18,7 @@ import (
 	"strings"
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/system"
 )
 
 func TestMain(m *testing.M) {
@@ -772,7 +772,7 @@ func TestDownloadLatestBinaryIgnoresHgtranEngramAndPiTags(t *testing.T) {
 			w.WriteHeader(http.StatusOK)
 			w.Write(tarContent)
 		default:
-			t.Fatalf("unexpected request path (should be core engram v%s, not gentle-engram/pi): %s?%s",
+			t.Fatalf("unexpected request path (should be core engram v%s, not hgtran-engram/pi): %s?%s",
 				binaryVersion, r.URL.Path, r.URL.RawQuery)
 		}
 	}))
@@ -1203,13 +1203,13 @@ func TestCanonicalEngramGoInstallPackagePreservesDeclaredModuleCasing(t *testing
 		},
 		{
 			name: "upstream owner is redirected at a pinned version",
-			pkg:  "github.com/gentleman-programming/engram/cmd/engram@v1.2.3",
+			pkg:  "github.com/Gentleman-Programming/engram/cmd/engram@v1.2.3",
 			want: "github.com/desarrollohg01/engram/cmd/engram@v1.2.3",
 		},
 		{
 			name: "unrelated package remains unchanged",
-			pkg:  "bitbucket.org/hgt_development/hgtran-ai/v2/cmd/hgtran-ai@latest",
-			want: "bitbucket.org/hgt_development/hgtran-ai/v2/cmd/hgtran-ai@latest",
+			pkg:  "github.com/desarrollohg01/hgtran-ai/v2/cmd/hgtran-ai@latest",
+			want: "github.com/desarrollohg01/hgtran-ai/v2/cmd/hgtran-ai@latest",
 		},
 	}
 

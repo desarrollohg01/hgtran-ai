@@ -17,13 +17,13 @@
 ---
 
 > [!IMPORTANT]
-> **Receipt-Driven Development (RDD) is the supported stable path** as of `v2.2.0`. It started in `v1.47.0` and became stable once the outcome-first workflow was restored: small work stays direct, broader implementation is delegated, SDD stays optional, and every route converges on structural proof, bounded review, an exact receipt, and delivery authorization.
+> **Receipt-Driven Development (RDD) is opt-in and provides bounded review evidence.** `v2.2.0` was the historical release where that path became supported after RDD began in `v1.47.0`: small work stays direct, broader implementation is delegated, SDD stays optional, and once RDD is enabled every route can converge on structural proof and an informational bounded-review outcome. Ordinary repository policy owns delivery. RDD is off until you enable it with `hgtran-ai review mode enable --scope global`.
 >
 > **Install by building from source** — see [Quick Start](#quick-start). `go install` is not available yet: the module path names a repository that has not been published, so Go cannot resolve it from either host.
 
 ## What It Does
 
-hgtran-ai is NOT an AI agent installer. Most agents are easy to install. It is an **ecosystem configurator** that equips the AI coding agent(s) you already use with persistent memory, Spec-Driven Development (SDD), curated skills, MCP servers, model routing, a teaching-oriented persona, and bounded native review.
+hgtran-ai is NOT an AI agent installer. It adapts the agent runtime(s) already on your machine; it never installs one for you. If a selected agent isn't detected, hgtran-ai refuses and names the exact command you'd run yourself instead. It is an **ecosystem configurator** that equips the AI coding agent(s) you already use with persistent memory, Spec-Driven Development (SDD), curated skills, MCP servers, model routing, a teaching-oriented persona, and bounded native review.
 
 **Before**: "I installed Claude Code / OpenCode / Cursor, but it's just a chatbot that writes code."
 
@@ -47,10 +47,10 @@ hgtran-ai is NOT an AI agent installer. Most agents are easy to install. It is a
 | **Qwen Code**       |     Full (native sub-agents)     | Slash commands, `~/.qwen/commands/`, `auto_edit` mode           |
 | **OpenClaw**        |            Solo-agent            | Workspace-first `AGENTS.md` / `SOUL.md` with global MCP config  |
 | **Trae**            |            Solo-agent            | Desktop app by ByteDance; `~/.trae/skills/` + OS-specific rules |
-| **Pi**              | Full (package-managed subagents) | First-class `gentle-pi` harness with Pi-native persona/models, SDD, and Engram memory |
+| **Pi**              | Full (package-managed subagents) | First-class `hgtran-pi` harness with Pi-native persona/models, SDD, and Engram memory |
 | **Hermes**          |         Detect-only              | YAML MCP config, SOUL.md persona; install manually first        |
 
-> **Pi is package-managed, not just configured.** Selecting Pi installs the first-class [`gentle-pi`](docs/pi.md) harness, which owns Pi-native persona and model controls, SDD assets, chains, and memory wiring.
+> **Pi is package-managed, not just configured.** Selecting Pi installs the first-class [`hgtran-pi`](docs/pi.md) harness, which owns Pi-native persona and model controls, SDD assets, chains, and memory wiring.
 
 > **Note**: This project supersedes [Agent Teams Lite](https://github.com/Gentleman-Programming/agent-teams-lite) (now archived). Everything ATL provided is included here with better installation, automatic updates, and persistent memory.
 
@@ -64,7 +64,7 @@ Every configured agent receives the same outcome-first routing, even when the op
 | Understanding needs 4+ files, reading prepares a write, broad research is needed, or a writer changes 2+ non-trivial files | Delegate the narrow exploration or one focused writer without creating SDD state. |
 | Durable proposal, spec, design, and task artifacts would materially reduce substantial ambiguity | Offer optional SDD; select it only after an explicit request or an accepted proposal. |
 | A candidate is ready for review | Freeze the exact bytes and derive review effort from evidence, never size alone. Interactive starts ask once per clone before reviewer work; non-interactive tier-1/tier-2 starts proceed without prompting and report how to disable review mode. |
-| Commit, push, PR, or release | Validate the same content-bound receipt at the applicable delivery gate; never silently reopen review or create another budget. |
+| Commit, push, PR, or release | Follow ordinary repository policy. Review outcomes are informational and never authorize, block, or govern delivery. |
 | Scope changes or an operation is interrupted | Use provider-owned status, recovery, and reconciliation; do not infer authority or replay safety from narration. |
 
 Implementation routing does not decide review strength, and per-action test, build, install, or review workers do not change the selected route. Native commands own repository identity, candidate scope, lifecycle transitions, receipts, and safe continuations. See [Organic Implementation Routing](docs/trigger-rules.md), the [Organic RDD architecture](docs/architecture/organic-rdd.md), and the [review authority threat model](docs/review-authority-threat-model.md).
@@ -91,16 +91,19 @@ Put the resulting binary somewhere on your `PATH`. On Windows the file is `hgtra
 > [!WARNING]
 > Windows source builds and CI/runtime tests remain supported, but official Windows binary distribution and Scoop are temporarily unavailable. Windows installation and upgrades require Go 1.25.10+ and fail closed to source-install guidance; they never download an unsigned hgtran-ai executable or execute a remote update script.
 
+> [!IMPORTANT]
+> After replacing or upgrading the `hgtran-ai` binary, run `hgtran-ai sync` to refresh its managed assets. See the [sync and upgrade reference](docs/usage.md#sync).
+
 ### Configure project context
 
 Once your agents are configured, open your AI agent in a project and run these two commands to register the project context:
 
 | Command                            | What it does                                                                | When to re-run                                                                 |
 | ---------------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| `/sdd-init`                        | Detects stack, testing capabilities, activates Strict TDD Mode if available | When your project adds/removes test frameworks, or first time in a new project |
+| `/sdd-init` (`/hgtran-sdd-init` in Claude Code) | Detects stack, testing capabilities, activates Strict TDD Mode if available | When your project adds/removes test frameworks, or first time in a new project |
 | `hgtran-ai skill-registry refresh` | Scans installed skills and project conventions, builds the registry         | After installing/removing skills, or first time in a new project               |
 
-These are **not required** for basic usage. The SDD orchestrator runs `/sdd-init` automatically if it detects no context. Startup hooks normally keep the skill registry fresh for agents that support hooks, including Codex, Claude Code, OpenCode, and Pi through `gentle-pi`. If you start Pi with `pi -ns`, startup skill loading/hooks are skipped, so run the registry refresh manually when you need updated project rules.
+These are **not required** for basic usage. The SDD orchestrator runs `/sdd-init` automatically if it detects no context. In Claude Code every SDD command carries the `hgtran-sdd-` prefix (`/hgtran-sdd-init`, `/hgtran-sdd-new`, `/hgtran-sdd-continue`, and so on) because Claude Code resolves a same-named delegate-only skill before a command; the other runtimes keep the bare `/sdd-*` names. Startup hooks normally keep the skill registry fresh for agents that support hooks, including Codex, Claude Code, OpenCode, and Pi through `hgtran-pi`. If you start Pi with `pi -ns`, startup skill loading/hooks are skipped, so run the registry refresh manually when you need updated project rules.
 
 Run `hgtran-ai doctor` at any time for a read-only health check of your ecosystem (tool binaries, `state.json`, Engram reachability, disk space).
 
@@ -109,7 +112,7 @@ Run `hgtran-ai doctor` at any time for a read-only health check of your ecosyste
 
 **Homebrew, Scoop and `go install` are not available yet.**
 
-`go.mod` declares the module as `bitbucket.org/hgt_development/hgtran-ai/v2`, and Go resolves a module by that declared path — not by where a clone came from. Until the repository is published there, `go install` cannot reach this code from either host. HG publishes no Homebrew tap and no Scoop bucket of its own either. Build from source as shown above.
+`go.mod` declares the module as `github.com/desarrollohg01/hgtran-ai/v2`, and Go resolves a module by that declared path — not by where a clone came from. Until the repository is published there, `go install` cannot reach this code from either host. HG publishes no Homebrew tap and no Scoop bucket of its own either. Build from source as shown above.
 
 By default, `hgtran-ai install` writes agent-scoped files to each selected agent's global config directory. To keep the hgtran-ai stack isolated to one project, run:
 
@@ -123,7 +126,7 @@ Workspace scope applies to selected agents for agent-scoped files such as system
 
 ### RDD version policy
 
-Receipt-Driven Development (RDD) started in `v1.47.0` on 2026-07-10, with the first bounded native review transactions, and became the supported stable path in `v2.2.0`. The negotiated public review contract was published in `v2.1.6`.
+Receipt-Driven Development (RDD) started in `v1.47.0` on 2026-07-10, with the first bounded native review transactions, and became the supported stable path in `v2.2.0`. Those are historical milestones; the negotiated public review contract was published in `v2.1.6`.
 
 Until the module is published, pinning a version means checking out its tag and building it:
 
@@ -142,12 +145,12 @@ Selecting `@latest` or `@main` returns once `go install` can resolve the module.
 
 1. **Install and configure.** Run the installer, select the agents and components you want, then open your agent in a project.
 2. **Use the smallest implementation route.** Keep bounded work direct, delegate actions that need fresh context, and use SDD only after an explicit request or an accepted proposal. SDD artifacts can live in **Engram** for cross-session memory, **OpenSpec** for versioned files, or **hybrid** for both.
-3. **Build with discipline.** `/sdd-init` detects project testing capabilities; when Strict TDD is active, SDD apply works test-first. SDD verify audits RED/GREEN evidence and runs verification. Agents that support delegation use focused subagents instead of one growing conversation.
-4. **Review one candidate.** After implementation, bounded native review freezes the candidate and issues one content-bound receipt. Commit, push, and PR validate that same receipt. Releases validate native authority and its receipt, unless the protected-main fast path has the exact tag/current `origin/main` SHA, exact-SHA successful CI, a remote-head recheck, and no fresh risk.
+3. **Build with discipline.** `/sdd-init` (`/hgtran-sdd-init` in Claude Code) detects project testing capabilities; when Strict TDD is active, SDD apply works test-first. SDD verify audits RED/GREEN evidence and runs verification. Agents that support delegation use focused subagents instead of one growing conversation.
+4. **Review one candidate.** After implementation, bounded native review freezes the candidate and reports an informational outcome. Commit, push, PR, and release remain separate decisions under ordinary repository policy; review does not authorize, block, or govern them.
 
-> **Trust what the system can derive, not agent narration.** [Chapter 21 — Verifiable Trust](https://the-amazing-gentleman-programming-book.vercel.app/en/book/Chapter21_Verifiable-Trust) explains the mental model: agents assess the candidate; native authority and delivery gates independently derive what may be trusted.
+> **Trust what the system can derive, not agent narration.** [Chapter 21 — Verifiable Trust](https://the-amazing-hgtran-programming-book.vercel.app/en/book/Chapter21_Verifiable-Trust) explains the mental model: agents assess the candidate; native review records bounded evidence while ordinary repository policy owns delivery.
 
-5. **Upgrade, then sync.** Refresh the binary and the managed agent assets together:
+1. **Upgrade, then sync.** Refresh the binary and the managed agent assets together:
 
    ```bash
    hgtran-ai upgrade
@@ -156,7 +159,7 @@ Selecting `@latest` or `@main` returns once `go install` can resolve the module.
 
 ### The flow at a glance
 
-Both implementation routes converge on RDD: a bounded native review freezes the candidate and issues the one receipt that every delivery gate validates — review is never reopened for unchanged content.
+Once you enable it, both implementation routes can converge on RDD: a bounded native review freezes the candidate and reports an informational outcome — review is never reopened for unchanged content. RDD is opt-in, and ordinary repository policy owns delivery whether it is on or off.
 
 **Organic route (no SDD)** — the agent picks the smallest useful route and RDD enters at the end, over the frozen candidate:
 
@@ -167,9 +170,9 @@ flowchart TD
     B -->|"4+ file exploration<br/>or 2+ non-trivial writes"| D["Delegated direct<br/>(one bounded worker)"]
     C --> E["Implementation + tests"]
     D --> E
-    E --> F{"RDD enabled?<br/>(user-owned kill switch)"}
-    F -->|"off"| Z["Ordinary delivery<br/>reports disabled/unmanaged"]
-    F -->|"on"| G["review status --next-transition<br/>(provider-owned negotiated route)"]
+    E --> F{"RDD enabled?<br/>(user-owned, opt-in)"}
+    F -->|"off (default)"| Z["Ordinary delivery<br/>reports disabled/unmanaged"]
+    F -->|"on (explicitly enabled)"| G["review status --next-transition<br/>(provider-owned negotiated route)"]
     G --> H{"Risk frozen<br/>at START"}
     H -->|"low"| I["Structural readback<br/>0 lenses · silent"]
     H -->|"standard"| J["1 focus lens<br/>+ consent"]
@@ -177,7 +180,7 @@ flowchart TD
     J --> L["Reviewers inspect the immutable candidate<br/>(review inspect-candidate)"]
     K --> L
     L --> M{"Severe candidate-caused<br/>findings?"}
-    I --> N["Receipt: approved"]
+    I --> N["Review outcome: approved<br/>(informational)"]
     M -->|"no"| N
     M -->|"yes"| O["One bounded correction<br/>(frozen budget)"]
     O --> P["Fix validator<br/>(read-only, immutable trees)"]
@@ -186,7 +189,7 @@ flowchart TD
     P -->|"no access to the diff"| R["Inconclusive: attempt not<br/>consumed, capture again"]
     R --> P
     Q --> S["review recover<br/>(authorized successor)"]
-    N --> T["Delivery gates<br/>pre-commit → pre-push → pre-pr<br/>validate the SAME receipt"]
+    N --> T["Ordinary repository policy"]
     T --> U["Commit → Push → PR"]
     Z --> U
 
@@ -195,7 +198,7 @@ flowchart TD
     style U fill:#2D4F67,color:#fff
 ```
 
-**SDD route** — durable planning artifacts first, then apply, with RDD reviewing the candidate before verify and archive requiring the receipt:
+**SDD route** — durable planning artifacts first, then apply, independent verify, and an optional RDD review offer; archive and delivery follow ordinary repository policy:
 
 ```mermaid
 flowchart TD
@@ -207,7 +210,9 @@ flowchart TD
     E --> F["Design<br/>architecture decisions"]
     F --> G["Tasks<br/>ordered deliverable checklist"]
     G --> H["Apply<br/>sub-agent implements against specs<br/>(sdd-attempt acquire/settle · CAS · budgets)"]
-    H --> I["RDD over the frozen candidate"]
+    H --> Q["Verify<br/>independent verification against<br/>spec · design · tasks"]
+        Q -->|"passes"| I["Optional RDD review offer"]
+        Q -->|"fails"| H
 
     subgraph RDD["RDD — same machine as the organic route"]
         I --> J{"Risk"}
@@ -215,16 +220,15 @@ flowchart TD
         J -->|"standard / high"| L["1 lens or 4R + consent"]
         L --> M{"Severe findings?"}
         M -->|"yes"| N["One bounded correction<br/>+ fix validator"]
-        M -->|"no"| O["Receipt: approved"]
+        M -->|"no"| O["Review outcome: approved<br/>(informational)"]
         K --> O
         N -->|"validates"| O
         N -->|"fails"| P["Escalated → recover"]
     end
 
-    O --> Q["Verify<br/>independent verification against<br/>spec · design · tasks"]
-    Q -->|"passes"| R["Archive<br/>merge delta-specs · close the cycle<br/>(requires reviewGate allow or disabled)"]
+    O --> R["Archive<br/>merge delta-specs · close the cycle"]
     Q -->|"fails"| H
-    R --> S["Delivery gates<br/>validate the same receipt"]
+    R --> S["Ordinary repository policy"]
     S --> T["Commit → Push → PR"]
 
     style O fill:#2D4F67,color:#fff
@@ -236,17 +240,17 @@ Size, file count, or perceived risk never select SDD on their own — only an ex
 
 ### Control receipt-driven development
 
-Review mode is user-owned and available independently of the review lifecycle:
+Review mode is user-owned and available independently of the review lifecycle. **Receipt-driven development is opt-in: it is off until you turn it on.**
 
 ```bash
 hgtran-ai review mode status --cwd .
+hgtran-ai review mode enable --scope global --cwd .
 hgtran-ai review mode disable --cwd .
-hgtran-ai review mode enable --cwd .
 ```
 
-`status` is read-only. Any global or clone-local disabled source wins; a clone can opt out with `--scope clone` but cannot force review on. Re-enabling applies only to future candidates, while declining a one-candidate review prompt does not change the mode. When review is disabled, existing exact governing receipts remain authoritative; otherwise native review gates report `disabled/unmanaged` and defer delivery to ordinary repository policy without fabricating approval.
+`status` is read-only. With no source expressing an opinion the effective mode is `off`, reported as decided by `default`; only an explicit global enable turns review on. Any global or clone-local disabled source wins; a clone can opt out with `--scope clone` but cannot force review on, so `--scope global` is the only way in. Enabling applies only to future candidates, while declining a one-candidate review prompt does not change the mode. When review is off, native review does not run. Review outcomes are informational in every mode, and ordinary repository policy decides delivery without fabricated approval.
 
-SDD closes cleanly under a disabled switch as of `v2.2.2`: pre-verify no longer routes to a review that `review start` would refuse, and archive accepts `reviewGate.delivery: disabled/unmanaged` instead of demanding a receipt that cannot be produced.
+Historical note: `v2.2.2` introduced the native `disabled/unmanaged` disposition. Current SDD status does not use that disposition: with review disabled, it skips review authority, emits no `reviewGate`, and pre-verify continues without routing to a review that cannot start. Archive and delivery proceed under ordinary repository policy; any present review outcome is informational.
 
 ### Release verification
 
@@ -288,7 +292,7 @@ See [Backup & Rollback Guide](docs/rollback.md) for details.
 
 ### OpenCode SDD Profiles
 
-Assign different AI models to different SDD phases -- a powerful model for design, a fast one for implementation, a cheap one for exploration. OpenCode uses **`gentle-orchestrator`** as the base SDD conductor, and generated named profiles still appear as `sdd-orchestrator-{name}` entries.
+Assign different AI models to different SDD phases -- a powerful model for design, a fast one for implementation, a cheap one for exploration. OpenCode uses **`hgtran-orchestrator`** as the base SDD conductor, and generated named profiles still appear as `sdd-orchestrator-{name}` entries.
 
 ```bash
 # Via CLI
@@ -298,12 +302,12 @@ hgtran-ai sync --profile-phase cheap:sdd-design:anthropic/claude-sonnet-4-202505
 # Or via TUI: hgtran-ai → "OpenCode SDD Profiles" → Create
 ```
 
-After creating a profile, open OpenCode and press **Tab** to switch between `gentle-orchestrator` (default) and your custom profiles.
+After creating a profile, open OpenCode and press **Tab** to switch between `hgtran-orchestrator` (default) and your custom profiles.
 
 | What you need         | Use this                                                        |
 | --------------------- | --------------------------------------------------------------- |
-| Default SDD conductor | `gentle-orchestrator`                                           |
-| Legacy configs        | `sdd-orchestrator` is migrated to `gentle-orchestrator` on sync |
+| Default SDD conductor | `hgtran-orchestrator`                                           |
+| Legacy configs        | `sdd-orchestrator` is migrated to `hgtran-orchestrator` on sync |
 | Named model profiles  | `sdd-orchestrator-cheap`, `sdd-orchestrator-premium`, etc.      |
 
 **Full guide**: [OpenCode SDD Profiles](docs/opencode-profiles.md)
@@ -333,7 +337,7 @@ engram tui                    # Visual memory browser
 | Configure a supported agent | [Agents](docs/agents.md) for the feature matrix and per-agent notes |
 | Use the Pi package harness | [Pi Agent](docs/pi.md) for packages, Pi-native commands, models, and troubleshooting |
 | Configure OpenCode phase models | [OpenCode SDD Profiles](docs/opencode-profiles.md) |
-| Review or deliver a change safely | [Review Integration Contract](docs/review-integration.md) for provider consumers; [Review Authority Threat Model](docs/review-authority-threat-model.md) for technical boundaries; [Chapter 21 — Verifiable Trust](https://the-amazing-gentleman-programming-book.vercel.app/en/book/Chapter21_Verifiable-Trust) for the mental model |
+| Review or deliver a change safely | [Review Integration Contract](docs/review-integration.md) for provider consumers; [Review Authority Threat Model](docs/review-authority-threat-model.md) for technical boundaries; [Chapter 21 — Verifiable Trust](https://the-amazing-hgtran-programming-book.vercel.app/en/book/Chapter21_Verifiable-Trust) for the mental model |
 | Find or share persistent context | [Engram Commands](docs/engram.md) |
 | Refresh or troubleshoot an installation | [Usage](docs/usage.md), [Backup & Rollback](docs/rollback.md), and [Platforms](docs/platforms.md) |
 | Extend or contribute to hgtran-ai | [Codebase Guide](docs/CODEBASE-GUIDE.md), [Components, Skills & Presets](docs/components.md), [Skill Registry](docs/skill-registry.md), and [Architecture & Development](docs/architecture.md) |
@@ -354,10 +358,10 @@ When you select OpenCode in the installer, hgtran-ai asks whether to register ea
 
 ### Contributors
 
-This is HG Transportaciones' internal fork. The code was written by the contributors of the upstream project, [Gentleman-Programming/gentle-ai](https://github.com/Gentleman-Programming/gentle-ai). See [CONTRIBUTORS.md](CONTRIBUTORS.md) for the full list.
+This is HG Transportaciones' internal fork. The code was written by the contributors of the upstream project, [desarrollohg01/hgtran-ai](https://github.com/desarrollohg01/hgtran-ai). See [CONTRIBUTORS.md](CONTRIBUTORS.md) for the full list.
 
-<a href="https://github.com/Gentleman-Programming/gentle-ai/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=Gentleman-Programming/gentle-ai" />
+<a href="https://github.com/desarrollohg01/hgtran-ai/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=desarrollohg01/hgtran-ai" />
 </a>
 
 ---
@@ -368,7 +372,7 @@ This is HG Transportaciones' internal fork. The code was written by the contribu
 - **Starting work?** Read [Organic Implementation Routing](docs/trigger-rules.md) to understand direct, delegated, and optional SDD behavior.
 - **Reviewing a focused change?** Start with the [Organic RDD architecture](docs/architecture/organic-rdd.md) and [review authority threat model](docs/review-authority-threat-model.md).
 - **Maintaining hgtran-ai?** Use the [Codebase Guide](docs/CODEBASE-GUIDE.md) to find package ownership and review boundaries.
-- **Using Pi?** Read [Pi Agent](docs/pi.md) for the `gentle-pi` harness, Pi commands, persona, and model assignments.
+- **Using Pi?** Read [Pi Agent](docs/pi.md) for the `hgtran-pi` harness, Pi commands, persona, and model assignments.
 - **Ready to contribute?** Read [CONTRIBUTING.md](CONTRIBUTING.md). Issue tracking moves to HG's Bitbucket workspace along with the repository; until then there is no backlog here to claim from.
 
 ---
@@ -376,3 +380,5 @@ This is HG Transportaciones' internal fork. The code was written by the contribu
 <div align="center">
 <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
 </div>
+
+> **Trademark notice:** The Hgtran AI names and logos are trademarks of Alan Buscaglia. The MIT License applies to the code; it does not permit implying endorsement or official affiliation. See [TRADEMARKS.md](TRADEMARKS.md).

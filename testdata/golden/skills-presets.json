@@ -1,9 +1,10 @@
 [
   {
-    "preset": "full-gentleman",
+    "preset": "full-hgtran",
     "skills": [
       "sdd-init",
       "sdd-explore",
+      "sdd-research",
       "sdd-propose",
       "sdd-spec",
       "sdd-design",
@@ -14,6 +15,7 @@
       "sdd-onboard",
       "judgment-day",
       "go-testing",
+      "hgtran-ai-bench",
       "skill-creator",
       "skill-improver",
       "branch-pr",
@@ -23,7 +25,8 @@
       "cognitive-doc-design",
       "comment-writer",
       "work-unit-commits",
-      "rdd-defect-workflow"
+      "rdd-defect-workflow",
+      "systemic-issue-triage"
     ]
   },
   {
@@ -31,6 +34,7 @@
     "skills": [
       "sdd-init",
       "sdd-explore",
+      "sdd-research",
       "sdd-propose",
       "sdd-spec",
       "sdd-design",
@@ -41,6 +45,7 @@
       "sdd-onboard",
       "judgment-day",
       "go-testing",
+      "hgtran-ai-bench",
       "skill-creator",
       "skill-improver",
       "branch-pr",
@@ -50,7 +55,8 @@
       "cognitive-doc-design",
       "comment-writer",
       "work-unit-commits",
-      "rdd-defect-workflow"
+      "rdd-defect-workflow",
+      "systemic-issue-triage"
     ]
   },
   {
@@ -58,6 +64,7 @@
     "skills": [
       "sdd-init",
       "sdd-explore",
+      "sdd-research",
       "sdd-propose",
       "sdd-spec",
       "sdd-design",

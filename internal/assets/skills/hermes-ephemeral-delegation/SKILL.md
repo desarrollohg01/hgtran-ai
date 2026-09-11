@@ -3,7 +3,7 @@ name: hermes-ephemeral-delegation
 description: "Trigger: broad exploration, multi-file reads, tests/builds, fresh review, or multi-step debug. Orchestrate complex work via delegate_task to protect context."
 license: Apache-2.0
 metadata:
-  author: gentleman-programming
+  author: hgtran-programming
   version: "1.0"
 ---
 

@@ -109,8 +109,8 @@ Tasks T-14 through T-16 are independent of each other (separate files).
   include strict-TDD markers awareness; reference `~/.hermes/skills/` for skill registry
   (net-new asset file)
 
-- [x] T-15 `internal/assets/hermes/persona-gentleman.md` — Create Hermes gentleman persona asset:
-  copy of `generic/persona-gentleman.md` with the `## Contextual Skill Loading (MANDATORY)` block
+- [x] T-15 `internal/assets/hermes/persona-hgtran.md` — Create Hermes hgtran persona asset:
+  copy of `generic/persona-hgtran.md` with the `## Contextual Skill Loading (MANDATORY)` block
   rewritten to reference `~/.hermes/skills/` by category; remove `<available_skills>` injection
   mechanism; add a short subsection documenting the complementary relationship between engram
   (cross-agent, cross-session memory protocol) and Hermes's native memory and skill-learning loop
@@ -212,8 +212,8 @@ should be applied together in one commit.*
 
 - [ ] T-29 `internal/components/persona/inject_test.go` — Add table-driven test cases
   (add to existing test file):
-  - Hermes + `gentleman` → returns content from `hermes/persona-gentleman.md`; does NOT contain `<available_skills>`
-  - Hermes + `gentleman-neutral-artifacts` → same as gentleman (same asset)
+  - Hermes + `hgtran` → returns content from `hermes/persona-hgtran.md`; does NOT contain `<available_skills>`
+  - Hermes + `hgtran-neutral-artifacts` → same as hgtran (same asset)
   - Hermes + `neutral` → returns content from `hermes/persona-neutral.md`; does NOT contain `<available_skills>`
   - Hermes + `custom` → returns empty string, no persona injected
   - Non-Hermes agent + `neutral` → returns byte-identical `generic/persona-neutral.md` (no regression)
@@ -224,8 +224,8 @@ should be applied together in one commit.*
   - Change `PersonaNeutral` case from single `assets.MustRead("generic/persona-neutral.md")` to
     a per-agent inner switch: `case model.AgentHermes: return assets.MustRead("hermes/persona-neutral.md")`;
     `default: return assets.MustRead("generic/persona-neutral.md")`
-  - Add `case model.AgentHermes: return assets.MustRead("hermes/persona-gentleman.md")` inside
-    the gentleman (default) branch's inner agent switch
+  - Add `case model.AgentHermes: return assets.MustRead("hermes/persona-hgtran.md")` inside
+    the hgtran (default) branch's inner agent switch
   - No other changes; all non-Hermes agents are byte-identical to before (modify)
 
 ---
@@ -249,7 +249,7 @@ being applied but are otherwise independent of each other.
 
 - [ ] T-35 `internal/assets/assets_test.go` (or `internal/assets/skills_frontmatter_test.go`) —
   Add assertion: `assets.ReadFile("hermes/sdd-orchestrator.md")` returns non-empty content
-  without error; assert `hermes/persona-gentleman.md` and `hermes/persona-neutral.md` readable
+  without error; assert `hermes/persona-hgtran.md` and `hermes/persona-neutral.md` readable
   (add cases to existing test)
 
 - [ ] T-36 `internal/skillregistry/registry.go` — Verify/add `~/.hermes/skills/` to the list of
@@ -345,7 +345,7 @@ PR 2 — Adapter + Registration + Assets
     internal/tui/model.go (add case)
     internal/components/engram/setup.go (add case)
     internal/assets/hermes/sdd-orchestrator.md (net-new)
-    internal/assets/hermes/persona-gentleman.md (net-new)
+    internal/assets/hermes/persona-hgtran.md (net-new)
     internal/assets/hermes/persona-neutral.md (net-new)
     internal/assets/assets.go (add embed)
   Estimated lines: ~450–550 (adapter ~200, tests ~150, assets ~150–200, wiring ~30–50)
@@ -364,7 +364,7 @@ PR 3 — Component Injectors + Tests
     internal/components/mcp/inject_test.go (add hermes tests)
     internal/components/engram/inject.go (add StrategyMergeIntoYAML case + isStandardAgent + recovery branch)
     internal/components/engram/inject_test.go (add hermes + recovery tests)
-    internal/components/persona/inject.go (refactor personaContent neutral + add hermes gentleman)
+    internal/components/persona/inject.go (refactor personaContent neutral + add hermes hgtran)
     internal/components/persona/inject_test.go (add hermes persona tests)
   Estimated lines: ~400–500
   Dependency: PR 1 (yaml helpers) + PR 2 (adapter + assets)

@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/backup"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/backup"
 )
 
 // TestPrepareBackupStep_SkipsDuplicateBackup verifies that when the new checksum

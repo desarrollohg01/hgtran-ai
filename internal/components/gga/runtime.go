@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"path/filepath"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/assets"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/filemerge"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/assets"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/filemerge"
 )
 
 // RuntimeLibDir returns the runtime lib path used by gga.

@@ -19,7 +19,7 @@ build_output_hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca49599
 **Change**: rdd-root-simplification-wave2 (Leaf Disposition), whole Wave 2
 **Version**: 3 delta specs (2 NEW, 1 MODIFIED)
 **Mode**: Strict TDD
-**Verified tip**: `56629a01` on `feat/rdd-wave2-bench-journeys`, worktree `/home/gentleman/work/hgtran-ai-worktrees/rdd-wave0`
+**Verified tip**: `56629a01` on `feat/rdd-wave2-bench-journeys`, worktree `/home/hgtran/work/hgtran-ai-worktrees/rdd-wave0`
 **Base**: `d591f4cf` (main, Wave 1 merged)
 **Delivery mode**: receipt-driven development is `off` (global off, clone-local off) — delivery reports `disabled/unmanaged`; no review authority is required or claimed by this verification.
 **Attempt authority (echoed, not settled)**: `sha256:1d5fc742eee75c654e65ed704a26a90ac0c3244b734b397e260ba13f3959b606`
@@ -71,14 +71,14 @@ Every branch tip resolves to the expected commit; `feat/rdd-wave2-bench-journeys
 **Tests**: ✅ Passed — `go test -count=1 ./...` exit 0, 63 packages `ok`, **0 cached**, 0 `FAIL`.
 
 ```text
-ok  github.com/gentleman-programming/gentle-ai/v2/internal/app              17.799s
-ok  github.com/gentleman-programming/gentle-ai/v2/internal/cli             161.682s
-ok  github.com/gentleman-programming/gentle-ai/v2/internal/reviewtransaction 125.163s
+ok  github.com/desarrollohg01/hgtran-ai/v2/internal/app              17.799s
+ok  github.com/desarrollohg01/hgtran-ai/v2/internal/cli             161.682s
+ok  github.com/desarrollohg01/hgtran-ai/v2/internal/reviewtransaction 125.163s
 ```
 
 A first `go test ./...` returned exit 0 entirely from cache (63 cached entries) and was **discarded as non-evidence**; the recorded run is the uncached `-count=1` execution.
 
-**Bench module**: `go test -count=1 ./...` in `bench/` → `ok github.com/gentleman-programming/gentle-ai/bench 0.173s`, exit 0.
+**Bench module**: `go test -count=1 ./...` in `bench/` → `ok github.com/desarrollohg01/hgtran-ai/bench 0.173s`, exit 0.
 
 **Runtime harness (re-executed independently, not trusted from apply)**:
 `hgtran-ai-bench run --binary <tip-built hgtran-ai> --axis damaged-store` → exit 0, **65 journeys: 65 completed, 0 unsupported, 0 failed**. Result JSON status histogram: `{"completed": 65}` over 65 journeys.
@@ -239,7 +239,7 @@ No tautologies, no orphan empty-collection checks, no type-only assertions used 
 
 **WARNING** (6):
 
-- **W1 — Main-checkout OpenSpec mirror is stale and will deny archive admission.** `/home/gentleman/work/hgtran-ai/openspec/changes/rdd-root-simplification-wave2/` is an untracked working copy that predates the fix batch. `design.md` still describes the nine-field pre-image and `specs/rdd-authority-disposition-plan/spec.md` is missing both the "MUST NOT be computed over `actor` or `reason`" sentence and the "Actor and reason do not affect plan_digest" scenario. That mirror therefore counts **19 requirements / 23 scenarios**, while the authoritative branch-committed specs at `56629a01` count **19 / 24** — the counts this report declares. An archive run that reads the stale mirror will fail admission with "verify result total 24 does not match actual scenario count 23". Remediation is mechanical: refresh the mirror from `feat/rdd-wave2-bench-journeys` (`design.md` and `specs/rdd-authority-disposition-plan/spec.md`; the other four artifacts are already identical) before archiving. Deliberately not fixed here — spec and design artifacts are owned by their authoring phases.
+- **W1 — Main-checkout OpenSpec mirror is stale and will deny archive admission.** `/home/hgtran/work/hgtran-ai/openspec/changes/rdd-root-simplification-wave2/` is an untracked working copy that predates the fix batch. `design.md` still describes the nine-field pre-image and `specs/rdd-authority-disposition-plan/spec.md` is missing both the "MUST NOT be computed over `actor` or `reason`" sentence and the "Actor and reason do not affect plan_digest" scenario. That mirror therefore counts **19 requirements / 23 scenarios**, while the authoritative branch-committed specs at `56629a01` count **19 / 24** — the counts this report declares. An archive run that reads the stale mirror will fail admission with "verify result total 24 does not match actual scenario count 23". Remediation is mechanical: refresh the mirror from `feat/rdd-wave2-bench-journeys` (`design.md` and `specs/rdd-authority-disposition-plan/spec.md`; the other four artifacts are already identical) before archiving. Deliberately not fixed here — spec and design artifacts are owned by their authoring phases.
 - **W2 — `review start`'s invalid-graph refusal drops the new sanctioned exit.** `compactStartInvalidGraphRefusal` (`internal/reviewtransaction/compact_inspect.go`) switches on `exit.Operation` with cases for `CompactRecoveryEdgeExitAbandon` and `CompactRecoveryEdgeExitReconcile` only. `CompactRecoveryEdgeExitRepair` falls through silently, so a human blocked at `review start` by exactly the content-mismatched leaf Wave 2 now repairs is told only to run `review inspect-authority`, never `review repair` — even though `SanctionedCompactRecoveryExits` has already proved that command would run. That function's own contract is "names the sanctioned exit the read-only inspection proves", and design decision 6 exists precisely to make the exit nameable. No Wave 2 spec MUST covers the START refusal text, so this is a coherence and discoverability gap, not a spec violation; it does not increase blocking (the human is blocked identically either way, just less usefully informed).
 - **W3 — `internal/cli/review_next_transition.go` unmodified.** Named by the design File Changes table and by task 3.4, which is checked `[x]`. See deviation-audit row 5 for the full verdict. No spec MUST is broken.
 - **W4 — No loader-parity test for the under-lock reader.** `loadCompactRecoveryRecordsUnderMaintenanceHold` duplicates ~40 lines of `loadCompactRecoveryRecords`'s read-and-classify body. If the two ever drift, the under-lock CAS comparison silently compares against a differently-derived graph, which is the one place the whole safety argument rests. `TestLoadCompactRecoveryRecordsIsTheSingleSeam` swaps only the package-level seam var and therefore does not exercise the under-lock path at all.

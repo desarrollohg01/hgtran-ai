@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/tui/styles"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/tui/styles"
 )
 
 // ClaudeModelPreset represents a named preset for Claude model assignments.
@@ -40,6 +40,7 @@ var claudePresetOrder = []ClaudeModelPreset{
 // claudePhases is the ordered list of model-assignment keys shown in custom mode.
 var claudePhases = []string{
 	"sdd-explore",
+	"sdd-research",
 	"sdd-propose",
 	"sdd-spec",
 	"sdd-design",
@@ -58,6 +59,7 @@ var claudePhases = []string{
 // agent phase (SDD phases, JD agents, and the general delegation row).
 var claudePhaseLabels = map[string]string{
 	"sdd-explore":  "Explore",
+	"sdd-research": "Research",
 	"sdd-propose":  "Propose",
 	"sdd-spec":     "Spec",
 	"sdd-design":   "Design",

@@ -4,8 +4,8 @@ import (
 	"errors"
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/capabilitymanifest"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/capabilitymanifest"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
 )
 
 func TestDefaultRegistryManifestsMatchEveryAdapterProjection(t *testing.T) {
@@ -98,8 +98,8 @@ type projectionMismatchAdapter struct {
 	mockAdapter
 }
 
-func (a projectionMismatchAdapter) SupportsAutoInstall() bool {
-	return !a.CapabilityManifest().Features.AutoInstall
+func (a projectionMismatchAdapter) SupportsSkills() bool {
+	return !a.CapabilityManifest().Features.Skills
 }
 
 func TestRegistryRejectsLegacyProjectionMismatch(t *testing.T) {

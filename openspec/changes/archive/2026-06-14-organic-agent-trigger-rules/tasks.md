@@ -165,7 +165,7 @@ Chained PRs recommended: No.
   - Assert `filepath.Join(home, ".kimi", "trigger-rules.md")` exists and contains the rendered block (no markers — the module itself is the content; KIMI.md provides the include wrapper).
 - [x] **4.4** `internal/components/sdd/inject_test.go` — `TestInjectTriggerRules_OpenCodePlacement`:
   - Call `sdd.Inject(home, opencodeAdapter(), "")` in a `t.TempDir()` home.
-  - Assert the gentle-orchestrator agent prompt path (resolved via the adapter or a known constant) contains `<!-- hgtran-ai:trigger-rules -->`.
+  - Assert the hgtran-orchestrator agent prompt path (resolved via the adapter or a known constant) contains `<!-- hgtran-ai:trigger-rules -->`.
   - (Resolves open question (a): confirm the block lands in the orchestrator prompt, not a separate AGENTS.md section.)
 - [x] **4.5** `internal/components/sdd/inject_test.go` — `TestInjectTriggerRules_KilocodePlacement`:
   - Same as 4.4 but for `kilocodeAdapter()`.
@@ -180,13 +180,13 @@ Chained PRs recommended: No.
 - [x] **4.8** `internal/components/sdd/inject.go` — after the strict-tdd-mode step (inject.go:274-314), add step 1c:
   - Compute `rendered := sdd.RenderTriggerRules(catalog.DefaultTriggerRuleSet())`.
   - For `StrategyJinjaModules` adapters (currently only Kimi): write `rendered` as `trigger-rules.md` in `adapter.GlobalConfigDir(homeDir)` via `filemerge.WriteFileAtomic`; add to `files`; do NOT call `InjectMarkdownSection` (the Jinja template includes it via `{% include "trigger-rules.md" %}`).
-  - For OpenCode and Kilocode: append the marker-wrapped block to the gentle-orchestrator prompt using the same injection path already used for orchestrator content (mirrors how step 1 handles `AgentOpenCode`/`AgentKilocode` — see inject.go:229 and inject.go:354).
+  - For OpenCode and Kilocode: append the marker-wrapped block to the hgtran-orchestrator prompt using the same injection path already used for orchestrator content (mirrors how step 1 handles `AgentOpenCode`/`AgentKilocode` — see inject.go:229 and inject.go:354).
   - For all other system-prompt agents: read `adapter.SystemPromptFile(homeDir)`, call `filemerge.InjectMarkdownSection(existing, sectionTriggerRules, rendered)`, write atomically, dedupe path in `files` (same pattern as strict-tdd-mode step, inject.go:302-312).
 - [x] **4.9** `internal/assets/kimi/KIMI.md` — add `{% include "trigger-rules.md" ignore missing %}` immediately after the `{% include "strict-tdd-mode.md" ignore missing %}` line (line 8), maintaining the established include ordering.
 
 ### Resolve Open Question (a) — OpenCode/Kilocode Placement
 
-- [x] **4.10** (Task, not just a question) Read the current OpenCode/Kilocode gentle-orchestrator prompt injection paths in `inject.go` (lines ~229 and ~354) and `inlineOpenCodeSDDPrompts`. Confirm the rendered block belongs in the gentle-orchestrator agent prompt scope (not in a top-level AGENTS.md). Document the decision as a comment in `inject.go` step 1c. (Implements design open question (a).)
+- [x] **4.10** (Task, not just a question) Read the current OpenCode/Kilocode hgtran-orchestrator prompt injection paths in `inject.go` (lines ~229 and ~354) and `inlineOpenCodeSDDPrompts`. Confirm the rendered block belongs in the hgtran-orchestrator agent prompt scope (not in a top-level AGENTS.md). Document the decision as a comment in `inject.go` step 1c. (Implements design open question (a).)
 
 ### Resolve Open Question (b) — Jinja Adapter Scan
 

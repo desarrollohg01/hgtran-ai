@@ -10,11 +10,11 @@ Deliver an optional Pi CodeGraph capability owned by Hgtran AI. A parent `APPEND
 - Own optional selection, installation, and verified Pi extension/MCP configuration in Hgtran AI.
 - Discover Pi children, inject tools into compatible children, and inject lazy-init guidance into every child.
 - Auto-initialize CodeGraph at the project root when an index is missing.
-- Reconcile after gentle-pi sync, verify real capability per child, and cleanly uninstall only owned artifacts.
+- Reconcile after hgtran-pi sync, verify real capability per child, and cleanly uninstall only owned artifacts.
 - Start design by observing and recording the Pi/CodeGraph extension and MCP schema, commands, and ownership boundaries—never guess them.
 
 ### Out of Scope
-- Any gentle-pi dependency, prompt, tool, configuration, or behavior change; it remains completely CodeGraph-agnostic.
+- Any hgtran-pi dependency, prompt, tool, configuration, or behavior change; it remains completely CodeGraph-agnostic.
 - Installing, configuring, or requiring CodeGraph for normal Pi installs without CodeGraph selected.
 - Treating a parent `APPEND_SYSTEM.md` marker as proof of child capability.
 - Supporting unrelated Pi extensions or changing CodeGraph upstream.
@@ -29,7 +29,7 @@ None.
 
 ## Approach
 
-Capture evidence from installed Pi and CodeGraph before defining the schema and ownership contract. Add an idempotent hgtran-ai provisioner/reconciler after gentle-pi install and sync. Use bounded edits or owned files, discover children from verified runtime locations, and classify them as compatible, guidance-only, unavailable, or misconfigured. Verify each child’s effective tools and guidance directly.
+Capture evidence from installed Pi and CodeGraph before defining the schema and ownership contract. Add an idempotent hgtran-ai provisioner/reconciler after hgtran-pi install and sync. Use bounded edits or owned files, discover children from verified runtime locations, and classify them as compatible, guidance-only, unavailable, or misconfigured. Verify each child’s effective tools and guidance directly.
 
 ## Affected Areas
 
@@ -46,13 +46,13 @@ Capture evidence from installed Pi and CodeGraph before defining the schema and 
 | Risk | Likelihood | Mitigation |
 |------|------------|------------|
 | Upstream schema differs | High | Evidence record and contract fixtures |
-| Sync overwrites child integration | High | Reconcile after gentle-pi refresh |
+| Sync overwrites child integration | High | Reconcile after hgtran-pi refresh |
 | Cleanup removes user configuration | Medium | Ownership manifest and bounded edits |
 | Work exceeds 800 review lines | High | Tasks phase forecasts review slices |
 
 ## Rollback Plan
 
-Disable reconciliation, remove owned artifacts, and restore backed-up managed configuration without touching gentle-pi or user entries.
+Disable reconciliation, remove owned artifacts, and restore backed-up managed configuration without touching hgtran-pi or user entries.
 
 ## Dependencies
 
@@ -63,4 +63,4 @@ Disable reconciliation, remove owned artifacts, and restore backed-up managed co
 - [ ] Selected installs configure and verify every discovered child according to real capability.
 - [ ] Missing indexes initialize automatically; sync restores drift idempotently.
 - [ ] Unselected Pi remains unchanged, and uninstall removes only hgtran-ai-owned integration.
-- [ ] gentle-pi contains no CodeGraph-specific change.
+- [ ] hgtran-pi contains no CodeGraph-specific change.

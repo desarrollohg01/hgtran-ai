@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/app"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/app"
 )
 
 // version is set by GoReleaser via ldflags at build time.

@@ -20,7 +20,7 @@ build_output_hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca49599
 **Version**: N/A (new capabilities, no prior spec version)
 **Mode**: Strict TDD (project `strict_tdd: true`; design-declared mechanical assertion-recipe layer per `design.md:134-145`)
 **Verified at**: 2026-08-02
-**Deliverable chain**: worktree `/home/gentleman/work/hgtran-ai-worktrees/rdd-wave0`, tracker `feature/rdd-root-simplification`@`ece470da` → `a635c221` → `57fab9d8` → `452dce21` → `92a444bc`
+**Deliverable chain**: worktree `/home/hgtran/work/hgtran-ai-worktrees/rdd-wave0`, tracker `feature/rdd-root-simplification`@`ece470da` → `a635c221` → `57fab9d8` → `452dce21` → `92a444bc`
 
 All checks below were re-executed independently in this phase against the committed branch bytes (`git show <branch>:<path>`). Apply-phase claims were used to locate evidence, never as substitutes for it.
 
@@ -130,7 +130,7 @@ No `internal/**`, `contracts/**`, CI, or script path is touched anywhere in the 
 
 | Requirement | Scenario | Verification | Result |
 |---|---|---|---|
-| Design Document Source and Evidence Paths | Design cites in-repo evidence | Evidence table rows "Prior system audit" = `docs/audits/2026-07-21-rdd-system-audit.md`, "Prior audit SHA-256" = `4b41d15a…fd923`; recomputed via `sha256sum` and matched; external path `/home/gentleman/work/rdd-system-audit.md` absent | COMPLIANT |
+| Design Document Source and Evidence Paths | Design cites in-repo evidence | Evidence table rows "Prior system audit" = `docs/audits/2026-07-21-rdd-system-audit.md`, "Prior audit SHA-256" = `4b41d15a…fd923`; recomputed via `sha256sum` and matched; external path `/home/hgtran/work/rdd-system-audit.md` absent | COMPLIANT |
 | Adopted Next-Step Decisions Preserved Verbatim | Decision 1 — five-state model | §"Adopted next-step decisions" item 1 states five-state + two-active-artifact adopted as specified | COMPLIANT |
 | Adopted Next-Step Decisions Preserved Verbatim | Decision 2 — relation algebra and gates | item 2 states shared algebra + read-only gates adopted; gates never mutate authority | COMPLIANT |
 | Adopted Next-Step Decisions Preserved Verbatim | Decision 3 — declined review / unsupported runtime | item 3 states unmanaged ordinary delivery, fails before freeze | COMPLIANT |

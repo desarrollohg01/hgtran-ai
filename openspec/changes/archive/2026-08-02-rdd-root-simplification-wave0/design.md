@@ -29,7 +29,7 @@ Each instrument cites the design section it derives from, so a later wave amends
 | C | `Migration waves` (Wave 3 row, `Rollback boundary` cell) + a precedence note under the wave table + `Adversarial safety analysis` (new `Coexistence precedence` row) | Legacy readable authority never authorizes delivery of a candidate that has a new lineage |
 | D | `Unresolved maintainer and product decisions` (two new rows, same `Decision / Recommended default / Tradeoff` columns) | External evidence retention horizon; SDD attempt-ledger ownership. Defaults per proposal decisions 8–9 |
 | E | `Adversarial safety analysis` (new `Cross-lineage receipt contamination` row) + `Issue and PR coverage map` (`Receipt-only delivery validation` row gains `#1379`) | One coverage row only — the map is a coverage index, not a duplicate index |
-| — | `Evidence and scope` (`Prior system audit` row) | `/home/gentleman/work/rdd-system-audit.md` → `docs/audits/2026-07-21-rdd-system-audit.md`; the SHA-256 row is re-verified against the in-repo file before landing |
+| — | `Evidence and scope` (`Prior system audit` row) | `/home/hgtran/work/rdd-system-audit.md` → `docs/audits/2026-07-21-rdd-system-audit.md`; the SHA-256 row is re-verified against the in-repo file before landing |
 
 Amendment E adds `#1379` to exactly one coverage row. If the recomputed SHA-256 of the in-repo audit differs from `4b41d15a…`, record the measured digest and a discrepancy note — never assert the expected value.
 

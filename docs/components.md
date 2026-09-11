@@ -70,7 +70,7 @@ hga install
 | Work Unit Commits | `work-unit-commits` | Split implementation into reviewable work units |
 | RDD Defect Workflow | `rdd-defect-workflow` | Guide receipt-driven defect work with truthful evidence and authority boundaries |
 
-These foundation skills are installed by default with both the `full-gentleman` (Dev Stack + Polish) and `ecosystem-only` (Dev Stack) presets.
+These foundation skills are installed by default with both the `full-hgtran` (Dev Stack + Polish) and `ecosystem-only` (Dev Stack) presets.
 
 ### Coding Skills (separate repository)
 
@@ -82,7 +82,7 @@ For framework-specific skills (React 19, Angular, TypeScript, Tailwind 4, Zod 4,
 
 | Preset | ID | What's Included |
 |--------|-----|-----------------|
-| Dev Stack + Polish | `full-gentleman` | All components (Engram + SDD + Skills + Context7 + hga + Permissions + Theme) + all skills |
+| Dev Stack + Polish | `full-hgtran` | All components (Engram + SDD + Skills + Context7 + hga + Permissions + Theme) + all skills |
 | Dev Stack | `ecosystem-only` | Core components (Engram + SDD + Skills + Context7 + hga) + all skills |
 | Memory Only | `minimal` | Engram + SDD skills only |
 | Custom | `custom` | You choose components and skills manually while keeping any existing persona/settings unmanaged |

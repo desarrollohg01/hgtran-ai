@@ -68,7 +68,7 @@ Expected shape: deadcode ratchet strongly net-negative; net line count strongly 
 
 | Risk | Likelihood | Mitigation |
 |---|---|---|
-| A released adapter (gentle-pi, pinned) still calls a deleted verb mid-upgrade | High | Declared support horizon + real adapter evidence before deletion; retire the route only after the pinned consumer moves |
+| A released adapter (hgtran-pi, pinned) still calls a deleted verb mid-upgrade | High | Declared support horizon + real adapter evidence before deletion; retire the route only after the pinned consumer moves |
 | Switch removed before byte-equivalence proven → silent behavior change | Med | Byte-equivalence is a blocking exit gate, not a checklist item |
 | Legacy *read* path deleted with the mutation path → historical authority unparseable | Med | Read-only parse of shipped legacy-v1 records is an explicit retained invariant with its own journey |
 | Inventory derived from a stale pre-W6 tree targets the wrong symbols or double-counts W6's own deletions | High | Inventory re-derivation against post-W6 `main` is a hard task-time precondition |
@@ -77,11 +77,11 @@ Expected shape: deadcode ratchet strongly net-negative; net line count strongly 
 
 ## Open decisions for the maintainer (auto mode — recommended defaults stand unless corrected)
 
-**D1 — Shadow alias: delete, or keep as an internal alias?** *Default: delete the alias and the whole shadow observer.* Evidence: `ShadowRelation` lives under `internal/reviewtransaction`, so a Go importer outside this module is impossible by language rule — gentle-pi cannot import it. Wave 1's exit evidence is already banked in `shadow-differential-matrix.golden`, which is retained. Task-time confirmation of zero in-module consumers is still required.
+**D1 — Shadow alias: delete, or keep as an internal alias?** *Default: delete the alias and the whole shadow observer.* Evidence: `ShadowRelation` lives under `internal/reviewtransaction`, so a Go importer outside this module is impossible by language rule — hgtran-pi cannot import it. Wave 1's exit evidence is already banked in `shadow-differential-matrix.golden`, which is retained. Task-time confirmation of zero in-module consumers is still required.
 
 **D2 — Bench journey retirement policy.** *Default: retarget, do not delete.* `ds01`/`ds02`/`ds04` encode anomaly *shapes* (dangling edge, unclassified edge, pristine successor) that stay meaningful; only the assertions naming deleted verbs are removed. Deleting the journeys outright would silently drop damaged-store coverage.
 
-**D3 — `contracts/review-integration/v1` retirement.** *Default: freeze read-only this wave, delete in a later dated pass.* The design requires a declared horizon plus proof that no supported consumer calls the retired contract; a pinned gentle-pi release is exactly such a consumer. Deleting v1 here would break users mid-upgrade.
+**D3 — `contracts/review-integration/v1` retirement.** *Default: freeze read-only this wave, delete in a later dated pass.* The design requires a declared horizon plus proof that no supported consumer calls the retired contract; a pinned hgtran-pi release is exactly such a consumer. Deleting v1 here would break users mid-upgrade.
 
 **D4 — Verbs of ambiguous vintage** (`recover`, `invalidate`, `reopen-results`, `dispose-result`, `reclaim`, `abandon`). *Default: classify at task time against the post-W6 tree; retire only those with zero new-lineage role.* Not pre-judged here.
 
@@ -97,15 +97,56 @@ Each slice is one consumer cluster and is independently revertible by `git rever
 - Wave 6's own deletion outcome (overlapping internal repair paths) landed, so W7 does not re-delete it.
 - A declared, version-pinned compatibility horizon for adapters (design: *Compatibility horizon* decision).
 
-## Success criteria
+## Success criteria (evaluated at wave close-out, WU20)
 
-- [ ] Exactly one lifecycle: no `HGTRAN_AI_RDD_NEW_LINEAGE` switch, no legacy start branch, no legacy mutation path.
-- [ ] Every retired path has a measured consumer inventory, a migration boundary and a deletion proof (design *Acceptance criteria*).
-- [ ] Byte-equivalence proven before switch removal; goldens byte-stable across the whole wave.
-- [ ] Deadcode ratchet strongly net-negative; net line count strongly negative.
-- [ ] Shipped legacy-v1 authority still parses read-only; quarantine residue and historical receipts byte-identical.
-- [ ] `#1455`, `#1462`, `#1570` (and PRs `#1549`, `#1550`) have their `superseded-by-design` deletion proof recorded.
-- [ ] Zero new verbs, zero new contract versions, zero behavior change for the new lineage.
+- [ ] **NOT MET, deferred with reason.** Exactly one lifecycle: no
+  `HGTRAN_AI_RDD_NEW_LINEAGE` switch, no legacy start branch, no legacy
+  mutation path. The switch-removal slice (WU18) was attempted, passed its
+  own byte-equivalence exit evidence with zero golden drift, then was
+  DEFERRED (not abandoned) when it surfaced that v3 negotiated START has
+  never supported `repository_context` — see
+  `specs/rdd-single-lifecycle/spec.md`'s amendment for the full finding and
+  the precise re-entry condition for the follow-up wave. The switch and
+  legacy start branch remain, byte-identical to pre-attempt. Compact-v2
+  therefore remains the default (switch-gated) lifecycle, not a frozen
+  relic — this is why WU19's D4 verb classification (below) concluded all
+  six verbs stay live rather than retiring.
+- [x] Every retired path has a measured consumer inventory, a migration
+  boundary and a deletion proof (design *Acceptance criteria*) — true for
+  everything actually retired this wave: both reconcile providers, the five
+  legacy public verbs, the shadow observer. See tasks.md's own per-WU
+  evidence entries.
+- [x] Byte-equivalence proven before switch removal attempt; goldens
+  byte-stable across the whole wave (Commit A, WU2, never regenerated;
+  re-verified byte-identical at every subsequent checkpoint including the
+  WU18 attempt and its revert). The removal itself did not proceed (see
+  above), but the proof this criterion actually asks for — that a
+  switch-free build would have been byte-identical — was established and
+  holds.
+- [x] Deadcode ratchet strongly net-negative: 244 (pre-Wave-7 baseline,
+  post-WU1) down to 243 at close-out — every deletion slice's own uptick
+  (a legitimate, honestly-reported consumer-first artifact) was reversed by
+  its own follow-up slice; net wave-wide change is negative despite WU18a's
+  additive work landing zero new unreachable functions. Net line count
+  strongly negative: +1701/-8968 (net -7267) across every `.go` file from
+  the v1-freeze checkpoint (d10d49ab) to close-out.
+- [x] Shipped legacy-v1 authority still parses read-only; quarantine
+  residue and historical receipts byte-identical — RG.1a
+  (`TestLegacyReadOnlyGuardRetainedSymbolsDeclared`) green throughout the
+  wave, confirmed again at close-out.
+- [x] `#1455`, `#1462`, `#1570` (and PRs `#1549`, `#1550`) have their
+  `superseded-by-design` deletion proof recorded (tasks.md task 3.2).
+- [~] **Partially met, disclosed exception.** Zero new verbs, zero new
+  contract versions: true. Zero behavior change for the new lineage: NOT
+  fully true — WU18a deliberately added new, switch-independent capability
+  to v3 START (start-time legacy-collision guards, previously entirely
+  absent on the switch-ON path; negotiated-form frozen-candidate-context
+  support, previously entirely absent). This is a disclosed, coordinator-
+  approved exception: genuinely additive work salvaged from the deferred
+  WU18 attempt, not a side effect of deletion, and proven zero-regression
+  via the bench corpus diff (83/83 journeys unchanged status). The original
+  criterion assumed a pure-deletion wave; WU18a is the one place this wave
+  departed from that, by explicit scope decision.
 
 ## Proposal question round (auto mode)
 

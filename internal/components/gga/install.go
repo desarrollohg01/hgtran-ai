@@ -6,9 +6,9 @@ import (
 	"os"
 	"path/filepath"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/installcmd"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/installcmd"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/system"
 )
 
 func InstallCommand(profile system.PlatformProfile) ([][]string, error) {
@@ -16,7 +16,7 @@ func InstallCommand(profile system.PlatformProfile) ([][]string, error) {
 }
 
 func CleanupInstallDir() error {
-	return cleanupInstallDir(filepath.Join(os.TempDir(), "gentleman-guardian-angel"))
+	return cleanupInstallDir(filepath.Join(os.TempDir(), "hgtran-guardian-angel"))
 }
 
 func cleanupInstallDir(path string) error {

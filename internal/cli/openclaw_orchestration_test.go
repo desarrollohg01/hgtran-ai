@@ -7,9 +7,9 @@ import (
 	"strings"
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/planner"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/planner"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/system"
 )
 
 func TestComponentApplyStepOpenClawWorkspaceScopedInjections(t *testing.T) {
@@ -219,6 +219,45 @@ func TestSyncRuntimeOpenClawUsesConfiguredActiveWorkspace(t *testing.T) {
 
 	assertOpenClawInstructionsInWorkspace(t, activeWorkspace)
 	assertNoOpenClawInstructionsInCurrentProject(t, currentProject)
+}
+
+func TestRunSyncOpenClawSkillsUseConfiguredActiveWorkspace(t *testing.T) {
+	home := t.TempDir()
+	activeWorkspace := t.TempDir()
+	currentProject := t.TempDir()
+	writeOpenClawConfigWithWorkspace(t, home, activeWorkspace)
+	t.Chdir(currentProject)
+
+	skillIDs := []model.SkillID{
+		model.SkillGoTesting,
+		model.SkillBranchPR,
+		model.SkillWorkUnitCommits,
+	}
+	selection := model.Selection{
+		Agents:     []model.AgentID{model.AgentOpenClaw},
+		Components: []model.ComponentID{model.ComponentSkills},
+		Skills:     skillIDs,
+	}
+
+	result, err := RunSyncWithSelection(home, selection)
+	if err != nil {
+		t.Fatalf("RunSyncWithSelection() error = %v", err)
+	}
+	if !result.Verify.Ready {
+		t.Fatalf("post-sync verification ready = false, report = %#v", result.Verify)
+	}
+
+	for _, skillID := range skillIDs {
+		workspaceSkill := filepath.Join(activeWorkspace, ".openclaw", "skills", string(skillID), "SKILL.md")
+		if _, err := os.Stat(workspaceSkill); err != nil {
+			t.Errorf("configured OpenClaw workspace skill %q missing: %v", workspaceSkill, err)
+		}
+
+		homeSkill := filepath.Join(home, ".openclaw", "skills", string(skillID), "SKILL.md")
+		if _, err := os.Stat(homeSkill); !os.IsNotExist(err) {
+			t.Errorf("OpenClaw sync must not write home-root skill %q; stat err=%v", homeSkill, err)
+		}
+	}
 }
 
 func writeOpenClawConfigWithWorkspace(t *testing.T, home, workspace string) {

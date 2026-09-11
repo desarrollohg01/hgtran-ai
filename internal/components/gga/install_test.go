@@ -10,8 +10,8 @@ import (
 	"strings"
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/versions"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/system"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/versions"
 )
 
 // resolveGitBashForTest derives the Git Bash path the same way the installcmd
@@ -50,7 +50,7 @@ func fileExistsForTest(path string) bool {
 }
 
 func TestInstallCommandByProfile(t *testing.T) {
-	cloneDst := filepath.Join(os.TempDir(), "gentleman-guardian-angel")
+	cloneDst := filepath.Join(os.TempDir(), "hgtran-guardian-angel")
 	bash := resolveGitBashForTest()
 	scriptPath := strings.ReplaceAll(filepath.Join(cloneDst, "install.sh"), `\`, "/")
 
@@ -69,24 +69,24 @@ func TestInstallCommandByProfile(t *testing.T) {
 			name:    "ubuntu uses git clone and install.sh",
 			profile: system.PlatformProfile{OS: "linux", LinuxDistro: system.LinuxDistroUbuntu, PackageManager: "apt"},
 			want: [][]string{
-				{"rm", "-rf", "/tmp/gentleman-guardian-angel"},
-				{"mkdir", "-p", "/tmp/gentleman-guardian-angel"},
-				{"git", "init", "/tmp/gentleman-guardian-angel"},
-				{"git", "-C", "/tmp/gentleman-guardian-angel", "fetch", "--depth=1", "https://github.com/Gentleman-Programming/gentleman-guardian-angel.git", "refs/tags/v" + versions.GGAVersion + ":refs/tags/v" + versions.GGAVersion},
-				{"git", "-C", "/tmp/gentleman-guardian-angel", "checkout", "-f", "refs/tags/v" + versions.GGAVersion},
-				{"bash", "/tmp/gentleman-guardian-angel/install.sh"},
+				{"rm", "-rf", "/tmp/hgtran-guardian-angel"},
+				{"mkdir", "-p", "/tmp/hgtran-guardian-angel"},
+				{"git", "init", "/tmp/hgtran-guardian-angel"},
+				{"git", "-C", "/tmp/hgtran-guardian-angel", "fetch", "--depth=1", "https://github.com/Gentleman-Programming/gentleman-guardian-angel.git", "refs/tags/v" + versions.GGAVersion + ":refs/tags/v" + versions.GGAVersion},
+				{"git", "-C", "/tmp/hgtran-guardian-angel", "checkout", "-f", "refs/tags/v" + versions.GGAVersion},
+				{"bash", "/tmp/hgtran-guardian-angel/install.sh"},
 			},
 		},
 		{
 			name:    "arch uses git clone and install.sh",
 			profile: system.PlatformProfile{OS: "linux", LinuxDistro: system.LinuxDistroArch, PackageManager: "pacman"},
 			want: [][]string{
-				{"rm", "-rf", "/tmp/gentleman-guardian-angel"},
-				{"mkdir", "-p", "/tmp/gentleman-guardian-angel"},
-				{"git", "init", "/tmp/gentleman-guardian-angel"},
-				{"git", "-C", "/tmp/gentleman-guardian-angel", "fetch", "--depth=1", "https://github.com/Gentleman-Programming/gentleman-guardian-angel.git", "refs/tags/v" + versions.GGAVersion + ":refs/tags/v" + versions.GGAVersion},
-				{"git", "-C", "/tmp/gentleman-guardian-angel", "checkout", "-f", "refs/tags/v" + versions.GGAVersion},
-				{"bash", "/tmp/gentleman-guardian-angel/install.sh"},
+				{"rm", "-rf", "/tmp/hgtran-guardian-angel"},
+				{"mkdir", "-p", "/tmp/hgtran-guardian-angel"},
+				{"git", "init", "/tmp/hgtran-guardian-angel"},
+				{"git", "-C", "/tmp/hgtran-guardian-angel", "fetch", "--depth=1", "https://github.com/Gentleman-Programming/gentleman-guardian-angel.git", "refs/tags/v" + versions.GGAVersion + ":refs/tags/v" + versions.GGAVersion},
+				{"git", "-C", "/tmp/hgtran-guardian-angel", "checkout", "-f", "refs/tags/v" + versions.GGAVersion},
+				{"bash", "/tmp/hgtran-guardian-angel/install.sh"},
 			},
 		},
 		{
@@ -101,19 +101,21 @@ func TestInstallCommandByProfile(t *testing.T) {
 			name:    "fedora uses git clone and install.sh",
 			profile: system.PlatformProfile{OS: "linux", LinuxDistro: system.LinuxDistroFedora, PackageManager: "dnf"},
 			want: [][]string{
-				{"rm", "-rf", "/tmp/gentleman-guardian-angel"},
-				{"mkdir", "-p", "/tmp/gentleman-guardian-angel"},
-				{"git", "init", "/tmp/gentleman-guardian-angel"},
-				{"git", "-C", "/tmp/gentleman-guardian-angel", "fetch", "--depth=1", "https://github.com/Gentleman-Programming/gentleman-guardian-angel.git", "refs/tags/v" + versions.GGAVersion + ":refs/tags/v" + versions.GGAVersion},
-				{"git", "-C", "/tmp/gentleman-guardian-angel", "checkout", "-f", "refs/tags/v" + versions.GGAVersion},
-				{"bash", "/tmp/gentleman-guardian-angel/install.sh"},
+				{"rm", "-rf", "/tmp/hgtran-guardian-angel"},
+				{"mkdir", "-p", "/tmp/hgtran-guardian-angel"},
+				{"git", "init", "/tmp/hgtran-guardian-angel"},
+				{"git", "-C", "/tmp/hgtran-guardian-angel", "fetch", "--depth=1", "https://github.com/Gentleman-Programming/gentleman-guardian-angel.git", "refs/tags/v" + versions.GGAVersion + ":refs/tags/v" + versions.GGAVersion},
+				{"git", "-C", "/tmp/hgtran-guardian-angel", "checkout", "-f", "refs/tags/v" + versions.GGAVersion},
+				{"bash", "/tmp/hgtran-guardian-angel/install.sh"},
 			},
 		},
 		{
-			name: "unsupported package manager returns error",
+			// Issue #2499: the probe (#2493) accepts any Linux package manager
+			// on PATH; only a probe-rejected profile (no manager found) errors.
+			name: "linux without package manager returns error",
 			profile: system.PlatformProfile{
 				OS:             "linux",
-				PackageManager: "zypper",
+				PackageManager: "",
 			},
 			wantErr: true,
 		},
@@ -139,7 +141,7 @@ func TestInstallCommandByProfile(t *testing.T) {
 
 func TestCleanupInstallDirUsesPowerShellResolverAndIsIdempotent(t *testing.T) {
 	dir := t.TempDir()
-	target := filepath.Join(t.TempDir(), "gentleman-guardian-angel")
+	target := filepath.Join(t.TempDir(), "hgtran-guardian-angel")
 	if err := os.MkdirAll(target, 0o755); err != nil {
 		t.Fatal(err)
 	}

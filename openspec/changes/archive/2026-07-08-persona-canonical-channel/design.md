@@ -22,8 +22,8 @@ Static per-adapter dispatch, no runtime detection (matches proposal Approach). I
 
 | persona / agent | full asset (today) | residual asset (new) |
 |---|---|---|
-| Gentleman / Claude | `claude/persona-gentleman.md` (`:512-513`) | `claude/persona-gentleman-residual.md` |
-| Gentleman / Kimi | `kimi/persona-gentleman.md` (`:516-517`) | `kimi/persona-gentleman-residual.md` |
+| Gentleman / Claude | `claude/persona-hgtran.md` (`:512-513`) | `claude/persona-hgtran-residual.md` |
+| Gentleman / Kimi | `kimi/persona-hgtran.md` (`:516-517`) | `kimi/persona-hgtran-residual.md` |
 | Neutral / Claude | `generic/persona-neutral.md` (`:505`) | `claude/persona-neutral-residual.md` |
 | Neutral / Kimi | `generic/persona-neutral.md` (`:505`) | `kimi/persona-neutral-residual.md` |
 
@@ -41,7 +41,7 @@ The four test call sites (`inject_test.go:2006,2031,2052,2076`) update to the ne
 
 Rule: **action/tooling directives stay; tone/language/philosophy move to the output style.**
 
-### Table A — `claude/persona-gentleman.md`
+### Table A — `claude/persona-hgtran.md`
 | Section (lines) | Kind | Disposition |
 |---|---|---|
 | `## Rules` (3-13) | action + CLI tooling | **KEEP** all 11 bullets (incl. "Never use cat/grep/find/sed/ls", commit/verification rules) |
@@ -54,7 +54,7 @@ Rule: **action/tooling directives stay; tone/language/philosophy move to the out
 | `## Behavior` (63-68) | tone | MOVE → style |
 | `## Contextual Skill Loading` (70-76) | tooling directive | **KEEP** |
 
-### Table B — `kimi/persona-gentleman.md`
+### Table B — `kimi/persona-hgtran.md`
 Same disposition as A for the shared sections, PLUS **KEEP** `## Kimi-native notes` (71-76, tooling: `/skill:`, `/flow:`, no fake `/sdd-*`). Kimi `## Rules` (3-8, 6 bullets) and `## Language` (32-39) are already shorter; keep Rules, move Language.
 
 ### Table C — `generic/persona-neutral.md` → new residual
@@ -77,13 +77,13 @@ Your conversational tone, language rules, and teaching philosophy are defined by
 the active output style (**Gentleman**/**Neutral**), which loads every session.
 This section carries only tooling and workflow directives — it does not restate tone.
 ```
-Pointer wording is per-agent (Claude names the output style; Kimi points to the `output-style.md` module). CLI-tooling Rules bullets (bat/rg/fd/sd/eza) stay ONLY in the Claude residual — they are not tone. Kimi's `## Rules` (`kimi/persona-gentleman.md:3-8`, 6 bullets) never contained the CLI-tooling bullet, so it has nothing to carry forward on this point.
+Pointer wording is per-agent (Claude names the output style; Kimi points to the `output-style.md` module). CLI-tooling Rules bullets (bat/rg/fd/sd/eza) stay ONLY in the Claude residual — they are not tone. Kimi's `## Rules` (`kimi/persona-hgtran.md:3-8`, 6 bullets) never contained the CLI-tooling bullet, so it has nothing to carry forward on this point.
 
 ## Decision 4 — Drift reconciliation (canonical output-style, union — nothing lost)
 
 The two Gentleman copies are independently-authored paraphrases. The output style becomes canonical; every normative rule from BOTH copies is unioned in.
 
-**Gentleman `## Persona Scope`** — add the 3 artifact bullets that `persona-gentleman.md:33-35` has but `output-style-gentleman.md:35-38` lacks:
+**Gentleman `## Persona Scope`** — add the 3 artifact bullets that `persona-hgtran.md:33-35` has but `output-style-hgtran.md:35-38` lacks:
 1. "Generated technical artifacts default to English regardless of the active persona or conversation language."
 2. "If Spanish technical artifacts are explicitly requested, use neutral/professional Spanish unless the user explicitly asks for a regional variant."
 3. "Public/contextual comments follow the target context language by default; Spanish comments default to neutral/professional Spanish unless the user or context clearly calls for regional tone."
@@ -104,7 +104,7 @@ The `banned` lists in `inject_test.go:94-98,146-150` (Rioplatense example snippe
 
 **Neutral** reconciliation (`generic/persona-neutral.md` ↔ `claude/output-style-neutral.md`): the style has no `## Personality` and a condensed `## Persona Scope` (`:28-32`). Union the neutral artifact bullets (persona-neutral `:32-34`) into the style's Persona Scope — this is the only genuine wording gap: the "Do not switch languages…" and determinism bullets are already present verbatim in `claude/output-style-neutral.md:37-39,43` (orchestrator-verified), so no Language-and-Tone union is needed there. Neutral uses "regional slang/dialect" phrasing, not "Rioplatense/voseo" — keep neutral's wording.
 
-**Kimi vs. Claude output-style diff (verified, `diff internal/assets/kimi/... internal/assets/claude/...`).** `kimi/output-style-{gentleman,neutral}.md` are NOT byte-equal to the Claude copies — this claim (carried unverified from explore.md) is dropped. Actual diffs:
+**Kimi vs. Claude output-style diff (verified, `diff internal/assets/kimi/... internal/assets/claude/...`).** `kimi/output-style-{hgtran,neutral}.md` are NOT byte-equal to the Claude copies — this claim (carried unverified from explore.md) is dropped. Actual diffs:
 - Gentleman: Kimi's copy lacks exactly 2 language-determinism lines present in Claude's (orchestrator re-verified by diff, 2026-07-08) — "Determine the reply language from the latest actual user request, not from Engram or memory context, repository/project language, tool output, previous assistant turns, persona wording, examples, or stylistic momentum." and "For mixed-language prompts, use the dominant language of the user's direct request. Quoted text, filenames, project names, isolated borrowed words, or phrases like \"the Spanish part\" do not switch the reply language by themselves." The "Do not drift…" and "keep the full response in English…" lines are present in BOTH files.
 - Neutral: 4 determinism lines missing from Kimi ("Determine the reply language…", "Do not drift…", "For mixed-language prompts…", "When replying to the user in English, keep the full response in English…"), and the "Do not switch languages unless the user does, asks you to, or you are quoting/translating content." line is present in both but reordered relative to the determinism block.
 
@@ -155,25 +155,25 @@ sequenceDiagram
 
 | File | Action | Description |
 |---|---|---|
-| `internal/assets/claude/persona-gentleman.md` | Modify | Slim to residual (Table A) |
-| `internal/assets/kimi/persona-gentleman.md` | Modify | Slim to residual (Table B) |
+| `internal/assets/claude/persona-hgtran.md` | Modify | Slim to residual (Table A) |
+| `internal/assets/kimi/persona-hgtran.md` | Modify | Slim to residual (Table B) |
 | `internal/assets/claude/persona-neutral-residual.md` | Create | New Claude-only neutral residual (Table C) |
 | `internal/assets/kimi/persona-neutral-residual.md` | Create | New Kimi-only neutral residual (Table C) |
 | `internal/assets/generic/persona-neutral.md` | Unchanged | Shared by 13 adapters — do NOT slim (Decision 2) |
-| `internal/assets/{claude,kimi}/output-style-gentleman.md` | Modify | Absorb reconciled Gentleman union (Decision 4) |
+| `internal/assets/{claude,kimi}/output-style-hgtran.md` | Modify | Absorb reconciled Gentleman union (Decision 4) |
 | `internal/assets/{claude,kimi}/output-style-neutral.md` | Modify | Absorb reconciled Neutral union (Decision 4) |
 | `internal/components/persona/inject.go` | Modify | `residual` param on `personaContent` (`:495`), verdict at `:79`, Neutral residual cases |
 | `internal/components/persona/inject_test.go` | Modify | RED-first rewrites (see Testing); update 4 `personaContent` call sites `:2006,2031,2052,2076` |
 | `internal/components/{filemerge/section.go,uninstall/cleaners.go}` | Verify+regression test | Fingerprints KEPT (Decision 5); add slim-install regression assertions |
-| `e2e/e2e_test.sh` | Modify | `test_cc_persona_gentleman` (`:552`), `test_cc_persona_neutral` (`:574`), and `test_edge_persona_switch` (`:1541,1547`) all assert `"$HOME/.claude/CLAUDE.md"` contains "Senior Architect" — breaks by design. Update each to assert the output-style file (`~/.claude/output-styles/{gentleman,neutral}.md`) carries the tone content, and the CLAUDE.md residual carries the pointer text instead |
-| `testdata/golden/persona-claude-gentleman.golden` | Regenerate | slim residual |
+| `e2e/e2e_test.sh` | Modify | `test_cc_persona_gentleman` (`:552`), `test_cc_persona_neutral` (`:574`), and `test_edge_persona_switch` (`:1541,1547`) all assert `"$HOME/.claude/CLAUDE.md"` contains "Senior Architect" — breaks by design. Update each to assert the output-style file (`~/.claude/output-styles/{hgtran,neutral}.md`) carries the tone content, and the CLAUDE.md residual carries the pointer text instead |
+| `testdata/golden/persona-claude-hgtran.golden` | Regenerate | slim residual |
 | `testdata/golden/persona-claude-neutral.golden` | Regenerate | slim residual |
-| `testdata/golden/persona-claude-gentleman-outputstyle.golden` | Regenerate | reconciled style |
+| `testdata/golden/persona-claude-hgtran-outputstyle.golden` | Regenerate | reconciled style |
 | `testdata/golden/combined-claude-claudemd.golden` | Regenerate | slim persona; regenerate LAST (after engram-protocol-dedup baseline) |
 | `testdata/golden/persona-claude-neutral-outputstyle.golden` | Create (recommended) | lock reconciled neutral style (none exists today) |
 | `docs/agents.md` | Modify | Correct Kimi Output Styles column (`:20`) |
 
-Byte-stable (assert unchanged): `combined-windsurf-global-rules.golden`, `persona-{antigravity,kiro,windsurf}-gentleman.golden`, `persona-opencode-{gentleman,neutral}.golden`. No Kimi goldens exist — Kimi coverage is `inject_test.go` only (corrects proposal's "kimi goldens").
+Byte-stable (assert unchanged): `combined-windsurf-global-rules.golden`, `persona-{antigravity,kiro,windsurf}-hgtran.golden`, `persona-opencode-{hgtran,neutral}.golden`. No Kimi goldens exist — Kimi coverage is `inject_test.go` only (corrects proposal's "kimi goldens").
 
 ## Testing Strategy (strict TDD)
 
@@ -190,7 +190,7 @@ Byte-stable (assert unchanged): `combined-windsurf-global-rules.golden`, `person
 | Regression | `section_test.go` + `cleaners_test.go`: slim on-disk install is removed via marker and NOT falsely legacy-stripped | new cases; existing literal fixtures unchanged |
 | Golden | Regenerate 4 Claude goldens (combined LAST); assert 7 byte-stable; add neutral-outputstyle golden | after unit RED→GREEN |
 | E2E | `e2e/e2e_test.sh`: `test_cc_persona_gentleman` (`:552`), `test_cc_persona_neutral` (`:574`), `test_edge_persona_switch` (`:1541,1547`) currently assert `"$HOME/.claude/CLAUDE.md"` contains "Senior Architect" — breaks by design. Update to assert the output-style file carries the tone content and the CLAUDE.md residual carries the pointer instead | rewrite RED-first alongside unit changes |
-| Regression | `TestKimiOutputStyleSupersetOfLegacyKimiCopy`: assert every line of the pre-change `kimi/output-style-{gentleman,neutral}.md` exists in the reconciled `claude`-derived text written for Kimi (verifies Decision 4's "strict subset" claim — no unique Kimi content is lost) | new, GREEN once reconciled style lands |
+| Regression | `TestKimiOutputStyleSupersetOfLegacyKimiCopy`: assert every line of the pre-change `kimi/output-style-{hgtran,neutral}.md` exists in the reconciled `claude`-derived text written for Kimi (verifies Decision 4's "strict subset" claim — no unique Kimi content is lost) | new, GREEN once reconciled style lands |
 | Unit RED | `TestPersonaContentNonHermesNeutralUnchanged` (`inject_test.go:2058-2082`) asserts `personaContent(agent, PersonaNeutral)` is byte-identical to `generic/persona-neutral.md` for its `agentIDs` list. Verified: that list is `{AgentClaudeCode, AgentOpenCode, AgentGeminiCLI, AgentCursor, AgentCodex}` — `AgentKimi` is NOT present. Under this design, Claude must be removed from the list (its neutral `personaContent` becomes the residual, not the generic asset); the other four (OpenCode, Gemini CLI, Cursor, Codex — none output-style-capable) are unaffected and stay. Kimi was never in this test, so no additional change is required there, but the design's residual dispatch table (Decision 1) already covers Kimi's neutral residual under its own asset | rewrite RED for the Claude case only |
 
 **`rg` sweep confirmation (`inject_test.go`).** Beyond the four tests above, `rg -n "Senior Architect|## Personality" internal/components/persona/inject_test.go` surfaces additional hits at `:440,474,580,595,659,692,749,764,829,991,1035,1204-1205,1236-1237,1281-1282,1464,1567`. All of these belong to non-Claude/non-Kimi adapter tests (OpenCode, Antigravity, OpenClaw, VS Code, Cursor, Gemini — full persona unchanged by this design) or are legacy/lookalike-fixture literals unrelated to generated residual content. None require rewriting.

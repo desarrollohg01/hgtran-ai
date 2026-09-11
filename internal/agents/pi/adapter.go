@@ -11,11 +11,11 @@ import (
 	"slices"
 	"strings"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/capabilitymanifest"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/filemerge"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/statepath"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/capabilitymanifest"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/filemerge"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/statepath"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/system"
 )
 
 const (
@@ -56,7 +56,7 @@ type Adapter struct {
 }
 
 // CodeGraphPathSet declares the Pi paths owned or inspected by Hgtran AI's
-// optional CodeGraph integration. It intentionally contains no gentle-pi path.
+// optional CodeGraph integration. It intentionally contains no hgtran-pi path.
 type CodeGraphPathSet struct {
 	AgentDir  string
 	MCPConfig string
@@ -238,14 +238,10 @@ func (a *Adapter) CapabilityManifest() capabilitymanifest.AgentCapabilityManifes
 	return capabilitymanifest.MustForAgent(model.AgentPi)
 }
 
-func (a *Adapter) SupportsAutoInstall() bool {
-	return a.CapabilityManifest().Features.AutoInstall
-}
-
 func (a *Adapter) InstallCommand(profile system.PlatformProfile) ([][]string, error) {
 	return [][]string{
-		{"pi", "install", "npm:gentle-pi"},
-		{"pi", "install", "npm:gentle-engram"},
+		{"pi", "install", "npm:hgtran-pi"},
+		{"pi", "install", "npm:hgtran-engram"},
 		{"pi", "install", "npm:pi-mcp-adapter"},
 		a.engramInitCommand(),
 		piSubagentsInstallCommand(profile),
@@ -257,10 +253,7 @@ func (a *Adapter) InstallCommand(profile system.PlatformProfile) ([][]string, er
 }
 
 func (a *Adapter) engramInitCommand() []string {
-	if _, err := a.lookPath("pnpm"); err == nil {
-		return []string{"pnpm", "dlx", "gentle-engram@latest", "pi-engram", "init"}
-	}
-	return []string{"npm", "exec", "--yes", "--package", "gentle-engram@latest", "--", "pi-engram", "init"}
+	return []string{"npm", "exec", "--yes", "--package", "hgtran-engram@latest", "--", "pi-engram", "init"}
 }
 
 func (a *Adapter) GlobalConfigDir(homeDir string) string { return ConfigPath(homeDir) }

@@ -17,8 +17,9 @@ import (
 	"strings"
 	"time"
 
-	piagent "bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/pi"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/filemerge"
+	piagent "github.com/desarrollohg01/hgtran-ai/v2/internal/agents/pi"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/filemerge"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/system"
 )
 
 const (
@@ -156,7 +157,7 @@ type piCodeGraphOwnedFile struct {
 }
 
 // ReconcilePiCodeGraph owns the optional Pi integration. It never writes to
-// gentle-pi package paths; package children are copied into a Pi overlay.
+// hgtran-pi package paths; package children are copied into a Pi overlay.
 func ReconcilePiCodeGraph(options PiCodeGraphOptions) (result PiCodeGraphResult, err error) {
 	if !options.Selected {
 		return UninstallPiCodeGraph(options.HomeDir)
@@ -518,6 +519,7 @@ func probePiCodeGraphMCPWithAgentDirContext(ctx context.Context, mcpPath, agentD
 		return PiCodeGraphMCPProbeResult{}, fmt.Errorf("Pi MCP adapter extension is unavailable at %q: %w", adapterPath, err)
 	}
 	command := exec.CommandContext(ctx, "codegraph", "serve", "--mcp")
+	system.EnsureCommandDir(command)
 	stdin, err := command.StdinPipe()
 	if err != nil {
 		return PiCodeGraphMCPProbeResult{}, err
@@ -670,7 +672,7 @@ func inspectPiCodeGraph(homeDir, workspaceDir string) (bool, string, []PiCodeGra
 	}
 	if len(children) == 0 {
 		if _, err := os.Stat(paths.Manifest); err != nil {
-			return false, "no effective Pi children were discovered and no hgtran-ai ownership record exists", nil
+			return false, "no effective Pi children were discovered and no Hgtran-AI ownership record exists", nil
 		}
 		if err := verifyPiCodeGraph(paths.MCPConfig, nil); err != nil {
 			return false, err.Error(), nil

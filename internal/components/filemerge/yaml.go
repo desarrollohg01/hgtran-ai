@@ -5,7 +5,7 @@ import (
 	"sort"
 	"strings"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/versions"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/versions"
 )
 
 // UpsertYAMLMCPServerBlock removes any existing <serverID>: block nested under

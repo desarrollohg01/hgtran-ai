@@ -23,8 +23,8 @@
 ```
 go test ./internal/... (full suite, fresh run, no cache)
 
-ok  github.com/gentleman-programming/gentle-ai/internal/assets         0.084s
-ok  github.com/gentleman-programming/gentle-ai/internal/components/sdd  60.808s
+ok  github.com/desarrollohg01/hgtran-ai/internal/assets         0.084s
+ok  github.com/desarrollohg01/hgtran-ai/internal/components/sdd  60.808s
 ok  (all other internal/... packages)
 
 All packages: PASS — zero failures.

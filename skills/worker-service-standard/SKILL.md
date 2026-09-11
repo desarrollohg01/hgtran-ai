@@ -4,7 +4,7 @@ description: "Trigger: worker service, windows service, Quartz, job programado, 
 license: Apache-2.0
 metadata:
   author: hgtransportaciones
-  version: "1.0"
+  version: "1.1"
 ---
 
 ## Cuándo usarla
@@ -110,6 +110,11 @@ persistido —una marca de agua que avanza recién cuando la escritura confirma�
 
 Las tablas del job store son un cambio de esquema: van por `db-change-standard` como cualquier
 otra, con su retención acotada y declarada.
+    
+**Apagado ordenado.** Todos los métodos de negocio y de datos MUST aceptar y propagar el
+`CancellationToken` que Quartz entrega al job, hasta la consulta (en Dapper, por
+`CommandDefinition`). Un job que ignora el token convierte el apagado en un *hard kill* del
+gestor de servicios y deja filas en `IN_PROGRESS` para siempre. [REVIEW]
 
 ## Librería de correo
 
@@ -159,6 +164,13 @@ uno: estaba pagando el seguimiento completo para no guardar nunca nada por EF.
 
 Y si el conteo de `SaveChanges` se queda cerca de cero, la pregunta correcta no es cómo
 optimizar el `DbContext` sino por qué sigue ahí.
+    
+**Transacción compartida en el híbrido.** Si EF y Dapper operan bajo la misma transacción de
+negocio sobre las mismas tablas, Dapper MUST recibir por parámetro la misma instancia de
+`DbConnection` y `DbTransaction` que usa el `DbContext` (`GetDbConnection()` +
+`UseTransaction`). Dos transacciones independientes sobre las mismas tablas producen bloqueos
+entre sí y commits parciales —una confirma, la otra revierte— que ningún reintento posterior
+puede reconciliar. [REVIEW]
 
 ## Documentación de clases
 
@@ -212,6 +224,79 @@ imposible saber si rompió el framework o el rediseño.
 
 El framework va en el paso 6, no en el 1. Migrar la versión primero convierte cualquier falla
 posterior en una discusión sobre quién la causó.
+    
+## Versionado, Empaquetado y Despliegue
+
+*El estándar no ata el worker a un SO específico, pero exige un contrato estricto de entrega y artefactos predecibles.*
+
+* **[ARNÉS]** Todo worker MUST declarar `<Version>` en un solo lugar —`Directory.Build.props` (preferido) o el `.csproj`. Formato `MAYOR.MENOR.PARCHE` sin prefijo. Esta es la única fuente de verdad.
+* **[MANUAL / CI]** Entregables concretos: El proceso de compilación MUST producir en la carpeta `releases/` un archivo `{Assembly}_v{Version}.zip`. Dentro del paquete, MUST incluirse `VERSION.txt` (versión, commit, fecha), `CAMBIOS.txt`, y excluir lo listado en `delivery-exclude.txt`.
+* **[MANUAL]** Trazabilidad de cambios: `CAMBIOS.txt` es el artefacto autogenerado del release; `CHANGELOG.md` (cuando exista en el repo) es el curado a mano. Si ambos existen, el autogenerado MUST citar el rango de tags del que salió para que la discrepancia sea trazable.
+* **[REVIEW]** Aprovisionamiento: El entorno destino MUST estar pre-aprovisionado (runtimes, compresor, acceso a red interna) antes del primer despliegue, verificado con checklist. Ningún script de despliegue descarga dependencias de internet en tiempo de ejecución. Alternativa aceptada: artefacto autocontenido (`--self-contained`; `PublishSingleFile` solo si el arranque en frío por descompresión lo tolera).
+* **[REVIEW]** Archivos de configuración: El empaquetado final (`publish/`) MUST NOT contener secretos ni credenciales reales en sus `appsettings.json`. Viajan con placeholders.
+* **[MANUAL]** Desarrollo local: Los secretos MUST gestionarse vía variables de entorno o `dotnet user-secrets`, nunca en archivos versionados.
+* **[REVIEW]** Scripts de ciclo de vida (ej. `install/uninstall`): MUST ejecutarse bajo una cuenta de servicio gestionada (gMSA en Windows/AD; equivalente gestionado en otro SO) con privilegios SQL mínimos (NUNCA `LocalSystem` por defecto). MUST configurar recuperación automática ante fallos y manejar desinstalaciones limpias.
+* **[MANUAL]** Ritual de release: Bump de `<Version>` → Commit → Tag `vX.Y.Z` → Build. El tag MUST existir *antes* del build que genera el `CAMBIOS.txt`; sin tag previo, el rango cae a todo el historial en silencio.
+
+## Reglas ejecutables del arnés
+
+*El estándar exige validación continua, pero las reglas deben ser útiles, no ruido.*
+
+* **[ARNÉS]** Toda regla nueva del arnés motivada por un defecto MUST validarse contra un caso de prueba (o el código de origen, en migraciones) que garantice que la regla dispara (FAIL). Si no detecta el fallo que la motivó, no discrimina.
+* **[ARNÉS]** El auditor estático MUST reportar falla si no pudo parsear/leer la totalidad del código. Un escáner que devuelve verde porque falló al leer un archivo (ej. literales `"""`) invalida la auditoría.
+* **[REVIEW]** Un detector con falsos positivos repetitivos SHOULD degradarse a *Warning* o retirarse a una rama de calibración (con deuda registrada y dueño) hasta que deje de romper builds legítimas.
+
+## Prevención de éxito silencioso
+
+*Ninguna operación que falle debe pasar desapercibida ni dejar un estado inconsistente.*
+
+* **[REVIEW]** El registro de auditoría/bitácora se rige por dos momentos estrictos:
+* **Constancia de Inicio:** Va ANTES de comenzar el trabajo (ej. ciclo ETL). Si el proceso muere, debe quedar evidencia de la ejecución iniciada (`IN_PROGRESS`).
+* **Constancia de Entrega:** Va DESPUÉS de la confirmación del sistema destino (ej. envío de correo, inserción en ERP). Registrar antes asume un éxito que puede no ocurrir.
+* **[REVIEW]** Los booleanos de los sinks y los *rowcounts* se honran: un sink que devuelve `false` o un `UPDATE` que afecta 0 filas (Sin Efecto) MUST NOT avanzar la marca de agua ni contar como éxito.
+* **[REVIEW]** Todo bloque de escritura MUST ser idempotente. Donde no sea viable (ej. un `INSERT` ciego sin clave única conducido por una marca externa), la ventana residual MUST quedar documentada con su dueño, su mitigación (aislamiento por destino, reintento en la escritura de la marca) y su condición de reapertura. Una ventana aceptada sin dueño es un defecto; una ventana aceptada con dueño es arquitectura.
+* **[REVIEW]** Unicidad en destino: toda tabla destino de un proceso batch/ETL SHOULD tener una restricción de unicidad sobre su clave natural. La unicidad convierte una duplicación silenciosa en una excepción visible que la política de reintentos puede manejar —es el mecanismo que hace seguro reintentar—. Donde el esquema no se puede tocar, la excepción queda documentada con su dueño, igual que la ventana residual.
+
+## Migraciones (Paridad y Alcance)
+
+*La migración de sistemas legacy requiere fronteras claras.*
+
+* **[MANUAL]** Paso 0: Antes de migrar, MUST inventariarse el 100% de los proyectos del repositorio origen y declarar por escrito el alcance (qué entra y qué muere explícitamente). El alcance implícito es inválido.
+* **[MANUAL]** Todo *change* de migración cierra con paridad verificada contra el comportamiento observable real, no asumiendo lo que dice el código viejo.
+* **[REVIEW]** Si el proceso origen está roto o es errático, el criterio de "comportamiento correcto" MUST tener un dueño de negocio/operaciones asignado que valide la nueva lógica.
+
+## Patrones ETL Incremental
+
+*Reglas para dominios de extracción masiva dentro de workers.*
+
+* **[REVIEW]** La marca de agua avanza por la unidad lógica del lote (entidad raíz o solicitud), nunca por renglón de detalle. El corte debe caer siempre en el límite de la entidad para evitar pérdida silenciosa de datos.
+* **[REVIEW]** La clave de la marca de agua MUST identificar unívocamente al origen/feed, no solo el nombre de la tabla local. Un worker con múltiples feeds a la misma tabla pisará sus marcas si no segrega por clave.
+* **[REVIEW]** La selección de candidatos por ciclo MUST cubrir el universo o avanzar sobre él (cursor, tandas con exclusión de lo ya revisado). Un `TOP` fijo ordenado siempre igual, sobre un universo que crece, deja una cola que nunca es revisada.
+* **[REVIEW]** La subconsulta de corte MUST llevar `DISTINCT` antes del `TOP`: el identificador por sí solo no es único cuando la cabecera se une por áreas o cruces múltiples.
+* **[REVIEW]** El piso de fecha temporal MUST basarse en el año/mes de la propia marca de agua, NUNCA del reloj del sistema (`DateTime.Now`). Atarlo al año en curso pierde solicitudes rezagadas cada 1 de enero.
+* **[ARNÉS]** Sin `NOLOCK` en lecturas que deciden cierres irreversibles. Para ser auditable, la consulta irreversible MUST llevar un marcador explícito que nombre la decisión (ej. `/* SIN NOLOCK: Cierre de orden irreversible */`). Si solo dice 'sin nolock', el test pasa pero la documentación se pudre.
+* **[REVIEW]** Guardas contra el conjunto vacío: Todo ciclo de sincronización MUST abortar o saltar la ejecución si la lectura de origen devuelve cero filas, protegiendo al destino de truncados accidentales.
+* **[REVIEW]** Operaciones con `IN @Ids` sobre conjuntos grandes MUST segmentarse en lotes (ej. tandas de 2,000) dentro del repositorio para evitar el límite de 2,100 parámetros de SQL Server.
+
+## Estrategia de Pruebas
+
+*La calidad no se negocia, pero la profundidad de la prueba se adapta al caso.*
+
+* **[ARNÉS]** Unitarias: MUST existir para lógica de negocio, parsing y reglas del arnés. Para guardas críticas y flujos irreversibles, la prueba MUST verificarse por mutación al crearse (el test falla sin la guarda).
+* **[ARNÉS]** Integración: MUST existir contra un motor real (LocalDB/Docker) siempre que haya SQL crudo, lógica de cursores o dependencias directas del motor.
+* **[MANUAL]** Humo contra Producción: Estrictamente de lectura (dependencias responden, base alcanzable, marca legible) — NUNCA dispara escrituras.
+* **[MANUAL]** Humo con Escrituras: SOLO contra ambientes segregados (ej. `smoke-test`), con las escrituras identificables por origen y documentadas antes de correr.
+
+## Cross-link: Email Branding
+
+* **[REVIEW]** Todo worker que envíe correos transaccionales SHOULD acoplarse al estándar `openspec/specs/email-branding` (esqueleto de 5 secciones, paleta/logos estándar, inyección `isHtml: true` respetando el contrato SMTP). *Nota: Ascender a MUST cuando el estándar de branding sea ratificado a nivel organización.*
+
+### Anexo Técnico: Trampas de Empaquetado y Windows CMD
+
+* **Compresores y Archivos Retenidos:** Usar 7-Zip en lugar de PowerShell `Compress-Archive`. Si un log está retenido por otro proceso, `Compress-Archive` aborta el trabajo entero; 7-Zip emite un *warning* pero empaqueta el resto. *(Evidencia: ZIP no generado en 3 intentos previos)*.
+* **Exclusiones seguras:** Pasar exclusiones a 7-Zip mediante archivo (ej. `-x@delivery-exclude.txt`). Si se pasa el caracter `!` en la línea de comandos de un `.bat` con *delayed expansion* activo, CMD lo consume y 7-Zip recibe un parámetro `-x` pelado que aborta la compresión silenciosamente.
+* **Rompimiento de Parseo por Etiquetas:** Las etiquetas de salto (`goto` / `:label`) NO deben vivir dentro de bloques `if` en CMD. Rompen el parseo prematuramente lanzando el error exacto: *"No se esperaba..."*. La lógica con reintentos debe ir en una subrutina invocada con `call`.
+
 
 ## Lo mínimo antes de dar por terminado
 
@@ -222,13 +307,20 @@ posterior en una discusión sobre quién la causó.
   - Un **vigilante fuera del proceso** que alerte por ausencia de señal — un latido y una marca de
     última corrida exitosa, y la alarma se dispara cuando envejecen. El aviso por correo NO cubre
     esto: si el proceso murió, no queda nadie para mandarlo, y `email-branding` lo dice
-    explícitamente al declarar fuera de alcance el servicio que no vuelve a arrancar.
+    explícitamente al declarar fuera de alcance el servicio que no vuelve a arrancar. El latido
+    MUST escribirse en una tabla consultable desde fuera —la misma base de control donde ya vive
+    la marca de última corrida—, con el nombre del proceso y `endTime` en UTC; la consulta exacta
+    del vigilante MUST estar fijada por una prueba, para que un renombre no deje la alarma muda.
+    Un endpoint HTTP de health es alternativa aceptable solo donde ya hay un orquestador que lo
+    consulte: en un servicio que corre solo de noche, la fila en base es la que sobrevive a la
+    muerte del proceso. [ARNÉS la consulta fijada por test / MANUAL el vigilante y la alarma]
   - El **aviso de ciclo de vida** al arrancar y al detenerse, obligatorio por `email-branding`.
     Sirve para enterarse de lo que sí pasó, no de lo que dejó de pasar.
 - **Pipeline en Bitbucket**, y que falle si el clon limpio no compila con los submódulos
   inicializados.
 - **Ningún secreto versionado.** `git ls-files` no debe devolver ningún archivo con una credencial.
-- Proyecto de pruebas: **pendiente, depende del caso** y todavía no es requisito.
+    - Proyecto de pruebas: ver la sección "Estrategia de Pruebas" — unitarias obligatorias,
+      integración contra motor real cuando hay SQL crudo, humo antes de liberar.
 
 ## Despliegue y release
 

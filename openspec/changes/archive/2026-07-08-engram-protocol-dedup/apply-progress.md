@@ -60,7 +60,7 @@ Delivery: `exception-ok` / `size:exception` single PR, left uncommitted in the w
 | `testdata/golden/engram-codex-instructions.golden` | Created | Rendered Codex `model_instructions_file` (113 lines, content growth vs. old 104-line asset) | +113 |
 | `testdata/golden/engram-codex-compact-prompt.golden` | Created | Rendered Codex `experimental_compact_prompt_file` (byte-identical to old compact prompt) | +14 |
 | `testdata/golden/combined-windsurf-global-rules.golden` | Verified unchanged | `git diff --stat` empty — confirms Windsurf stays full | 0 |
-| `openspec/changes/engram-protocol-dedup/upstream-protocol-flag-contract.md` | Created | Documents the 3 guarantees the upstream `gentle-engram` change must satisfy | +55 |
+| `openspec/changes/engram-protocol-dedup/upstream-protocol-flag-contract.md` | Created | Documents the 3 guarantees the upstream `hgtran-engram` change must satisfy | +55 |
 | `openspec/changes/engram-protocol-dedup/proposal.md` | Modified | Dependencies section cross-references the new contract doc | +1/-1 |
 | `openspec/changes/engram-protocol-dedup/tasks.md` | Modified | All 37 tasks marked `[x]` | — |
 

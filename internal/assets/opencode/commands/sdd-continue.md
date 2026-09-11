@@ -1,6 +1,6 @@
 ---
 description: Continue the next SDD phase in the dependency chain
-agent: gentle-orchestrator
+agent: hgtran-orchestrator
 ---
 
 Follow the SDD orchestrator workflow to continue the active change.

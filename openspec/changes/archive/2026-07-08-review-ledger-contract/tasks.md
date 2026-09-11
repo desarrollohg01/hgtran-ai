@@ -90,7 +90,7 @@ Strict TDD is active. Required full test runner: `go test ./...`; use targeted p
 ### 2.7 GREEN: Add inline-lens ledger section to OpenCode/Kilocode path
 
 - [x] Add the section to `internal/assets/opencode/sdd-orchestrator.md`. Investigated `internal/components/sdd/inject.go`'s `sddOrchestratorAsset()` mapping: both `AgentOpenCode` and `AgentKilocode` already resolve to the single `opencode/sdd-orchestrator.md` source (confirmed by `TestSDDOrchestratorAssetSelectionCoversSupportedAgents`), so no functional inject.go code change was required — editing the one source file already reaches both variants via the existing `inlineOpenCodeSDDPrompts`/`injectFileAppend` render paths.
-- [x] GREEN evidence: added `TestRequiredLedgerClauses/opencode` and `/kilocode` subtests that call the real `Inject()` path (not a static file read) for both `opencodeAdapter()` and `kilocodeAdapter()`, read back the rendered `gentle-orchestrator` prompt from `opencode.json`, and assert all clauses — both PASS, proving the shared source reaches the actual rendered output for both adapters.
+- [x] GREEN evidence: added `TestRequiredLedgerClauses/opencode` and `/kilocode` subtests that call the real `Inject()` path (not a static file read) for both `opencodeAdapter()` and `kilocodeAdapter()`, read back the rendered `hgtran-orchestrator` prompt from `opencode.json`, and assert all clauses — both PASS, proving the shared source reaches the actual rendered output for both adapters.
 
 ### 2.8 GREEN: Confirm Claude/Cursor/Kimi/Kiro orchestrators carry the merge-side clause
 

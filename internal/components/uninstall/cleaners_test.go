@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/symlinktest"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/symlinktest"
 )
 
 func FuzzNormalizeJSON_NoPanic(f *testing.F) {
@@ -143,7 +143,7 @@ func TestRemoveMarkdownSections_RemovesSlimResidualPersonaViaMarkerNotFingerprin
 
 func TestRemoveJSONPaths_RemovesOnlyManagedKeys(t *testing.T) {
 	input := []byte(`{
-  "theme": "gentleman",
+  "theme": "hgtran",
   "permission": {
     "bash": {
       "*": "allow"

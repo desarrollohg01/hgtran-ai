@@ -65,7 +65,7 @@ EXCLUDE_PATHS=(
 # repository where that number means something else, or nothing.
 #
 # This is not hypothetical. The bulk rename of 4ab09a59 rewrote 434 such links
-# across 74 files into `Gentleman-Programming/hgtran-ai`, a repository that
+# across 74 files into `desarrollohg01/hgtran-ai`, a repository that
 # returns 404 — the upstream owner paired with our repository name. The docs now
 # cite dead references to work that does exist, under a name it never had.
 #
@@ -79,15 +79,38 @@ HISTORICAL_LINK='github\.com/[Gg]entleman-[Pp]rogramming/[a-z-]*/(pull|issues|co
 # `gentle-ai` inside a URL gets rewritten first and the longer patterns stop
 # matching.
 declare -a SUBS=(
-  's|github\.com/gentleman-programming/gentle-ai|bitbucket.org/hgt_development/hgtran-ai|g'
+  's|github\.com/gentleman-programming/gentle-ai|github.com/desarrollohg01/hgtran-ai|g'
   's|github\.com/Gentleman-Programming/gentle-ai|github.com/desarrollohg01/hgtran-ai|g'
   's|Gentleman-Programming/gentle-ai|desarrollohg01/hgtran-ai|g'
-  's|gentleman-programming/gentle-ai|hgt_development/hgtran-ai|g'
+  's|gentleman-programming/gentle-ai|desarrollohg01/hgtran-ai|g'
+  's|GENTLE_AI_CHANNEL|HGTRAN_AI_CHANNEL|g'
   's|\.gentle-ai|.hgtran-ai|g'
   's|gentle-ai|hgtran-ai|g'
   's|Gentle-AI|HGTran-AI|g'
   's|Gentle AI|HGTran AI|g'
 )
+
+# --- deliberate non-renames -------------------------------------------------
+#
+# These look like gaps in the table above and are not. Each was checked; adding
+# a rule for it would break something that currently works. Listed here so the
+# next reader — human or agent — does not "complete" the table and regress:
+#
+#   GGA_SKIP_FILE_CHECK, GGA_TEST_CAPTURE, GGA_TEST_EXIT
+#       Environment variables this repository sets to drive the external `hga`
+#       binary. They are a contract with that program, which deliberately kept
+#       its GGA_* names because they are also written into user git hooks and
+#       matched by exact string. Renaming them here breaks the integration.
+#
+#   gentle-engram, gentle-pi
+#       Published package and harness names — `gentle-engram@latest` is what npm
+#       resolves, and `pi install npm:gentle-pi` is documented as such. Renaming
+#       either produces an install command for a package that does not exist.
+#
+#   bare `gga` in prose
+#       The binary is now `hga`, so documentation SHOULD say hga — but a blanket
+#       substitution cannot tell prose from the GGA_* variables above. Prose is
+#       corrected by hand when the file is touched, never by this script.
 
 # Guard: refuse to run if the substitution table has itself been rewritten.
 #

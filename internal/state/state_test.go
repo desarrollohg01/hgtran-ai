@@ -1,17 +1,133 @@
 package state
 
 import (
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/statepath"
 	"os"
 	"path/filepath"
 	"reflect"
 	"slices"
-	"strings"
 	"testing"
 	"time"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/statepath"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
 )
+
+// TestWriteReconciledAcceptsDesiredStateVisibleAfterWriteError verifies that
+// a persistence error is reconciled against the bytes visible on disk.
+func TestWriteReconciledAcceptsDesiredStateVisibleAfterWriteError(t *testing.T) {
+	home := t.TempDir()
+	desired := InstallState{InstalledAgents: []string{"opencode"}}
+	if err := Write(home, desired); err != nil {
+		t.Fatal(err)
+	}
+	statePath := Path(home)
+	data, err := os.ReadFile(statePath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	target := filepath.Join(home, ".hgtran-ai", "persisted-state.json")
+	if err := os.Rename(statePath, target); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Symlink(target, statePath); err != nil {
+		t.Skipf("state symlink unavailable: %v", err)
+	}
+
+	if err := WriteReconciled(home, desired); err != nil {
+		t.Fatalf("WriteReconciled() error = %v", err)
+	}
+	visible, err := os.ReadFile(target)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(visible) != string(data) {
+		t.Fatalf("visible state changed:\n got %s\nwant %s", visible, data)
+	}
+}
+
+func fullyPopulatedInstallState() InstallState {
+	lastUpdateCheck := time.Date(2026, 8, 12, 9, 30, 0, 0, time.UTC)
+	rddModeRecordedAt := time.Date(2026, 8, 12, 9, 0, 0, 0, time.UTC)
+	return InstallState{
+		InstalledAgents:          []string{"claude-code", "opencode"},
+		InstalledBinaryVersion:   "1.2.3",
+		ManagedAssetDigest:       "sha256:managed-assets",
+		SelectionConfigured:      true,
+		Components:               []model.ComponentID{model.ComponentEngram, model.ComponentSDD},
+		Skills:                   []model.SkillID{model.SkillSDDInit, model.SkillWorkUnitCommits},
+		Preset:                   model.PresetCustom,
+		SDDMode:                  model.SDDModeMulti,
+		StrictTDD:                true,
+		CommunityTools:           []string{"codegraph", "jq"},
+		CommunityToolsConfigured: true,
+		ClaudeModelAssignments:   map[string]string{"sdd-explore": "sonnet"},
+		ClaudePhaseAssignments: map[string]ClaudePhaseAssignmentState{
+			"sdd-apply": {Model: "opus", Effort: "max"},
+		},
+		KiroModelAssignments: map[string]string{"sdd-design": "opus"},
+		CodexModelAssignments: map[string]string{
+			"sdd-verify": "high",
+		},
+		CodexOrchestratorAssignment: &CodexOrchestratorAssignmentState{Model: "gpt-5.6-luna", Effort: "high"},
+		CodexCarrilModelAssignments: map[string]string{
+			"sdd-strong": "gpt-5.6-luna",
+			"sdd-cheap":  "gpt-5.4-mini",
+		},
+		CodexPhaseModelAssignments: map[string]string{
+			"sdd-propose": "gpt-5.6-sol",
+		},
+		ModelAssignments: map[string]ModelAssignmentState{
+			"sdd-init": {ProviderID: "anthropic", ModelID: "claude-sonnet-4", Effort: "medium"},
+		},
+		Persona:           "neutral",
+		PersonaPresent:    true,
+		LastUpdateCheck:   &lastUpdateCheck,
+		PendingSync:       true,
+		RDDMode:           "off",
+		RDDModeRecordedAt: &rddModeRecordedAt,
+		BackgroundIntent:  model.OpenCodeBackgroundOn,
+	}
+}
+
+func TestInstallStatePreservesEveryField(t *testing.T) {
+	for _, tt := range []struct {
+		name string
+		run  func(t *testing.T, want InstallState) InstallState
+	}{
+		{
+			name: "JSON round-trip",
+			run: func(t *testing.T, want InstallState) InstallState {
+				home := t.TempDir()
+				if err := Write(home, want); err != nil {
+					t.Fatal(err)
+				}
+				got, err := Read(home)
+				if err != nil {
+					t.Fatal(err)
+				}
+				return got
+			},
+		},
+		{
+			name: "MergeAgents",
+			run: func(_ *testing.T, want InstallState) InstallState {
+				return MergeAgents(want, []string{"opencode", "codex"})
+			},
+		},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			want := fullyPopulatedInstallState()
+			wantAfter := want
+			if tt.name == "MergeAgents" {
+				wantAfter.InstalledAgents = []string{"claude-code", "opencode", "codex"}
+			}
+			got := tt.run(t, want)
+			if !reflect.DeepEqual(got, wantAfter) {
+				t.Fatalf("InstallState = %#v, want %#v", got, wantAfter)
+			}
+		})
+	}
+}
 
 // TestMergeAgents verifies that MergeAgents appends new agents to existing
 // installed_agents with deduplication and preserves all other fields.
@@ -62,7 +178,7 @@ func TestMergeAgents(t *testing.T) {
 				ModelAssignments:         existingAssignments,
 				ClaudeModelAssignments:   existingClaude,
 				KiroModelAssignments:     existingKiro,
-				Persona:                  "gentleman",
+				Persona:                  "hgtran",
 			},
 			newAgents: []string{"pi"},
 			wantIDs:   []string{"opencode", "pi"},
@@ -159,7 +275,7 @@ func TestWriteAndRead(t *testing.T) {
 // `hgtran-ai sync` regenerates the persona the user actually selected — not a
 // hard-coded default.
 func TestPersonaRoundTrip(t *testing.T) {
-	for _, persona := range []string{"gentleman", "neutral", "custom"} {
+	for _, persona := range []string{"hgtran", "neutral", "custom"} {
 		t.Run(persona, func(t *testing.T) {
 			home := t.TempDir()
 			if err := Write(home, InstallState{
@@ -196,6 +312,35 @@ func TestPersonaBackwardCompat(t *testing.T) {
 	}
 }
 
+func TestPersonaPresenceDistinguishesOmittedAndExplicitEmpty(t *testing.T) {
+	for _, tc := range []struct {
+		name        string
+		stateJSON   string
+		wantPresent bool
+	}{
+		{name: "omitted", stateJSON: `{"installed_agents":["pi"]}`, wantPresent: false},
+		{name: "explicit empty", stateJSON: `{"installed_agents":["pi"],"persona":""}`, wantPresent: true},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			home := t.TempDir()
+			if err := os.MkdirAll(filepath.Dir(Path(home)), 0o755); err != nil {
+				t.Fatalf("MkdirAll() error = %v", err)
+			}
+			if err := os.WriteFile(Path(home), []byte(tc.stateJSON), 0o644); err != nil {
+				t.Fatalf("WriteFile() error = %v", err)
+			}
+
+			got, err := Read(home)
+			if err != nil {
+				t.Fatalf("Read() error = %v", err)
+			}
+			if got.PersonaPresent != tc.wantPresent {
+				t.Fatalf("PersonaPresent = %t, want %t", got.PersonaPresent, tc.wantPresent)
+			}
+		})
+	}
+}
+
 // TestWriteCreatesStateDir verifies that Write creates the .hgtran-ai directory
 // when it does not exist yet.
 func TestWriteCreatesStateDir(t *testing.T) {
@@ -206,23 +351,17 @@ func TestWriteCreatesStateDir(t *testing.T) {
 	}
 
 	if _, err := os.Stat(statepath.Root(home)); err != nil {
-		t.Errorf("Write() did not create %q: %v", statepath.Root(home), err)
+		t.Errorf("Write() did not create %q: %v", statepath.DirName, err)
 	}
 }
 
 // TestWriteStateFilePath verifies Path() returns the expected location.
-// The literal is spelled out on purpose rather than derived from statepath:
-// if the root is ever renamed again, this test must fail and be read, not
-// silently follow along.
 func TestWriteStateFilePath(t *testing.T) {
 	home := t.TempDir()
 	got := Path(home)
 	want := filepath.Join(home, ".hgtran-ai", "state.json")
 	if got != want {
 		t.Errorf("Path() = %q, want %q", got, want)
-	}
-	if strings.Contains(got, ".gentle-ai") {
-		t.Errorf("Path() = %q, which still points at the pre-rename root", got)
 	}
 }
 
@@ -284,13 +423,13 @@ func TestWriteOverwrite(t *testing.T) {
 
 func TestWriteFailurePreservesExistingState(t *testing.T) {
 	home := t.TempDir()
-	original := InstallState{InstalledAgents: []string{"opencode"}, Persona: "neutral"}
+	original := InstallState{InstalledAgents: []string{"opencode"}, Persona: "neutral", PersonaPresent: true}
 	if err := Write(home, original); err != nil {
 		t.Fatal(err)
 	}
 
 	statePath := Path(home)
-	stateTarget := filepath.Join(statepath.Root(home), "persisted-state.json")
+	stateTarget := filepath.Join(home, statepath.DirName, "persisted-state.json")
 	if err := os.Rename(statePath, stateTarget); err != nil {
 		t.Fatal(err)
 	}

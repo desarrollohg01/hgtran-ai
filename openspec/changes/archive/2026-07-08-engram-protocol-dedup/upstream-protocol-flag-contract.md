@@ -1,7 +1,7 @@
 # Upstream contract: `engram setup --protocol=<slim|full>`
 
-This note documents the handoff to the sibling change in `gentle-engram`
-(`/home/gentleman/work/engram`) that will implement the actual
+This note documents the handoff to the sibling change in `hgtran-engram`
+(`/home/hgtran/work/engram`) that will implement the actual
 `--protocol=<slim|full>` flag on `engram setup`. Implementing that flag is
 explicitly **out of scope** for `engram-protocol-dedup` (see `proposal.md`
 Out of Scope and Dependencies). This document only records the three
@@ -66,6 +66,6 @@ forces `full` for the whole slug (design.md "Per-slug forwarding semantics").
 
 - `proposal.md` → Dependencies: links back to this document.
 - `design.md` → Decision 4 (Capability detection) and Decision 5 (Upstream
-  flag contract — gentle-engram, specify only) for the full design rationale.
+  flag contract — hgtran-engram, specify only) for the full design rationale.
 - `internal/components/engram/setup.go` → `ProbeProtocolFlag`.
 - `internal/cli/run.go` → per-slug `--protocol` forwarding wiring.

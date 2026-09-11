@@ -6,10 +6,10 @@ set -euo pipefail
 # Ecosystem, Frameworks, Workflows for AI coding agents.
 #
 # Usage:
-#   curl -sL https://raw.githubusercontent.com/Gentleman-Programming/gentle-ai/main/scripts/install.sh | bash
+#   curl -sL https://raw.githubusercontent.com/desarrollohg01/hgtran-ai/main/scripts/install.sh | bash
 #
 # Or download and run:
-#   curl -sLO https://raw.githubusercontent.com/Gentleman-Programming/gentle-ai/main/scripts/install.sh
+#   curl -sLO https://raw.githubusercontent.com/desarrollohg01/hgtran-ai/main/scripts/install.sh
 #   chmod +x install.sh
 #   ./install.sh
 # ============================================================================
@@ -284,9 +284,9 @@ install_go() {
 
     info "Running: go install ${go_package}"
     if [ "${CHANNEL}" = "beta" ]; then
-        prepend_go_env_pattern GONOSUMDB bitbucket.org/hgt_development/hgtran-ai/v2
-        prepend_go_env_pattern GOPRIVATE bitbucket.org/hgt_development/hgtran-ai/v2
-        prepend_go_env_pattern GONOPROXY bitbucket.org/hgt_development/hgtran-ai/v2
+        prepend_go_env_pattern GONOSUMDB github.com/desarrollohg01/hgtran-ai/v2
+        prepend_go_env_pattern GOPRIVATE github.com/desarrollohg01/hgtran-ai/v2
+        prepend_go_env_pattern GONOPROXY github.com/desarrollohg01/hgtran-ai/v2
         export GONOSUMDB GOPRIVATE GONOPROXY
 
         if ! go install "$go_package"; then

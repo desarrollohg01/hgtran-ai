@@ -9,9 +9,9 @@ import (
 	"runtime"
 	"strings"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/capabilitymanifest"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/capabilitymanifest"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/system"
 )
 
 type Adapter struct {
@@ -64,10 +64,6 @@ func (a *Adapter) Detect(_ context.Context, homeDir string) (bool, string, strin
 
 func (a *Adapter) CapabilityManifest() capabilitymanifest.AgentCapabilityManifest {
 	return capabilitymanifest.MustForAgent(model.AgentVSCodeCopilot)
-}
-
-func (a *Adapter) SupportsAutoInstall() bool {
-	return a.CapabilityManifest().Features.AutoInstall
 }
 
 func (a *Adapter) InstallCommand(_ system.PlatformProfile) ([][]string, error) {

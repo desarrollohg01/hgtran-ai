@@ -20,8 +20,8 @@ import (
 
 	minisign "github.com/jedisct1/go-minisign"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/update"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/system"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/update"
 )
 
 const testMinisignKeyDomain = "hgtran-ai issue 359 minisign TEST KEY; never use for releases"
@@ -79,7 +79,7 @@ func TestVerifyChecksumsSignatureFailsClosed(t *testing.T) {
 		repo    = "hgtran-ai"
 		version = "2.2.0"
 	)
-	manifest := []byte(strings.Repeat("a", sha256.Size*2) + "  gentle-ai_2.2.0_linux_amd64.tar.gz\n")
+	manifest := []byte(strings.Repeat("a", sha256.Size*2) + "  hgtran-ai_2.2.0_linux_amd64.tar.gz\n")
 	publicKey, privateKey := testMinisignKey(t)
 	rotationKey, _ := minisignKeyFromDomain(t, testMinisignKeyDomain+" rotation fixture")
 	validSignature := signTestManifest(t, privateKey, manifest, owner, repo, version)
@@ -231,7 +231,7 @@ func TestDownloadToFileEnforcesLimitAndCleansPartialOutput(t *testing.T) {
 }
 
 func TestExpectedChecksumForRequiresUniqueSHA256Entry(t *testing.T) {
-	const filename = "gentle-ai_2.2.0_linux_amd64.tar.gz"
+	const filename = "hgtran-ai_2.2.0_linux_amd64.tar.gz"
 	digest := strings.Repeat("a", sha256.Size*2)
 	tests := []struct {
 		name    string

@@ -57,7 +57,7 @@ func TestReviewOfferAbsenceGuardCatchesKnownShapes(t *testing.T) {
 			name: "clean source touching unrelated reviewtransaction symbols",
 			src: `package sddstatus
 
-import "bitbucket.org/hgt_development/hgtran-ai/v2/internal/reviewtransaction"
+import "github.com/desarrollohg01/hgtran-ai/v2/internal/reviewtransaction"
 
 func example() reviewtransaction.GateResult { return reviewtransaction.GateAllow }
 `,
@@ -70,11 +70,11 @@ func example() reviewtransaction.GateResult { return reviewtransaction.GateAllow
 import (
 	"context"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/reviewtransaction"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/reviewtransaction"
 )
 
 func example(ctx context.Context) {
-	reviewtransaction.OfferReviewAfterVerify(ctx, "", reviewtransaction.OfferRequest{})
+	reviewtransaction.OfferReviewAfterVerify(ctx, "")
 }
 `,
 			wantViolation: true,
@@ -83,7 +83,7 @@ func example(ctx context.Context) {
 			name: "references the ReviewCore type",
 			src: `package sddstatus
 
-import "bitbucket.org/hgt_development/hgtran-ai/v2/internal/reviewtransaction"
+import "github.com/desarrollohg01/hgtran-ai/v2/internal/reviewtransaction"
 
 func example() reviewtransaction.ReviewCore { return reviewtransaction.ReviewCore{} }
 `,

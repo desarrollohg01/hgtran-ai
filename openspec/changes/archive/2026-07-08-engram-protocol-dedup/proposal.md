@@ -16,7 +16,7 @@ The Engram protocol reaches a single model session up to 3x. Codex is the worst 
 ### Out of Scope
 - Per-model capability tiering (no primary-session model signal exists — follow-up dependency).
 - MCP instructions text (served by engram binary — upstream follow-up).
-- The upstream `engram setup --protocol=slim|full` implementation (sibling change in gentle-engram repo).
+- The upstream `engram setup --protocol=slim|full` implementation (sibling change in hgtran-engram repo).
 - Persona canonical-channel (change 3).
 - Antigravity ephemeral hook / `engram-convention.md` overlap: rationalize only if low-risk, else note as follow-up.
 
@@ -62,7 +62,7 @@ The Engram protocol reaches a single model session up to 3x. Codex is the worst 
 4. File-level only; no data migration. Re-run `go test ./...` and `go vet ./...` to confirm baseline.
 
 ## Dependencies
-- Upstream sibling change in gentle-engram (`/home/gentleman/work/engram`): `engram setup --protocol=slim|full`. hgtran-ai forwards the flag only when the installed binary supports it, so this change ships independently and activates slimming once the upstream flag exists. The exact contract the upstream change MUST satisfy (probe discoverability, non-blocking `--help` on detached stdin, safest-wins per-slug forwarding) is documented in `upstream-protocol-flag-contract.md`.
+- Upstream sibling change in hgtran-engram (`/home/hgtran/work/engram`): `engram setup --protocol=slim|full`. hgtran-ai forwards the flag only when the installed binary supports it, so this change ships independently and activates slimming once the upstream flag exists. The exact contract the upstream change MUST satisfy (probe discoverability, non-blocking `--help` on detached stdin, safest-wins per-slug forwarding) is documented in `upstream-protocol-flag-contract.md`.
 
 ## Success Criteria
 - [ ] Codex renders its three surfaces from a single maintained source (down from 3 near-duplicate source files); PASSIVE CAPTURE content retained. This is source-of-truth consolidation, not a runtime-surface or token reduction for Codex — the rendered `model_instructions_file` grows slightly since Codex adopts the fuller canonical Claude text (see design.md Decision 3/4).

@@ -782,24 +782,47 @@ func finalizeAsFailedVerification(r *journeyRun) error {
 // authorityHead is the subset of `review status` a recovery of an escalated
 // lineage needs.
 type authorityHead struct {
-	Status  string `json:"status"`
-	Entries []struct {
-		LineageID        string `json:"lineage_id"`
-		State            string `json:"state"`
-		Revision         string `json:"revision"`
-		SnapshotIdentity string `json:"snapshot_identity"`
-	} `json:"entries"`
+	Status  string           `json:"status"`
+	Entries []authorityEntry `json:"entries"`
+}
+
+type authorityDiscardedWork struct {
+	CapturedLensResults    []string `json:"captured_lens_results"`
+	FindingsPresent        bool     `json:"findings_present"`
+	EvidenceRecordsPresent bool     `json:"evidence_records_present"`
+}
+
+type authorityEntry struct {
+	LineageID        string                 `json:"lineage_id"`
+	State            string                 `json:"state"`
+	Revision         string                 `json:"revision"`
+	SnapshotIdentity string                 `json:"snapshot_identity"`
+	DiscardedWork    authorityDiscardedWork `json:"discarded_work"`
 }
 
 // entry finds one lineage by name. Journeys that hold more than one authority
 // must select by identity, never by position.
-func (h authorityHead) entry(lineage string) (string, string, bool) {
+func (h authorityHead) entry(lineage string) (authorityEntry, bool) {
 	for _, candidate := range h.Entries {
 		if candidate.LineageID == lineage {
-			return candidate.Revision, candidate.SnapshotIdentity, true
+			return candidate, true
 		}
 	}
-	return "", "", false
+	return authorityEntry{}, false
+}
+
+func renderAbandonAuthorization(entry authorityEntry, actor, reason string) string {
+	return strings.Join([]string{
+		"hgtran-ai.review-abandon-authorization/v2",
+		"lineage=" + entry.LineageID,
+		"revision=" + entry.Revision,
+		"snapshot_identity=" + entry.SnapshotIdentity,
+		"reason=" + reason,
+		"captured_lens_results=" + strings.Join(entry.DiscardedWork.CapturedLensResults, ","),
+		fmt.Sprintf("findings_present=%t", entry.DiscardedWork.FindingsPresent),
+		fmt.Sprintf("evidence_records_present=%t", entry.DiscardedWork.EvidenceRecordsPresent),
+		"actor=" + actor,
+	}, "\n")
 }
 
 // recoverEscalated tries the recovery twice on purpose. The first attempt is
@@ -871,6 +894,7 @@ func edgeJourneys() []Journey {
 		// -------------------------------------------------------------- shape
 		{
 			ID:     "j15-linked-worktree",
+			Review: reviewOptedIn,
 			Title:  "Linked worktree shares the review store: both trees review, approve and gate independently",
 			Source: "shape 1 (asymmetric comparison) + shape 5 (two sources of truth about repository identity)",
 			// Expected: every step succeeds. One repository, two absolute
@@ -895,6 +919,7 @@ func edgeJourneys() []Journey {
 		},
 		{
 			ID:     "j16-detached-head",
+			Review: reviewOptedIn,
 			Title:  "Detached HEAD: the whole cycle works with no branch at all",
 			Source: "shape 3 (a guard gated on HEAD being a branch, which is not its own precondition)",
 			// Expected: every step succeeds. Nothing in a content-bound review
@@ -908,6 +933,7 @@ func edgeJourneys() []Journey {
 		},
 		{
 			ID:     "j17-bare-repository",
+			Review: reviewOptedIn,
 			Title:  "Bare repository: a refusal that must name what to do instead",
 			Source: "shape 4 (a refusal naming nothing runnable) + shape 2 (a shape error read as a state error)",
 			// Expected: start is refused — a bare repository legitimately has
@@ -933,6 +959,7 @@ func edgeJourneys() []Journey {
 		},
 		{
 			ID:     "j18-space-and-non-ascii-path",
+			Review: reviewOptedIn,
 			Title:  "Repository path with spaces and non-ASCII: the whole cycle works",
 			Source: "shape 1 (one operand path-canonicalized, the other not)",
 			// Expected: every step succeeds, and the awkward path round-trips
@@ -946,6 +973,7 @@ func edgeJourneys() []Journey {
 		},
 		{
 			ID:     "j19-submodule-gitlink",
+			Review: reviewOptedIn,
 			Title:  "Gitlink in the candidate: a tree entry with no blob behind it",
 			Source: "shape 1 (comparing a 160000 entry as if it had content)",
 			// Expected: start succeeds and classifies above tier 0 (a
@@ -965,6 +993,7 @@ func edgeJourneys() []Journey {
 		// ----------------------------------------------------------- content
 		{
 			ID:     "j20-symlink-candidate",
+			Review: reviewOptedIn,
 			Title:  "Symlink in the candidate: mode 120000 whose blob is a path",
 			Source: "shape 1 (link target read as file content on one side only)",
 			// Expected: start succeeds, the change is not treated as passive
@@ -981,6 +1010,7 @@ func edgeJourneys() []Journey {
 		},
 		{
 			ID:     "j21-mode-only-change",
+			Review: reviewOptedIn,
 			Title:  "Mode-only change 100644 to 100755: identical blob on both sides",
 			Source: "shape 1 (a content-only comparison sees no change at all)",
 			// Expected: start succeeds and does NOT report a no-op. An
@@ -998,6 +1028,7 @@ func edgeJourneys() []Journey {
 		},
 		{
 			ID:     "j22-pure-rename",
+			Review: reviewOptedIn,
 			Title:  "Pure rename: every byte identical, only the path moved",
 			Source: "shape 1 (a rename read as one deletion plus one creation)",
 			// Expected: every step succeeds and the change stays tier 0.
@@ -1010,6 +1041,7 @@ func edgeJourneys() []Journey {
 		},
 		{
 			ID:     "j23-deletion-only",
+			Review: reviewOptedIn,
 			Title:  "Deletion-only candidate: nothing added anywhere",
 			Source: "shape 1 (a candidate whose new side is empty)",
 			// Expected: every step succeeds. There is no post-image to inspect
@@ -1023,6 +1055,7 @@ func edgeJourneys() []Journey {
 		},
 		{
 			ID:     "j24-empty-file",
+			Review: reviewOptedIn,
 			Title:  "Empty file: zero bytes, zero changed lines",
 			Source: "shape 4 (a message describing content that is not there)",
 			// Expected: start succeeds and fails closed on unknown content
@@ -1040,6 +1073,7 @@ func edgeJourneys() []Journey {
 		},
 		{
 			ID:     "j25-no-trailing-newline",
+			Review: reviewOptedIn,
 			Title:  "File with no trailing newline: the last line has no terminator",
 			Source: "shape 1 (one side line-terminated, the other not)",
 			// Expected: every step succeeds and the change stays tier 0.
@@ -1052,6 +1086,7 @@ func edgeJourneys() []Journey {
 		},
 		{
 			ID:     "j26-crlf-content",
+			Review: reviewOptedIn,
 			Title:  "CRLF content: carriage returns survive into the staged blob",
 			Source: "shape 1 (line endings normalized on one operand only)",
 			// Expected: every step succeeds and the receipt stays bound to the
@@ -1067,6 +1102,7 @@ func edgeJourneys() []Journey {
 		// ------------------------------------------------- git mid-operation
 		{
 			ID:     "j27-merge-in-progress",
+			Review: reviewOptedIn,
 			Title:  "Merge in progress: review a conflict resolution before the merge commit exists",
 			Source: "shape 3 (a guard gated on a clean git state rather than on its own precondition)",
 			// Expected: every step succeeds. MERGE_HEAD is still present the
@@ -1080,6 +1116,7 @@ func edgeJourneys() []Journey {
 		},
 		{
 			ID:     "j28-rebase-in-progress",
+			Review: reviewOptedIn,
 			Title:  "Rebase in progress: detached HEAD plus a rebase state directory",
 			Source: "shape 3 (a guard gated on a clean git state)",
 			// Expected: every step succeeds. A rebase detaches HEAD as well, so
@@ -1093,6 +1130,7 @@ func edgeJourneys() []Journey {
 		},
 		{
 			ID:     "j29-cherry-pick-in-progress",
+			Review: reviewOptedIn,
 			Title:  "Cherry-pick in progress: CHERRY_PICK_HEAD present throughout",
 			Source: "shape 3 (a guard gated on a clean git state)",
 			// Expected: every step succeeds.
@@ -1107,6 +1145,7 @@ func edgeJourneys() []Journey {
 		// ---------------------------------------------------------- lifecycle
 		{
 			ID:     "j30-kill-switch-flipped-mid-review",
+			Review: reviewOptedIn,
 			Title:  "Kill switch flipped between START and FINALIZE: the documented answer is that FINALIZE is refused",
 			Source: "shape 3 (the mutate guard sits behind the start path) + shape 5 (rdd_mode.go documents a rejection the code never issues)",
 			// Expected, per the product's own documentation: disabling freezes
@@ -1128,6 +1167,7 @@ func edgeJourneys() []Journey {
 		},
 		{
 			ID:     "j31-nonsense-mode-value",
+			Review: reviewUntouched,
 			Title:  "Kill-switch record readable but holding a value that is not on/off",
 			Source: "shape 2 (a correctable input read as terminal) + shape 4 (a refusal naming nothing runnable)",
 			// Expected: it fails CLOSED — reviews off — because an unknown
@@ -1144,6 +1184,7 @@ func edgeJourneys() []Journey {
 		},
 		{
 			ID:     "j32-recovery-of-a-recovery",
+			Review: reviewOptedIn,
 			Title:  "Recovery of a recovery: the named continuation has to work twice",
 			Source: "shape 4 (guide flow 9 step 7 — the message named a recovery that landed you back at the same denial)",
 			// Expected: both recoveries succeed and each ends at `allow`. The
@@ -1165,6 +1206,7 @@ func edgeJourneys() []Journey {
 		},
 		{
 			ID:     "j33-escalate-then-recover",
+			Review: reviewOptedIn,
 			Title:  "Escalate on a failed verification, then recover once the candidate is fixed",
 			Source: "shape 2 (an escalation is recoverable, not terminal) + shape 4 (the refusal must say the candidate has to change)",
 			// Expected: finalize with failed evidence escalates; the gate
@@ -1194,7 +1236,8 @@ func edgeJourneys() []Journey {
 		},
 		{
 			ID:     "j34-abandon-then-start-again",
-			Title:  "Abandon a lineage, then start a fresh review of the same candidate",
+			Review: reviewOptedIn,
+			Title:  "Abandon a non-terminal lineage, then start a fresh review of the same candidate",
 			Source: "shape 2 (an abandoned lineage must not poison the repository permanently)",
 			// Expected: after the abandonment the same candidate starts a new
 			// review, finalizes and gates to `allow`. A quarantined lineage
@@ -1202,16 +1245,16 @@ func edgeJourneys() []Journey {
 			// authority for the new one.
 			Steps: []Step{
 				{Name: "fixture: repo", Fixture: baseRepo},
-				{Name: "fixture: stage docs", Fixture: stageProse("", "abandoned")},
+				{Name: "fixture: stage high-risk code", Fixture: stageAuthCode},
 				{Name: "review start", Requires: startCapability, Args: productArgs("review", "start"), After: rememberLineage},
-				{Name: "abandon a pristine lineage", Requires: abandonCapability, Composite: abandonPristineLineage},
+				{Name: "abandon a non-terminal lineage with its V2 discarded-work binding", Requires: abandonCapability, Composite: abandonNonTerminalLineage},
 				{Name: "review start again after the abandonment", Requires: startCapability, Args: productArgs("review", "start"), After: rememberLineage},
-				{Name: "review finalize", Requires: finalizeCapability, Args: productArgs("review", "finalize"), After: rememberLineage},
-				{Name: "gate pre-commit", Requires: validateCapability, Args: productArgs("review", "validate", "--gate", "pre-commit")},
+				{Name: "fresh active lineage remains abandonable instead of reusing the quarantined authority", Requires: abandonCapability, Composite: abandonNonTerminalLineage},
 			},
 		},
 		{
 			ID:     "j35-correction-budget-exactly-zero",
+			Review: reviewOptedIn,
 			Title:  "Correction budget of exactly zero: forecasting a correction against it",
 			Source: "shape 3 (the budget check sitting behind a different precondition) + shape 4 (guide flow 17 promises spent/remaining/total)",
 			// Expected: a mode-only change has zero changed lines, so
@@ -1234,6 +1277,7 @@ func edgeJourneys() []Journey {
 		// ----------------------------------------------------------- contract
 		{
 			ID:     "j36-contract-right-name-wrong-version",
+			Review: reviewOptedIn,
 			Title:  "Negotiated contract with the right name and a version this build does not have",
 			Source: "shape 2 (a correctable request read as terminal) + shape 4 (the continuation must be runnable, not a category)",
 			// Expected: a typed `unsupported_contract` refusal that names the

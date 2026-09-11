@@ -7,9 +7,9 @@ import (
 	"testing"
 	"unicode"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/capabilitymanifest"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/catalog"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/capabilitymanifest"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/catalog"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
 )
 
 // supportedAgentCount guards the catalog itself: routing is unconditional for
@@ -111,6 +111,41 @@ func TestRenderRoutingKeepsSDDSelectionExplicit(t *testing.T) {
 	}
 	if !strings.Contains(lowered, "never select") {
 		t.Fatalf("rendered routing does not state that size or risk alone never selects SDD:\n%s", rendered)
+	}
+}
+
+func TestRenderRoutingAuthorizesOutcomesBeforeSelectingTopology(t *testing.T) {
+	t.Parallel()
+
+	for _, agent := range catalog.AllAgents() {
+		t.Run(string(agent.ID), func(t *testing.T) {
+			t.Parallel()
+
+			rendered, err := RenderRouting(agent.ID)
+			if err != nil {
+				t.Fatalf("RenderRouting(%q) error = %v", agent.ID, err)
+			}
+
+			guard := "First establish whether the requested outcome explicitly authorizes a change."
+			guardOffset := strings.Index(rendered, guard)
+			topologyOffset := strings.Index(rendered, "**Direct inline:**")
+			if guardOffset < 0 || topologyOffset < 0 || guardOffset > topologyOffset {
+				t.Fatalf("RenderRouting(%q) must place outcome authorization before topology:\n%s", agent.ID, rendered)
+			}
+
+			for _, want := range []string{
+				"Investigation, explanation, review, audit, comparison, and solution-proposal or planning-only requests are read-only",
+				"must not write or edit files, delegate a writer, invoke apply, or create implementation artifacts",
+				"If change intent is ambiguous or conditional, ask one clarification and remain read-only until answered.",
+				"After explicit change intent is established",
+				"SDD is selected only by an explicit request or an accepted proposal.",
+				"Automatic SDD pace is not mutation authorization",
+			} {
+				if !strings.Contains(rendered, want) {
+					t.Fatalf("RenderRouting(%q) is missing outcome-authorization clause %q:\n%s", agent.ID, want, rendered)
+				}
+			}
+		})
 	}
 }
 

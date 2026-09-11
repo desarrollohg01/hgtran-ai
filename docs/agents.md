@@ -14,7 +14,7 @@
 | Gemini CLI      | `gemini-cli`     | Yes          | Yes | Full (experimental)              | No            | No             | `~/.gemini`                         |
 | Cursor          | `cursor`         | Yes          | Yes | Full (native subagents)          | No            | No             | `~/.cursor`                         |
 | VS Code Copilot | `vscode-copilot` | Yes          | Yes | Full (runSubagent)               | No            | No             | `~/.copilot` + VS Code User profile |
-| Codex           | `codex`          | Yes          | Yes | Solo-agent (multi-agent opt-in, experimental) | No            | No             | `~/.codex`                          |
+| Codex           | `codex`          | Yes          | Yes | Native multi-agent (default; solo fallback) | No            | No             | `~/.codex`                          |
 | Windsurf        | `windsurf`       | Yes (native) | Yes | Solo-agent                       | No            | No             | `~/.codeium/windsurf`               |
 | Antigravity     | `antigravity`    | Yes (native) | Yes | Solo-agent + Mission Control     | No            | No             | `~/.gemini/antigravity`             |
 | Kimi Code       | `kimi`           | Yes          | Yes | Full (native custom agents)      | Via KIMI.md include [^kimi-output-style] | No | `~/.kimi`                           |
@@ -25,7 +25,7 @@
 | Pi              | `pi`             | Yes          | Yes | Full (package-managed subagents) | No            | Yes            | `~/.pi`                             |
 | Hermes          | `hermes`         | Yes          | Yes | Full (delegate_task ephemeral)   | No            | No             | `~/.hermes`                         |
 
-Most agents receive the **full SDD orchestrator** policy, plus skill files written to their skills directory. Most receive it through their system prompt; OpenCode and Kilo Code receive it through the OpenCode-compatible `opencode.json` agent overlay. Pi is the exception: Hgtran AI installs Pi packages, and `gentle-pi` owns Pi skills, prompts, SDD agents, and chains at runtime. The agent handles SDD automatically when the task is large enough, or when the user explicitly asks for it — no manual setup required.
+Most agents receive the **full SDD orchestrator** policy, plus skill files written to their skills directory. Most receive it through their system prompt; OpenCode and Kilo Code receive it through the OpenCode-compatible `opencode.json` agent overlay. Pi is the exception: Hgtran AI installs Pi packages, and `hgtran-pi` owns Pi skills, prompts, SDD agents, and chains at runtime. The agent handles SDD automatically when the task is large enough, or when the user explicitly asks for it — no manual setup required.
 
 `hgtran-ai install --scope=workspace` is supported across selected agents for agent-scoped files, not only Claude Code. In workspace scope, Hgtran AI writes system prompts, skills, SDD agents, and persona files into the current project root when the agent supports project-local configuration. Global-only integrations, such as package installs or settings that the agent only reads from its global config, remain global by design.
 
@@ -39,7 +39,8 @@ Most agents receive the **full SDD orchestrator** policy, plus skill files writt
 | --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
 | **Full (sub-agents)** | Each SDD phase runs in an isolated context window via native sub-agent delegation, package-managed subagents, or an OpenCode-compatible overlay. The orchestrator coordinates; sub-agents execute. | Claude Code, OpenCode, Kilo Code, Gemini CLI, Cursor, VS Code Copilot, Kimi Code, Kiro IDE, Qwen Code, Pi |
 | **Full (delegate_task)** | The orchestrator uses Hermes's native `delegate_task` primitive to spawn ephemeral workers in fresh context windows. Workers receive only a self-contained mission; the parent receives only their final summary. Toolsets, MCP, and skills must be passed explicitly (not inherited by default). | Hermes |
-| **Solo-agent**        | All SDD phases run inline in the same conversation. The orchestrator IS the executor. Engram provides cross-phase persistence.                                                                     | Codex, Windsurf, Antigravity, OpenClaw, Trae                                                              |
+| **Native multi-agent** | The orchestrator delegates through the agent's native collaboration tools when configured and available, with inline execution as a graceful fallback. | Codex |
+| **Solo-agent**        | All SDD phases run inline in the same conversation. The orchestrator IS the executor. Engram provides cross-phase persistence.                                                                     | Windsurf, Antigravity, OpenClaw, Trae                                                                     |
 
 ### Cursor Native Subagents
 
@@ -84,7 +85,7 @@ Kiro uses native custom agents in `~/.kiro/agents/`. `hgtran-ai` writes phase ag
 
 > \* **Kiro multi-mode** assigns models per phase through `KiroModelAssignments` (configured via _Configure Models → Configure Kiro models_ in the TUI). The selected Kiro alias (`auto|opus|sonnet|haiku|minimax|glm|deepseek|qwen`) is resolved to a Kiro-native model ID and stamped into each `~/.kiro/agents/sdd-{phase}.md` at sync time.
 
-> \*\* **Pi multi-mode** is owned by the Pi packages. `gentle-pi` installs SDD agent and chain assets into `.pi/agents/` and `.pi/chains/`; model overrides live in those Pi-managed files or chain steps.
+> \*\* **Pi multi-mode** is owned by the Pi packages. `hgtran-pi` installs SDD agent and chain assets into `.pi/agents/` and `.pi/chains/`; model overrides live in those Pi-managed files or chain steps.
 
 ---
 
@@ -93,21 +94,26 @@ Kiro uses native custom agents in `~/.kiro/agents/`. `hgtran-ai` writes phase ag
 ### Claude Code
 
 - Sub-agents via the native Task tool with isolated context windows
+- Slash commands for SDD phases are namespaced `/hgtran-sdd-*` (`/hgtran-sdd-init`, `/hgtran-sdd-new`, `/hgtran-sdd-continue`, etc.) so no command shares a name with a delegate-only SDD skill
 - MCP servers configured as plugins in `~/.claude/mcp/`
 - Output styles in `~/.claude/output-styles/`
 - System prompt via markdown sections in `~/.claude/CLAUDE.md`
 
 ### OpenCode
 
-- Full multi-agent overlay with 11 named agents in `opencode.json` (`gentle-orchestrator` plus 10 SDD phase agents)
+- Full multi-agent overlay with 11 named agents in `opencode.json` (`hgtran-orchestrator` plus 10 SDD phase agents)
 - Slash commands for SDD phases (`/sdd-new`, `/sdd-explore`, etc.)
-- Native OpenCode `task` subagents; experimental background execution is available when OpenCode is launched with `OPENCODE_EXPERIMENTAL_BACKGROUND_SUBAGENTS=true`
-- The TUI model picker includes providers and models discovered from the local `opencode.json`, including custom providers
-- Custom models from `opencode.json` must set `tool_call: true` explicitly to appear as selectable SDD-capable options in the model picker
-- Multi-mode prerequisite: connect your AI providers first, then run `opencode models --refresh`
+- Native OpenCode `task` subagents; managed background execution is configured through `hgtran-ai install` / `hgtran-ai sync` with `--opencode-background-subagents=auto|on|off` or `HGTRAN_AI_OPENCODE_BACKGROUND_SUBAGENTS`
+- CLI precedence is flag, non-empty environment, prior managed state, then `auto`; the interactive OpenCode + SDD installer prompts only when that preference is unresolved
+- Managed launchers live under `~/.hgtran-ai/bin/` and preserve an explicit `OPENCODE_EXPERIMENTAL_BACKGROUND_SUBAGENTS=false`; restart OpenCode after enabling them
+- `serve`, `attach`, Desktop, and sessions not launched through the managed launcher use the safe foreground fallback
+- Background jobs are process-local and non-durable, have no filesystem isolation, and must not be used for dependent phases or parallel writers in one worktree
+- The TUI model picker asynchronously discovers the active project's effective providers and models through `opencode models --verbose`, including custom, authenticated, plugin, and dynamic providers
+- Only models OpenCode reports with tool-call capability appear as selectable SDD-capable options
+- Multi-mode prerequisite: connect your AI providers, then return to the picker; Hgtran AI does not refresh OpenCode's catalog
 - Hgtran AI sets OpenCode SDD agent sharing to `disabled` by default for privacy; existing user-managed `share` values such as `manual` or `auto` are preserved.
 - OpenCode Desktop SDD commands resolve the project with `git rev-parse --show-toplevel || pwd` before acting, avoiding Electron current-working-directory drift.
-- If review launch fails with `Attempted to assign to readonly property`, follow the [OpenCode readonly task-argument recovery](review-integration.md#restart-opencode-after-a-readonly-task-argument-failure).
+- Review launch runs from an ordinary already-running OpenCode session: no restart, child process, special user-visible session, or `OPENCODE_DISABLE_PROJECT_CONFIG` / `OPENCODE_DISABLE_EXTERNAL_SKILLS` variable is required (rdd-advisory-transport SKILL.md).
 
 ### Kilo Code
 
@@ -158,8 +164,8 @@ Kiro uses native custom agents in `~/.kiro/agents/`. `hgtran-ai` writes phase ag
 
 - Explicit saved Codex model assignments are preserved on sync, including older pinned IDs such as `gpt-5.5` or `gpt-5.4-mini`. The narrow exception is the exact former implicit-default tuple (`sdd-strong=gpt-5.5`, `sdd-mid=gpt-5.5`, `sdd-cheap=gpt-5.4-mini`), which sync treats as Recommended and upgrades to the current GPT-5.6 tuple; partial, extended, or otherwise different maps remain custom and unchanged.
 - GPT-5.6 `max` reasoning effort and `ultra` mode are intentionally not enabled by this default update. `max` requires confirmed Codex support; `ultra` changes orchestration semantics and needs separate design.
-- Multi-agent SDD delegation is available as an **experimental opt-in** (default off). hgtran-ai writes `features.multi_agent = false` and `agents.max_threads = 4` / `agents.max_depth = 2` into `~/.codex/config.toml`. To enable, set `multi_agent = true` in the `[features]` section. When enabled, the `sdd-orchestrator` asset targets Codex's multi-agent v2 collaboration surface: it spawns agents with `spawn_agent`, loops `wait_agent(timeout_ms=...)` plus `list_agents` correlation until the target reaches a terminal state, stops on non-success, and reuses completed or idle agents through `followup_task`. `send_message` provides in-flight guidance, while `interrupt_agent` is reserved for cancelling an active turn rather than cleaning up a completed agent. If the surface is unavailable, orchestration falls back to solo-agent inline execution.
-- **Delegation**: Solo-agent (multi-agent opt-in, experimental)
+- Multi-agent SDD delegation is enabled by default. hgtran-ai writes `features.multi_agent = true` and `agents.max_threads = 4` / `agents.max_depth = 2` into `~/.codex/config.toml`; set `multi_agent = false` in the `[features]` section to opt out. The delegated route requires both the enabled setting and Codex's native `spawn_agent`, `wait_agent`, and `list_agents` tools. If the configuration or tools are unavailable, orchestration gracefully falls back to solo-agent inline execution.
+- **Delegation**: Native multi-agent by default, with graceful solo-agent fallback
 
 ### Windsurf
 
@@ -179,7 +185,7 @@ Kiro uses native custom agents in `~/.kiro/agents/`. `hgtran-ai` writes phase ag
 ### Kimi Code
 
 - Installation requires the `uv` Python package manager (`uv tool install kimi-cli`).
-- Root custom agent at `~/.kimi/agents/gentleman.yaml` with `system_prompt_path: ../KIMI.md`
+- Root custom agent at `~/.kimi/agents/hgtran.yaml` with `system_prompt_path: ../KIMI.md`
 - `KIMI.md` is a thin Jinja template that includes modular prompt files:
   `persona.md`, `output-style.md`, `engram-protocol.md`, `sdd-orchestrator.md`
 - Built-in Kimi variables are preserved in `KIMI.md`: `${KIMI_AGENTS_MD}` and `${KIMI_SKILLS}`
@@ -215,7 +221,7 @@ Kiro uses native custom agents in `~/.kiro/agents/`. `hgtran-ai` writes phase ag
 - **Active workspace**: hgtran-ai reads `agents.defaults.workspace` from `~/.openclaw/openclaw.json` and writes instruction files there.
 - **Instructions**: Engram and SDD protocols are injected into workspace `AGENTS.md`; persona is injected into workspace `SOUL.md`.
 - **MCP config**: Engram and Context7 are merged into global `~/.openclaw/openclaw.json` under `mcp.servers`; legacy root `mcpServers` entries are migrated.
-- **Skills**: SDD phase skills are workspace-scoped at `<workspace>/.openclaw/skills/sdd-*`; portable skills remain global at `~/.openclaw/skills/`.
+- **Skills**: selected portable skills and SDD phase skills are workspace-scoped at `<workspace>/.openclaw/skills/`.
 
 ### Trae
 
@@ -235,25 +241,28 @@ For the full Pi command and package reference, see [Pi Agent](pi.md).
 
 - **Detection**: hgtran-ai detects Pi from the `pi` binary on `PATH` and its config root at `~/.pi`.
 - **Install**: Pi must already be installed. hgtran-ai then installs the full Pi support stack with:
-  - `pi install npm:gentle-pi`
-  - `pi install npm:gentle-engram`
+  - `pi install npm:hgtran-pi`
+  - `pi install npm:hgtran-engram`
   - `pi install npm:pi-mcp-adapter`
-  - `npm exec --yes --package gentle-engram@latest -- pi-engram init`
+  - `npm exec --yes --package hgtran-engram@latest -- pi-engram init`
   - `pi install npm:pi-subagents-j0k3r`
   - `pi install npm:@juicesharp/rpiv-ask-user-question`
   - `pi install npm:pi-web-access`
   - `pi install npm:@juicesharp/rpiv-todo`
   - `pi install npm:pi-btw`
-- **`gentle-pi` package**: adds the Gentleman harness for Pi: SDD/OpenSpec workflow, strict TDD guidance, safety defaults, `/hgtran-ai:*` commands, skill assets, prompts, SDD agents, and SDD chains. On normal `session_start`, it copies project assets into `.pi/agents/`, `.pi/chains/`, and `.pi/hgtran-ai/support/` without overwriting local files unless the Pi recovery command uses `--force`. Starting Pi with `pi -ns` skips startup skill loading/hooks, so that automatic refresh does not run in that mode.
-- **Package metadata**: latest verified `gentle-pi` version is `0.2.6`; npm lists `alan_buscaglia` as maintainer, with source at [Gentleman-Programming/gentle-pi](https://github.com/Gentleman-Programming/gentle-pi) and package docs at [npm: gentle-pi](https://www.npmjs.com/package/gentle-pi).
-- **Persona command**: `gentle-pi` owns Pi persona switching through `/gentleman:persona` (`/hgtran-ai:persona` remains a compatibility alias). It switches between `gentleman` and `neutral`, saves `.pi/hgtran-ai/persona.json`, and may require `/reload` or a new Pi session for the active prompt to refresh.
-- **Model assignment command**: `gentle-pi` owns Pi model selection through `/gentleman:models` (`/hgtran-ai:models` remains a compatibility alias). It opens a Pi-native modal for project, user, and built-in agents, prioritizes SDD agents, saves `.pi/hgtran-ai/models.json`, and applies overrides into `.pi/agents/*.md` or `.pi/settings.json`.
-- **`gentle-engram` package**: adds persistent Engram memory for Pi. It captures sessions, exposes Engram MCP tools through `pi-mcp-adapter`, and degrades safely when the local `engram` binary is missing.
+- **`hgtran-pi` package**: adds the Gentleman harness for Pi: SDD/OpenSpec workflow, strict TDD guidance, safety defaults, `/hgtran-ai:*` commands, skill assets, prompts, SDD agents, and SDD chains. On normal `session_start`, it copies project assets into `.pi/agents/`, `.pi/chains/`, and `.pi/hgtran-ai/support/` without overwriting local files unless the Pi recovery command uses `--force`. Starting Pi with `pi -ns` skips startup skill loading/hooks, so that automatic refresh does not run in that mode.
+- **Package metadata**: latest verified `hgtran-pi` version is `0.2.6`; npm lists `alan_buscaglia` as maintainer, with source at [Gentleman-Programming/hgtran-pi](https://github.com/Gentleman-Programming/hgtran-pi) and package docs at [npm: hgtran-pi](https://www.npmjs.com/package/hgtran-pi).
+- **Persona command**: `hgtran-pi` owns Pi persona switching through `/hgtran:persona` (`/hgtran-ai:persona` remains a compatibility alias). It switches between `hgtran` and `neutral`, saves `.pi/hgtran-ai/persona.json`, and may require `/reload` or a new Pi session for the active prompt to refresh.
+- **Model assignment command**: `hgtran-pi` owns Pi model selection through `/hgtran:models` (`/hgtran-ai:models` remains a compatibility alias). It opens a Pi-native modal for project, user, and built-in agents, prioritizes SDD agents, saves `.pi/hgtran-ai/models.json`, and applies overrides into `.pi/agents/*.md` or `.pi/settings.json`.
+- **`hgtran-engram` package**: adds persistent Engram memory for Pi. It captures sessions, exposes Engram MCP tools through `pi-mcp-adapter`, and degrades safely when the local `engram` binary is missing.
 - **MCP adapter wiring**: ComponentEngram declares `npm:pi-mcp-adapter` in `.pi/agent/settings.json` packages and adds `pi-mcp-adapter` `^2.6.0` to `.pi/npm/package.json` without removing unrelated user entries. `pi-engram init` owns the Pi Engram MCP config schema and is run during installation.
 - **`pi-subagents-j0k3r` package**: discovers and runs SDD agents from `.pi/agents/`; Hgtran AI installs it directly with `pi install npm:pi-subagents-j0k3r`.
+- **Background subagents**: managed background execution is configured through `hgtran-ai install` / `hgtran-ai sync` with `--pi-background-subagents=auto|on|off` or `HGTRAN_AI_PI_BACKGROUND_SUBAGENTS`; there is no launcher or activation plumbing, because the primitive is the already-installed `pi-subagents-j0k3r` extension.
+- CLI precedence is flag, non-empty environment, prior managed state, then `auto`; `auto` never enables by itself, unresolved non-interactive `auto` stays foreground, and the interactive Pi installer prompts only when that preference is unresolved.
+- The resolved on/off policy is projected to `~/.pi/hgtran-ai/background-subagents.json` as `{"schema":"hgtran-pi.background-subagents/v1","policy":"on"|"off"}` (the base directory honors `GENTLE_PI_CONFIG_HOME`); `off` rewrites the policy instead of deleting files, and a file at that path without the managed schema marker is never overwritten.
 - **`@juicesharp/rpiv-ask-user-question` package**: lets Pi child agents ask the active user session for clarification when they need human input.
 - **Pi companion packages**: `pi-web-access`, `@juicesharp/rpiv-todo`, and `pi-btw` add web access, todo tracking, and companion workflow support.
-- **Pi-only flow**: when Pi is the only selected agent, hgtran-ai skips persona, ecosystem component selection, and Strict TDD prompts because those behaviors are provided by `gentle-pi`.
+- **Pi-only flow**: when Pi is the only selected agent, hgtran-ai skips persona, ecosystem component selection, and Strict TDD prompts because those behaviors are provided by `hgtran-pi`.
 
 ### Hermes Ephemeral Delegation
 

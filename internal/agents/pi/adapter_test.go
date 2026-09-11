@@ -10,8 +10,8 @@ import (
 	"strings"
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/system"
 )
 
 func TestAdapterIdentityAndCapabilities(t *testing.T) {
@@ -29,10 +29,9 @@ func TestAdapterIdentityAndCapabilities(t *testing.T) {
 		got  bool
 		want bool
 	}{
-		{"SupportsAutoInstall", a.SupportsAutoInstall(), true},
 		{"SupportsSkills", a.SupportsSkills(), false},
 		{"SupportsMCP", a.SupportsMCP(), true},
-		{"SupportsSystemPrompt", a.SupportsSystemPrompt(), true},
+		{"SupportsSystemPrompt", a.SupportsSystemPrompt(), false},
 		{"SupportsSlashCommands", a.SupportsSlashCommands(), false},
 		{"SupportsOutputStyles", a.SupportsOutputStyles(), false},
 		{"SupportsSubAgents", a.SupportsSubAgents(), false},
@@ -133,7 +132,7 @@ func TestDiscoverCodeGraphChildrenUsesProjectOverrideAndPreservesPackageSource(t
 	mustWrite(filepath.Join(home, ".pi", "agent", "subagents", "worker.md"), "---\ntools: bash\n---\npackage worker\n")
 	mustWrite(filepath.Join(workspace, ".pi", "subagents", "worker.md"), "---\ntools: bash, mcp\n---\nproject worker\n")
 	mustWrite(filepath.Join(home, ".pi", "agent", "agents", "reader.md"), "---\ntools: read\n---\nreader\n")
-	mustWrite(filepath.Join(home, ".pi", "agent", "node_modules", "gentle-pi", "subagents", "package-worker.md"), "---\ntools: bash\n---\npackage worker\n")
+	mustWrite(filepath.Join(home, ".pi", "agent", "node_modules", "hgtran-pi", "subagents", "package-worker.md"), "---\ntools: bash\n---\npackage worker\n")
 
 	children, err := DiscoverCodeGraphChildren(home, workspace)
 	if err != nil {
@@ -271,10 +270,10 @@ func TestAdapterInstallCommandSequenceUsesNpmWhenPnpmIsUnavailable(t *testing.T)
 	}
 
 	want := [][]string{
-		{"pi", "install", "npm:gentle-pi"},
-		{"pi", "install", "npm:gentle-engram"},
+		{"pi", "install", "npm:hgtran-pi"},
+		{"pi", "install", "npm:hgtran-engram"},
 		{"pi", "install", "npm:pi-mcp-adapter"},
-		{"npm", "exec", "--yes", "--package", "gentle-engram@latest", "--", "pi-engram", "init"},
+		{"npm", "exec", "--yes", "--package", "hgtran-engram@latest", "--", "pi-engram", "init"},
 		piSubagentsInstallCommand(system.PlatformProfile{}),
 		{"pi", "install", "npm:@juicesharp/rpiv-ask-user-question"},
 		{"pi", "install", "npm:pi-web-access"},
@@ -307,7 +306,7 @@ func TestAdapterInstallCommandSequenceUsesSameSubagentsPackageForWindows(t *test
 	}
 }
 
-func TestAdapterInstallCommandSequenceUsesPnpmForEngramInitWhenAvailable(t *testing.T) {
+func TestAdapterInstallCommandSequenceUsesNpmForEngramInitWhenPnpmIsAvailable(t *testing.T) {
 	a := &Adapter{
 		lookPath: func(file string) (string, error) {
 			if file == "pnpm" {
@@ -322,7 +321,7 @@ func TestAdapterInstallCommandSequenceUsesPnpmForEngramInitWhenAvailable(t *test
 		t.Fatalf("InstallCommand() error = %v", err)
 	}
 
-	want := []string{"pnpm", "dlx", "gentle-engram@latest", "pi-engram", "init"}
+	want := []string{"npm", "exec", "--yes", "--package", "hgtran-engram@latest", "--", "pi-engram", "init"}
 	if !reflect.DeepEqual(commands[3], want) {
 		t.Fatalf("InstallCommand()[3] = %#v, want %#v", commands[3], want)
 	}

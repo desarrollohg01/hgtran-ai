@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/system"
 )
 
 func TestParseInstallFlagsSupportsCSVAndRepeated(t *testing.T) {
@@ -93,6 +93,21 @@ func TestNormalizeInstallFlagsDefaults(t *testing.T) {
 	}
 }
 
+func TestNormalizeInstallFlagsAcceptsBundledSkills(t *testing.T) {
+	input, err := NormalizeInstallFlags(InstallFlags{Skills: []string{
+		string(model.SkillSystemicIssueTriage),
+		string(model.SkillGentleAIBench),
+	}}, system.DetectionResult{})
+	if err != nil {
+		t.Fatalf("NormalizeInstallFlags() error = %v", err)
+	}
+
+	want := []model.SkillID{model.SkillSystemicIssueTriage, model.SkillGentleAIBench}
+	if !reflect.DeepEqual(input.Selection.Skills, want) {
+		t.Fatalf("skills = %v, want %v", input.Selection.Skills, want)
+	}
+}
+
 func TestNormalizeInstallFlagsChannelBeta(t *testing.T) {
 	input, err := NormalizeInstallFlags(InstallFlags{Channel: "beta"}, system.DetectionResult{})
 	if err != nil {
@@ -150,7 +165,7 @@ func TestNormalizeInstallFlagsCustomAcceptsOptionalGentlemanInstallables(t *test
 	}
 }
 
-func TestNormalizeInstallFlagsPiOnlyDefaultsToEngramOnly(t *testing.T) {
+func TestNormalizeInstallFlagsPiOnlyDefaultsToEngramAndPersona(t *testing.T) {
 	input, err := NormalizeInstallFlags(InstallFlags{
 		Agents: []string{string(model.AgentPi)},
 	}, system.DetectionResult{})
@@ -162,7 +177,7 @@ func TestNormalizeInstallFlagsPiOnlyDefaultsToEngramOnly(t *testing.T) {
 	if !reflect.DeepEqual(input.Selection.Agents, wantAgents) {
 		t.Fatalf("agents = %#v, want %#v", input.Selection.Agents, wantAgents)
 	}
-	wantComponents := []model.ComponentID{model.ComponentEngram}
+	wantComponents := []model.ComponentID{model.ComponentEngram, model.ComponentPersona}
 	if !reflect.DeepEqual(input.Selection.Components, wantComponents) {
 		t.Fatalf("components = %#v, want %#v", input.Selection.Components, wantComponents)
 	}
@@ -192,7 +207,7 @@ func TestNormalizeInstallFlagsPiOnlyRespectsExplicitPreset(t *testing.T) {
 		t.Fatalf("NormalizeInstallFlags() error = %v", err)
 	}
 
-	// Pi + explicit minimal preset with default gentleman persona now includes ComponentPersona.
+	// Pi + explicit minimal preset with default hgtran persona now includes ComponentPersona.
 	// Persona is persona-screen-driven; preset only controls the ecosystem stack.
 	want := []model.ComponentID{model.ComponentEngram, model.ComponentPersona}
 	if !reflect.DeepEqual(input.Selection.Components, want) {

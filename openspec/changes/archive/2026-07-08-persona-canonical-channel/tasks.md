@@ -69,14 +69,14 @@ Strict TDD is active. Runner: `go test ./...`; targeted: `go test ./internal/com
 - [x] RED evidence: run, capture failure (selection logic does not exist yet).
 
 ### 1.8 RED: `TestKimiOutputStyleSupersetOfLegacyKimiCopy`
-- [x] New regression test asserting every line of pre-change `kimi/output-style-{gentleman,neutral}.md` exists in the reconciled Claude-derived text written for Kimi (verifies Decision 4 strict-subset claim).
+- [x] New regression test asserting every line of pre-change `kimi/output-style-{hgtran,neutral}.md` exists in the reconciled Claude-derived text written for Kimi (verifies Decision 4 strict-subset claim).
 - [x] RED evidence: run against unreconciled assets, capture failure.
 
 ## 2. Implementation (GREEN)
 
 ### 2.1 GREEN: reconciled output-style assets — Gentleman
-- [x] `claude/output-style-gentleman.md`: add 3 artifact bullets to Persona Scope (Decision 4); merge Language Rules union table (persona `:39-46` ∪ style `:44-52`), including the single MERGED English-reply bullet (not concatenated).
-- [x] `kimi/output-style-gentleman.md`: overwrite with the same reconciled text (adds the 2 missing determinism lines; Kimi content is a strict subset, nothing lost).
+- [x] `claude/output-style-hgtran.md`: add 3 artifact bullets to Persona Scope (Decision 4); merge Language Rules union table (persona `:39-46` ∪ style `:44-52`), including the single MERGED English-reply bullet (not concatenated).
+- [x] `kimi/output-style-hgtran.md`: overwrite with the same reconciled text (adds the 2 missing determinism lines; Kimi content is a strict subset, nothing lost).
 - [x] GREEN evidence: run 1.8's superset test — PASS.
 
 ### 2.2 GREEN: reconciled output-style assets — Neutral
@@ -84,11 +84,11 @@ Strict TDD is active. Runner: `go test ./...`; targeted: `go test ./internal/com
 - [x] `kimi/output-style-neutral.md`: overwrite with reconciled text (adds 4 missing determinism lines + fixes reorder).
 - [x] GREEN evidence: run 1.8's superset test (Neutral case) — PASS.
 
-### 2.3 GREEN: `claude/persona-gentleman.md` → residual (Table A)
+### 2.3 GREEN: `claude/persona-hgtran.md` → residual (Table A)
 - [x] Slim in place: KEEP `## Rules` (all 11 bullets), `## Expertise`, `## Contextual Skill Loading (MANDATORY)`; MOVE Personality/Persona Scope/Language/Tone/Philosophy/Behavior (now covered by 2.1); ADD `## Persona Voice` pointer.
 - [x] GREEN evidence: run 1.1 — PASS.
 
-### 2.4 GREEN: `kimi/persona-gentleman.md` → residual (Table B)
+### 2.4 GREEN: `kimi/persona-hgtran.md` → residual (Table B)
 - [x] Same disposition as A; KEEP `## Rules` (6 bullets, no CLI-tooling bullet) and `## Kimi-native notes` (`:71-75`); MOVE Language; ADD Kimi-worded pointer.
 - [x] GREEN evidence: run 1.4 — PASS.
 
@@ -102,7 +102,7 @@ Strict TDD is active. Runner: `go test ./...`; targeted: `go test ./internal/com
 
 ### 2.7 GREEN: `inject.go` residual predicate + `personaContent` signature
 - [x] Add `residualChannel(adapter) bool = adapter.SupportsOutputStyles() || adapter.Agent() == model.AgentKimi` at call site `inject.go:79`.
-- [x] Change `personaContent(agent, persona)` → `personaContent(agent, persona, residual bool)` (`:495`); inside switch, when `residual`, dispatch to the 4 new/slimmed assets per Decision 1's table (Gentleman: `claude/persona-gentleman.md` residual, `kimi/persona-gentleman.md` residual; Neutral: `claude/persona-neutral-residual.md`, `kimi/persona-neutral-residual.md`).
+- [x] Change `personaContent(agent, persona)` → `personaContent(agent, persona, residual bool)` (`:495`); inside switch, when `residual`, dispatch to the 4 new/slimmed assets per Decision 1's table (Gentleman: `claude/persona-hgtran.md` residual, `kimi/persona-hgtran.md` residual; Neutral: `claude/persona-neutral-residual.md`, `kimi/persona-neutral-residual.md`).
 - [x] GREEN evidence: run 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7 — all PASS.
 
 ### 2.8 GREEN: fingerprint regression tests
@@ -113,7 +113,7 @@ Strict TDD is active. Runner: `go test ./...`; targeted: `go test ./internal/com
 ## 3. Testing/Verification
 
 ### 3.1 GREEN: `e2e/e2e_test.sh` assertion updates
-- [x] `test_cc_persona_gentleman` (`:552`) and `test_cc_persona_neutral` (`:574`): replace "CLAUDE.md contains Senior Architect" assertion with (a) CLAUDE.md residual contains the pointer text, (b) `~/.claude/output-styles/{gentleman,neutral}.md` (lowercase paths, per JD-002) carries the tone content.
+- [x] `test_cc_persona_gentleman` (`:552`) and `test_cc_persona_neutral` (`:574`): replace "CLAUDE.md contains Senior Architect" assertion with (a) CLAUDE.md residual contains the pointer text, (b) `~/.claude/output-styles/{hgtran,neutral}.md` (lowercase paths, per JD-002) carries the tone content.
 - [x] `test_edge_persona_switch` (`:1541,1547`): same rewrite for both persona-switch assertions.
 - [x] Evidence: e2e run passes locally (or documented as deferred to CI per project e2e gating).
 
@@ -123,9 +123,9 @@ Strict TDD is active. Runner: `go test ./...`; targeted: `go test ./internal/com
 
 ### 3.3 REFACTOR: golden regeneration (LAST)
 - [x] Verify base state of `testdata/golden/combined-claude-claudemd.golden` first (regenerated by `engram-protocol-dedup` earlier today — confirm `git log` shows that commit before diffing).
-- [x] Regenerate `persona-claude-gentleman.golden`, `persona-claude-neutral.golden`, `persona-claude-gentleman-outputstyle.golden`, `combined-claude-claudemd.golden` (slim residual + reconciled style).
+- [x] Regenerate `persona-claude-hgtran.golden`, `persona-claude-neutral.golden`, `persona-claude-hgtran-outputstyle.golden`, `combined-claude-claudemd.golden` (slim residual + reconciled style).
 - [x] Create `persona-claude-neutral-outputstyle.golden` (locks reconciled neutral style; none exists today — accepted per design File Changes table).
-- [x] Assert byte-stable (no regen): `combined-windsurf-global-rules.golden`, `persona-{antigravity,kiro,windsurf}-gentleman.golden`, `persona-opencode-{gentleman,neutral}.golden`.
+- [x] Assert byte-stable (no regen): `combined-windsurf-global-rules.golden`, `persona-{antigravity,kiro,windsurf}-hgtran.golden`, `persona-opencode-{hgtran,neutral}.golden`.
 - [x] Evidence: `go test ./... -run <persona goldens> -update`, then re-run without `-update` — PASS; `git diff --stat` on byte-stable goldens is empty.
 
 ### 3.4 Token measurement (chars/4 method, Decision 6)

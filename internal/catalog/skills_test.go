@@ -3,8 +3,8 @@ package catalog
 import (
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/skills"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/skills"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
 )
 
 // TestMVPSkillsCoverAllPresetSkills ensures every skill that presets.go would
@@ -38,14 +38,17 @@ func TestMVPSkillsNoDuplicates(t *testing.T) {
 
 func TestMVPSkillsIncludeRequestedBundledSkillsWithCanonicalNames(t *testing.T) {
 	required := map[model.SkillID]string{
-		model.SkillCreator:           "skill-creator",
-		model.SkillSkillRegistry:     "skill-registry",
-		model.SkillCognitiveDoc:      "cognitive-doc-design",
-		model.SkillCommentWriter:     "comment-writer",
-		model.SkillJudgmentDay:       "judgment-day",
-		model.SkillSDDInit:           "sdd-init",
-		model.SkillImprover:          "skill-improver",
-		model.SkillRDDDefectWorkflow: "rdd-defect-workflow",
+		model.SkillCreator:             "skill-creator",
+		model.SkillSkillRegistry:       "skill-registry",
+		model.SkillCognitiveDoc:        "cognitive-doc-design",
+		model.SkillCommentWriter:       "comment-writer",
+		model.SkillJudgmentDay:         "judgment-day",
+		model.SkillSDDInit:             "sdd-init",
+		model.SkillSDDResearch:         "sdd-research",
+		model.SkillImprover:            "skill-improver",
+		model.SkillRDDDefectWorkflow:   "rdd-defect-workflow",
+		model.SkillSystemicIssueTriage: "systemic-issue-triage",
+		model.SkillGentleAIBench:       "hgtran-ai-bench",
 	}
 
 	found := make(map[model.SkillID]string)

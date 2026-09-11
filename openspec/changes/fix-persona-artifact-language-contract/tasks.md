@@ -29,7 +29,7 @@ Strict TDD is active. Use `go test ./...` as the required full test runner, with
 
 ### 1.1 Discover the persona option and supported asset matrix
 
-- [x] Verify whether `gentleman-neutral-artifacts` already exists in `internal/model/types.go`, `internal/cli/validate.go`, `internal/tui/screens/persona.go`, `internal/components/persona/inject.go`, `internal/assets/`, `internal/catalog/agents.go`, and existing install/sync tests.
+- [x] Verify whether `hgtran-neutral-artifacts` already exists in `internal/model/types.go`, `internal/cli/validate.go`, `internal/tui/screens/persona.go`, `internal/components/persona/inject.go`, `internal/assets/`, `internal/catalog/agents.go`, and existing install/sync tests.
 - [x] Record the discovered state in apply notes. Initial planning scan found only a mention in `context.md`, so apply should assume missing until re-verified.
 - [x] If missing, execute the conditional implementation and verification tasks for model enum, CLI, TUI, install, and sync support below.
 
@@ -68,7 +68,7 @@ Strict TDD is active. Use `go test ./...` as the required full test runner, with
 - [x] Cover native subagents, dynamic subagents, inline phase contexts, OpenCode shared prompt files, and overlay placeholder references where they exist.
 - [x] RED evidence: capture failing delegation-forwarding assertions before asset edits.
 
-### 1.7 RED: If missing, add `gentleman-neutral-artifacts` support tests
+### 1.7 RED: If missing, add `hgtran-neutral-artifacts` support tests
 
 - [x] Add failing tests for enum and validation support in `internal/model/types.go` and `internal/cli/validate.go`.
 - [x] Add failing TUI option/label tests in `internal/tui/screens/persona.go`, `internal/tui/screens/review.go`, and existing `internal/tui/model_test.go` coverage.
@@ -99,7 +99,7 @@ Strict TDD is active. Use `go test ./...` as the required full test runner, with
 
 ### 2.4 GREEN: Preserve persona boundaries
 
-- [x] Inspect `internal/assets/*/persona-gentleman.md`, `internal/assets/generic/persona-neutral.md`, `internal/assets/claude/output-style-gentleman.md`, and `internal/assets/kimi/output-style-gentleman.md`.
+- [x] Inspect `internal/assets/*/persona-hgtran.md`, `internal/assets/generic/persona-neutral.md`, `internal/assets/claude/output-style-hgtran.md`, and `internal/assets/kimi/output-style-hgtran.md`.
 - [x] Add artifact-boundary wording only if needed, while preserving Gentleman direct-conversation Rioplatense teaching voice.
 - [x] GREEN evidence: persona allowlist tests pass and no persona-agnostic artifact tests regress.
 
@@ -109,7 +109,7 @@ Strict TDD is active. Use `go test ./...` as the required full test runner, with
 - [x] Ensure direct conversation persona rules are not forwarded as artifact language defaults.
 - [x] GREEN evidence: delegation-forwarding tests pass across native, dynamic, inline, and OpenCode shared prompt paths.
 
-### 2.6 GREEN: If missing, implement `gentleman-neutral-artifacts` model, CLI, and TUI support
+### 2.6 GREEN: If missing, implement `hgtran-neutral-artifacts` model, CLI, and TUI support
 
 - [x] Add the persona ID in `internal/model/types.go`.
 - [x] Accept and validate the value in `internal/cli/validate.go`.
@@ -117,7 +117,7 @@ Strict TDD is active. Use `go test ./...` as the required full test runner, with
 - [x] Update `internal/tui/model.go` preset/component behavior only if the new persona changes component selection.
 - [x] GREEN evidence: enum, CLI validation, and TUI tests for the new option pass.
 
-### 2.7 GREEN: If missing, implement `gentleman-neutral-artifacts` install and sync support
+### 2.7 GREEN: If missing, implement `hgtran-neutral-artifacts` install and sync support
 
 - [x] Add the required persona asset source(s) under `internal/assets/` using existing persona asset conventions.
 - [x] Route the new persona in `internal/components/persona/inject.go` and cover it in `internal/components/persona/inject_test.go`.

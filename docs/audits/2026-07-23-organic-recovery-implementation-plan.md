@@ -882,5 +882,5 @@ or enabling ecosystem-wide activation.
 
 - [Systemic Remediation Architecture](./2026-07-23-systemic-remediation-architecture.md)
 - [Receipt-Driven Development System Audit](./2026-07-21-rdd-system-audit.md)
-- [Implementation tracker #1794](https://github.com/Gentleman-Programming/gentle-ai/issues/1794)
-- [Architecture baseline commit `0d95c399c79edb341e3d874032eba4654b2b3f17`](https://github.com/Gentleman-Programming/gentle-ai/commit/0d95c399c79edb341e3d874032eba4654b2b3f17)
+- [Implementation tracker #1794](https://github.com/desarrollohg01/hgtran-ai/issues/1794)
+- [Architecture baseline commit `0d95c399c79edb341e3d874032eba4654b2b3f17`](https://github.com/desarrollohg01/hgtran-ai/commit/0d95c399c79edb341e3d874032eba4654b2b3f17)

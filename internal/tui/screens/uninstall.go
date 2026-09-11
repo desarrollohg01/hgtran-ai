@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"strings"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/catalog"
-	componentuninstall "bitbucket.org/hgt_development/hgtran-ai/v2/internal/components/uninstall"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/tui/styles"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/catalog"
+	componentuninstall "github.com/desarrollohg01/hgtran-ai/v2/internal/components/uninstall"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/tui/styles"
 )
 
 type UninstallModeOption struct {

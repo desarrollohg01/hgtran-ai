@@ -51,13 +51,13 @@
 | `internal/assets/skills/skill-creator/SKILL.md` | modified | dropped `allowed-tools:` top-level key (T3); description flattened (T4) |
 | `internal/assets/skills/{_shared, branch-pr, cognitive-doc-design, comment-writer, go-testing, issue-creation, judgment-day, sdd-apply, sdd-archive, sdd-design, sdd-explore, sdd-init, sdd-onboard, sdd-propose, sdd-spec, sdd-tasks, sdd-verify, skill-registry, work-unit-commits}/SKILL.md` | modified | description block-scalar → plain double-quoted single-line scalar (T4) |
 | `internal/assets/assets_test.go` | modified | added `TestPersonasContainContextualSkillLoadingDirective` covering 6 personas (T5) |
-| `internal/assets/claude/persona-gentleman.md` | modified | removed `## Skills (Auto-load based on context)` table; injected verbatim B2 directive naming `Skill` tool (T6) |
-| `internal/assets/{opencode, generic, kiro, kimi}/persona-gentleman.md` + `internal/assets/generic/persona-neutral.md` | modified | removed table; injected non-Claude variant of B2 directive ("read the matching SKILL.md (using your agent's read mechanism)") across 5 files (T6) |
+| `internal/assets/claude/persona-hgtran.md` | modified | removed `## Skills (Auto-load based on context)` table; injected verbatim B2 directive naming `Skill` tool (T6) |
+| `internal/assets/{opencode, generic, kiro, kimi}/persona-hgtran.md` + `internal/assets/generic/persona-neutral.md` | modified | removed table; injected non-Claude variant of B2 directive ("read the matching SKILL.md (using your agent's read mechanism)") across 5 files (T6) |
 | `internal/components/persona/inject_test.go` | modified | updated cursor persona smoke assertion to match the new directive heading (T6) |
 | `testdata/golden/skills-{claude, opencode, windsurf, kiro}-skill-creator.golden` | regenerated | T3 + T4 (allowed-tools removal + description flatten) |
 | `testdata/golden/skills-{claude, opencode, windsurf, kiro}-go-testing.golden` | regenerated | T4 (description flatten) |
 | `testdata/golden/sdd-{antigravity, codex, cursor, gemini, kiro, opencode, vscode, windsurf}-skill-sdd-init.golden` | regenerated | T4 (description flatten — 8 files; claude SDD goldens do not include installed SKILL.md) |
-| `testdata/golden/persona-{claude-gentleman, claude-neutral, opencode-gentleman, opencode-neutral, windsurf-gentleman, kiro-gentleman, antigravity-gentleman}.golden` + `testdata/golden/combined-{claude-claudemd, windsurf-global-rules}.golden` | regenerated | T6 (table → directive across 9 goldens) |
+| `testdata/golden/persona-{claude-hgtran, claude-neutral, opencode-hgtran, opencode-neutral, windsurf-hgtran, kiro-hgtran, antigravity-hgtran}.golden` + `testdata/golden/combined-{claude-claudemd, windsurf-global-rules}.golden` | regenerated | T6 (table → directive across 9 goldens) |
 | `openspec/changes/contextual-skill-loading/tasks.md` | modified | marked T1–T7 `[x]` |
 | `openspec/changes/contextual-skill-loading/apply-progress.md` | created | this artifact |
 

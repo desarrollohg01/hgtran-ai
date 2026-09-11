@@ -6,9 +6,9 @@ import (
 	"path/filepath"
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/capabilitymanifest"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/capabilitymanifest"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/system"
 )
 
 // stubAdapter is a minimal Adapter implementation for discovery tests.
@@ -22,9 +22,6 @@ func (s stubAdapter) Agent() model.AgentID    { return s.agent }
 func (s stubAdapter) Tier() model.SupportTier { return model.TierFull }
 func (s stubAdapter) CapabilityManifest() capabilitymanifest.AgentCapabilityManifest {
 	return capabilitymanifest.MustForAgent(s.agent)
-}
-func (s stubAdapter) SupportsAutoInstall() bool {
-	return s.CapabilityManifest().Features.AutoInstall
 }
 func (s stubAdapter) Detect(_ context.Context, _ string) (bool, string, string, bool, error) {
 	info, err := os.Stat(s.configDir)

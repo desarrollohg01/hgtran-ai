@@ -3,7 +3,7 @@ package tui
 import (
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/pipeline"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/pipeline"
 )
 
 func TestProgressPercentTracksCompletedSteps(t *testing.T) {

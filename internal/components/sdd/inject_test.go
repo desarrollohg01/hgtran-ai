@@ -6,22 +6,24 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"reflect"
 	"strconv"
 	"strings"
 	"testing"
 	"time"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/claude"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/hermes"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/kilocode"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/kimi"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/openclaw"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/opencode"
-	windsurfagent "bitbucket.org/hgt_development/hgtran-ai/v2/internal/agents/windsurf"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/assets"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
-	opencodemodel "bitbucket.org/hgt_development/hgtran-ai/v2/internal/opencode"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/claude"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/hermes"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/kilocode"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/kimi"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/openclaw"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/agents/opencode"
+	windsurfagent "github.com/desarrollohg01/hgtran-ai/v2/internal/agents/windsurf"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/assets"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/components/agentguidance"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
+	opencodemodel "github.com/desarrollohg01/hgtran-ai/v2/internal/opencode"
 	// agents/cursor, agents/gemini, agents/vscode used via agents.NewAdapter()
 )
 
@@ -66,18 +68,27 @@ func TestSDDOrchestratorAssetSelectionCoversSupportedAgents(t *testing.T) {
 				t.Fatalf("sddOrchestratorAsset(%q) = %q, want %q", tc.agent, got, tc.want)
 			}
 			for _, required := range []string{
+				"exactly three semantic choices in this order",
+				"`report_and_continue`, `continue_without_reporting`, `stop_here`",
 				"Only after explicit consent and that final privacy scan",
+				"If no equivalent exists, create a new automated provider-defect report.",
 				"search open and closed issues",
-				"confirms a newly-created issue identity/URL",
-				"Only a completed duplicate lookup with a definitive result may branch to a write",
-				"Do not create, comment, update, or label any issue",
-				"do not add, remove, or change any labels on it",
-				"label application fails or has an ambiguous outcome",
-				"re-resolve that exact created issue identity",
+				"newly-created issue identity/URL",
+				"Only a definitive lookup may branch to GitHub mutation",
+				"If search, comment, or creation fails, is ambiguous, incomplete, times out, lacks permission, or has an unknown outcome",
+				"perform no further GitHub mutation and no blind retry",
+				"use the uncertainty continuation below",
+				"After a definitive successful report outcome, or any report-side uncertainty after stopping further GitHub mutation, execute the shared candidate-scoped continuation below.",
+				"Both continue choices execute that exact captured decline invocation exactly once",
+				"`consent: \"declined_this_candidate\"`",
+				"native negotiated STATUS",
 			} {
 				if !strings.Contains(renderSDDOrchestratorAsset(tc.agent), required) {
 					t.Fatalf("rendered %s orchestrator missing provider-defect handoff clause %q", tc.agent, required)
 				}
+			}
+			if strings.Contains(renderSDDOrchestratorAsset(tc.agent), "hgtran-"+"report") {
+				t.Fatalf("rendered %s orchestrator retains report label", tc.agent)
 			}
 		})
 	}
@@ -352,9 +363,12 @@ func TestInjectClaudeWritesCommandFiles(t *testing.T) {
 		t.Fatalf("Inject() first changed = false")
 	}
 
+	// Every Claude command carries the hgtran- prefix so none shares its name
+	// with a delegate-only skill directory (#2644, #2322).
 	expectedCommands := []string{
-		"sdd-apply.md", "sdd-archive.md", "sdd-continue.md", "sdd-explore.md",
-		"sdd-ff.md", "sdd-init.md", "sdd-new.md", "sdd-onboard.md", "sdd-status.md", "sdd-verify.md",
+		"hgtran-sdd-apply.md", "hgtran-sdd-archive.md", "hgtran-sdd-continue.md", "hgtran-sdd-explore.md",
+		"hgtran-sdd-ff.md", "hgtran-sdd-init.md", "hgtran-sdd-new.md", "hgtran-sdd-onboard.md",
+		"hgtran-sdd-research.md", "hgtran-sdd-status.md", "hgtran-sdd-verify.md",
 	}
 	for _, name := range expectedCommands {
 		path := filepath.Join(home, ".claude", "commands", name)
@@ -363,24 +377,55 @@ func TestInjectClaudeWritesCommandFiles(t *testing.T) {
 		}
 	}
 
-	commandPath := filepath.Join(home, ".claude", "commands", "sdd-init.md")
+	commandPath := filepath.Join(home, ".claude", "commands", "hgtran-sdd-init.md")
 	content, err := os.ReadFile(commandPath)
 	if err != nil {
-		t.Fatalf("ReadFile(sdd-init.md) error = %v", err)
+		t.Fatalf("ReadFile(hgtran-sdd-init.md) error = %v", err)
 	}
 
 	text := string(content)
 	if !strings.Contains(text, "description:") {
-		t.Fatal("sdd-init.md missing frontmatter description")
+		t.Fatal("hgtran-sdd-init.md missing frontmatter description")
 	}
 	if strings.Contains(text, "agent: sdd-orchestrator") {
-		t.Fatal("sdd-init.md contains OpenCode-specific agent frontmatter")
+		t.Fatal("hgtran-sdd-init.md contains OpenCode-specific agent frontmatter")
 	}
 	if !strings.Contains(text, "If the native `sdd-init` sub-agent is available") {
-		t.Fatal("sdd-init.md missing Claude delegation guidance")
+		t.Fatal("hgtran-sdd-init.md missing Claude delegation guidance")
 	}
 	if !strings.Contains(text, "~/.claude/skills/sdd-init/SKILL.md") {
-		t.Fatal("sdd-init.md missing Claude skill path")
+		t.Fatal("hgtran-sdd-init.md missing Claude skill path")
+	}
+}
+
+func TestInjectClaudeRetiresUnprefixedCommands(t *testing.T) {
+	home := t.TempDir()
+	commandsDir := filepath.Join(home, ".claude", "commands")
+	if err := os.MkdirAll(commandsDir, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	legacy := filepath.Join(commandsDir, "sdd-init.md")
+	if err := os.WriteFile(legacy, []byte("# pre-#2644 managed command\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	custom := filepath.Join(commandsDir, "my-command.md")
+	if err := os.WriteFile(custom, []byte("keep"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	result, err := Inject(home, claudeAdapter(), "")
+	if err != nil {
+		t.Fatalf("Inject() error = %v", err)
+	}
+
+	if _, err := os.Stat(legacy); !os.IsNotExist(err) {
+		t.Fatalf("retired command %q still present: %v", legacy, err)
+	}
+	if !containsString(result.Files, legacy) {
+		t.Fatalf("result.Files missing retired command %q: %v", legacy, result.Files)
+	}
+	if _, err := os.Stat(custom); err != nil {
+		t.Fatalf("user-owned command removed: %v", err)
 	}
 }
 
@@ -518,8 +563,8 @@ func TestInjectOpenCodeWritesCommandFiles(t *testing.T) {
 	if !strings.Contains(settingsText, `"agent"`) {
 		t.Fatal("opencode.json missing agent key for SDD commands")
 	}
-	if !strings.Contains(settingsText, `"gentle-orchestrator"`) {
-		t.Fatal("opencode.json missing gentle-orchestrator agent")
+	if !strings.Contains(settingsText, `"hgtran-orchestrator"`) {
+		t.Fatal("opencode.json missing hgtran-orchestrator agent")
 	}
 	if strings.Contains(settingsText, `"sdd-orchestrator"`) {
 		t.Fatal("opencode.json should not install legacy sdd-orchestrator agent")
@@ -554,7 +599,7 @@ func TestInjectOpenCodeIsIdempotent(t *testing.T) {
 	}
 	settingsPath := opencodeAdapter().SettingsPath(home)
 	firstSettings, err := os.ReadFile(settingsPath)
-	if err != nil || !bytes.Contains(firstSettings, []byte(`"default_agent": "gentle-orchestrator"`)) {
+	if err != nil || !bytes.Contains(firstSettings, []byte(`"default_agent": "hgtran-orchestrator"`)) {
 		t.Fatalf("first settings missing managed default: %s, err = %v", firstSettings, err)
 	}
 
@@ -600,7 +645,7 @@ func TestInjectOpenCodeUsesOpenCodeSpecificOrchestratorPrompt(t *testing.T) {
 				"Read the configured models from `opencode.json`",
 				"Use the `question` tool for SDD Session Preflight only when it is available in the current interactive runtime and all four groups are exactly representable",
 				"present the proceed/adjust/stop options through the lossless blocking-prompt route",
-				"present the correct/second-round/continue choice through the lossless blocking-prompt route",
+				"### Research and Pre-Proposal Gate (MANDATORY)",
 				"Present the two strategy options through one `question` tool call when the lossless native route is usable",
 				"otherwise emit the complete choice through the plain chat or terminal fallback and STOP",
 			} {
@@ -624,7 +669,7 @@ func TestInjectOpenCodePreservesExistingOrchestratorPromptWhenRequested(t *testi
 	const customPrompt = "EXTERNAL_PROFILE_MANAGER_CUSTOM_PROMPT_DO_NOT_OVERWRITE"
 	seed := `{
   "agent": {
-    "gentle-orchestrator": {
+    "hgtran-orchestrator": {
       "mode": "primary",
       "prompt": "` + customPrompt + `"
     }
@@ -665,8 +710,9 @@ func TestInjectOpenCodePreservesExistingOrchestratorPromptWhenRequested(t *testi
 		"explicit request or accepted proposal",
 		"Per-action rule",
 		"Authority rule",
-		"hgtran-ai review status",
-		"hgtran-ai review validate --gate",
+		"selectorless `hgtran-ai review status`",
+		"exact START",
+		"Gates are informational only",
 	} {
 		if !strings.Contains(text, wanted) {
 			t.Fatalf("opencode.json missing migrated preserved prompt hard gate %q", wanted)
@@ -702,7 +748,7 @@ func TestInjectOpenCodeMigratesPreservedLegacyOrchestratorPromptReferences(t *te
 	const stalePrompt = "# Hgtran AI — SDD Orchestrator Instructions\n\nBind this to the dedicated `sdd-orchestrator` agent only.\n\n- Treat `agent.sdd-orchestrator.model` as authoritative when it is set.\n\n### Mandatory Delegation Triggers (Non-Skippable)\n\n3. **PR rule**: before commit, push, or PR after code changes, run a fresh-context review unless the diff is trivial docs/text.\n4. **Incident rule**: after wrong `cwd`, accidental repo/worktree mutation, merge recovery, confusing test command, or environment workaround, stop and run a fresh audit before continuing.\n6. **Fresh review rule**: use fresh context for adversarial review of diffs, conflicts, PR readiness, and incidents; use continuity/forked context only for implementation work that needs inherited state.\n"
 	seed := `{
   "agent": {
-    "gentle-orchestrator": {
+    "hgtran-orchestrator": {
       "mode": "primary",
       "prompt": ` + strconv.Quote(stalePrompt) + `
     }
@@ -742,8 +788,8 @@ func TestInjectOpenCodeMigratesPreservedLegacyOrchestratorPromptReferences(t *te
 		}
 	}
 	for _, wanted := range []string{
-		"Bind this to the dedicated `gentle-orchestrator` agent only.",
-		"agent.gentle-orchestrator.model",
+		"Bind this to the dedicated `hgtran-orchestrator` agent only.",
+		"agent.hgtran-orchestrator.model",
 		"### SDD Session Preflight (HARD GATE)",
 		"Use the `question` tool for SDD Session Preflight",
 		"Ask all four preflight groups in one single `question` tool call",
@@ -763,8 +809,8 @@ func TestInjectOpenCodeMigratesPreservedLegacyOrchestratorPromptReferences(t *te
 		"ask before launching the next phase via the `question` tool",
 		"present the proceed/adjust/stop options through a single `question` tool call",
 		"approve only the immediate next phase",
-		"proposal question round",
-		"business rules, implications, impact, edge cases",
+		"### Research and Pre-Proposal Gate (MANDATORY)",
+		"confirmed pre-proposal handoff",
 		"Never launch `sdd-apply` just because the user asked to implement a feature",
 		"### Mandatory Delegation Triggers (Non-Skippable)",
 		"fully mandatory",
@@ -780,8 +826,9 @@ func TestInjectOpenCodeMigratesPreservedLegacyOrchestratorPromptReferences(t *te
 		"Authority rule",
 		"Semantic guard",
 		"execution, not delegation",
-		"hgtran-ai review status",
-		"hgtran-ai review validate --gate",
+		"selectorless `hgtran-ai review status`",
+		"exact START",
+		"Gates are informational only",
 	} {
 		if !strings.Contains(text, wanted) {
 			t.Fatalf("opencode.json missing migrated preserved prompt reference %q", wanted)
@@ -825,7 +872,7 @@ func TestInjectOpenCodeUpgradesPromptOwnedLensRouter(t *testing.T) {
 		"<!-- /hgtran-ai:delegation-hard-gates-migration -->\n"
 	seed := `{
   "agent": {
-    "gentle-orchestrator": {
+    "hgtran-orchestrator": {
       "mode": "primary",
       "prompt": ` + strconv.Quote(v1Block) + `
     }
@@ -856,7 +903,7 @@ func TestInjectOpenCodeUpgradesPromptOwnedLensRouter(t *testing.T) {
 	if err := json.Unmarshal(settingsBytes, &settings); err != nil {
 		t.Fatalf("Unmarshal(opencode.json) error = %v", err)
 	}
-	prompt := settings.Agent["gentle-orchestrator"].Prompt
+	prompt := settings.Agent["hgtran-orchestrator"].Prompt
 	if !strings.HasPrefix(prompt, userContent+"\n\n") {
 		t.Fatalf("user-authored content outside the migration block changed:\n%s", prompt)
 	}
@@ -870,8 +917,9 @@ func TestInjectOpenCodeUpgradesPromptOwnedLensRouter(t *testing.T) {
 		"Optional SDD rule",
 		"explicit request or accepted proposal",
 		"Authority rule",
-		"hgtran-ai review status",
-		"hgtran-ai review validate --gate",
+		"selectorless `hgtran-ai review status`",
+		"exact START",
+		"Gates are informational only",
 	} {
 		if !strings.Contains(text, wanted) {
 			t.Fatalf("opencode.json missing native routing fragment %q after migration", wanted)
@@ -912,7 +960,7 @@ func TestEnsurePreservedOpenCodeDelegationHardGatesMigratesToNativeTransition(t 
 	legacy := "### Mandatory Delegation Triggers (Non-Skippable)\n\n" +
 		"before commit, push, or PR after code changes, run the concrete review lens(es) selected by Review Lens Selection unless the diff is trivial (tier 1)"
 	got := ensurePreservedOpenCodeDelegationHardGates(legacy)
-	for _, want := range []string{"`hgtran-ai review status`", "`hgtran-ai review validate --gate <gate>`", "exact owner-issued receipt"} {
+	for _, want := range []string{"selectorless `hgtran-ai review status`", "exact START", "lineage, revision, and target", "Gates are informational only"} {
 		if !strings.Contains(got, want) {
 			t.Fatalf("migrated delegation gates missing native review authority clause %q:\n%s", want, got)
 		}
@@ -965,10 +1013,11 @@ const retiredWorkRoutingAuthorityRule = "7. **Authority rule**: when a WorkRun e
 	" and apply only its exact provider-issued `hgtran-ai.work-transition/v1` authorization." +
 	" Never select lenses, synthesize transitions, or infer PASS from prose."
 
-// The replacement rule 7, keyed on authority surfaces that still exist.
-const nativeReviewAuthorityRuleText = "7. **Authority rule**: read native review state with `hgtran-ai review status`" +
-	" and let `hgtran-ai review validate --gate <gate>` check the exact owner-issued receipt at every lifecycle gate." +
-	" Never select lenses, synthesize transitions, or infer PASS from prose."
+// The replacement rule 7 retains one current-worktree transaction binding and
+// never lets compatibility gates decide delivery.
+const nativeReviewAuthorityRuleText = "7. **Authority rule**: use selectorless `hgtran-ai review status` only to preflight the current worktree" +
+	" and execute its exact START; retain that transaction's lineage, revision, and target for every later lifecycle call." +
+	" Gates are informational only. Never select lenses, synthesize transitions, infer PASS, or authorize delivery from prose."
 
 // previouslyInstalledDelegationHardGates reproduces, byte for byte, the managed
 // block that shipped before this migration, including the retired rule 7.
@@ -1097,7 +1146,7 @@ PRESERVE_THIS_UNRELATED_SECTION exactly as authored.
 `
 	seed := `{
   "agent": {
-    "gentle-orchestrator": {
+    "hgtran-orchestrator": {
       "mode": "primary",
       "prompt": ` + strconv.Quote(staleV1Prompt) + `
     }
@@ -1157,6 +1206,34 @@ PRESERVE_THIS_UNRELATED_SECTION exactly as authored.
 	}
 }
 
+func TestInjectOpenCodePreservesRoutingGuardAcrossMigratedPrompt(t *testing.T) {
+	home := t.TempDir()
+	settingsPath := filepath.Join(home, ".config", "opencode", "opencode.json")
+	if err := os.MkdirAll(filepath.Dir(settingsPath), 0o755); err != nil {
+		t.Fatalf("MkdirAll(settings dir) error = %v", err)
+	}
+	seed := `{"agent":{"hgtran-orchestrator":{"prompt":"Bind this to the dedicated \u0060sdd-orchestrator\u0060 agent only."}}}`
+	if err := os.WriteFile(settingsPath, []byte(seed), 0o644); err != nil {
+		t.Fatalf("WriteFile(opencode.json) error = %v", err)
+	}
+
+	if _, err := agentguidance.InjectRouting(home, model.AgentOpenCode); err != nil {
+		t.Fatalf("InjectRouting() error = %v", err)
+	}
+	if _, err := Inject(home, opencodeAdapter(), model.SDDModeMulti, InjectOptions{PreserveOpenCodeOrchestratorPrompt: true}); err != nil {
+		t.Fatalf("Inject() error = %v", err)
+	}
+
+	prompt := readGentleOrchestratorPrompt(t, settingsPath)
+	const guard = "First establish whether the requested outcome explicitly authorizes a change."
+	if got := strings.Count(prompt, guard); got != 1 {
+		t.Fatalf("migrated OpenCode prompt contains the routing guard %d times, want 1:\n%s", got, prompt)
+	}
+	if !strings.Contains(prompt, "Bind this to the dedicated `hgtran-orchestrator` agent only.") {
+		t.Fatalf("migrated OpenCode prompt lost its orchestrator migration:\n%s", prompt)
+	}
+}
+
 func TestInjectOpenCodeMigratesPartialPreflightPrompt(t *testing.T) {
 	home := t.TempDir()
 	mockNoPackageManager(t)
@@ -1198,7 +1275,7 @@ Map answers to canonical values: A1/Interactive -> interactive.
 `
 	seed := `{
   "agent": {
-    "gentle-orchestrator": {
+    "hgtran-orchestrator": {
       "mode": "primary",
       "prompt": ` + strconv.Quote(partialPrompt) + `
     }
@@ -1241,8 +1318,8 @@ Map answers to canonical values: A1/Interactive -> interactive.
 		"ask before launching the next phase via the `question` tool",
 		"present the proceed/adjust/stop options through a single `question` tool call",
 		"approve only the immediate next phase",
-		"proposal question round",
-		"business rules, implications, impact, edge cases",
+		"### Research and Pre-Proposal Gate (MANDATORY)",
+		"confirmed pre-proposal handoff",
 		"Never launch `sdd-apply` just because the user asked to implement a feature",
 	} {
 		if !strings.Contains(text, wanted) {
@@ -1299,7 +1376,7 @@ Hard gate rules:
 `
 	seed := `{
   "agent": {
-    "gentle-orchestrator": {
+    "hgtran-orchestrator": {
       "mode": "primary",
       "prompt": ` + strconv.Quote(stalePrompt) + `
     }
@@ -1350,8 +1427,8 @@ Hard gate rules:
 		"ask before launching the next phase via the `question` tool",
 		"present the proceed/adjust/stop options through a single `question` tool call",
 		"approve only the immediate next phase",
-		"proposal question round",
-		"business rules, implications, impact, edge cases",
+		"### Research and Pre-Proposal Gate (MANDATORY)",
+		"confirmed pre-proposal handoff",
 	} {
 		if !strings.Contains(text, wanted) {
 			t.Fatalf("opencode.json missing refreshed preserved prompt content %q", wanted)
@@ -1409,16 +1486,16 @@ func TestInjectOpenCodeMigratesLegacyBaseOrchestratorToGentleOrchestrator(t *tes
 	if _, exists := agentMap["sdd-orchestrator-cheap"]; !exists {
 		t.Fatal("named profile orchestrator should be preserved")
 	}
-	gentleOrchestratorAgent, ok := agentMap["gentle-orchestrator"].(map[string]any)
+	gentleOrchestratorAgent, ok := agentMap["hgtran-orchestrator"].(map[string]any)
 	if !ok {
-		t.Fatal("gentle-orchestrator agent not found or wrong type")
+		t.Fatal("hgtran-orchestrator agent not found or wrong type")
 	}
 	prompt, _ := gentleOrchestratorAgent["prompt"].(string)
 	if !strings.Contains(prompt, legacyPrompt) {
-		t.Fatalf("gentle-orchestrator prompt = %q, want it to preserve migrated legacy prompt", prompt)
+		t.Fatalf("hgtran-orchestrator prompt = %q, want it to preserve migrated legacy prompt", prompt)
 	}
 	if !strings.Contains(prompt, "### SDD Session Preflight (HARD GATE)") {
-		t.Fatalf("gentle-orchestrator prompt = %q, want appended preflight migration", prompt)
+		t.Fatalf("hgtran-orchestrator prompt = %q, want appended preflight migration", prompt)
 	}
 }
 
@@ -1434,7 +1511,7 @@ func TestInjectOpenCodeMigratesMisnamedGentlemanSDDOrchestrator(t *testing.T) {
 	const priorPrompt = "MISNAMED_GENTLEMAN_SDD_ORCHESTRATOR_PROMPT_TO_MIGRATE"
 	seed := `{
   "agent": {
-    "gentleman": {
+    "hgtran": {
       "mode": "primary",
       "description": "Gentleman SDD Orchestrator - coordinates sub-agents",
       "prompt": "` + priorPrompt + `"
@@ -1464,19 +1541,19 @@ func TestInjectOpenCodeMigratesMisnamedGentlemanSDDOrchestrator(t *testing.T) {
 	if !ok {
 		t.Fatal("opencode.json missing agent map")
 	}
-	if _, exists := agentMap["gentleman"]; exists {
-		t.Fatal("misnamed SDD gentleman agent should be removed")
+	if _, exists := agentMap["hgtran"]; exists {
+		t.Fatal("misnamed SDD hgtran agent should be removed")
 	}
-	gentleOrchestratorAgent, ok := agentMap["gentle-orchestrator"].(map[string]any)
+	gentleOrchestratorAgent, ok := agentMap["hgtran-orchestrator"].(map[string]any)
 	if !ok {
-		t.Fatal("gentle-orchestrator agent not found or wrong type")
+		t.Fatal("hgtran-orchestrator agent not found or wrong type")
 	}
 	prompt, _ := gentleOrchestratorAgent["prompt"].(string)
 	if !strings.Contains(prompt, priorPrompt) {
-		t.Fatalf("gentle-orchestrator prompt = %q, want it to preserve migrated misnamed prompt", prompt)
+		t.Fatalf("hgtran-orchestrator prompt = %q, want it to preserve migrated misnamed prompt", prompt)
 	}
 	if !strings.Contains(prompt, "### SDD Session Preflight (HARD GATE)") {
-		t.Fatalf("gentle-orchestrator prompt = %q, want appended preflight migration", prompt)
+		t.Fatalf("hgtran-orchestrator prompt = %q, want appended preflight migration", prompt)
 	}
 }
 
@@ -1491,12 +1568,12 @@ func TestInjectOpenCodeDeletesRevokedGentlemanAgent(t *testing.T) {
 
 	seed := `{
   "agent": {
-    "gentleman": {
+    "hgtran": {
       "mode": "primary",
       "description": "Senior Architect mentor - revoked OpenCode persona",
       "prompt": "REVOKED_GENTLEMAN_PROMPT_SHOULD_NOT_SURVIVE"
     },
-    "gentle-orchestrator": {
+    "hgtran-orchestrator": {
       "mode": "primary",
       "prompt": "CURRENT_GENTLE_ORCHESTRATOR_PROMPT"
     }
@@ -1525,19 +1602,19 @@ func TestInjectOpenCodeDeletesRevokedGentlemanAgent(t *testing.T) {
 	if !ok {
 		t.Fatal("opencode.json missing agent map")
 	}
-	if _, exists := agentMap["gentleman"]; exists {
-		t.Fatal("revoked gentleman agent should be removed")
+	if _, exists := agentMap["hgtran"]; exists {
+		t.Fatal("revoked hgtran agent should be removed")
 	}
-	gentleOrchestratorAgent, ok := agentMap["gentle-orchestrator"].(map[string]any)
+	gentleOrchestratorAgent, ok := agentMap["hgtran-orchestrator"].(map[string]any)
 	if !ok {
-		t.Fatal("gentle-orchestrator agent not found or wrong type")
+		t.Fatal("hgtran-orchestrator agent not found or wrong type")
 	}
 	prompt, _ := gentleOrchestratorAgent["prompt"].(string)
 	if !strings.Contains(prompt, "CURRENT_GENTLE_ORCHESTRATOR_PROMPT") {
-		t.Fatalf("gentle-orchestrator prompt = %q, want it to preserve current prompt", prompt)
+		t.Fatalf("hgtran-orchestrator prompt = %q, want it to preserve current prompt", prompt)
 	}
 	if !strings.Contains(prompt, "### SDD Session Preflight (HARD GATE)") {
-		t.Fatalf("gentle-orchestrator prompt = %q, want appended preflight migration", prompt)
+		t.Fatalf("hgtran-orchestrator prompt = %q, want appended preflight migration", prompt)
 	}
 }
 
@@ -1553,7 +1630,7 @@ func TestInjectOpenCodeOverwritesOrchestratorPromptByDefault(t *testing.T) {
 	const customPrompt = "EXTERNAL_PROFILE_MANAGER_CUSTOM_PROMPT_DO_NOT_OVERWRITE"
 	seed := `{
   "agent": {
-    "gentle-orchestrator": {
+    "hgtran-orchestrator": {
       "mode": "primary",
       "prompt": "` + customPrompt + `"
     }
@@ -1633,8 +1710,8 @@ func TestInjectOpenCodeMigratesLegacyAgentsKey(t *testing.T) {
 	if _, ok := agentMap["legacy-agent"]; !ok {
 		t.Fatal("legacy agent was not migrated under agent key")
 	}
-	if _, ok := agentMap["gentle-orchestrator"]; !ok {
-		t.Fatal("gentle-orchestrator agent missing after merge")
+	if _, ok := agentMap["hgtran-orchestrator"]; !ok {
+		t.Fatal("hgtran-orchestrator agent missing after merge")
 	}
 	if _, ok := agentMap["sdd-orchestrator"]; ok {
 		t.Fatal("legacy sdd-orchestrator agent should not remain after merge")
@@ -1741,21 +1818,21 @@ func TestInjectKimiWritesNativeAgentFilesAndGlobalSkills(t *testing.T) {
 		t.Fatal("sdd-orchestrator.md should reference Kimi's documented Task tool for custom subagent delegation")
 	}
 
-	rootAgentPath := filepath.Join(home, ".kimi", "agents", "gentleman.yaml")
+	rootAgentPath := filepath.Join(home, ".kimi", "agents", "hgtran.yaml")
 	rootAgent, err := os.ReadFile(rootAgentPath)
 	if err != nil {
 		t.Fatalf("ReadFile(%q) error = %v", rootAgentPath, err)
 	}
 
 	rootText := string(rootAgent)
-	if !strings.Contains(rootText, "name: gentleman") {
-		t.Fatal("gentleman.yaml should define a named root custom agent")
+	if !strings.Contains(rootText, "name: hgtran") {
+		t.Fatal("hgtran.yaml should define a named root custom agent")
 	}
 	if strings.Contains(rootText, "kimi_cli.tools.agent:Agent") {
-		t.Fatal("gentleman.yaml should inherit Kimi's default tool set instead of hardcoding the old Agent tool path")
+		t.Fatal("hgtran.yaml should inherit Kimi's default tool set instead of hardcoding the old Agent tool path")
 	}
 	if !strings.Contains(rootText, "../KIMI.md") {
-		t.Fatal("gentleman.yaml should load the installed KIMI.md system prompt")
+		t.Fatal("hgtran.yaml should load the installed KIMI.md system prompt")
 	}
 
 	for _, want := range []string{
@@ -2204,34 +2281,27 @@ func TestInjectOpenCodeMultiMode(t *testing.T) {
 		t.Fatalf("agent key has unexpected type: %T", agentRaw)
 	}
 
-	// Multi overlay must contain gentle-orchestrator + 10 SDD sub-agents +
-	// 3 JD agents + 4 review agents + 1 batched refuter = 19 agents.
-	if len(agentMap) != 19 {
-		t.Fatalf("agent count = %d, want 19", len(agentMap))
+	// Multi overlay must contain hgtran-orchestrator + 2 native fallback agents +
+	// 11 SDD sub-agents + 3 JD agents + 4 review agents + refuter + validator = 23 agents.
+	if len(agentMap) != 23 {
+		t.Fatalf("agent count = %d, want 23", len(agentMap))
 	}
 
-	// Verify gentle-orchestrator is present.
-	orchestratorRaw, ok := agentMap["gentle-orchestrator"]
+	// Verify hgtran-orchestrator is present.
+	orchestratorRaw, ok := agentMap["hgtran-orchestrator"]
 	if !ok {
-		t.Fatal("missing gentle-orchestrator agent")
+		t.Fatal("missing hgtran-orchestrator agent")
 	}
 	orchestratorAgent, ok := orchestratorRaw.(map[string]any)
 	if !ok {
-		t.Fatalf("gentle-orchestrator has unexpected type: %T", orchestratorRaw)
+		t.Fatalf("hgtran-orchestrator has unexpected type: %T", orchestratorRaw)
 	}
-	toolsRaw, ok := orchestratorAgent["tools"].(map[string]any)
-	if !ok {
-		t.Fatalf("gentle-orchestrator tools has unexpected type: %T", orchestratorAgent["tools"])
-	}
-	for _, toolName := range []string{"task"} {
-		value, ok := toolsRaw[toolName].(bool)
-		if !ok || !value {
-			t.Fatalf("gentle-orchestrator missing multi-mode tool %q", toolName)
-		}
+	if _, exists := orchestratorAgent["tools"]; exists {
+		t.Fatalf("hgtran-orchestrator emits deprecated tools: %#v", orchestratorAgent)
 	}
 
 	// Verify representative sub-agents are present.
-	for _, subAgent := range []string{"sdd-init", "sdd-apply", "sdd-verify", "sdd-explore", "sdd-propose", "sdd-spec", "sdd-design", "sdd-tasks", "sdd-archive", "jd-judge-a", "jd-judge-b", "jd-fix-agent", "review-risk", "review-readability", "review-reliability", "review-resilience", "review-refuter"} {
+	for _, subAgent := range []string{"sdd-init", "sdd-apply", "sdd-verify", "sdd-explore", "sdd-research", "sdd-propose", "sdd-spec", "sdd-design", "sdd-tasks", "sdd-archive", "jd-judge-a", "jd-judge-b", "jd-fix-agent", "review-risk", "review-readability", "review-reliability", "review-resilience", "review-refuter", "review-validator"} {
 		if _, ok := agentMap[subAgent]; !ok {
 			t.Fatalf("missing sub-agent %q", subAgent)
 		}
@@ -2318,7 +2388,7 @@ func TestInjectOpenCodeMultiModeRemovesLegacyDelegateTools(t *testing.T) {
 
 	existing := `{
   "agent": {
-    "gentle-orchestrator": {
+    "hgtran-orchestrator": {
       "mode": "primary",
       "tools": {
         "read": true,
@@ -2348,16 +2418,9 @@ func TestInjectOpenCodeMultiModeRemovesLegacyDelegateTools(t *testing.T) {
 		t.Fatalf("Unmarshal(opencode.json) error = %v", err)
 	}
 	agentMap := root["agent"].(map[string]any)
-	orchestrator := agentMap["gentle-orchestrator"].(map[string]any)
-	tools := orchestrator["tools"].(map[string]any)
-
-	for _, legacyTool := range []string{"delegate", "delegation_read", "delegation_list"} {
-		if _, exists := tools[legacyTool]; exists {
-			t.Fatalf("legacy OpenCode tool %q survived sync: %#v", legacyTool, tools)
-		}
-	}
-	if task, _ := tools["task"].(bool); !task {
-		t.Fatalf("native task tool missing after sync: %#v", tools)
+	orchestrator := agentMap["hgtran-orchestrator"].(map[string]any)
+	if _, exists := orchestrator["tools"]; exists {
+		t.Fatalf("managed OpenCode tools survived sync: %#v", orchestrator)
 	}
 }
 
@@ -2372,7 +2435,7 @@ func TestInjectOpenCodeSingleModeRemovesLegacyDelegateTools(t *testing.T) {
 
 	existing := `{
   "agent": {
-    "gentle-orchestrator": {
+    "hgtran-orchestrator": {
       "mode": "primary",
       "tools": {
         "read": true,
@@ -2402,16 +2465,9 @@ func TestInjectOpenCodeSingleModeRemovesLegacyDelegateTools(t *testing.T) {
 		t.Fatalf("Unmarshal(opencode.json) error = %v", err)
 	}
 	agentMap := root["agent"].(map[string]any)
-	orchestrator := agentMap["gentle-orchestrator"].(map[string]any)
-	tools := orchestrator["tools"].(map[string]any)
-
-	for _, legacyTool := range []string{"delegate", "delegation_read", "delegation_list"} {
-		if _, exists := tools[legacyTool]; exists {
-			t.Fatalf("legacy OpenCode tool %q survived sync: %#v", legacyTool, tools)
-		}
-	}
-	if task, _ := tools["task"].(bool); !task {
-		t.Fatalf("native task tool missing after sync: %#v", tools)
+	orchestrator := agentMap["hgtran-orchestrator"].(map[string]any)
+	if _, exists := orchestrator["tools"]; exists {
+		t.Fatalf("managed OpenCode tools survived sync: %#v", orchestrator)
 	}
 }
 
@@ -2592,34 +2648,34 @@ func TestInjectOpenCodeEmptySDDModeDefaultsSingle(t *testing.T) {
 		t.Fatalf("agent key has unexpected type: %T", agentRaw)
 	}
 
-	// Empty mode defaults to single — gentle-orchestrator + 10 SDD sub-agents +
-	// 3 JD agents + 4 review agents + 1 batched refuter = 19 agents.
-	if _, ok := agentMap["gentle-orchestrator"]; !ok {
-		t.Fatal("missing gentle-orchestrator agent")
+	// Empty mode defaults to single — hgtran-orchestrator + 2 native fallback agents +
+	// 11 SDD sub-agents + 3 JD agents + 4 review agents + refuter + validator = 23 agents.
+	if _, ok := agentMap["hgtran-orchestrator"]; !ok {
+		t.Fatal("missing hgtran-orchestrator agent")
 	}
-	if len(agentMap) != 19 {
-		t.Fatalf("agent count = %d, want 19", len(agentMap))
+	if len(agentMap) != 23 {
+		t.Fatalf("agent count = %d, want 23", len(agentMap))
 	}
 
 	// Verify orchestrator mode is "primary".
-	orchestratorRaw, ok := agentMap["gentle-orchestrator"]
+	orchestratorRaw, ok := agentMap["hgtran-orchestrator"]
 	if !ok {
-		t.Fatal("missing gentle-orchestrator agent")
+		t.Fatal("missing hgtran-orchestrator agent")
 	}
 	orchestratorAgent, ok := orchestratorRaw.(map[string]any)
 	if !ok {
-		t.Fatalf("gentle-orchestrator has unexpected type: %T", orchestratorRaw)
+		t.Fatalf("hgtran-orchestrator has unexpected type: %T", orchestratorRaw)
 	}
 	if mode, _ := orchestratorAgent["mode"].(string); mode != "primary" {
-		t.Fatalf("gentle-orchestrator mode = %q, want %q", mode, "primary")
+		t.Fatalf("hgtran-orchestrator mode = %q, want %q", mode, "primary")
 	}
 	permissionRaw, ok := orchestratorAgent["permission"].(map[string]any)
 	if !ok {
-		t.Fatalf("gentle-orchestrator permission has unexpected type: %T", orchestratorAgent["permission"])
+		t.Fatalf("hgtran-orchestrator permission has unexpected type: %T", orchestratorAgent["permission"])
 	}
 	taskRaw, ok := permissionRaw["task"].(map[string]any)
 	if !ok {
-		t.Fatalf("gentle-orchestrator permission.task has unexpected type: %T", permissionRaw["task"])
+		t.Fatalf("hgtran-orchestrator permission.task has unexpected type: %T", permissionRaw["task"])
 	}
 	taskAllowlist := taskRaw
 	if taskReplace, ok := taskRaw["__replace__"].(map[string]any); ok {
@@ -2627,7 +2683,7 @@ func TestInjectOpenCodeEmptySDDModeDefaultsSingle(t *testing.T) {
 	}
 
 	// Verify sub-agents are present with mode "subagent".
-	for _, subAgent := range []string{"sdd-init", "sdd-apply", "sdd-verify", "sdd-explore", "sdd-propose", "sdd-spec", "sdd-design", "sdd-tasks", "sdd-archive", "jd-judge-a", "jd-judge-b", "jd-fix-agent", "review-risk", "review-readability", "review-reliability", "review-resilience", "review-refuter"} {
+	for _, subAgent := range []string{"sdd-init", "sdd-apply", "sdd-verify", "sdd-explore", "sdd-research", "sdd-propose", "sdd-spec", "sdd-design", "sdd-tasks", "sdd-archive", "jd-judge-a", "jd-judge-b", "jd-fix-agent", "review-risk", "review-readability", "review-reliability", "review-resilience", "review-refuter", "review-validator"} {
 		raw, ok := agentMap[subAgent]
 		if !ok {
 			t.Fatalf("missing sub-agent %q", subAgent)
@@ -2640,16 +2696,279 @@ func TestInjectOpenCodeEmptySDDModeDefaultsSingle(t *testing.T) {
 			t.Fatalf("%s mode = %q, want %q", subAgent, m, "subagent")
 		}
 		if got, ok := taskAllowlist[subAgent].(string); !ok || got != "allow" {
-			t.Fatalf("gentle-orchestrator permission.task[%s] = %v, want allow", subAgent, taskAllowlist[subAgent])
+			t.Fatalf("hgtran-orchestrator permission.task[%s] = %v, want allow", subAgent, taskAllowlist[subAgent])
 		}
 	}
 	for _, builtIn := range []string{"general", "explore"} {
 		if got := taskAllowlist[builtIn]; got != "allow" {
-			t.Fatalf("gentle-orchestrator permission.task[%s] = %v, want allow", builtIn, got)
+			t.Fatalf("hgtran-orchestrator permission.task[%s] = %v, want allow", builtIn, got)
 		}
 	}
-	refuterTools := agentMap["review-refuter"].(map[string]any)["tools"].(map[string]any)
-	assertOpenCodeRefuterToolsReadOnly(t, "rendered single-mode OpenCode config", refuterTools)
+	assertOpenCodeSubAgentReadOnlyTools(t, agentMap, "review-refuter")
+}
+
+func TestInjectOpenCodeNativeFallbackAgentsPromptsAlignedWithGentlePi(t *testing.T) {
+	mockNoPackageManager(t)
+
+	for _, sddMode := range []string{"multi", ""} {
+		t.Run("sddMode="+sddMode, func(t *testing.T) {
+			home := t.TempDir()
+			result, err := Inject(home, opencodeAdapter(), model.SDDModeID(sddMode))
+			if err != nil {
+				t.Fatalf("Inject failed: %v", err)
+			}
+			if !result.Changed {
+				t.Fatal("expected injection to change configuration")
+			}
+
+			settingsPath := filepath.Join(home, ".config", "opencode", "opencode.json")
+			data, err := os.ReadFile(settingsPath)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			var root map[string]any
+			if err := json.Unmarshal(data, &root); err != nil {
+				t.Fatal(err)
+			}
+
+			agentMap := root["agent"].(map[string]any)
+			if rootTools, ok := root["tools"].(map[string]any); ok {
+				for _, forbidden := range []string{"codegraph_*", "codegraph_codegraph_explore"} {
+					if _, exists := rootTools[forbidden]; exists {
+						t.Fatalf("root tools unexpectedly grant %q", forbidden)
+					}
+				}
+			}
+			for _, fallbackAgent := range []string{"general", "explore"} {
+				agent, ok := agentMap[fallbackAgent].(map[string]any)
+				if !ok {
+					t.Fatalf("agent %q missing from overlay for mode %q", fallbackAgent, sddMode)
+				}
+				if mode, _ := agent["mode"].(string); mode != "subagent" {
+					t.Errorf("agent %q mode = %q, want subagent", fallbackAgent, mode)
+				}
+				if hidden, _ := agent["hidden"].(bool); !hidden {
+					t.Errorf("agent %q hidden = %v, want true", fallbackAgent, hidden)
+				}
+				prompt, ok := agent["prompt"].(string)
+				if !ok || strings.TrimSpace(prompt) == "" {
+					t.Fatalf("agent %q missing non-empty prompt for mode %q", fallbackAgent, sddMode)
+				}
+				if fallbackAgent == "general" {
+					if !strings.Contains(prompt, "empirical verification") || !strings.Contains(prompt, "Do NOT launch child sub-agents") {
+						t.Fatalf("general fallback agent prompt is missing its bounded auxiliary-task contract: %s", prompt)
+					}
+				} else {
+					if !strings.Contains(prompt, "hgtran-pi") || !strings.Contains(prompt, "Do not create, edit, or delete files") {
+						t.Fatalf("explore fallback agent prompt is missing its read-only contract: %s", prompt)
+					}
+					description, _ := agent["description"].(string)
+					if strings.Contains(strings.ToLower(description+" "+prompt), "web search") {
+						t.Fatalf("explore fallback agent advertises an unavailable web-search tool: %s", description)
+					}
+				}
+				if _, exists := agent["tools"]; exists {
+					t.Fatalf("agent %q emits deprecated tools: %#v", fallbackAgent, agent)
+				}
+				if fallbackAgent == "general" && agent["permission"].(map[string]any)["task"] != "deny" {
+					t.Fatalf("general task permission = %#v, want deny", agent["permission"])
+				}
+				if fallbackAgent == "explore" {
+					assertOpenCodeSubAgentReadOnlyTools(t, agentMap, fallbackAgent)
+				}
+			}
+		})
+	}
+}
+
+func TestInjectOpenCodePreservesExploreCodeGraphDenyAndCustomTool(t *testing.T) {
+	mockNoPackageManager(t)
+	home := t.TempDir()
+	settingsPath := opencodeAdapter().SettingsPath(home)
+	if err := os.MkdirAll(filepath.Dir(settingsPath), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	seed := `{"agent":{"explore":{"tools":{"custom_readonly":true},"permission":{"codegraph_codegraph_explore":"deny"}}}}`
+	if err := os.WriteFile(settingsPath, []byte(seed), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := Inject(home, opencodeAdapter(), model.SDDModeSingle); err != nil {
+		t.Fatal(err)
+	}
+
+	explore := readOpenCodeAgents(t, settingsPath)["explore"].(map[string]any)
+	if _, exists := explore["tools"]; exists {
+		t.Fatalf("managed explore tools survived sync: %#v", explore)
+	}
+	// OpenCode 1.18.18 normalizes agent tools before agent permission.
+	if got := explore["permission"].(map[string]any)["codegraph_codegraph_explore"]; got != "deny" {
+		t.Fatalf("agent CodeGraph permission = %v, want deny", got)
+	}
+}
+
+func TestInjectOpenCodeRemovesOnlyManagedLegacyTools(t *testing.T) {
+	mockNoPackageManager(t)
+	home := t.TempDir()
+	path := opencodeAdapter().SettingsPath(home)
+	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	const seed = "// JSONC input\n{\"permission\":{\"read\":{\"*\":\"allow\",\"**/.env\":\"deny\",\"**/credentials/**\":\"deny\",\"**/sensitive/**\":\"deny\"}},\"agent\":{\"user-owned\":{\"tools\":{\"read\":true,\"custom\":true}},\"hgtran-orchestrator\":{\"tools\":{\"read\":true}},\"sdd-apply-fast\":{\"tools\":{\"read\":true},\"permission\":{\"task\":{\"review-validator\":\"allow\"}}}}}"
+	if err := os.WriteFile(path, []byte(seed), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	opts := InjectOptions{Profiles: []model.Profile{{Name: "fast"}}}
+	if first, err := Inject(home, opencodeAdapter(), model.SDDModeMulti, opts); err != nil || !first.Changed {
+		t.Fatalf("initial JSONC sync = %#v, %v", first, err)
+	}
+	first, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	root := map[string]any{}
+	if err := json.Unmarshal(first, &root); err != nil {
+		t.Fatal(err)
+	}
+	agents := root["agent"].(map[string]any)
+	if !reflect.DeepEqual(root["permission"], map[string]any{"read": map[string]any{"*": "allow", "**/.env": "deny", "**/credentials/**": "deny", "**/sensitive/**": "deny"}}) || !reflect.DeepEqual(agents["user-owned"].(map[string]any)["tools"], map[string]any{"read": true, "custom": true}) || !reflect.DeepEqual(agents["sdd-apply-fast"].(map[string]any)["permission"], map[string]any{"task": map[string]any{"review-validator": "allow"}}) {
+		t.Fatalf("global policy or user-owned tools changed: %#v", root)
+	}
+	for name, raw := range agents {
+		if name == "user-owned" {
+			continue
+		}
+		if _, exists := raw.(map[string]any)["tools"]; exists {
+			t.Errorf("managed agent %q retained tools: %#v", name, raw)
+		}
+	}
+	if second, err := Inject(home, opencodeAdapter(), model.SDDModeMulti, opts); err != nil || second.Changed {
+		t.Fatalf("repeated JSONC sync = %#v, %v", second, err)
+	}
+}
+
+// TestInjectOpenCodeRemovesStaleProfileToolsWithoutExplicitProfiles proves the
+// install/reinstall path: no profile is passed in InjectOptions, yet stale
+// tools blocks on profile-derived managed agents already present on disk
+// (sdd-orchestrator-{name}, {phase}-{name}, {jd}-{name}) are still removed so
+// they cannot preserve a sensitive-path read-deny bypass. Agents whose names
+// only resemble profile keys but carry an invalid profile-name suffix stay
+// user-owned and untouched.
+func TestInjectOpenCodeRemovesStaleProfileToolsWithoutExplicitProfiles(t *testing.T) {
+	mockNoPackageManager(t)
+	home := t.TempDir()
+	path := opencodeAdapter().SettingsPath(home)
+	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	const seed = `{"agent":{
+    "user-owned": {"tools": {"read": true, "custom": true}},
+    "sdd-apply-fast": {"tools": {"read": true, "bash": true}, "permission": {"task": {"review-validator": "allow"}}},
+    "sdd-orchestrator-fast": {"tools": {"read": true}},
+    "jd-judge-a-fast": {"tools": {"read": true, "bash": true}},
+    "sdd-apply-Fast": {"tools": {"read": true}}
+  }}`
+	if err := os.WriteFile(path, []byte(seed), 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	if first, err := Inject(home, opencodeAdapter(), model.SDDModeMulti); err != nil || !first.Changed {
+		t.Fatalf("install without explicit profiles = %#v, %v", first, err)
+	}
+
+	agents := readOpenCodeAgents(t, path)
+	for _, stale := range []string{"sdd-apply-fast", "sdd-orchestrator-fast", "jd-judge-a-fast"} {
+		agent, ok := agents[stale].(map[string]any)
+		if !ok {
+			t.Fatalf("profile-derived agent %q missing after install: %#v", stale, agents[stale])
+		}
+		if _, exists := agent["tools"]; exists {
+			t.Errorf("profile-derived agent %q retained stale tools on install: %#v", stale, agent["tools"])
+		}
+	}
+	if !reflect.DeepEqual(agents["sdd-apply-fast"].(map[string]any)["permission"], map[string]any{"task": map[string]any{"review-validator": "allow"}}) {
+		t.Fatalf("profile-derived agent permission changed: %#v", agents["sdd-apply-fast"])
+	}
+	if !reflect.DeepEqual(agents["user-owned"].(map[string]any)["tools"], map[string]any{"read": true, "custom": true}) {
+		t.Fatalf("user-owned tools changed: %#v", agents["user-owned"])
+	}
+	if !reflect.DeepEqual(agents["sdd-apply-Fast"].(map[string]any)["tools"], map[string]any{"read": true}) {
+		t.Fatalf("invalid-profile-suffix agent treated as managed: %#v", agents["sdd-apply-Fast"])
+	}
+
+	if second, err := Inject(home, opencodeAdapter(), model.SDDModeMulti); err != nil || second.Changed {
+		t.Fatalf("repeated install = %#v, %v", second, err)
+	}
+}
+
+func TestInjectKilocodeNamedProfileRetainsToolsSchema(t *testing.T) {
+	home := t.TempDir()
+	if _, err := Inject(home, kilocodeAdapter(), model.SDDModeMulti, InjectOptions{Profiles: []model.Profile{{Name: "fast"}}}); err != nil {
+		t.Fatal(err)
+	}
+	agents := readOpenCodeAgents(t, kilocodeAdapter().SettingsPath(home))
+	orchestrator := agents["sdd-orchestrator-fast"].(map[string]any)
+	wantOrchestratorTools := map[string]any{"read": true, "write": true, "edit": true, "bash": true, "question": true, "task": true}
+	if !reflect.DeepEqual(orchestrator["tools"], wantOrchestratorTools) || orchestrator["permission"].(map[string]any)["read"] != nil || orchestrator["permission"].(map[string]any)["write"] != nil || orchestrator["permission"].(map[string]any)["edit"] != nil || orchestrator["permission"].(map[string]any)["bash"] != nil {
+		t.Fatalf("Kilocode profile = %#v", orchestrator)
+	}
+	phase := agents["sdd-apply-fast"].(map[string]any)
+	if !reflect.DeepEqual(phase["tools"], map[string]any{"read": true, "write": true, "edit": true, "bash": true}) || phase["permission"] != nil {
+		t.Fatalf("Kilocode profile phase = %#v", phase)
+	}
+}
+
+func TestInjectOpenCodeReviewLensesDenyAllPermissions(t *testing.T) {
+	home := t.TempDir()
+	if _, err := Inject(home, opencodeAdapter(), model.SDDModeMulti); err != nil {
+		t.Fatal(err)
+	}
+	agents := readOpenCodeAgents(t, opencodeAdapter().SettingsPath(home))
+	for _, name := range opencodemodel.ReviewLensPhases() {
+		t.Run(name, func(t *testing.T) {
+			agent := agents[name].(map[string]any)
+			if _, exists := agent["tools"]; exists {
+				t.Fatalf("OpenCode %s retained deprecated tools: %#v", name, agent["tools"])
+			}
+			permission := agent["permission"].(map[string]any)
+			if !reflect.DeepEqual(permission, map[string]any{"*": "deny"}) {
+				t.Fatalf("OpenCode %s permission = %#v, want deny-all boundary", name, permission)
+			}
+			for _, networkTool := range []string{"webfetch", "websearch"} {
+				if _, listed := permission[networkTool]; listed {
+					t.Fatalf("OpenCode %s lists %s instead of denying it through the wildcard boundary", name, networkTool)
+				}
+			}
+		})
+	}
+}
+
+func TestInjectOpenCodeReviewValidatorHasBoundedInspectionPermissions(t *testing.T) {
+	home := t.TempDir()
+	if _, err := Inject(home, opencodeAdapter(), model.SDDModeMulti); err != nil {
+		t.Fatal(err)
+	}
+
+	validator := readOpenCodeAgents(t, opencodeAdapter().SettingsPath(home))[opencodemodel.ReviewValidatorAgent].(map[string]any)
+	if _, exists := validator["tools"]; exists {
+		t.Fatalf("OpenCode validator retained deprecated tools: %#v", validator["tools"])
+	}
+	wantPermission := map[string]any{
+		"write": "deny",
+		"edit":  "deny",
+		"task":  "deny",
+		"bash": map[string]any{
+			"hgtran-ai review inspect-candidate --purpose targeted-validation *": "allow",
+			"*": "deny",
+		},
+	}
+	permission, ok := validator["permission"].(map[string]any)
+	if !ok || !reflect.DeepEqual(permission, wantPermission) {
+		t.Fatalf("OpenCode validator permission = %#v, want %#v", validator["permission"], wantPermission)
+	}
+	if _, exists := permission["read"]; exists {
+		t.Fatalf("OpenCode validator overrides global read policy: %#v", permission)
+	}
 }
 
 func TestInjectClaudeIgnoresSDDMode(t *testing.T) {
@@ -2726,8 +3045,8 @@ func TestInjectOpenCodeSingleToMultiSwitch(t *testing.T) {
 	}
 
 	agentMap, _ := root["agent"].(map[string]any)
-	if _, ok := agentMap["gentle-orchestrator"]; !ok {
-		t.Fatal("missing gentle-orchestrator after switch to multi")
+	if _, ok := agentMap["hgtran-orchestrator"]; !ok {
+		t.Fatal("missing hgtran-orchestrator after switch to multi")
 	}
 	if _, ok := agentMap["sdd-orchestrator"]; ok {
 		t.Fatal("legacy sdd-orchestrator should not remain after switch to multi")
@@ -3001,6 +3320,7 @@ func TestInjectOpenCodeMultiModeWithModelAssignments(t *testing.T) {
 		"review-reliability": {ProviderID: "openai", ModelID: "gpt-5"},
 		"review-resilience":  {ProviderID: "anthropic", ModelID: "claude-sonnet-4"},
 		"review-refuter":     {ProviderID: "openai", ModelID: "gpt-5", Effort: "high"},
+		"review-validator":   {ProviderID: "openai", ModelID: "gpt-5-mini"},
 	}
 
 	result, err := Inject(home, opencodeAdapter(), "multi", InjectOptions{OpenCodeModelAssignments: assignments})
@@ -3056,8 +3376,12 @@ func TestInjectOpenCodeMultiModeWithModelAssignments(t *testing.T) {
 		"review-reliability": "openai/gpt-5",
 		"review-resilience":  "anthropic/claude-sonnet-4",
 		"review-refuter":     "openai/gpt-5",
+		"review-validator":   "openai/gpt-5-mini",
 	} {
-		definition := agentMap[agent].(map[string]any)
+		definition, ok := agentMap[agent].(map[string]any)
+		if !ok {
+			t.Fatalf("%s agent definition = %#v, want object", agent, agentMap[agent])
+		}
 		if got := definition["model"]; got != want {
 			t.Fatalf("%s model = %q, want %q", agent, got, want)
 		}
@@ -3074,6 +3398,72 @@ func TestInjectOpenCodeMultiModeWithModelAssignments(t *testing.T) {
 	}
 	if _, hasModel := verifyAgent["model"]; hasModel {
 		t.Fatal("sdd-verify should not have a model field (unassigned phase)")
+	}
+}
+
+func TestInjectOpenCodeMultiModeWithCustomAgentModelAssignment(t *testing.T) {
+	mockNoPackageManager(t)
+	home := t.TempDir()
+	settingsPath := filepath.Join(home, ".config", "opencode", "opencode.json")
+	if err := os.MkdirAll(filepath.Dir(settingsPath), 0o755); err != nil {
+		t.Fatalf("MkdirAll() error = %v", err)
+	}
+	seed := `{"agent":{"custom-refactor":{"mode":"subagent","model":"old/provider-model","description":"preserve me","variant":"high"}}}`
+	if err := os.WriteFile(settingsPath, []byte(seed), 0o644); err != nil {
+		t.Fatalf("WriteFile(opencode.json) error = %v", err)
+	}
+
+	assignments := map[string]model.ModelAssignment{
+		"custom-refactor": {ProviderID: "openai", ModelID: "gpt-5-mini"},
+		"missing-custom":  {ProviderID: "openai", ModelID: "gpt-5"},
+	}
+	if _, err := Inject(home, opencodeAdapter(), model.SDDModeMulti, InjectOptions{OpenCodeModelAssignments: assignments}); err != nil {
+		t.Fatalf("Inject(multi, custom assignment) error = %v", err)
+	}
+
+	content, err := os.ReadFile(settingsPath)
+	if err != nil {
+		t.Fatalf("ReadFile(opencode.json) error = %v", err)
+	}
+	root := map[string]any{}
+	if err := json.Unmarshal(content, &root); err != nil {
+		t.Fatalf("Unmarshal(opencode.json) error = %v", err)
+	}
+	agents, ok := root["agent"].(map[string]any)
+	if !ok {
+		t.Fatal("opencode.json missing agent map")
+	}
+	custom, ok := agents["custom-refactor"].(map[string]any)
+	if !ok {
+		t.Fatal("custom-refactor agent missing after sync")
+	}
+	if custom["model"] != "openai/gpt-5-mini" {
+		t.Fatalf("custom-refactor model = %v, want openai/gpt-5-mini", custom["model"])
+	}
+	if custom["description"] != "preserve me" || custom["mode"] != "subagent" {
+		t.Fatalf("custom-refactor settings were not preserved: %v", custom)
+	}
+	if variant, ok := custom["variant"].(string); !ok || variant != "" {
+		t.Fatalf("custom-refactor variant = %v, want empty string", custom["variant"])
+	}
+	if _, exists := agents["missing-custom"]; exists {
+		t.Fatal("inject must not create a missing custom agent definition")
+	}
+
+	firstContent := append([]byte(nil), content...)
+	secondResult, err := Inject(home, opencodeAdapter(), model.SDDModeMulti, InjectOptions{OpenCodeModelAssignments: assignments})
+	if err != nil {
+		t.Fatalf("repeat Inject(multi, custom assignment) error = %v", err)
+	}
+	if secondResult.Changed {
+		t.Fatal("repeat Inject(multi, custom assignment) changed = true")
+	}
+	secondContent, err := os.ReadFile(settingsPath)
+	if err != nil {
+		t.Fatalf("ReadFile(opencode.json) after repeat sync error = %v", err)
+	}
+	if !bytes.Equal(secondContent, firstContent) {
+		t.Fatalf("repeat sync changed opencode.json bytes:\nfirst:\n%s\nsecond:\n%s", firstContent, secondContent)
 	}
 }
 
@@ -3179,7 +3569,7 @@ func TestInjectOpenCodeMultiModeUsesRootModelForUnassignedAgents(t *testing.T) {
 	// pre-existing in the user's config should get the root model injected.
 	// Since we started with only {"model":"openai/gpt-5"} (no agent entries),
 	// ALL agents are "new" from the 3-way logic perspective and should get rootModel.
-	for _, phase := range []string{"gentle-orchestrator", "sdd-init", "sdd-verify"} {
+	for _, phase := range []string{"hgtran-orchestrator", "sdd-init", "sdd-verify"} {
 		agentDef, ok := agentMap[phase].(map[string]any)
 		if !ok {
 			t.Fatalf("phase %q agent not found or wrong type", phase)
@@ -3580,6 +3970,77 @@ func TestInjectSharedDirCreatedWithAllFiles(t *testing.T) {
 			t.Errorf("_shared directory missing %q after Inject()", want)
 		}
 	}
+}
+
+func TestInjectSkillDirectoryRemovesLegacySharedSkillMarker(t *testing.T) {
+	skillDir := filepath.Join(t.TempDir(), "compatibility-root")
+	sharedDir := filepath.Join(skillDir, "_shared")
+	legacyMarker := filepath.Join(sharedDir, "SKILL.md")
+
+	if err := os.MkdirAll(sharedDir, 0o755); err != nil {
+		t.Fatalf("MkdirAll(%q) error = %v", sharedDir, err)
+	}
+	if err := os.WriteFile(legacyMarker, []byte("legacy generated shared skill marker\n"), 0o644); err != nil {
+		t.Fatalf("WriteFile(%q) error = %v", legacyMarker, err)
+	}
+
+	result, err := InjectSkillDirectoryForAgent(skillDir, "", "")
+	if err != nil {
+		t.Fatalf("InjectSkillDirectoryForAgent() error = %v", err)
+	}
+	if !result.Changed {
+		t.Fatal("InjectSkillDirectoryForAgent() changed = false, want legacy marker cleanup to report a change")
+	}
+	if _, err := os.Stat(legacyMarker); !os.IsNotExist(err) {
+		t.Fatalf("legacy shared marker %q still exists or could not be checked: %v", legacyMarker, err)
+	}
+
+	readmePath := filepath.Join(sharedDir, "README.md")
+	readme, err := os.ReadFile(readmePath)
+	if err != nil {
+		t.Fatalf("ReadFile(%q) error = %v", readmePath, err)
+	}
+	if string(readme) != assets.MustRead("skills/_shared/README.md") {
+		t.Fatalf("README.md = %q, want current embedded support-directory documentation", readme)
+	}
+
+	for _, name := range mustSharedSkillFileNames(t) {
+		path := filepath.Join(sharedDir, filepath.FromSlash(name))
+		if _, err := os.Stat(path); err != nil {
+			t.Errorf("shared reference %q was not preserved: %v", path, err)
+		}
+	}
+}
+
+func TestInjectSkillDirectoryRefusesToRemoveNonRegularLegacySharedMarker(t *testing.T) {
+	skillDir := filepath.Join(t.TempDir(), "compatibility-root")
+	legacyMarker := filepath.Join(skillDir, "_shared", "SKILL.md")
+
+	if err := os.MkdirAll(legacyMarker, 0o755); err != nil {
+		t.Fatalf("MkdirAll(%q) error = %v", legacyMarker, err)
+	}
+
+	_, err := InjectSkillDirectoryForAgent(skillDir, "", "")
+	if err == nil {
+		t.Fatal("InjectSkillDirectoryForAgent() error = nil, want refusal to remove a non-regular legacy marker")
+	}
+	info, statErr := os.Stat(legacyMarker)
+	if statErr != nil {
+		t.Fatalf("Stat(%q) error = %v", legacyMarker, statErr)
+	}
+	if !info.IsDir() {
+		t.Fatalf("legacy marker mode = %v, want directory preserved after refusal", info.Mode())
+	}
+}
+
+func mustSharedSkillFileNames(t *testing.T) []string {
+	t.Helper()
+
+	names, err := assets.SharedSkillFileNames()
+	if err != nil {
+		t.Fatalf("SharedSkillFileNames() error = %v", err)
+	}
+	return names
 }
 
 // ---------------------------------------------------------------------------
@@ -4183,6 +4644,37 @@ func TestInjectKilocodeKeepsLegacyBackgroundAgentsPluginAndRemovesOpenCodeReview
 	if _, err := os.Stat(reviewPluginPath); !os.IsNotExist(err) {
 		t.Fatalf("OpenCode-only review plugin remains installed for Kilo: %v", err)
 	}
+	settings, err := os.ReadFile(filepath.Join(home, ".config", "kilo", "opencode.json"))
+	if err != nil {
+		t.Fatalf("ReadFile(Kilocode settings) error = %v", err)
+	}
+	var root map[string]any
+	if err := json.Unmarshal(settings, &root); err != nil {
+		t.Fatalf("Unmarshal(Kilocode settings) error = %v", err)
+	}
+	agentMap, ok := root["agent"].(map[string]any)
+	if !ok {
+		t.Fatalf("Kilocode settings missing agent map: %v", root)
+	}
+	if _, exists := agentMap["hgtran-orchestrator"]; !exists {
+		t.Fatalf("Kilocode settings must retain hgtran-orchestrator agent: %v", agentMap)
+	}
+	if strings.Contains(string(settings), "codegraph_codegraph_explore") {
+		t.Fatal("Kilocode settings must not receive the OpenCode CodeGraph grant")
+	}
+	for _, openCodeOnlyAgent := range []string{"general", "explore", opencodemodel.ReviewValidatorAgent} {
+		if _, exists := agentMap[openCodeOnlyAgent]; exists {
+			t.Fatalf("Kilocode settings must not receive OpenCode-only agent %q", openCodeOnlyAgent)
+		}
+	}
+	orchestrator := agentMap["hgtran-orchestrator"].(map[string]any)
+	taskPermissions := orchestrator["permission"].(map[string]any)["task"].(map[string]any)
+	if replacement, ok := taskPermissions["__replace__"].(map[string]any); ok {
+		taskPermissions = replacement
+	}
+	if _, exists := taskPermissions[opencodemodel.ReviewValidatorAgent]; exists {
+		t.Fatalf("Kilocode settings must not authorize OpenCode-only agent %q", opencodemodel.ReviewValidatorAgent)
+	}
 }
 
 func TestInjectOpenCodePluginNoPkgManagerAvailable(t *testing.T) {
@@ -4771,7 +5263,7 @@ func TestInjectCodexIsIdempotent(t *testing.T) {
 //
 // The root cause was re-reading the file from disk after the atomic rename,
 // which could see stale content on Windows/WSL2. The fix validates against
-// the in-memory merged bytes returned by mergeJSONFile instead.
+// the in-memory merged bytes returned by the production merge helper instead.
 func TestInjectOpenCodeMultiModeWithPreExistingMinimalConfig(t *testing.T) {
 	mockNoPackageManager(t)
 	home := t.TempDir()
@@ -4816,8 +5308,8 @@ func TestInjectOpenCodeMultiModeWithPreExistingMinimalConfig(t *testing.T) {
 	if !ok {
 		t.Fatal("opencode.json missing agent key after merge")
 	}
-	if _, ok := agentMap["gentle-orchestrator"]; !ok {
-		t.Fatal("missing gentle-orchestrator after merge with pre-existing config")
+	if _, ok := agentMap["hgtran-orchestrator"]; !ok {
+		t.Fatal("missing hgtran-orchestrator after merge with pre-existing config")
 	}
 	if _, ok := agentMap["sdd-orchestrator"]; ok {
 		t.Fatal("legacy sdd-orchestrator should be removed after merge with pre-existing config")
@@ -4892,9 +5384,9 @@ func TestInjectOpenCodeMultiModeWithPreExistingFullConfig(t *testing.T) {
 		t.Fatal("opencode.json missing agent key after merge")
 	}
 
-	// All multi-mode agents must be present with gentle-orchestrator as the base orchestrator.
+	// All multi-mode agents must be present with hgtran-orchestrator as the base orchestrator.
 	for _, agentName := range []string{
-		"gentle-orchestrator", "sdd-init", "sdd-explore", "sdd-propose",
+		"hgtran-orchestrator", "sdd-init", "sdd-explore", "sdd-propose",
 		"sdd-spec", "sdd-design", "sdd-tasks", "sdd-apply", "sdd-verify", "sdd-archive",
 	} {
 		if _, ok := agentMap[agentName]; !ok {
@@ -4904,12 +5396,12 @@ func TestInjectOpenCodeMultiModeWithPreExistingFullConfig(t *testing.T) {
 }
 
 // ---------------------------------------------------------------------------
-// gentle-orchestrator agent model assignment from SDD coordinator selection
+// hgtran-orchestrator agent model assignment from SDD coordinator selection
 // ---------------------------------------------------------------------------
 
 // TestInjectOpenCodeMultiModeAssignsGentleOrchestratorModelFromLegacyOrchestratorKey
 // verifies that historical TUI assignments keyed by sdd-orchestrator are
-// migrated to the current gentle-orchestrator base coordinator.
+// migrated to the current hgtran-orchestrator base coordinator.
 func TestInjectOpenCodeMultiModeAssignsGentleOrchestratorModelFromLegacyOrchestratorKey(t *testing.T) {
 	home := t.TempDir()
 	mockNoPackageManager(t)
@@ -4919,10 +5411,10 @@ func TestInjectOpenCodeMultiModeAssignsGentleOrchestratorModelFromLegacyOrchestr
 		t.Fatalf("MkdirAll() error = %v", err)
 	}
 
-	// Pre-existing opencode.json with gentle-orchestrator agent.
+	// Pre-existing opencode.json with hgtran-orchestrator agent.
 	existing := `{
   "agent": {
-    "gentle-orchestrator": {
+    "hgtran-orchestrator": {
       "mode": "primary"
     }
   }
@@ -4962,18 +5454,18 @@ func TestInjectOpenCodeMultiModeAssignsGentleOrchestratorModelFromLegacyOrchestr
 		t.Fatal("legacy sdd-orchestrator agent should not be installed")
 	}
 
-	// gentle-orchestrator must receive the historical sdd-orchestrator assignment.
-	gentleOrchestratorAgent, ok := agentMap["gentle-orchestrator"].(map[string]any)
+	// hgtran-orchestrator must receive the historical sdd-orchestrator assignment.
+	gentleOrchestratorAgent, ok := agentMap["hgtran-orchestrator"].(map[string]any)
 	if !ok {
-		t.Fatal("gentle-orchestrator agent not found or wrong type")
+		t.Fatal("hgtran-orchestrator agent not found or wrong type")
 	}
 	if m, _ := gentleOrchestratorAgent["model"].(string); m != "openai/gpt-4o" {
-		t.Fatalf("gentle-orchestrator model = %q, want %q", m, "openai/gpt-4o")
+		t.Fatalf("hgtran-orchestrator model = %q, want %q", m, "openai/gpt-4o")
 	}
 }
 
 // TestInjectOpenCodeMultiModeInstallsGentleOrchestratorWithModel verifies that the base
-// SDD overlay owns the gentle-orchestrator coordinator.
+// SDD overlay owns the hgtran-orchestrator coordinator.
 func TestInjectOpenCodeMultiModeInstallsGentleOrchestratorWithModel(t *testing.T) {
 	home := t.TempDir()
 	mockNoPackageManager(t)
@@ -5007,22 +5499,276 @@ func TestInjectOpenCodeMultiModeInstallsGentleOrchestratorWithModel(t *testing.T
 		t.Fatal("opencode.json missing agent map")
 	}
 
-	gentleOrchestratorAgent, ok := agentMap["gentle-orchestrator"].(map[string]any)
+	gentleOrchestratorAgent, ok := agentMap["hgtran-orchestrator"].(map[string]any)
 	if !ok {
-		t.Fatal("gentle-orchestrator agent not found or wrong type")
+		t.Fatal("hgtran-orchestrator agent not found or wrong type")
 	}
 	if m, _ := gentleOrchestratorAgent["model"].(string); m != "openai/gpt-4o" {
-		t.Fatalf("gentle-orchestrator model = %q, want %q", m, "openai/gpt-4o")
+		t.Fatalf("hgtran-orchestrator model = %q, want %q", m, "openai/gpt-4o")
 	}
 	if _, exists := agentMap["sdd-orchestrator"]; exists {
 		t.Fatal("legacy sdd-orchestrator agent should not be installed")
 	}
 }
 
-// TestMergeJSONFileReturnsMergedBytes verifies that mergeJSONFile returns the
-// merged bytes in-memory, so callers never need to re-read from disk to
-// validate the result (the fix for the Windows/WSL2 post-check bug).
-func TestMergeJSONFileReturnsMergedBytes(t *testing.T) {
+func TestKilocodeRestoresGlobalManagedToolsToMainPolicy(t *testing.T) {
+	home := t.TempDir()
+	first, err := Inject(home, kilocodeAdapter(), model.SDDModeSingle)
+	if err != nil {
+		t.Fatalf("Inject(kilocode) error = %v", err)
+	}
+	if !first.Changed {
+		t.Fatal("first Kilocode inject did not change settings")
+	}
+
+	settingsPath := kilocodeAdapter().SettingsPath(home)
+	payload, err := os.ReadFile(settingsPath)
+	if err != nil {
+		t.Fatalf("ReadFile(kilocode settings) error = %v", err)
+	}
+	root := map[string]any{}
+	if err := json.Unmarshal(payload, &root); err != nil {
+		t.Fatalf("Unmarshal(kilocode settings) error = %v", err)
+	}
+	agentsMap, ok := root["agent"].(map[string]any)
+	if !ok {
+		t.Fatal("Kilocode settings missing agent map")
+	}
+
+	for _, name := range []string{"jd-judge-a", "jd-judge-b"} {
+		agent, ok := agentsMap[name].(map[string]any)
+		if !ok {
+			t.Fatalf("missing %s agent", name)
+		}
+		wantTools := map[string]any{"*": false, "read": true, "write": false, "edit": false, "bash": false, "task": false}
+		if got := agent["tools"]; !reflect.DeepEqual(got, wantTools) {
+			t.Fatalf("%s tools = %#v, want main policy %#v", name, got, wantTools)
+		}
+		if _, exists := agent["permission"]; exists {
+			t.Fatalf("%s retained OpenCode permission = %#v", name, agent["permission"])
+		}
+	}
+
+	research, ok := agentsMap["sdd-research"].(map[string]any)
+	if !ok {
+		t.Fatal("missing sdd-research agent")
+	}
+	if got, want := research["permission"], kilocodeResearchPermission(); !reflect.DeepEqual(got, want) {
+		t.Fatalf("sdd-research permission = %#v, want main policy %#v", got, want)
+	}
+
+	second, err := Inject(home, kilocodeAdapter(), model.SDDModeSingle)
+	if err != nil {
+		t.Fatalf("second Inject(kilocode) error = %v", err)
+	}
+	if second.Changed {
+		t.Fatal("second Kilocode inject changed settings")
+	}
+}
+
+func TestKilocodeSharedLegacyMigrationsPreserveTools(t *testing.T) {
+	home := t.TempDir()
+	settingsPath := kilocodeAdapter().SettingsPath(home)
+	before := []byte(`{
+  "agents": {
+    "sdd-orchestrator": {"prompt": "legacy", "legacyMetadata": "preserve", "tools": {"read": true}},
+    "legacy-agent": {"tools": {"bash": true}}
+  },
+  "agent": {
+    "user-owned": {"tools": {"custom": true}}
+  },
+  "command": {
+		"legacy": {"prompt": "legacy command"}
+  }
+}
+`)
+	if err := os.MkdirAll(filepath.Dir(settingsPath), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(settingsPath, before, 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	result, err := Inject(home, kilocodeAdapter(), model.SDDModeSingle)
+	if err != nil {
+		t.Fatalf("Inject(kilocode) error = %v", err)
+	}
+	if !result.Changed {
+		t.Fatal("Kilocode migration did not change legacy settings")
+	}
+
+	payload, err := os.ReadFile(settingsPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	root := map[string]any{}
+	if err := json.Unmarshal(payload, &root); err != nil {
+		t.Fatal(err)
+	}
+	if _, exists := root["agents"]; exists {
+		t.Fatal("legacy agents key survived Kilocode migration")
+	}
+	agentsMap := root["agent"].(map[string]any)
+	for name, wantTools := range map[string]map[string]any{
+		"legacy-agent": {"bash": true},
+		"user-owned":   {"custom": true},
+	} {
+		agent, ok := agentsMap[name].(map[string]any)
+		if !ok || !reflect.DeepEqual(agent["tools"], wantTools) {
+			t.Fatalf("%s tools = %#v, want preserved %#v", name, agent["tools"], wantTools)
+		}
+	}
+	if got := agentsMap["hgtran-orchestrator"].(map[string]any)["legacyMetadata"]; got != "preserve" {
+		t.Fatalf("legacy sdd-orchestrator metadata = %#v, want migrated value", got)
+	}
+	command := root["command"].(map[string]any)["legacy"].(map[string]any)
+	if got := command["template"]; got != "legacy command" {
+		t.Fatalf("legacy command template = %#v, want migrated prompt", got)
+	}
+	if _, exists := command["prompt"]; exists {
+		t.Fatal("legacy command prompt survived Kilocode migration")
+	}
+
+	second, err := Inject(home, kilocodeAdapter(), model.SDDModeSingle)
+	if err != nil {
+		t.Fatalf("second Inject(kilocode) error = %v", err)
+	}
+	if second.Changed {
+		t.Fatal("second Kilocode migration changed already-migrated settings")
+	}
+}
+
+func TestJudgmentDayProfilePermissionsConvertForKilocode(t *testing.T) {
+	profile := model.Profile{
+		Name: "review",
+		PhaseAssignments: map[string]model.ModelAssignment{
+			"jd-judge-a": {ProviderID: "openai", ModelID: "gpt-4o"},
+			"jd-judge-b": {ProviderID: "openai", ModelID: "gpt-4o"},
+		},
+	}
+	overlay, err := GenerateProfileOverlay(profile, t.TempDir(), filepath.Join(t.TempDir(), "opencode.json"), nil, "")
+	if err != nil {
+		t.Fatalf("GenerateProfileOverlay() error = %v", err)
+	}
+	root := map[string]any{}
+	if err := json.Unmarshal(overlay, &root); err != nil {
+		t.Fatal(err)
+	}
+	agentsMap := root["agent"].(map[string]any)
+	for _, name := range []string{"jd-judge-a-review", "jd-judge-b-review"} {
+		agent := agentsMap[name].(map[string]any)
+		if got, want := agent["permission"], judgmentDayJudgePermission(); !reflect.DeepEqual(got, want) {
+			t.Fatalf("OpenCode %s permission = %#v, want %#v", name, got, want)
+		}
+		if _, exists := agent["tools"]; exists {
+			t.Fatalf("OpenCode %s unexpectedly has tools", name)
+		}
+	}
+
+	restoreKilocodeManagedAgentTools(agentsMap)
+	for _, name := range []string{"jd-judge-a-review", "jd-judge-b-review"} {
+		agent := agentsMap[name].(map[string]any)
+		wantTools := map[string]any{"read": true, "bash": true}
+		tools := agent["tools"].(map[string]any)
+		if got := tools["__replace__"]; !reflect.DeepEqual(got, wantTools) {
+			t.Fatalf("Kilocode %s tools = %#v, want %#v", name, got, wantTools)
+		}
+		if _, exists := agent["permission"]; exists {
+			t.Fatalf("Kilocode %s retained OpenCode permission", name)
+		}
+	}
+	research := agentsMap["sdd-research-review"].(map[string]any)
+	if _, exists := research["permission"]; exists {
+		t.Fatalf("Kilocode named sdd-research retained global permission = %#v", research["permission"])
+	}
+}
+
+func TestInjectKilocodeProfileJudgesReplaceContaminatedToolsAndPermissions(t *testing.T) {
+	home := t.TempDir()
+	profile := model.Profile{
+		Name: "review",
+		PhaseAssignments: map[string]model.ModelAssignment{
+			"jd-judge-a": {ProviderID: "openai", ModelID: "gpt-4o"},
+			"jd-judge-b": {ProviderID: "openai", ModelID: "gpt-4o"},
+		},
+	}
+	settingsPath := kilocodeAdapter().SettingsPath(home)
+	mustWriteSettings := func(content string) {
+		t.Helper()
+		if err := os.MkdirAll(filepath.Dir(settingsPath), 0o755); err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(settingsPath, []byte(content), 0o644); err != nil {
+			t.Fatal(err)
+		}
+	}
+	mustWriteSettings(`{
+  "user-setting": {"keep": true},
+  "agent": {
+    "jd-judge-a-review": {
+      "tools": {"read": false, "bash": false, "write": true, "edit": true, "task": true},
+      "permission": {"write": "allow", "edit": "allow"},
+      "user-metadata": "preserve-a"
+    },
+    "jd-judge-b-review": {
+      "tools": {"read": false, "bash": false, "write": true, "edit": true, "task": true},
+      "permission": {"task": "allow"},
+      "user-metadata": "preserve-b"
+    },
+    "user-owned": {"tools": {"write": true}, "permission": {"bash": "allow"}}
+  }
+}
+`)
+
+	first, err := Inject(home, kilocodeAdapter(), model.SDDModeSingle, InjectOptions{Profiles: []model.Profile{profile}})
+	if err != nil {
+		t.Fatalf("Inject(kilocode profile) error = %v", err)
+	}
+	if !first.Changed {
+		t.Fatal("first Kilocode profile inject did not change settings")
+	}
+	payload, err := os.ReadFile(settingsPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	root := map[string]any{}
+	if err := json.Unmarshal(payload, &root); err != nil {
+		t.Fatal(err)
+	}
+	if got := root["user-setting"].(map[string]any)["keep"]; got != true {
+		t.Fatalf("user setting changed: %#v", root["user-setting"])
+	}
+	agentsMap := root["agent"].(map[string]any)
+	for name, metadata := range map[string]string{"jd-judge-a-review": "preserve-a", "jd-judge-b-review": "preserve-b"} {
+		agent := agentsMap[name].(map[string]any)
+		wantTools := map[string]any{"read": true, "bash": true}
+		if got := agent["tools"]; !reflect.DeepEqual(got, wantTools) {
+			t.Fatalf("%s tools = %#v, want exact %#v", name, got, wantTools)
+		}
+		if _, exists := agent["permission"]; exists {
+			t.Fatalf("%s retained stale permission: %#v", name, agent["permission"])
+		}
+		if got := agent["user-metadata"]; got != metadata {
+			t.Fatalf("%s user metadata = %#v, want %q", name, got, metadata)
+		}
+	}
+	if got := agentsMap["user-owned"].(map[string]any)["tools"]; !reflect.DeepEqual(got, map[string]any{"write": true}) {
+		t.Fatalf("user-owned tools changed: %#v", got)
+	}
+
+	second, err := Inject(home, kilocodeAdapter(), model.SDDModeSingle, InjectOptions{Profiles: []model.Profile{profile}})
+	if err != nil {
+		t.Fatalf("second Inject(kilocode profile) error = %v", err)
+	}
+	if second.Changed {
+		t.Fatal("second Kilocode profile inject changed already-clean settings")
+	}
+}
+
+// TestMergeOpenCodeCompatibleJSONFileReturnsMergedBytes verifies that the
+// production merge path returns merged bytes in-memory, so callers never need
+// to re-read from disk to validate the result (the Windows/WSL2 post-check fix).
+func TestMergeOpenCodeCompatibleJSONFileReturnsMergedBytes(t *testing.T) {
 	tmp := t.TempDir()
 	path := filepath.Join(tmp, "test.json")
 
@@ -5033,14 +5779,14 @@ func TestMergeJSONFileReturnsMergedBytes(t *testing.T) {
 
 	overlay := []byte(`{"new_key": "new_value"}`)
 
-	result, err := mergeJSONFile(path, overlay)
+	result, err := mergeOpenCodeCompatibleJSONFile(path, overlay)
 	if err != nil {
-		t.Fatalf("mergeJSONFile() error = %v", err)
+		t.Fatalf("mergeOpenCodeCompatibleJSONFile() error = %v", err)
 	}
 
 	// The returned merged bytes must not be nil.
 	if len(result.merged) == 0 {
-		t.Fatal("mergeJSONFile() returned empty merged bytes — post-check will fail on Windows/WSL2")
+		t.Fatal("mergeOpenCodeCompatibleJSONFile() returned empty merged bytes — post-check will fail on Windows/WSL2")
 	}
 
 	// The merged bytes must contain both the base and overlay content.
@@ -5693,7 +6439,7 @@ func TestFindProjectRootAllMarkers(t *testing.T) {
 func TestInjectOpenCodePostCheckDiskFallback(t *testing.T) {
 	home := t.TempDir()
 
-	// Pre-create a minimal config file with gentle-orchestrator already present.
+	// Pre-create a minimal config file with hgtran-orchestrator already present.
 	// This simulates a previous successful install where the file on disk
 	// is correct but in-memory buffer might be stale.
 	settingsPath := filepath.Join(home, ".config", "opencode", "opencode.json")
@@ -5701,10 +6447,10 @@ func TestInjectOpenCodePostCheckDiskFallback(t *testing.T) {
 		t.Fatalf("MkdirAll() error = %v", err)
 	}
 
-	// Write a config that already has gentle-orchestrator (simulating previous install)
+	// Write a config that already has hgtran-orchestrator (simulating previous install)
 	existingConfig := `{
   "agent": {
-    "gentle-orchestrator": {
+    "hgtran-orchestrator": {
       "description": "Hgtran AI SDD Orchestrator",
       "mode": "primary"
     }
@@ -5728,13 +6474,13 @@ func TestInjectOpenCodePostCheckDiskFallback(t *testing.T) {
 		t.Log("Note: result.Changed = false, but that's OK for idempotent runs")
 	}
 
-	// Verify the file on disk still has gentle-orchestrator and not the legacy base key.
+	// Verify the file on disk still has hgtran-orchestrator and not the legacy base key.
 	diskContent, err := os.ReadFile(settingsPath)
 	if err != nil {
 		t.Fatalf("ReadFile() error = %v", err)
 	}
-	if !strings.Contains(string(diskContent), "gentle-orchestrator") {
-		t.Fatal("File on disk lost gentle-orchestrator after inject")
+	if !strings.Contains(string(diskContent), "hgtran-orchestrator") {
+		t.Fatal("File on disk lost hgtran-orchestrator after inject")
 	}
 	if strings.Contains(string(diskContent), `"sdd-orchestrator"`) {
 		t.Fatal("File on disk still has legacy sdd-orchestrator after inject")
@@ -6207,8 +6953,8 @@ func TestInjectClaudeSubAgentsScopedTools(t *testing.T) {
 		},
 		{
 			phase:       "sdd-archive",
-			mustContain: []string{"Read", "Edit", "Write", "mcp__plugin_engram_engram__mem_search", "mcp__plugin_engram_engram__mem_get_observation", "mcp__plugin_engram_engram__mem_save"},
-			mustNotHave: []string{"Bash", "Task"},
+			mustContain: []string{"Read", "Edit", "Write", "Bash", "mcp__plugin_engram_engram__mem_search", "mcp__plugin_engram_engram__mem_get_observation", "mcp__plugin_engram_engram__mem_save"},
+			mustNotHave: []string{"Task"},
 		},
 	}
 
@@ -6904,7 +7650,7 @@ func TestRefreshInstalledOpenCodePluginsSkipsSymlinksAndDirectories(t *testing.T
 	if err := os.WriteFile(userFile, userContent, 0o644); err != nil {
 		t.Fatalf("WriteFile(user file) error = %v", err)
 	}
-	symlinkPath := filepath.Join(pluginsDir, "review-result-artifacts.ts")
+	symlinkPath := filepath.Join(pluginsDir, "opencode-review-transport.ts")
 	if err := os.Symlink(userFile, symlinkPath); err != nil {
 		t.Skipf("symlinks not supported on this platform: %v", err)
 	}

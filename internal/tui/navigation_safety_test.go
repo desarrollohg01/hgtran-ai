@@ -4,15 +4,15 @@ import (
 	"errors"
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/backup"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/model"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/tui/screens"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/backup"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/model"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/system"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/tui/screens"
 )
 
 func TestRunningScreensRejectInputAndExposeNoOptions(t *testing.T) {
-	for _, screen := range []Screen{ScreenRestoreConfirm, ScreenSync, ScreenUpgradeSync, ScreenOpenCodePlugins, ScreenUninstallConfirm} {
+	for _, screen := range []Screen{ScreenRestoreConfirm, ScreenSync, ScreenUpgradeSync, ScreenOpenCodePlugins, ScreenUninstallConfirm, ScreenReviewStoreResetConfirm} {
 		t.Run(screenName(screen), func(t *testing.T) {
 			m := NewModel(system.DetectionResult{}, "dev")
 			m.Screen = screen
@@ -34,7 +34,7 @@ func TestRunningScreensRejectInputAndExposeNoOptions(t *testing.T) {
 }
 
 func TestResultScreensDoNotExposePhantomCursorRows(t *testing.T) {
-	for _, screen := range []Screen{ScreenRestoreResult, ScreenDeleteResult, ScreenUninstallResult, ScreenOpenCodePluginResult, ScreenCommunityToolResult, ScreenComplete} {
+	for _, screen := range []Screen{ScreenRestoreResult, ScreenDeleteResult, ScreenUninstallResult, ScreenOpenCodePluginResult, ScreenCommunityToolResult, ScreenComplete, ScreenReviewStoreResetResult} {
 		m := NewModel(system.DetectionResult{}, "dev")
 		m.Screen = screen
 		if got := m.optionCount(); got != 0 {

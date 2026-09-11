@@ -6,12 +6,11 @@ import (
 )
 
 var portableSDDFailClosedAuthorityJourneyIDs = []string{
-	"j52-sdd-stale-authority-does-not-shadow-approved-candidate",
-	"j53-sdd-ambiguous-authorities-fail-closed",
-	"j54-sdd-missing-authority-receipt-fails-closed",
-	"j55-sdd-mismatched-authority-receipt-fails-closed",
-	"j56-sdd-non-allow-post-apply-gate-fails-closed",
-	"j58-sdd-foreign-openspec-path-fails-closed",
+	"j59-current-status-and-start-ignore-sibling-worktree-transaction",
+	"j60-explicit-active-lineage-keeps-four-lens-correction-and-validator-flow",
+	"j111-approved-transaction-burns-and-shipped-gates-are-unmanaged",
+	"j80-rescope-authorized-evidence-only-retry",
+	"j81-rc1-consecutive-rescope-repair-executes-printed-command",
 }
 
 func portableSDDFailClosedAuthorityJourneySet(found bool) map[string]bool {
@@ -34,9 +33,15 @@ func TestPortableSDDFailClosedAuthorityJourneysAreRegistered(t *testing.T) {
 			want[journey.ID] = true
 		}
 	}
-	if got := len(seen); got != 59 {
-		t.Errorf("core journey count = %d, want 59", got)
-	}
+	// The corpus total used to be asserted here as a hand-written integer. It
+	// moved to bench/testdata/journeys.manifest, because two branches that each
+	// add one journey each write the same next number and git resolves that
+	// silently by taking one side. See TestRegisteredJourneysMatchTheManifest.
+	//
+	// #3417 retired the former durable-receipt and delivery-gate authority
+	// fixtures because a completed transaction no longer remains discoverable.
+	// The three atomic journeys above preserve the executable proof surface:
+	// selected-worktree isolation, explicit active continuation, and terminal burn.
 	for id, found := range want {
 		if !found {
 			t.Errorf("required SDD authority journey %q is not registered", id)

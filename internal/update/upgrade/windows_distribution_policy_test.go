@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/system"
-	"bitbucket.org/hgt_development/hgtran-ai/v2/internal/update"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/system"
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/update"
 )
 
 func TestGentleAIWindowsUpgradeFailsClosedToSourceInstall(t *testing.T) {
@@ -24,7 +24,6 @@ func TestGentleAIWindowsUpgradeFailsClosedToSourceInstall(t *testing.T) {
 		wantTarget    string
 	}{
 		{name: "stable release", latestVersion: "2.2.0", wantTarget: "@v2.2.0"},
-		{name: "beta main", latestVersion: "main@abc1234", wantTarget: "@main"},
 	}
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
@@ -50,7 +49,7 @@ func TestGentleAIWindowsUpgradeFailsClosedToSourceInstall(t *testing.T) {
 			}
 			for _, required := range []string{
 				"Windows binary distribution and Scoop are temporarily unavailable",
-				"go install bitbucket.org/hgt_development/hgtran-ai/v2/cmd/hgtran-ai" + tc.wantTarget,
+				"go install github.com/desarrollohg01/hgtran-ai/v2/cmd/hgtran-ai" + tc.wantTarget,
 			} {
 				if !strings.Contains(hint, required) {
 					t.Errorf("manual hint is missing %q: %s", required, hint)
@@ -68,5 +67,64 @@ func TestGentleAIWindowsUpgradeFailsClosedToSourceInstall(t *testing.T) {
 				t.Fatalf("executeOne manual hint = %q, want target %q", result.ManualHint, tc.wantTarget)
 			}
 		})
+	}
+}
+
+func TestWindowsBetaGentleAIUpgradeUsesShippedRegistryGoTarget(t *testing.T) {
+	const (
+		mainSHA = "abc1234"
+		module  = "github.com/desarrollohg01/hgtran-ai/v2"
+	)
+
+	var tool update.ToolInfo
+	for _, candidate := range update.Tools {
+		if candidate.Name == "hgtran-ai" {
+			tool = candidate
+			break
+		}
+	}
+	if tool.GoImportPath == "" {
+		t.Fatal("shipped hgtran-ai registry entry must declare GoImportPath")
+	}
+
+	gobin := t.TempDir()
+	destination := writeFakeBinary(t, gobin, "hgtran-ai.exe")
+	originalLookPath := lookPathFn
+	t.Cleanup(func() { lookPathFn = originalLookPath })
+	lookPathFn = func(string) (string, error) { return destination, nil }
+
+	originalExec := execCommand
+	t.Cleanup(func() { execCommand = originalExec })
+	var gotName string
+	var gotArgs []string
+	var gotCmd *exec.Cmd
+	execCommand = func(name string, args ...string) *exec.Cmd {
+		if name == "go" && len(args) == 2 && args[0] == "env" {
+			return mockCmd("echo", gobin)
+		}
+		gotName = name
+		gotArgs = args
+		gotCmd = mockCmd("true")
+		return gotCmd
+	}
+
+	r := update.UpdateResult{Tool: tool, LatestVersion: "main@" + mainSHA, Status: update.UpdateAvailable}
+	profile := system.PlatformProfile{OS: "windows", PackageManager: "winget", GoAvailable: true, Supported: true}
+	if _, err := runStrategy(context.Background(), r, profile); err != nil {
+		t.Fatalf("runStrategy beta Windows self-upgrade: %v", err)
+	}
+
+	wantTarget := tool.GoImportPath + "@main"
+	if gotName != "go" || len(gotArgs) != 2 || gotArgs[0] != "install" || gotArgs[1] != wantTarget {
+		t.Fatalf("go command = %q %v, want go install %s", gotName, gotArgs, wantTarget)
+	}
+	for _, want := range []string{
+		"GONOSUMDB=" + module,
+		"GOPRIVATE=" + module,
+		"GONOPROXY=" + module,
+	} {
+		if gotCmd == nil || !envContains(gotCmd.Env, want) {
+			t.Fatalf("go install env missing %q in %v", want, gotCmd.Env)
+		}
 	}
 }

@@ -26,7 +26,7 @@ Today the opposite happens. This session's audits proved every one of the 10 `--
 
 - The stop-schema escape/continuation field — a versioned wire-contract change, designed post-release once streams 1–2 shrink the stop surface.
 - Identity-bound (signed) authorization: the ed25519 pattern exists (`prepr.go:304-309`) but binding identity is a separate product decision.
-- gentle-pi forward tolerance (rides the pin-bump PR).
+- hgtran-pi forward tolerance (rides the pin-bump PR).
 - Any weakening of fail-closed behavior: corrupted authority, wrong explicit bindings, and failed-criteria escalations refuse exactly as today.
 - Scope changes and permanent disable stay human decisions.
 
