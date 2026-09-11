@@ -12,7 +12,7 @@ import (
 	"github.com/desarrollohg01/hgtran-ai/v2/internal/verify"
 )
 
-const OpenCodeBackgroundSubagentsEnv = "GENTLE_AI_OPENCODE_BACKGROUND_SUBAGENTS"
+const OpenCodeBackgroundSubagentsEnv = "HGTRAN_AI_OPENCODE_BACKGROUND_SUBAGENTS"
 
 // OpenCodeBackgroundResolveInput contains already-discovered sources. The
 // resolver is pure so loading state and reading the process environment remain

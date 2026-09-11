@@ -1,7 +1,7 @@
 # SDD Orchestrator — Shared Sections
 
 Canonical bodies for the orchestrator subsections every runtime states identically.
-Each runtime keeps its own heading line and carries `{{GENTLE_AI_SDD_SECTION:<name>}}` in place
+Each runtime keeps its own heading line and carries `{{HGTRAN_AI_SDD_SECTION:<name>}}` in place
 of the body; `composeOrchestratorPrompt` substitutes from here. Sections that genuinely differ
 per runtime stay in the runtime asset (see #3817 for the measured drift inventory).
 

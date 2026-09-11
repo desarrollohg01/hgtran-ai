@@ -1,7 +1,7 @@
 # Proposal: RDD Single Lifecycle Cutover (successor to Wave 7)
 
 Successor to `rdd-root-simplification-wave7`. Wave 7 deliberately deferred
-the `GENTLE_AI_RDD_NEW_LINEAGE` switch removal (WU18) rather than remove it
+the `HGTRAN_AI_RDD_NEW_LINEAGE` switch removal (WU18) rather than remove it
 over a known, disclosed capability gap — see
 `openspec/changes/rdd-root-simplification-wave7/specs/rdd-single-lifecycle/spec.md`'s
 Amendment for the full finding. This change exists to carry the one
@@ -12,7 +12,7 @@ Engram #10215).
 ## Intent
 
 Land the switch removal Wave 7 attempted and reverted: delete
-`GENTLE_AI_RDD_NEW_LINEAGE` and the legacy `review start` branch it guards,
+`HGTRAN_AI_RDD_NEW_LINEAGE` and the legacy `review start` branch it guards,
 so exactly one review lifecycle (v3) remains reachable. This is a single,
 precisely-scoped requirement — everything else Wave 7's `rdd-single-lifecycle`
 capability defines (byte-equivalence exit evidence, W-9/W-10/W-11
@@ -56,7 +56,7 @@ This change MUST, in order:
    gates, but explicitly deferred the negotiated form and `capture-result`
    (see Wave 7 apply-progress and tasks.md task 2.1); this change must
    close that gap before it re-attempts removal, not after.
-4. Only then delete `GENTLE_AI_RDD_NEW_LINEAGE` and the legacy start
+4. Only then delete `HGTRAN_AI_RDD_NEW_LINEAGE` and the legacy start
    branch.
 
 If any of these steps surfaces a further capability gap, the same

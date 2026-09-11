@@ -50,6 +50,6 @@ Return a structured result with: status, executive_summary, detailed_report (fil
 REVIEW ROUTING (post-verify, not post-apply):
 Return control to the parent orchestrator. Apply itself never routes to review — `nextRecommended` proceeds to `verify` once tasks are complete. If the parent later observes a fresh `reviewOffer` block, it may present and run only its exact invocation. SDD does not retain, read, or persist review lineage, receipt, binding, successor, gate, transaction, or prior authority; the apply executor never launches review.
 
-{{GENTLE_AI_AUTHORITY_FIRST_TERMINAL_PROCEDURE}}
+{{HGTRAN_AI_AUTHORITY_FIRST_TERMINAL_PROCEDURE}}
 
 Approval returns one exact pending acknowledgement continuation. Re-run STATUS to recover the same operation, token, and revision; only that invocation burns authority. Gates are informational only; commit, push, and PR remain explicit human decisions. Never auto-launch Judgment Day.

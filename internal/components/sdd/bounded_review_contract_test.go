@@ -219,7 +219,7 @@ func TestBoundedReviewContractRequiresRuntimeBoundReviewerContext(t *testing.T) 
 		"Never hand candidate bytes through `/tmp`",
 		"an external file",
 		"a repository scratch file",
-		"`GENTLE_AI_FROZEN_CANDIDATE_CONTEXT`",
+		"`HGTRAN_AI_FROZEN_CANDIDATE_CONTEXT`",
 		"Reviewers inspect only the provider-bound immutable trees",
 		"Never pass `--binary`",
 		"live worktree, index, `HEAD`, or an unbound revision",
@@ -502,7 +502,7 @@ func TestRenderedReviewersAreReadOnlyAndSingleResult(t *testing.T) {
 					// longer names a Claude-specific nature for the context.
 					//
 					// The marker followed the same collapse. A Claude-only
-					// GENTLE_AI_CLAUDE_REVIEW_CONTEXT made this definition
+					// HGTRAN_AI_CLAUDE_REVIEW_CONTEXT made this definition
 					// require a block the one renderer never emits, so no
 					// relayed prompt was admissible and the Claude path could
 					// not reach a receipt at all (issue #2777). The name is now
@@ -519,7 +519,7 @@ func TestRenderedReviewersAreReadOnlyAndSingleResult(t *testing.T) {
 					}
 					return
 				}
-				for _, want := range []string{"GENTLE_AI_REVIEW_CONTEXT", "sole source of artifact_subject", "hgtran-ai review inspect-candidate", "--operation name-status", "--operation numstat", "--operation stat --path-index", "--operation patch --path-index", "--operation object --path-index", "--side base", "--side candidate", "provider binding", "zero-based changed_path_manifest index", "never pass --binary"} {
+				for _, want := range []string{"HGTRAN_AI_REVIEW_CONTEXT", "sole source of artifact_subject", "hgtran-ai review inspect-candidate", "--operation name-status", "--operation numstat", "--operation stat --path-index", "--operation patch --path-index", "--operation object --path-index", "--side base", "--side candidate", "provider binding", "zero-based changed_path_manifest index", "never pass --binary"} {
 					if !strings.Contains(content, want) {
 						t.Errorf("%s missing provider transport clause %q", path, want)
 					}

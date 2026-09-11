@@ -67,8 +67,8 @@ func ParseInstallFlags(args []string) (InstallFlags, error) {
 	fs.StringVar(&opts.SDDMode, "sdd-mode", "", "SDD orchestrator mode: single or multi (default: single)")
 	fs.StringVar(&opts.Scope, "scope", "", "install scope: global (default) or workspace — env: HGTRAN_AI_INSTALL_SCOPE")
 	fs.StringVar(&opts.Channel, "channel", "", installChannelHelp)
-	fs.StringVar(&opts.OpenCodeBackgroundSubagents, "opencode-background-subagents", "", "--opencode-background-subagents=auto|on|off; env: GENTLE_AI_OPENCODE_BACKGROUND_SUBAGENTS; eligible versions use a managed launcher")
-	fs.StringVar(&opts.PiBackgroundSubagents, "pi-background-subagents", "", "--pi-background-subagents=auto|on|off; env: GENTLE_AI_PI_BACKGROUND_SUBAGENTS; the resolved policy is projected for hgtran-pi")
+	fs.StringVar(&opts.OpenCodeBackgroundSubagents, "opencode-background-subagents", "", "--opencode-background-subagents=auto|on|off; env: HGTRAN_AI_OPENCODE_BACKGROUND_SUBAGENTS; eligible versions use a managed launcher")
+	fs.StringVar(&opts.PiBackgroundSubagents, "pi-background-subagents", "", "--pi-background-subagents=auto|on|off; env: HGTRAN_AI_PI_BACKGROUND_SUBAGENTS; the resolved policy is projected for hgtran-pi")
 	fs.BoolVar(&opts.DryRun, "dry-run", false, "preview plan without executing")
 
 	if err := fs.Parse(args); err != nil {

@@ -4,6 +4,8 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/symlinktest"
 )
 
 func seedReadyChange(t *testing.T, root string, name string, tasks string) string {
@@ -75,9 +77,7 @@ func aliasedRepository(t *testing.T, change string) (string, string) {
 		t.Fatal(err)
 	}
 	runRuntimeLedgerGit(t, realRepo, "init", "-q")
-	if err := os.Symlink(filepath.Join(base, "real"), filepath.Join(base, "alias")); err != nil {
-		t.Fatal(err)
-	}
+	symlinktest.MustSymlink(t, filepath.Join(base, "real"), filepath.Join(base, "alias"))
 	seedReadyChange(t, realRepo, change, "- [x] 1.1 Done\n")
 	return realRepo, filepath.Join(base, "alias", "repo")
 }

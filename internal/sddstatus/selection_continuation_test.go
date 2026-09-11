@@ -70,7 +70,7 @@ func TestEngramAmbiguityContinuationsParseAndCarryTheSelector(t *testing.T) {
 	root := t.TempDir()
 	mkdir(t, filepath.Join(root, ".engram"))
 	runRuntimeLedgerGit(t, root, "init", "-q")
-	runRuntimeLedgerGit(t, root, "remote", "add", "origin", "git@github.com:Gentleman-Programming/hgtran-ai.git")
+	runRuntimeLedgerGit(t, root, "remote", "add", "origin", "git@github.com:desarrollohg01/hgtran-ai.git")
 
 	restore := stubEngramExport(t, []engramObservation{
 		{Title: "sdd/add-auth/proposal", Content: "# Proposal\n", Project: "hgtran-ai", Scope: "project"},

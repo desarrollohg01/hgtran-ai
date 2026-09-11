@@ -292,7 +292,7 @@ func resolveGGAInstall(profile system.PlatformProfile) (CommandSequence, error) 
 		cloneDst := filepath.Join(os.TempDir(), "hgtran-guardian-angel")
 		bash := gitBashPath()
 		return CommandSequence{
-			{"git", "clone", "--depth=1", "--branch", "v" + versions.GGAVersion, "https://github.com/Gentleman-Programming/hgtran-guardian-angel.git", cloneDst},
+			{"git", "clone", "--depth=1", "--branch", "v" + versions.GGAVersion, "https://github.com/Gentleman-Programming/gentleman-guardian-angel.git", cloneDst},
 			{bash, bashScriptPath(profile, filepath.Join(cloneDst, "install.sh"))},
 		}, nil
 	default:
@@ -308,7 +308,7 @@ func resolveGGAInstall(profile system.PlatformProfile) (CommandSequence, error) 
 				{"rm", "-rf", tmpDir},
 				{"mkdir", "-p", tmpDir},
 				{"git", "init", tmpDir},
-				{"git", "-C", tmpDir, "fetch", "--depth=1", "https://github.com/Gentleman-Programming/hgtran-guardian-angel.git", tagRef + ":" + tagRef},
+				{"git", "-C", tmpDir, "fetch", "--depth=1", "https://github.com/Gentleman-Programming/gentleman-guardian-angel.git", tagRef + ":" + tagRef},
 				{"git", "-C", tmpDir, "checkout", "-f", tagRef},
 				{"bash", tmpDir + "/install.sh"},
 			}, nil

@@ -11,7 +11,7 @@
     "release_channel": "prerelease"
   },
   "build": {
-    "id": "sha256:444a9f0608eb22c4697fd2092f3afcfab040c0918343e7e04087730fd33fd5e1",
+    "id": "sha256:b48d0e4ec5ed670651ebd7b5cde8d9773540f7d3a8262427a40a2f7712331f6b",
     "go_version": "go1.25.10",
     "module_version": "v2.1.7",
     "vcs": "git",
@@ -20,7 +20,7 @@
     "vcs_modified": "false"
   },
   "executable": {
-    "sha256": "sha256:dcc846103b16d365eaeeb9d7f289c23fc4f2897f23def1cb3fe7f05557b64705",
+    "sha256": "sha256:5456c6c00b0621ec6b0337d815ae3107cd3fad8188567071cce9b720d00fcdce",
     "evidence": "self-reported",
     "verification": "compare-with-published-manifest"
   },

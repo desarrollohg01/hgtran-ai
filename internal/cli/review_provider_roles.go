@@ -28,7 +28,7 @@ const maxInconclusiveTargetedValidations = 3
 
 type reviewProviderRole = reviewerprovider.Role
 
-const reviewProviderTaskBindingHeader = "GENTLE_AI_REVIEW_PROVIDER_TASK"
+const reviewProviderTaskBindingHeader = "HGTRAN_AI_REVIEW_PROVIDER_TASK"
 
 type reviewProviderTaskBinding struct {
 	LineageID         string `json:"lineage_id"`

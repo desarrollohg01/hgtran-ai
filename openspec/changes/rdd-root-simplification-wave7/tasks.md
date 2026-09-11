@@ -24,7 +24,7 @@ Chain strategy: feature-branch-chain
 | Unit | Goal | PR base | Focused test | Runtime harness | Rollback boundary |
 |---|---|---|---|---|---|
 | WU1 S1 | W-9/10/11 closure (+250) | tracker | `go test ./internal/reviewtransaction/... -run 'CaptureLensResult\|AdmitCandidateCausalFindings\|newLineageCapturedFindings' -count=1` | N/A — pure add | revert 1.1-1.9 |
-| WU2 S6 | Byte-equiv Commit A (+150) | WU1 | `go test ./internal/cli/... -run TestByteEquivalence -count=1` | `bench --axis all` w/ `GENTLE_AI_RDD_NEW_LINEAGE=1`, record | delete evidence dir |
+| WU2 S6 | Byte-equiv Commit A (+150) | WU1 | `go test ./internal/cli/... -run TestByteEquivalence -count=1` | `bench --axis all` w/ `HGTRAN_AI_RDD_NEW_LINEAGE=1`, record | delete evidence dir |
 | WU3 S9a | v1 freeze + backlog proofs (+150) | WU2 | N/A doc-only | N/A | revert freeze marker |
 | WU4 S2a | Shadow observer+alias (-430) | WU3 | `go test ./internal/reviewtransaction/... -run Shadow -count=1` | N/A | git revert |
 | WU5 S2b | Shadow tests pt1 (-779) | WU4 | same | N/A | git revert |
@@ -46,7 +46,7 @@ Chain strategy: feature-branch-chain
 
 ## Gate
 
-- [x] G.1 Confirm Waves 3-6 merged to `main` (exit evidence present; `GENTLE_AI_RDD_NEW_LINEAGE` present under `internal/`).
+- [x] G.1 Confirm Waves 3-6 merged to `main` (exit evidence present; `HGTRAN_AI_RDD_NEW_LINEAGE` present under `internal/`).
 - [x] G.2 Confirm W6 fix cycle `bba17974` merged before deriving the Task 0 inventory.
 
 ## Task 0: Inventory Re-Validation (no code diff, blocking)
@@ -71,7 +71,7 @@ Chain strategy: feature-branch-chain
 - [x] 1.10 Exit Checklist.
 
 ### WU2 — S6: byte-equivalence evidence, Commit A
-- [x] 2.1 Record goldens/envelopes/receipts with `GENTLE_AI_RDD_NEW_LINEAGE=1` across the full journey set, every entry surface: start (negotiated+unnegotiated), status `--next-transition`, capture-result, finalize, validate, all 5 gates. (Scoped at apply time to the unnegotiated form + status + finalize + all 5 gates; negotiated form and capture-result deferred to unit-level coverage + WU18's `bench --axis all` — see apply-progress.)
+- [x] 2.1 Record goldens/envelopes/receipts with `HGTRAN_AI_RDD_NEW_LINEAGE=1` across the full journey set, every entry surface: start (negotiated+unnegotiated), status `--next-transition`, capture-result, finalize, validate, all 5 gates. (Scoped at apply time to the unnegotiated form + status + finalize + all 5 gates; negotiated form and capture-result deferred to unit-level coverage + WU18's `bench --axis all` — see apply-progress.)
   **verify SL-1, disclosed and relocated rather than widened**: the
   negotiated form was never proven byte-equivalent (switch-ON vs
   switch-free), and cannot be recorded now without either (a)

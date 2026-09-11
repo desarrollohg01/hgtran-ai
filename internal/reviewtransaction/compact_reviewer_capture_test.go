@@ -1,12 +1,15 @@
 package reviewtransaction
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"os"
 	"path/filepath"
 	"reflect"
 	"strings"
+	"sync"
 	"testing"
 )
 
@@ -331,4 +334,306 @@ func TestReopenedRefuterWithRetiredPayloadRequiresCurrentPhase(t *testing.T) {
 	if stale := requireCompactRoleCount(t, store, 5); stale.Revision != beforeReplay {
 		t.Fatal("stale prior refuter phase replay mutated authority")
 	}
+}
+
+// TestCompactStoreCaptureAdmittedReviewerResultConvergesAfterExactReplayLockTimeout
+// is intentionally NOT restored. In dev's filesystem-artifact architecture,
+// exact replay could be satisfied by re-reading an immutable sidecar file
+// without the store write lock, so a replay converged even while another
+// holder had the store lock. In the current architecture, admitted reviewer
+// results live inside CompactState itself (see mergeAdmittedLensResult), so
+// even a no-op exact replay must acquire the same store lock as a real
+// mutation to read state safely. Empirically re-running this scenario against
+// current code (fixture captures once, an external holder takes
+// store.lockPath, then a replay is attempted) reliably returns
+// *AuthorityLockTimeoutError after the 2s maintenanceLockTimeout instead of
+// converging. This is not a regression: it is the direct, intended
+// consequence of moving reviewer-result durability from a lock-free
+// filesystem artifact into the same CAS'd, lock-protected state file as every
+// other compact mutation. Weakening the assertion to expect a timeout would
+// not guard any real invariant, so this test is left dropped rather than
+// restored.
+
+// TestCompactStoreResolveAdmittedReviewerResultIsExactAndReadOnly restores dev's
+// read-only coverage for ResolveAdmittedReviewerResult, retargeted from the
+// retired filesystem artifact/digest sidecar pair onto the sole current
+// persistence surface: the compact state file itself.
+func TestCompactStoreResolveAdmittedReviewerResultIsExactAndReadOnly(t *testing.T) {
+	fixture := newCompactReviewerCaptureFixture(t, "resolve-native-admitted-reviewer")
+	stateBefore, err := os.ReadFile(fixture.store.StatePath())
+	if err != nil {
+		t.Fatal(err)
+	}
+	missing, found, err := fixture.store.ResolveAdmittedReviewerResult(
+		context.Background(),
+		fixture.request.ExpectedRevision,
+		fixture.request.TargetIdentity,
+		fixture.request.FrozenContext,
+		fixture.request.ArtifactSubject,
+	)
+	if err != nil || found || !reflect.DeepEqual(missing, LensResult{}) {
+		t.Fatalf("missing admitted result = %#v, %t, %v", missing, found, err)
+	}
+	stateAfterMiss, err := os.ReadFile(fixture.store.StatePath())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(stateBefore, stateAfterMiss) {
+		t.Fatal("read-only miss mutated compact authority")
+	}
+
+	want, err := fixture.store.CaptureAdmittedReviewerResult(context.Background(), fixture.request)
+	if err != nil {
+		t.Fatal(err)
+	}
+	stateAfterCapture, err := os.ReadFile(fixture.store.StatePath())
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	got, found, err := fixture.store.ResolveAdmittedReviewerResult(
+		context.Background(),
+		fixture.request.ExpectedRevision,
+		fixture.request.TargetIdentity,
+		fixture.request.FrozenContext,
+		fixture.request.ArtifactSubject,
+	)
+	if err != nil || !found || !reflect.DeepEqual(got, want.LensResult) {
+		t.Fatalf("resolved admitted result = %#v, %t, %v", got, found, err)
+	}
+	stateAfterResolve, err := os.ReadFile(fixture.store.StatePath())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(stateAfterCapture, stateAfterResolve) {
+		t.Fatal("resolver changed compact authority")
+	}
+}
+
+// TestCompactStoreResolveAdmittedReviewerResultFailsClosed restores dev's
+// fail-closed coverage for ResolveAdmittedReviewerResult. The mismatched-target
+// and tampered-frozen-context cases are unchanged; the third case (a tampered
+// artifact) is retargeted from a hand-edited sidecar file onto a hand-edited
+// admitted role value inside CompactState, since that is where the bytes now
+// live.
+func TestCompactStoreResolveAdmittedReviewerResultFailsClosed(t *testing.T) {
+	fixture := newCompactReviewerCaptureFixture(t, "resolve-admitted-reviewer-refusal")
+	if _, err := fixture.store.CaptureAdmittedReviewerResult(context.Background(), fixture.request); err != nil {
+		t.Fatal(err)
+	}
+	if _, found, err := fixture.store.ResolveAdmittedReviewerResult(
+		context.Background(),
+		fixture.request.ExpectedRevision,
+		verificationTestHash("different-review-target"),
+		fixture.request.FrozenContext,
+		fixture.request.ArtifactSubject,
+	); err == nil || found {
+		t.Fatalf("mismatched target = found %t, error %v", found, err)
+	}
+	tamperedFrozen := fixture.request.FrozenContext
+	tamperedFrozen.ChangedPathManifest = append(
+		[]ChangedPathManifestEntry(nil),
+		tamperedFrozen.ChangedPathManifest...,
+	)
+	tamperedFrozen.ChangedPathManifest[0].ModeOnly = true
+	if _, found, err := fixture.store.ResolveAdmittedReviewerResult(
+		context.Background(),
+		fixture.request.ExpectedRevision,
+		fixture.request.TargetIdentity,
+		tamperedFrozen,
+		fixture.request.ArtifactSubject,
+	); err == nil || found {
+		t.Fatalf("tampered frozen context = found %t, error %v", found, err)
+	}
+
+	record, err := fixture.store.Load()
+	if err != nil {
+		t.Fatal(err)
+	}
+	tampered := append([]CompactAdmittedRoleResult(nil), record.State.AdmittedRoleResults...)
+	found := false
+	for index, entry := range tampered {
+		if entry.Role != CompactRoleLens {
+			continue
+		}
+		mutated := append([]byte(nil), bytes.TrimSuffix(entry.Value, []byte("}"))...)
+		mutated = append(mutated, []byte(`,"unexpected":true}`)...)
+		entry.Value = mutated
+		entry.ArtifactDigest = compactPreservedPayloadDigest(append(append([]byte(nil), mutated...), '\n'))
+		tampered[index] = entry
+		found = true
+	}
+	if !found {
+		t.Fatal("fixture has no admitted lens result to tamper")
+	}
+	next := cloneCompactStateInitialAtomicStart(record.State)
+	next.AdmittedRoleResults = tampered
+	_, payload, err := makeCompactRecord(next)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := writeAtomic(fixture.store.StatePath(), payload, 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if _, found, err := fixture.store.ResolveAdmittedReviewerResult(
+		context.Background(),
+		fixture.request.ExpectedRevision,
+		fixture.request.TargetIdentity,
+		fixture.request.FrozenContext,
+		fixture.request.ArtifactSubject,
+	); err == nil || found {
+		t.Fatalf("unknown-field admitted value = found %t, error %v", found, err)
+	}
+}
+
+// TestCompactStoreCaptureAdmittedReviewerResultRejectsUnsafeOrConflictingSlots
+// restores dev's conflicting-slot coverage. The original table also exercised
+// symlinked, hardlinked, and group-readable reviewer-result files under a RAR
+// safety directory; that whole mechanism is retired along with the standalone
+// reviewer-result artifact/digest sidecar (see
+// TestCompactReviewerResultSidecarOwnersAreAbsent), so those cases have no
+// remaining production counterpart. What survives, and still had zero direct
+// coverage, is ErrCapturedReviewerResultSlotConflict itself: a second capture
+// for an already-occupied lens slot with different canonical bytes must be
+// refused without mutating compact authority.
+func TestCompactStoreCaptureAdmittedReviewerResultRejectsUnsafeOrConflictingSlots(t *testing.T) {
+	fixture := newCompactReviewerCaptureFixture(t, "capture-refusal-conflicting-slot")
+	if _, err := fixture.store.CaptureAdmittedReviewerResult(context.Background(), fixture.request); err != nil {
+		t.Fatal(err)
+	}
+	before, err := fixture.store.Load()
+	if err != nil {
+		t.Fatal(err)
+	}
+	conflicting := fixture.request
+	conflicting.RawPayload = append([]byte("different transport\n"), fixture.request.RawPayload...)
+	if _, err := fixture.store.CaptureAdmittedReviewerResult(context.Background(), conflicting); !errors.Is(err, ErrCapturedReviewerResultSlotConflict) {
+		t.Fatalf("conflicting capture error = %v, want %v", err, ErrCapturedReviewerResultSlotConflict)
+	}
+	after, err := fixture.store.Load()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if after.Revision != before.Revision || !reflect.DeepEqual(after.State.AdmittedRoleResults, before.State.AdmittedRoleResults) {
+		t.Fatal("rejected conflicting capture mutated compact authority")
+	}
+}
+
+// TestCompactStoreCaptureAdmittedReviewerResultRejectsCallerDerivedContext
+// restores dev's coverage of caller-derived (rather than repository-derived)
+// frozen context, dropping only the filesystem existence check for the retired
+// reviewer-result directory.
+func TestCompactStoreCaptureAdmittedReviewerResultRejectsCallerDerivedContext(t *testing.T) {
+	fixture := newCompactReviewerCaptureFixture(t, "capture-rederive-frozen-context")
+	tampered := fixture.request
+	tampered.FrozenContext.ChangedPathManifest = append(
+		[]ChangedPathManifestEntry(nil),
+		tampered.FrozenContext.ChangedPathManifest...,
+	)
+	tampered.FrozenContext.ChangedPathManifest[0].ModeOnly = true
+	if _, err := fixture.store.CaptureAdmittedReviewerResult(context.Background(), tampered); err == nil || !strings.Contains(
+		err.Error(),
+		"does not match repository authority",
+	) {
+		t.Fatalf("caller-derived frozen context error = %v", err)
+	}
+	after, err := fixture.store.Load()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(after.State.AdmittedRoleResults) != 0 {
+		t.Fatal("context refusal mutated compact authority")
+	}
+}
+
+// TestCompactStoreCaptureAdmittedReviewerResultSerializesConcurrentReplayAndConflict
+// restores dev's concurrency coverage for exact replay and slot conflict,
+// retargeted from the retired filesystem artifact readback onto CompactState.
+func TestCompactStoreCaptureAdmittedReviewerResultSerializesConcurrentReplayAndConflict(t *testing.T) {
+	t.Run("exact replay", func(t *testing.T) {
+		fixture := newCompactReviewerCaptureFixture(t, "capture-concurrent-replay")
+		const attempts = 8
+		var wait sync.WaitGroup
+		errorsByAttempt := make([]error, attempts)
+		hashes := make([]string, attempts)
+		for index := 0; index < attempts; index++ {
+			wait.Add(1)
+			go func(index int) {
+				defer wait.Done()
+				result, err := fixture.store.CaptureAdmittedReviewerResult(
+					context.Background(),
+					fixture.request,
+				)
+				errorsByAttempt[index] = err
+				hashes[index] = result.ResultHash
+			}(index)
+		}
+		wait.Wait()
+		for index := range errorsByAttempt {
+			if errorsByAttempt[index] != nil ||
+				hashes[index] == "" ||
+				hashes[index] != hashes[0] {
+				t.Fatalf(
+					"concurrent replay[%d] = hash %q, error %v",
+					index,
+					hashes[index],
+					errorsByAttempt[index],
+				)
+			}
+		}
+		record, err := fixture.store.Load()
+		if err != nil {
+			t.Fatal(err)
+		}
+		if len(record.State.AdmittedRoleResults) != 1 {
+			t.Fatalf("concurrent exact replay produced %d admitted role results, want 1", len(record.State.AdmittedRoleResults))
+		}
+	})
+
+	t.Run("different raw authority", func(t *testing.T) {
+		fixture := newCompactReviewerCaptureFixture(t, "capture-concurrent-conflict")
+		alternate := fixture.request
+		alternate.RawPayload = append(
+			[]byte("review transport prefix\n"),
+			alternate.RawPayload...,
+		)
+		requests := []CompactAdmittedReviewerResultRequest{
+			fixture.request,
+			alternate,
+		}
+		var wait sync.WaitGroup
+		results := make([]error, len(requests))
+		for index := range requests {
+			wait.Add(1)
+			go func(index int) {
+				defer wait.Done()
+				_, results[index] = fixture.store.CaptureAdmittedReviewerResult(
+					context.Background(),
+					requests[index],
+				)
+			}(index)
+		}
+		wait.Wait()
+		successes, conflicts := 0, 0
+		for _, err := range results {
+			switch {
+			case err == nil:
+				successes++
+			case strings.Contains(
+				err.Error(),
+				"different canonical bytes",
+			):
+				conflicts++
+			default:
+				t.Fatalf("concurrent conflict error = %v", err)
+			}
+		}
+		if successes != 1 || conflicts != 1 {
+			t.Fatalf(
+				"concurrent conflict = %d success, %d conflict",
+				successes,
+				conflicts,
+			)
+		}
+	})
 }

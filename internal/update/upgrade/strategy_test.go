@@ -18,7 +18,7 @@ import (
 )
 
 func TestMain(m *testing.M) {
-	if err := os.Unsetenv("GENTLE_AI_CHANNEL"); err != nil {
+	if err := os.Unsetenv("HGTRAN_AI_CHANNEL"); err != nil {
 		panic(err)
 	}
 
@@ -118,7 +118,7 @@ func TestRunStrategy_BetaGentleAISelfUpgradeUsesGoInstallMain(t *testing.T) {
 	r := update.UpdateResult{
 		Tool: update.ToolInfo{
 			Name:          "hgtran-ai",
-			Owner:         "Gentleman-Programming",
+			Owner:         "desarrollohg01",
 			Repo:          "hgtran-ai",
 			InstallMethod: update.InstallBinary,
 		},
@@ -307,7 +307,7 @@ func TestEffectiveMethodGentleAIOnWindowsUsesFailClosedBinaryPolicy(t *testing.T
 	// against the Go checksum database, since goInstallUpgrade does not touch
 	// cmd.Env — is the only automatic upgrade path Windows has.
 	t.Run("Go availability upgrades through a pinned go install", func(t *testing.T) {
-		tool := update.ToolInfo{Name: "hgtran-ai", InstallMethod: update.InstallBinary, GoImportPath: "github.com/Gentleman-Programming/hgtran-ai/v2/cmd/hgtran-ai"}
+		tool := update.ToolInfo{Name: "hgtran-ai", InstallMethod: update.InstallBinary, GoImportPath: "github.com/desarrollohg01/hgtran-ai/v2/cmd/hgtran-ai"}
 		profile := system.PlatformProfile{OS: "windows", PackageManager: "winget", GoAvailable: true}
 		method := effectiveMethod(tool, profile)
 		if method != update.InstallGoInstall {
@@ -334,7 +334,7 @@ func TestEffectiveMethod_NonGentleAIToolsOnWindowsUseBinary(t *testing.T) {
 		},
 		{
 			name: "gga uses script",
-			tool: update.ToolInfo{Name: "gga", InstallMethod: update.InstallScript},
+			tool: update.ToolInfo{Name: "hga", InstallMethod: update.InstallScript},
 			want: update.InstallScript,
 		},
 		{
@@ -377,14 +377,14 @@ func TestEffectiveMethod(t *testing.T) {
 		},
 		{
 			name:          "brew-owned package overrides binary",
-			tool:          update.ToolInfo{Name: "gga", InstallMethod: update.InstallBinary},
+			tool:          update.ToolInfo{Name: "hga", InstallMethod: update.InstallBinary},
 			profile:       system.PlatformProfile{PackageManager: "brew"},
 			brewInstalled: true,
 			want:          update.InstallBrew,
 		},
 		{
 			name:          "brew-owned package overrides script",
-			tool:          update.ToolInfo{Name: "gga", InstallMethod: update.InstallScript},
+			tool:          update.ToolInfo{Name: "hga", InstallMethod: update.InstallScript},
 			profile:       system.PlatformProfile{PackageManager: "brew"},
 			brewInstalled: true,
 			want:          update.InstallBrew,
@@ -409,13 +409,13 @@ func TestEffectiveMethod(t *testing.T) {
 		},
 		{
 			name:    "apt profile respects declared method (binary)",
-			tool:    update.ToolInfo{Name: "gga", InstallMethod: update.InstallBinary},
+			tool:    update.ToolInfo{Name: "hga", InstallMethod: update.InstallBinary},
 			profile: system.PlatformProfile{PackageManager: "apt"},
 			want:    update.InstallBinary,
 		},
 		{
 			name:    "apt profile respects declared method (script)",
-			tool:    update.ToolInfo{Name: "gga", InstallMethod: update.InstallScript},
+			tool:    update.ToolInfo{Name: "hga", InstallMethod: update.InstallScript},
 			profile: system.PlatformProfile{PackageManager: "apt"},
 			want:    update.InstallScript,
 		},
@@ -585,10 +585,10 @@ func TestRunStrategyOpenCodePluginUpgradesMaterializedPackage(t *testing.T) {
 		gotArgs = append([]string(nil), args...)
 		cmd := exec.Command(os.Args[0], "-test.run=TestOpenCodePluginUpgradeHelperProcess", "--")
 		cmd.Env = append(os.Environ(),
-			"GENTLE_AI_UPGRADE_HELPER=1",
-			"GENTLE_AI_UPGRADE_HELPER_CWD_FILE="+cwdFile,
-			"GENTLE_AI_UPGRADE_HELPER_MANIFEST_PATH="+filepath.Join(pkgDir, "package.json"),
-			"GENTLE_AI_UPGRADE_HELPER_MANIFEST_VERSION=0.2.0",
+			"HGTRAN_AI_UPGRADE_HELPER=1",
+			"HGTRAN_AI_UPGRADE_HELPER_CWD_FILE="+cwdFile,
+			"HGTRAN_AI_UPGRADE_HELPER_MANIFEST_PATH="+filepath.Join(pkgDir, "package.json"),
+			"HGTRAN_AI_UPGRADE_HELPER_MANIFEST_VERSION=0.2.0",
 		)
 		return cmd
 	}
@@ -1040,7 +1040,7 @@ func TestSelectOpenCodePackageManagerPrefersPackageMetadata(t *testing.T) {
 }
 
 func TestOpenCodePluginUpgradeHelperProcess(t *testing.T) {
-	if os.Getenv("GENTLE_AI_UPGRADE_HELPER") != "1" {
+	if os.Getenv("HGTRAN_AI_UPGRADE_HELPER") != "1" {
 		return
 	}
 	cwd, err := os.Getwd()
@@ -1048,12 +1048,12 @@ func TestOpenCodePluginUpgradeHelperProcess(t *testing.T) {
 		_, _ = os.Stderr.WriteString(err.Error())
 		os.Exit(2)
 	}
-	if err := os.WriteFile(os.Getenv("GENTLE_AI_UPGRADE_HELPER_CWD_FILE"), []byte(cwd), 0o644); err != nil {
+	if err := os.WriteFile(os.Getenv("HGTRAN_AI_UPGRADE_HELPER_CWD_FILE"), []byte(cwd), 0o644); err != nil {
 		_, _ = os.Stderr.WriteString(err.Error())
 		os.Exit(2)
 	}
-	if manifestPath := os.Getenv("GENTLE_AI_UPGRADE_HELPER_MANIFEST_PATH"); manifestPath != "" {
-		version := os.Getenv("GENTLE_AI_UPGRADE_HELPER_MANIFEST_VERSION")
+	if manifestPath := os.Getenv("HGTRAN_AI_UPGRADE_HELPER_MANIFEST_PATH"); manifestPath != "" {
+		version := os.Getenv("HGTRAN_AI_UPGRADE_HELPER_MANIFEST_VERSION")
 		if err := os.WriteFile(manifestPath, []byte(`{"version":"`+version+`"}`), 0o644); err != nil {
 			_, _ = os.Stderr.WriteString(err.Error())
 			os.Exit(2)
@@ -1156,7 +1156,7 @@ func TestBrewUpgrade_UpdateFailureIsNonFatal(t *testing.T) {
 // --- TestBrewUpgrade_TapsBeforeUpdateAndUpgrade ---
 
 // TestBrewUpgrade_TapsAndTrustsBeforeUpdateAndUpgrade verifies that brewUpgrade calls
-// `brew tap Gentleman-Programming/homebrew-tap` and scoped artifact trust BEFORE
+// `brew tap desarrollohg01/homebrew-tap` and scoped artifact trust BEFORE
 // `brew update` and `brew upgrade <toolName>`. This makes the upgrade idempotent
 // when a user has lost the tap and works with Homebrew tap trust enforcement.
 func TestBrewUpgrade_TapsAndTrustsBeforeUpdateAndUpgrade(t *testing.T) {
@@ -1189,14 +1189,14 @@ func TestBrewUpgrade_TapsAndTrustsBeforeUpdateAndUpgrade(t *testing.T) {
 	if calls[0].subcommand != "tap" {
 		t.Errorf("first brew call subcommand = %q, want %q", calls[0].subcommand, "tap")
 	}
-	if len(calls[0].args) != 1 || calls[0].args[0] != "Gentleman-Programming/homebrew-tap" {
-		t.Errorf("first brew call args = %v, want [Gentleman-Programming/homebrew-tap]", calls[0].args)
+	if len(calls[0].args) != 1 || calls[0].args[0] != "desarrollohg01/homebrew-tap" {
+		t.Errorf("first brew call args = %v, want [desarrollohg01/homebrew-tap]", calls[0].args)
 	}
 	if calls[1].subcommand != "trust" {
 		t.Errorf("second brew call = %q, want %q", calls[1].subcommand, "trust")
 	}
-	if len(calls[1].args) != 2 || calls[1].args[0] != "--cask" || calls[1].args[1] != "gentleman-programming/tap/engram" {
-		t.Errorf("second brew call args = %v, want [--cask gentleman-programming/tap/engram]", calls[1].args)
+	if len(calls[1].args) != 2 || calls[1].args[0] != "--cask" || calls[1].args[1] != "desarrollohg01/tap/engram" {
+		t.Errorf("second brew call args = %v, want [--cask desarrollohg01/tap/engram]", calls[1].args)
 	}
 	if calls[2].subcommand != "update" {
 		t.Errorf("third brew call = %q, want %q", calls[2].subcommand, "update")
@@ -1222,17 +1222,17 @@ func TestBrewUpgrade_FormulaToolUsesFormulaTrust(t *testing.T) {
 		t.Fatalf("brewUpgrade: unexpected error: %v", err)
 	}
 
-	if len(trustArgs) != 2 || trustArgs[0] != "--formula" || trustArgs[1] != "gentleman-programming/tap/hgtran-ai" {
-		t.Fatalf("brew trust args = %v, want [--formula gentleman-programming/tap/hgtran-ai]", trustArgs)
+	if len(trustArgs) != 2 || trustArgs[0] != "--formula" || trustArgs[1] != "desarrollohg01/tap/hgtran-ai" {
+		t.Fatalf("brew trust args = %v, want [--formula desarrollohg01/tap/hgtran-ai]", trustArgs)
 	}
 }
 
 func TestHomebrewFailureAdviceTapTrust(t *testing.T) {
-	output := `Error: Refusing to load formula gentleman-programming/tap/hgtran-ai from untrusted tap.
-Run brew trust --formula gentleman-programming/tap/hgtran-ai to trust it.`
+	output := `Error: Refusing to load formula desarrollohg01/tap/hgtran-ai from untrusted tap.
+Run brew trust --formula desarrollohg01/tap/hgtran-ai to trust it.`
 	advice := homebrewFailureAdvice("hgtran-ai", output)
 	for _, want := range []string{
-		"brew trust --formula gentleman-programming/tap/hgtran-ai",
+		"brew trust --formula desarrollohg01/tap/hgtran-ai",
 		"brew upgrade --formula hgtran-ai",
 	} {
 		if !strings.Contains(advice, want) {
@@ -1242,11 +1242,11 @@ Run brew trust --formula gentleman-programming/tap/hgtran-ai to trust it.`
 }
 
 func TestHomebrewFailureAdviceCaskTapTrust(t *testing.T) {
-	output := `Error: Refusing to load cask gentleman-programming/tap/engram from untrusted tap.
-Run brew trust --cask gentleman-programming/tap/engram to trust it.`
+	output := `Error: Refusing to load cask desarrollohg01/tap/engram from untrusted tap.
+Run brew trust --cask desarrollohg01/tap/engram to trust it.`
 	advice := homebrewFailureAdvice("engram", output)
 	for _, want := range []string{
-		"brew trust --cask gentleman-programming/tap/engram",
+		"brew trust --cask desarrollohg01/tap/engram",
 		"brew upgrade --cask engram",
 	} {
 		if !strings.Contains(advice, want) {
@@ -1351,9 +1351,9 @@ func TestRunStrategy_ScriptUpgradeSuccess(t *testing.T) {
 
 	r := update.UpdateResult{
 		Tool: update.ToolInfo{
-			Name:          "gga",
+			Name:          "hga",
 			Owner:         "Gentleman-Programming",
-			Repo:          "hgtran-guardian-angel",
+			Repo:          "gentleman-guardian-angel",
 			InstallMethod: update.InstallScript,
 		},
 		LatestVersion: "2.8.0",
@@ -1392,9 +1392,9 @@ func TestRunStrategy_ScriptUpgradeDownloadFailure(t *testing.T) {
 
 	r := update.UpdateResult{
 		Tool: update.ToolInfo{
-			Name:          "gga",
+			Name:          "hga",
 			Owner:         "Gentleman-Programming",
-			Repo:          "hgtran-guardian-angel",
+			Repo:          "gentleman-guardian-angel",
 			InstallMethod: update.InstallScript,
 		},
 		LatestVersion: "2.8.0",
@@ -1421,9 +1421,9 @@ func TestRunStrategy_ScriptUpgradeWindowsManualFallback(t *testing.T) {
 
 	r := update.UpdateResult{
 		Tool: update.ToolInfo{
-			Name:          "gga",
+			Name:          "hga",
 			Owner:         "Gentleman-Programming",
-			Repo:          "hgtran-guardian-angel",
+			Repo:          "gentleman-guardian-angel",
 			InstallMethod: update.InstallScript,
 		},
 		LatestVersion: "2.8.0",
@@ -1470,9 +1470,9 @@ func TestGGAScriptUpgradeUsesGitClone(t *testing.T) {
 
 	r := update.UpdateResult{
 		Tool: update.ToolInfo{
-			Name:          "gga",
+			Name:          "hga",
 			Owner:         "Gentleman-Programming",
-			Repo:          "hgtran-guardian-angel",
+			Repo:          "gentleman-guardian-angel",
 			InstallMethod: update.InstallScript,
 		},
 		LatestVersion: "2.8.0",
@@ -1498,7 +1498,7 @@ func TestGGAScriptUpgradeUsesGitClone(t *testing.T) {
 	foundRepoURL := false
 	foundTagRef := false
 	for _, a := range fetchArgs {
-		if containsAny(a, "hgtran-guardian-angel") {
+		if containsAny(a, "gentleman-guardian-angel") {
 			foundRepoURL = true
 		}
 		if a == "refs/tags/v2.8.0:refs/tags/v2.8.0" {
@@ -1506,7 +1506,7 @@ func TestGGAScriptUpgradeUsesGitClone(t *testing.T) {
 		}
 	}
 	if !foundRepoURL {
-		t.Errorf("git fetch args %v should include the repo URL (hgtran-guardian-angel)", fetchArgs)
+		t.Errorf("git fetch args %v should include the repo URL (gentleman-guardian-angel)", fetchArgs)
 	}
 	if !foundTagRef {
 		t.Errorf("git fetch args %v should include refs/tags/v2.8.0:refs/tags/v2.8.0 to pin to the release tag", fetchArgs)
@@ -1557,9 +1557,9 @@ func TestGGAScriptUpgradeWindowsManualFallback(t *testing.T) {
 
 	r := update.UpdateResult{
 		Tool: update.ToolInfo{
-			Name:          "gga",
+			Name:          "hga",
 			Owner:         "Gentleman-Programming",
-			Repo:          "hgtran-guardian-angel",
+			Repo:          "gentleman-guardian-angel",
 			InstallMethod: update.InstallScript,
 		},
 		LatestVersion: "2.8.0",
@@ -1605,9 +1605,9 @@ func TestRunStrategy_GGAUsesGitClone(t *testing.T) {
 
 	r := update.UpdateResult{
 		Tool: update.ToolInfo{
-			Name:          "gga",
+			Name:          "hga",
 			Owner:         "Gentleman-Programming",
-			Repo:          "hgtran-guardian-angel",
+			Repo:          "gentleman-guardian-angel",
 			InstallMethod: update.InstallScript,
 		},
 		LatestVersion: "2.8.0",
@@ -1643,9 +1643,9 @@ func TestInstallScriptURL(t *testing.T) {
 		{
 			name:        "pins to release tag",
 			owner:       "Gentleman-Programming",
-			repo:        "hgtran-guardian-angel",
+			repo:        "gentleman-guardian-angel",
 			version:     "1.31.0",
-			wantURL:     "https://raw.githubusercontent.com/Gentleman-Programming/hgtran-guardian-angel/v1.31.0/install.sh",
+			wantURL:     "https://raw.githubusercontent.com/Gentleman-Programming/gentleman-guardian-angel/v1.31.0/install.sh",
 			wantContain: "v1.31.0",
 		},
 		{
@@ -1821,9 +1821,9 @@ func TestRunStrategy_ScriptUpgradeExecFailure(t *testing.T) {
 
 	r := update.UpdateResult{
 		Tool: update.ToolInfo{
-			Name:          "gga",
+			Name:          "hga",
 			Owner:         "Gentleman-Programming",
-			Repo:          "hgtran-guardian-angel",
+			Repo:          "gentleman-guardian-angel",
 			InstallMethod: update.InstallScript,
 		},
 		LatestVersion: "2.8.0",
@@ -1839,7 +1839,7 @@ func TestRunStrategy_ScriptUpgradeExecFailure(t *testing.T) {
 // --- TestEngramBinaryUpgrade_ChannelRouting (Slice 3) ---
 
 // TestEngramBinaryUpgrade_StableChannelCallsDownloadFn verifies that when
-// GENTLE_AI_CHANNEL is unset or "stable", engramBinaryUpgrade delegates to
+// HGTRAN_AI_CHANNEL is unset or "stable", engramBinaryUpgrade delegates to
 // engramDownloadFn (the release-download path) and NOT go install @main.
 func TestEngramBinaryUpgrade_StableChannelCallsDownloadFn(t *testing.T) {
 	tests := []struct {
@@ -1852,7 +1852,7 @@ func TestEngramBinaryUpgrade_StableChannelCallsDownloadFn(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			t.Setenv("GENTLE_AI_CHANNEL", tt.envVal)
+			t.Setenv("HGTRAN_AI_CHANNEL", tt.envVal)
 
 			origDownloadFn := engramDownloadFn
 			origExecCommand := execCommand
@@ -1886,12 +1886,12 @@ func TestEngramBinaryUpgrade_StableChannelCallsDownloadFn(t *testing.T) {
 }
 
 // TestEngramBinaryUpgrade_BetaChannelUsesGoInstallMain verifies that when
-// GENTLE_AI_CHANNEL=beta, engramBinaryUpgrade delegates to
+// HGTRAN_AI_CHANNEL=beta, engramBinaryUpgrade delegates to
 // engramBetaInstallFn (the consolidated beta path, backed by
 // engram.DownloadLatestBinary(profile, true) in production). The stable
 // engramDownloadFn must NOT be called.
 func TestEngramBinaryUpgrade_BetaChannelUsesGoInstallMain(t *testing.T) {
-	t.Setenv("GENTLE_AI_CHANNEL", "beta")
+	t.Setenv("HGTRAN_AI_CHANNEL", "beta")
 
 	origDownloadFn := engramDownloadFn
 	origBetaFn := engramBetaInstallFn

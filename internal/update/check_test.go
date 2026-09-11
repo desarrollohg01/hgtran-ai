@@ -18,7 +18,7 @@ import (
 )
 
 func TestMain(m *testing.M) {
-	if err := os.Unsetenv("GENTLE_AI_CHANNEL"); err != nil {
+	if err := os.Unsetenv("HGTRAN_AI_CHANNEL"); err != nil {
 		panic(err)
 	}
 
@@ -72,7 +72,7 @@ func TestDetectInstalledVersion(t *testing.T) {
 		},
 		{
 			name: "gga not installed",
-			tool: ToolInfo{Name: "gga", DetectCmd: []string{"gga", "--version"}},
+			tool: ToolInfo{Name: "hga", DetectCmd: []string{"hga", "--version"}},
 			lookPathFn: func(string) (string, error) {
 				return "", fmt.Errorf("not found")
 			},
@@ -91,7 +91,7 @@ func TestDetectInstalledVersion(t *testing.T) {
 		},
 		{
 			name: "unparseable version output",
-			tool: ToolInfo{Name: "gga", DetectCmd: []string{"gga", "--version"}},
+			tool: ToolInfo{Name: "hga", DetectCmd: []string{"hga", "--version"}},
 			lookPathFn: func(string) (string, error) {
 				return "/usr/local/bin/gga", nil
 			},
@@ -323,7 +323,7 @@ func TestCheckSingleToolOpenCodePluginRegisteredNotMaterialized(t *testing.T) {
 }
 
 func TestCheckSingleToolGentleAIBetaComparesMainHead(t *testing.T) {
-	t.Setenv("GENTLE_AI_CHANNEL", "beta")
+	t.Setenv("HGTRAN_AI_CHANNEL", "beta")
 
 	origClient := httpClient
 	t.Cleanup(func() { httpClient = origClient })
@@ -331,10 +331,10 @@ func TestCheckSingleToolGentleAIBetaComparesMainHead(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		switch r.URL.Path {
-		case "/repos/Gentleman-Programming/hgtran-ai/releases/latest":
-			json.NewEncoder(w).Encode(githubRelease{TagName: "v1.40.3", HTMLURL: "https://github.com/Gentleman-Programming/hgtran-ai/releases/tag/v1.40.3"})
-		case "/repos/Gentleman-Programming/hgtran-ai/commits/main":
-			json.NewEncoder(w).Encode(githubCommit{SHA: "972997650b51abcdef0123456789abcdef012345", HTMLURL: "https://github.com/Gentleman-Programming/hgtran-ai/commit/972997650b51abcdef0123456789abcdef012345"})
+		case "/repos/desarrollohg01/hgtran-ai/releases/latest":
+			json.NewEncoder(w).Encode(githubRelease{TagName: "v1.40.3", HTMLURL: "https://github.com/desarrollohg01/hgtran-ai/releases/tag/v1.40.3"})
+		case "/repos/desarrollohg01/hgtran-ai/commits/main":
+			json.NewEncoder(w).Encode(githubCommit{SHA: "972997650b51abcdef0123456789abcdef012345", HTMLURL: "https://github.com/desarrollohg01/hgtran-ai/commit/972997650b51abcdef0123456789abcdef012345"})
 		default:
 			// Stray or misdirected request: reply 404 and let the test's
 			// main-goroutine assertions decide (see simulateStrayForeignRequest).
@@ -367,10 +367,10 @@ func TestCheckSingleToolGentleAIPseudoVersionComparesMainHeadWithoutChannel(t *t
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		switch r.URL.Path {
-		case "/repos/Gentleman-Programming/hgtran-ai/releases/latest":
-			json.NewEncoder(w).Encode(githubRelease{TagName: "v1.40.3", HTMLURL: "https://github.com/Gentleman-Programming/hgtran-ai/releases/tag/v1.40.3"})
-		case "/repos/Gentleman-Programming/hgtran-ai/commits/main":
-			json.NewEncoder(w).Encode(githubCommit{SHA: "b6872c69e3e4abcdef0123456789abcdef012345", HTMLURL: "https://github.com/Gentleman-Programming/hgtran-ai/commit/b6872c69e3e4abcdef0123456789abcdef012345"})
+		case "/repos/desarrollohg01/hgtran-ai/releases/latest":
+			json.NewEncoder(w).Encode(githubRelease{TagName: "v1.40.3", HTMLURL: "https://github.com/desarrollohg01/hgtran-ai/releases/tag/v1.40.3"})
+		case "/repos/desarrollohg01/hgtran-ai/commits/main":
+			json.NewEncoder(w).Encode(githubCommit{SHA: "b6872c69e3e4abcdef0123456789abcdef012345", HTMLURL: "https://github.com/desarrollohg01/hgtran-ai/commit/b6872c69e3e4abcdef0123456789abcdef012345"})
 		default:
 			// Stray or misdirected request: reply 404 and let the test's
 			// main-goroutine assertions decide (see simulateStrayForeignRequest).
@@ -446,7 +446,7 @@ func TestUsesBetaMainHeadCheck(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.channelSet {
-				t.Setenv("GENTLE_AI_CHANNEL", tt.channel)
+				t.Setenv("HGTRAN_AI_CHANNEL", tt.channel)
 			} else {
 				unsetUpdateChannelEnv(t)
 			}
@@ -469,9 +469,9 @@ func TestCheckSingleToolGentleAIStableVersionWithoutChannelComparesLatestRelease
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		switch r.URL.Path {
-		case "/repos/Gentleman-Programming/hgtran-ai/releases/latest":
-			json.NewEncoder(w).Encode(githubRelease{TagName: "v1.40.4", HTMLURL: "https://github.com/Gentleman-Programming/hgtran-ai/releases/tag/v1.40.4"})
-		case "/repos/Gentleman-Programming/hgtran-ai/commits/main":
+		case "/repos/desarrollohg01/hgtran-ai/releases/latest":
+			json.NewEncoder(w).Encode(githubRelease{TagName: "v1.40.4", HTMLURL: "https://github.com/desarrollohg01/hgtran-ai/releases/tag/v1.40.4"})
+		case "/repos/desarrollohg01/hgtran-ai/commits/main":
 			// Record the prohibited request; the assertion runs on the
 			// main goroutine after the check completes.
 			mainHeadRequested.Store(true)
@@ -499,13 +499,13 @@ func TestCheckSingleToolGentleAIStableVersionWithoutChannelComparesLatestRelease
 	if result.LatestVersion != "1.40.4" {
 		t.Fatalf("LatestVersion = %q, want 1.40.4", result.LatestVersion)
 	}
-	if result.ReleaseURL != "https://github.com/Gentleman-Programming/hgtran-ai/releases/tag/v1.40.4" {
+	if result.ReleaseURL != "https://github.com/desarrollohg01/hgtran-ai/releases/tag/v1.40.4" {
 		t.Fatalf("ReleaseURL = %q, want latest release URL", result.ReleaseURL)
 	}
 }
 
 func TestCheckSingleToolGentleAIBetaAcceptsLocalCommitPrefix(t *testing.T) {
-	t.Setenv("GENTLE_AI_CHANNEL", "beta")
+	t.Setenv("HGTRAN_AI_CHANNEL", "beta")
 
 	origClient := httpClient
 	t.Cleanup(func() { httpClient = origClient })
@@ -513,10 +513,10 @@ func TestCheckSingleToolGentleAIBetaAcceptsLocalCommitPrefix(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		switch r.URL.Path {
-		case "/repos/Gentleman-Programming/hgtran-ai/releases/latest":
-			json.NewEncoder(w).Encode(githubRelease{TagName: "v1.40.3", HTMLURL: "https://github.com/Gentleman-Programming/hgtran-ai/releases/tag/v1.40.3"})
-		case "/repos/Gentleman-Programming/hgtran-ai/commits/main":
-			json.NewEncoder(w).Encode(githubCommit{SHA: "6eff4a1ba110abcdef0123456789abcdef012345", HTMLURL: "https://github.com/Gentleman-Programming/hgtran-ai/commit/6eff4a1ba110abcdef0123456789abcdef012345"})
+		case "/repos/desarrollohg01/hgtran-ai/releases/latest":
+			json.NewEncoder(w).Encode(githubRelease{TagName: "v1.40.3", HTMLURL: "https://github.com/desarrollohg01/hgtran-ai/releases/tag/v1.40.3"})
+		case "/repos/desarrollohg01/hgtran-ai/commits/main":
+			json.NewEncoder(w).Encode(githubCommit{SHA: "6eff4a1ba110abcdef0123456789abcdef012345", HTMLURL: "https://github.com/desarrollohg01/hgtran-ai/commit/6eff4a1ba110abcdef0123456789abcdef012345"})
 		default:
 			// Stray or misdirected request: reply 404 and let the test's
 			// main-goroutine assertions decide (see simulateStrayForeignRequest).
@@ -555,9 +555,9 @@ func TestCheckSingleToolBrewOwnedGentleAIAdvertisesStableChannel(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		switch r.URL.Path {
-		case "/repos/Gentleman-Programming/hgtran-ai/releases/latest":
-			json.NewEncoder(w).Encode(githubRelease{TagName: "v1.40.4", HTMLURL: "https://github.com/Gentleman-Programming/hgtran-ai/releases/tag/v1.40.4"})
-		case "/repos/Gentleman-Programming/hgtran-ai/commits/main":
+		case "/repos/desarrollohg01/hgtran-ai/releases/latest":
+			json.NewEncoder(w).Encode(githubRelease{TagName: "v1.40.4", HTMLURL: "https://github.com/desarrollohg01/hgtran-ai/releases/tag/v1.40.4"})
+		case "/repos/desarrollohg01/hgtran-ai/commits/main":
 			// Record the prohibited request; the assertion runs on the
 			// main goroutine after the check completes.
 			mainHeadRequested.Store(true)
@@ -604,10 +604,10 @@ func TestCheckSingleToolGentleAIBetaHintNamesAdvertisedTarget(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		switch r.URL.Path {
-		case "/repos/Gentleman-Programming/hgtran-ai/releases/latest":
-			json.NewEncoder(w).Encode(githubRelease{TagName: "v1.40.3", HTMLURL: "https://github.com/Gentleman-Programming/hgtran-ai/releases/tag/v1.40.3"})
-		case "/repos/Gentleman-Programming/hgtran-ai/commits/main":
-			json.NewEncoder(w).Encode(githubCommit{SHA: "972997650b51abcdef0123456789abcdef012345", HTMLURL: "https://github.com/Gentleman-Programming/hgtran-ai/commit/972997650b51abcdef0123456789abcdef012345"})
+		case "/repos/desarrollohg01/hgtran-ai/releases/latest":
+			json.NewEncoder(w).Encode(githubRelease{TagName: "v1.40.3", HTMLURL: "https://github.com/desarrollohg01/hgtran-ai/releases/tag/v1.40.3"})
+		case "/repos/desarrollohg01/hgtran-ai/commits/main":
+			json.NewEncoder(w).Encode(githubCommit{SHA: "972997650b51abcdef0123456789abcdef012345", HTMLURL: "https://github.com/desarrollohg01/hgtran-ai/commit/972997650b51abcdef0123456789abcdef012345"})
 		default:
 			// Stray or misdirected request: reply 404 and let the test's
 			// main-goroutine assertions decide (see simulateStrayForeignRequest).
@@ -649,11 +649,11 @@ func TestCheckSingleToolGentleAIBetaNewerLocalPseudoVersionIsNotOffered(t *testi
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		switch r.URL.Path {
-		case "/repos/Gentleman-Programming/hgtran-ai/releases/latest":
-			json.NewEncoder(w).Encode(githubRelease{TagName: "v1.40.3", HTMLURL: "https://github.com/Gentleman-Programming/hgtran-ai/releases/tag/v1.40.3"})
-		case "/repos/Gentleman-Programming/hgtran-ai/commits/main":
+		case "/repos/desarrollohg01/hgtran-ai/releases/latest":
+			json.NewEncoder(w).Encode(githubRelease{TagName: "v1.40.3", HTMLURL: "https://github.com/desarrollohg01/hgtran-ai/releases/tag/v1.40.3"})
+		case "/repos/desarrollohg01/hgtran-ai/commits/main":
 			// Real API shape: the commit date rides inside commit.committer.date.
-			fmt.Fprint(w, `{"sha":"aaaabbbbcccc0123456789abcdef0123456789ab","html_url":"https://github.com/Gentleman-Programming/hgtran-ai/commit/aaaabbbbcccc0123456789abcdef0123456789ab","commit":{"committer":{"date":"2026-07-25T10:00:00Z"}}}`)
+			fmt.Fprint(w, `{"sha":"aaaabbbbcccc0123456789abcdef0123456789ab","html_url":"https://github.com/desarrollohg01/hgtran-ai/commit/aaaabbbbcccc0123456789abcdef0123456789ab","commit":{"committer":{"date":"2026-07-25T10:00:00Z"}}}`)
 		default:
 			// Stray or misdirected request: reply 404 and let the test's
 			// main-goroutine assertions decide (see simulateStrayForeignRequest).
@@ -684,10 +684,10 @@ func TestCheckSingleToolGentleAIBetaOlderLocalPseudoVersionStillOffered(t *testi
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		switch r.URL.Path {
-		case "/repos/Gentleman-Programming/hgtran-ai/releases/latest":
-			json.NewEncoder(w).Encode(githubRelease{TagName: "v1.40.3", HTMLURL: "https://github.com/Gentleman-Programming/hgtran-ai/releases/tag/v1.40.3"})
-		case "/repos/Gentleman-Programming/hgtran-ai/commits/main":
-			fmt.Fprint(w, `{"sha":"aaaabbbbcccc0123456789abcdef0123456789ab","html_url":"https://github.com/Gentleman-Programming/hgtran-ai/commit/aaaabbbbcccc0123456789abcdef0123456789ab","commit":{"committer":{"date":"2026-08-01T00:00:00Z"}}}`)
+		case "/repos/desarrollohg01/hgtran-ai/releases/latest":
+			json.NewEncoder(w).Encode(githubRelease{TagName: "v1.40.3", HTMLURL: "https://github.com/desarrollohg01/hgtran-ai/releases/tag/v1.40.3"})
+		case "/repos/desarrollohg01/hgtran-ai/commits/main":
+			fmt.Fprint(w, `{"sha":"aaaabbbbcccc0123456789abcdef0123456789ab","html_url":"https://github.com/desarrollohg01/hgtran-ai/commit/aaaabbbbcccc0123456789abcdef0123456789ab","commit":{"committer":{"date":"2026-08-01T00:00:00Z"}}}`)
 		default:
 			// Stray or misdirected request: reply 404 and let the test's
 			// main-goroutine assertions decide (see simulateStrayForeignRequest).
@@ -806,7 +806,7 @@ func TestFetchLatestRelease(t *testing.T) {
 func TestFetchLatestReleaseMatchingPatternSkipsPiChannel(t *testing.T) {
 	var serverURL string
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "/repos/Gentleman-Programming/engram/releases" || r.URL.Query().Get("per_page") != "100" {
+		if r.URL.Path != "/repos/desarrollohg01/engram/releases" || r.URL.Query().Get("per_page") != "100" {
 			// Stray or misdirected request: reply 404 and let the test's
 			// main-goroutine assertions decide (see simulateStrayForeignRequest).
 			http.NotFound(w, r)
@@ -815,13 +815,13 @@ func TestFetchLatestReleaseMatchingPatternSkipsPiChannel(t *testing.T) {
 		w.Header().Set("Content-Type", "application/json")
 		switch r.URL.Query().Get("page") {
 		case "":
-			w.Header().Set("Link", fmt.Sprintf(`<%s/repos/Gentleman-Programming/engram/releases?per_page=100&page=2>; rel="next"`, serverURL))
+			w.Header().Set("Link", fmt.Sprintf(`<%s/repos/desarrollohg01/engram/releases?per_page=100&page=2>; rel="next"`, serverURL))
 			json.NewEncoder(w).Encode([]githubRelease{
-				{TagName: "pi-v0.1.7", HTMLURL: "https://github.com/Gentleman-Programming/engram/releases/tag/pi-v0.1.7"},
+				{TagName: "pi-v0.1.7", HTMLURL: "https://github.com/desarrollohg01/engram/releases/tag/pi-v0.1.7"},
 			})
 		case "2":
 			json.NewEncoder(w).Encode([]githubRelease{
-				{TagName: "v1.15.13", HTMLURL: "https://github.com/Gentleman-Programming/engram/releases/tag/v1.15.13"},
+				{TagName: "v1.15.13", HTMLURL: "https://github.com/desarrollohg01/engram/releases/tag/v1.15.13"},
 			})
 		default:
 			http.NotFound(w, r)
@@ -837,7 +837,7 @@ func TestFetchLatestReleaseMatchingPatternSkipsPiChannel(t *testing.T) {
 
 	simulateStrayForeignRequest(t, server)
 
-	release, err := fetchLatestReleaseMatchingPattern(context.Background(), "Gentleman-Programming", "engram", `^v[0-9]+\.[0-9]+\.[0-9]+$`)
+	release, err := fetchLatestReleaseMatchingPattern(context.Background(), "desarrollohg01", "engram", `^v[0-9]+\.[0-9]+\.[0-9]+$`)
 	if err != nil {
 		t.Fatalf("fetchLatestReleaseMatchingPattern() error = %v", err)
 	}
@@ -850,7 +850,7 @@ func TestFetchLatestReleaseMatchingPatternRejectsPaginationLoop(t *testing.T) {
 	var serverURL string
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Header().Set("Link", fmt.Sprintf(`<%s/repos/Gentleman-Programming/engram/releases?per_page=100>; rel="next"`, serverURL))
+		w.Header().Set("Link", fmt.Sprintf(`<%s/repos/desarrollohg01/engram/releases?per_page=100>; rel="next"`, serverURL))
 		json.NewEncoder(w).Encode([]githubRelease{{TagName: "pi-v0.1.7"}})
 	}))
 	serverURL = server.URL
@@ -861,7 +861,7 @@ func TestFetchLatestReleaseMatchingPatternRejectsPaginationLoop(t *testing.T) {
 	httpClient = server.Client()
 	httpClient.Transport = &testTransport{server: server}
 
-	_, err := fetchLatestReleaseMatchingPattern(context.Background(), "Gentleman-Programming", "engram", `^v[0-9]+\.[0-9]+\.[0-9]+$`)
+	_, err := fetchLatestReleaseMatchingPattern(context.Background(), "desarrollohg01", "engram", `^v[0-9]+\.[0-9]+\.[0-9]+$`)
 	if err == nil || !strings.Contains(err.Error(), "pagination loop detected") {
 		t.Fatalf("expected pagination loop error, got %v", err)
 	}
@@ -979,15 +979,15 @@ func TestCheckAll(t *testing.T) {
 		var release githubRelease
 		switch {
 		case contains(path, "hgtran-ai"):
-			release = githubRelease{TagName: "v1.5.0", HTMLURL: "https://github.com/Gentleman-Programming/hgtran-ai/releases/tag/v1.5.0"}
+			release = githubRelease{TagName: "v1.5.0", HTMLURL: "https://github.com/desarrollohg01/hgtran-ai/releases/tag/v1.5.0"}
 		case contains(path, "hgtran-guardian-angel"):
-			release = githubRelease{TagName: "v2.0.0", HTMLURL: "https://github.com/Gentleman-Programming/hgtran-guardian-angel/releases/tag/v2.0.0"}
+			release = githubRelease{TagName: "v2.0.0", HTMLURL: "https://github.com/Gentleman-Programming/gentleman-guardian-angel/releases/tag/v2.0.0"}
 		case contains(path, "sub-agent-statusline"):
 			release = githubRelease{TagName: "v0.4.0", HTMLURL: "https://github.com/Joaquinvesapa/sub-agent-statusline/releases/tag/v0.4.0"}
 		case contains(path, "sdd-engram-plugin"):
 			release = githubRelease{TagName: "v1.1.7", HTMLURL: "https://github.com/j0k3r-dev-rgl/sdd-engram-plugin/releases/tag/v1.1.7"}
 		case contains(path, "engram"):
-			release = githubRelease{TagName: "v0.4.0", HTMLURL: "https://github.com/Gentleman-Programming/engram/releases/tag/v0.4.0"}
+			release = githubRelease{TagName: "v0.4.0", HTMLURL: "https://github.com/desarrollohg01/engram/releases/tag/v0.4.0"}
 		}
 		json.NewEncoder(w).Encode(release)
 	}))
@@ -1012,7 +1012,7 @@ func TestCheckAll(t *testing.T) {
 		switch name {
 		case "engram":
 			return "/usr/local/bin/engram", nil
-		case "gga":
+		case "hga":
 			return "", fmt.Errorf("not found")
 		default:
 			return "", fmt.Errorf("not found")
@@ -1041,7 +1041,7 @@ func TestCheckAll(t *testing.T) {
 	assertResult(t, results[1], "engram", UpdateAvailable, "0.3.2", "0.4.0")
 
 	// gga: not installed
-	assertResult(t, results[2], "gga", NotInstalled, "", "2.0.0")
+	assertResult(t, results[2], "hga", NotInstalled, "", "2.0.0")
 	assertResult(t, results[3], "opencode-subagent-statusline", NotInstalled, "", "0.4.0")
 	assertResult(t, results[4], "opencode-sdd-engram-manage", NotInstalled, "", "1.1.7")
 }
@@ -1051,10 +1051,10 @@ func TestCheckSingleTool_EngramUsesBinaryReleaseChannel(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		switch r.URL.Path {
-		case "/repos/Gentleman-Programming/engram/releases":
+		case "/repos/desarrollohg01/engram/releases":
 			json.NewEncoder(w).Encode([]githubRelease{
-				{TagName: "pi-v0.1.7", HTMLURL: "https://github.com/Gentleman-Programming/engram/releases/tag/pi-v0.1.7"},
-				{TagName: "v1.15.13", HTMLURL: "https://github.com/Gentleman-Programming/engram/releases/tag/v1.15.13"},
+				{TagName: "pi-v0.1.7", HTMLURL: "https://github.com/desarrollohg01/engram/releases/tag/pi-v0.1.7"},
+				{TagName: "v1.15.13", HTMLURL: "https://github.com/desarrollohg01/engram/releases/tag/v1.15.13"},
 			})
 		default:
 			// Stray or misdirected request: reply 404 and let the test's
@@ -1090,7 +1090,7 @@ func TestCheckSingleTool_EngramUsesBinaryReleaseChannel(t *testing.T) {
 
 	result := checkSingleTool(context.Background(), Tools[1], "dev", system.PlatformProfile{OS: "darwin", PackageManager: "brew", Supported: true})
 	assertResult(t, result, "engram", UpToDate, "1.15.13", "1.15.13")
-	if result.ReleaseURL != "https://github.com/Gentleman-Programming/engram/releases/tag/v1.15.13" {
+	if result.ReleaseURL != "https://github.com/desarrollohg01/engram/releases/tag/v1.15.13" {
 		t.Fatalf("ReleaseURL = %q, want binary channel release", result.ReleaseURL)
 	}
 }
@@ -1211,7 +1211,7 @@ func TestUpdateHint(t *testing.T) {
 			name:    "hgtran-ai linux",
 			tool:    ToolInfo{Name: "hgtran-ai"},
 			profile: system.PlatformProfile{OS: "linux", PackageManager: "apt"},
-			want:    "curl -fsSL https://raw.githubusercontent.com/Gentleman-Programming/hgtran-ai/main/scripts/install.sh | bash",
+			want:    "curl -fsSL https://raw.githubusercontent.com/desarrollohg01/hgtran-ai/main/scripts/install.sh | bash",
 		},
 		{
 			name:    "hgtran-ai windows",
@@ -1246,22 +1246,22 @@ func TestUpdateHint(t *testing.T) {
 		},
 		{
 			name:          "gga macOS brew-owned",
-			tool:          ToolInfo{Name: "gga"},
+			tool:          ToolInfo{Name: "hga"},
 			profile:       system.PlatformProfile{OS: "darwin", PackageManager: "brew"},
 			brewInstalled: true,
 			want:          "brew upgrade gga",
 		},
 		{
 			name:    "gga macOS non-brew",
-			tool:    ToolInfo{Name: "gga"},
+			tool:    ToolInfo{Name: "hga"},
 			profile: system.PlatformProfile{OS: "darwin", PackageManager: "brew"},
-			want:    "See https://github.com/Gentleman-Programming/hgtran-guardian-angel",
+			want:    "See https://github.com/Gentleman-Programming/gentleman-guardian-angel",
 		},
 		{
 			name:    "gga linux",
-			tool:    ToolInfo{Name: "gga"},
+			tool:    ToolInfo{Name: "hga"},
 			profile: system.PlatformProfile{OS: "linux", PackageManager: "apt"},
-			want:    "See https://github.com/Gentleman-Programming/hgtran-guardian-angel",
+			want:    "See https://github.com/Gentleman-Programming/gentleman-guardian-angel",
 		},
 		{
 			name:    "unknown tool",
@@ -1454,9 +1454,9 @@ func TestRegistryContents(t *testing.T) {
 		owner string
 		repo  string
 	}{
-		"hgtran-ai":                    {owner: "Gentleman-Programming", repo: "hgtran-ai"},
-		"engram":                       {owner: "Gentleman-Programming", repo: "engram"},
-		"gga":                          {owner: "Gentleman-Programming", repo: "hgtran-guardian-angel"},
+		"hgtran-ai":                    {owner: "desarrollohg01", repo: "hgtran-ai"},
+		"engram":                       {owner: "desarrollohg01", repo: "engram"},
+		"hga":                          {owner: "desarrollohg01", repo: "hgtran-guardian-angel"},
 		"opencode-subagent-statusline": {owner: "Joaquinvesapa", repo: "sub-agent-statusline"},
 		"opencode-sdd-engram-manage":   {owner: "j0k3r-dev-rgl", repo: "sdd-engram-plugin"},
 	}
@@ -1962,8 +1962,8 @@ func TestDetectInstalledVersionPs1FallbackInvokesViaPowershell(t *testing.T) {
 	}
 
 	tool := ToolInfo{
-		Name:      "gga",
-		DetectCmd: []string{"gga", "--version"},
+		Name:      "hga",
+		DetectCmd: []string{"hga", "--version"},
 		FallbackPaths: func(homeDir, localAppData string) []string {
 			return []string{ps1Path}
 		},
@@ -2029,19 +2029,19 @@ func TestDetectInstalledVersionPs1FallbackInvokesViaPowershell(t *testing.T) {
 func unsetUpdateChannelEnv(t *testing.T) {
 	t.Helper()
 
-	oldValue, hadValue := os.LookupEnv("GENTLE_AI_CHANNEL")
-	if err := os.Unsetenv("GENTLE_AI_CHANNEL"); err != nil {
-		t.Fatalf("unset GENTLE_AI_CHANNEL: %v", err)
+	oldValue, hadValue := os.LookupEnv("HGTRAN_AI_CHANNEL")
+	if err := os.Unsetenv("HGTRAN_AI_CHANNEL"); err != nil {
+		t.Fatalf("unset HGTRAN_AI_CHANNEL: %v", err)
 	}
 	t.Cleanup(func() {
 		if hadValue {
-			if err := os.Setenv("GENTLE_AI_CHANNEL", oldValue); err != nil {
-				t.Fatalf("restore GENTLE_AI_CHANNEL: %v", err)
+			if err := os.Setenv("HGTRAN_AI_CHANNEL", oldValue); err != nil {
+				t.Fatalf("restore HGTRAN_AI_CHANNEL: %v", err)
 			}
 			return
 		}
-		if err := os.Unsetenv("GENTLE_AI_CHANNEL"); err != nil {
-			t.Fatalf("restore unset GENTLE_AI_CHANNEL: %v", err)
+		if err := os.Unsetenv("HGTRAN_AI_CHANNEL"); err != nil {
+			t.Fatalf("restore unset HGTRAN_AI_CHANNEL: %v", err)
 		}
 	})
 }

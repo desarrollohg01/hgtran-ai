@@ -24,7 +24,7 @@ const (
 	openCodeReviewTransportSchema          = reviewerprovider.TransportCapability
 	openCodeTaskHostOutputLimit            = reviewResultArtifactLimit + 8<<10
 	openCodeTransportEnvelopeMaxBytes      = reviewResultArtifactLimit*2 + 8<<10
-	openCodeTransportMaterializationHeader = "GENTLE_AI_REVIEW_PROVIDER_MATERIALIZATION"
+	openCodeTransportMaterializationHeader = "HGTRAN_AI_REVIEW_PROVIDER_MATERIALIZATION"
 )
 
 // openCodeTransportEnvelope is the strict bidirectional wire protocol shared

@@ -60,7 +60,7 @@ func TestOpenCodeReviewTransportPluginStripsAmbientSystemOnlyForRegisteredReview
 const hooks = await plugin({ directory: process.cwd(), worktree: process.cwd() })
 const transform = hooks["experimental.chat.system.transform"]
 if (typeof transform !== "function") throw new Error("review transport must install a system transform")
-const sentinels = ["GENTLE_AI_AMBIENT_AGENT", "GENTLE_AI_AMBIENT_PROJECT", "GENTLE_AI_AMBIENT_SKILL"]
+const sentinels = ["HGTRAN_AI_AMBIENT_AGENT", "HGTRAN_AI_AMBIENT_PROJECT", "HGTRAN_AI_AMBIENT_SKILL"]
 const unchanged = (name, system) => {
   if (JSON.stringify(system) !== JSON.stringify(sentinels)) throw new Error(name + " session system was changed: " + JSON.stringify(system))
 }
@@ -125,7 +125,7 @@ console.log(JSON.stringify({ runtimeAgentSystem, legacyTitleSystem, ordinaryAgen
 		}
 	}
 	for _, system := range [][]string{result.OrdinaryAgentSystem, result.PartialTitleSystem, result.MalformedSystem, result.UndefinedSessionIDSystem, result.DeletedSystem, result.DisposedSystem} {
-		if got, want := strings.Join(system, ","), "GENTLE_AI_AMBIENT_AGENT,GENTLE_AI_AMBIENT_PROJECT,GENTLE_AI_AMBIENT_SKILL"; got != want {
+		if got, want := strings.Join(system, ","), "HGTRAN_AI_AMBIENT_AGENT,HGTRAN_AI_AMBIENT_PROJECT,HGTRAN_AI_AMBIENT_SKILL"; got != want {
 			t.Fatalf("non-review or cleaned-up system = %#v, want ambient system unchanged", system)
 		}
 	}
@@ -239,10 +239,10 @@ console.log(JSON.stringify({ refused, output: after.output }))
 // one completion frame with a captured result, logging both inbound frames.
 const posixRelayFixture = `#!/bin/sh
 IFS= read -r start
-printf '%s\n' "$start" >> "$GENTLE_AI_RELAY_LOG"
+printf '%s\n' "$start" >> "$HGTRAN_AI_RELAY_LOG"
 printf '%s\n' '{"schema":"hgtran-ai.provider-transport/v1","operation":"prompt","nonce":"nonce","prompt":"Go-materialized immutable prompt"}'
 IFS= read -r complete
-printf '%s\n' "$complete" >> "$GENTLE_AI_RELAY_LOG"
+printf '%s\n' "$complete" >> "$HGTRAN_AI_RELAY_LOG"
 printf '%s\n' '{"schema":"hgtran-ai.provider-transport/v1","operation":"result","output":"captured"}'
 `
 
@@ -441,7 +441,7 @@ export default legacyPlugin
 import legacy from "./legacy.mts"
 
 const original = "Go must receive this original host prompt"
-const materialized = "GENTLE_AI_REVIEW_PROVIDER_MATERIALIZATION {\"task_prompt\":\"Go must receive this original host prompt\"}\nGo-materialized immutable prompt"
+const materialized = "HGTRAN_AI_REVIEW_PROVIDER_MATERIALIZATION {\"task_prompt\":\"Go must receive this original host prompt\"}\nGo-materialized immutable prompt"
 const currentHooks = await current({ directory: process.cwd(), worktree: process.cwd() })
 const legacyHooks = await legacy({ directory: process.cwd(), worktree: process.cwd() })
 const before = async (hooks, callID, task) => hooks["tool.execute.before"]({ tool: "task", sessionID: "session", callID }, task)
@@ -473,7 +473,7 @@ console.log(JSON.stringify({ ok: true }))
 	const relay = `#!/usr/bin/env node
 import { appendFileSync } from "node:fs"
 import { createInterface } from "node:readline"
-const materializationHeader = "GENTLE_AI_REVIEW_PROVIDER_MATERIALIZATION "
+const materializationHeader = "HGTRAN_AI_REVIEW_PROVIDER_MATERIALIZATION "
 let start
 const lines = createInterface({ input: process.stdin })
 lines.on("line", (line) => {
@@ -485,7 +485,7 @@ lines.on("line", (line) => {
     return
   }
   const secondary = start.prompt.startsWith(materializationHeader)
-  appendFileSync(process.env.GENTLE_AI_RELAY_LOG, JSON.stringify({ secondary, output: frame.output }) + "\n")
+  appendFileSync(process.env.HGTRAN_AI_RELAY_LOG, JSON.stringify({ secondary, output: frame.output }) + "\n")
   const output = secondary ? frame.output : "captured"
   process.stdout.write(JSON.stringify({ schema: "hgtran-ai.provider-transport/v1", operation: "result", output }) + "\n")
 })
@@ -536,7 +536,7 @@ func runOpenCodeTransportPluginHarness(t *testing.T, modules map[string]string, 
 	logPath := filepath.Join(root, "relay.log")
 	command := exec.Command(node, "harness.mts")
 	command.Dir = root
-	command.Env = append(os.Environ(), "PATH="+bin+string(os.PathListSeparator)+os.Getenv("PATH"), "GENTLE_AI_RELAY_LOG="+logPath)
+	command.Env = append(os.Environ(), "PATH="+bin+string(os.PathListSeparator)+os.Getenv("PATH"), "HGTRAN_AI_RELAY_LOG="+logPath)
 	output, err := command.CombinedOutput()
 	if err != nil {
 		t.Fatalf("transport plugin harness failed: %v\n%s", err, output)

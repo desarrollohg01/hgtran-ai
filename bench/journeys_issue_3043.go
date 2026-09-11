@@ -68,7 +68,7 @@ func issue3043Journeys() []Journey {
 		ID:     "j3043-opencode-managed-background-activation",
 		Review: reviewUntouched,
 		Title:  "OpenCode background subagents activate through a managed launcher",
-		Source: "https://github.com/Gentleman-Programming/hgtran-ai/issues/3043",
+		Source: "https://github.com/Gentleman-Programming/gentle-ai/issues/3043",
 		Steps: []Step{
 			{Name: "fixture: isolated OpenCode runtime", Fixture: issue3043OpenCodeRuntime},
 			{Name: "install reports managed activation", Args: issue3043InstallArgs, After: issue3043VerifyInstall},

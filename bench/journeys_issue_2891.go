@@ -116,7 +116,7 @@ func issue2891Journeys() []Journey {
 		ID:     "j96-sdd-same-parent-repository-edit-authority",
 		Review: reviewOptedIn,
 		Title:  "Nested planning workspace blocks a sibling directory in the same Git repository",
-		Source: "https://github.com/Gentleman-Programming/hgtran-ai/issues/2891",
+		Source: "https://github.com/Gentleman-Programming/gentle-ai/issues/2891",
 		Steps: []Step{
 			{Name: "fixture: nested planning workspace and sibling service share one Git root", Fixture: issue2891SameParentRepository},
 			{Name: "sdd-status blocks the unauthorized same-parent target", Requires: sddStatusCapability,

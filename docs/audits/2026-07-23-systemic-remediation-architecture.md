@@ -821,22 +821,22 @@ The validator identified 16 PRs that must be decomposed because they exceed a di
 
 | PR | Author | Required treatment |
 |---:|---|---|
-| [#731](https://github.com/Gentleman-Programming/hgtran-ai/pull/731) | @Snakeblack | Extract VS Code model-assignment descriptor and tests; close cumulative slice after mapping. |
-| [#738](https://github.com/Gentleman-Programming/hgtran-ai/pull/738) | @Snakeblack | Split capability projection from managed mutation and installation safety. |
-| [#740](https://github.com/Gentleman-Programming/hgtran-ai/pull/740) | @Snakeblack | Separate model flow, UI, docs, and earlier VS Code chain content. |
-| [#765](https://github.com/Gentleman-Programming/hgtran-ai/pull/765) | @Alan-TheGentleman | Split Termux host capability, install strategy, and platform acceptance. |
-| [#840](https://github.com/Gentleman-Programming/hgtran-ai/pull/840) | @salema97 | Extract Kimi variant/target descriptor; exclude global update behavior. |
-| [#852](https://github.com/Gentleman-Programming/hgtran-ai/pull/852) | @statick88 | Extract Kilo capabilities/assets; do not ship provider-specific SDD orchestration. |
-| [#946](https://github.com/Gentleman-Programming/hgtran-ai/pull/946) | @mauricioalfarodev | Split provider source, model catalog, and resource reconciliation. |
-| [#973](https://github.com/Gentleman-Programming/hgtran-ai/pull/973) | @decode2 | Extract editing UX from mutation/snapshot/ownership engine work. |
-| [#976](https://github.com/Gentleman-Programming/hgtran-ai/pull/976) | @decode2 | Separate curated-registry ingestion from managed persistence. |
-| [#1059](https://github.com/Gentleman-Programming/hgtran-ai/pull/1059) | @aleka | Recast CodeGraph as the first reconciler-backed extension; split install runtime. |
-| [#1280](https://github.com/Gentleman-Programming/hgtran-ai/pull/1280) | @pablon | Extract JSONC/provider/model fixtures into the catalog source seam. |
-| [#1297](https://github.com/Gentleman-Programming/hgtran-ai/pull/1297) | @salema97 | Separate runtime provenance from the repository-wide `/v2` release migration. |
-| [#1359](https://github.com/Gentleman-Programming/hgtran-ai/pull/1359) | @Sitray | Split shared-skill convergence, backup/rollback, and containment tests. |
-| [#1608](https://github.com/Gentleman-Programming/hgtran-ai/pull/1608) | @ardelperal | Extract lifecycle probe/diagnostic fixtures; drop dormant threshold and planning payload. |
-| [#1713](https://github.com/Gentleman-Programming/hgtran-ai/pull/1713) | @pablontiv | Split persona projection from migration and transaction-backed writes. |
-| [#1749](https://github.com/Gentleman-Programming/hgtran-ai/pull/1749) | @pablontiv | Extract language-contract assets/compiler tests; route writes through reconciliation. |
+| [#731](https://github.com/desarrollohg01/hgtran-ai/pull/731) | @Snakeblack | Extract VS Code model-assignment descriptor and tests; close cumulative slice after mapping. |
+| [#738](https://github.com/desarrollohg01/hgtran-ai/pull/738) | @Snakeblack | Split capability projection from managed mutation and installation safety. |
+| [#740](https://github.com/desarrollohg01/hgtran-ai/pull/740) | @Snakeblack | Separate model flow, UI, docs, and earlier VS Code chain content. |
+| [#765](https://github.com/desarrollohg01/hgtran-ai/pull/765) | @Alan-TheGentleman | Split Termux host capability, install strategy, and platform acceptance. |
+| [#840](https://github.com/desarrollohg01/hgtran-ai/pull/840) | @salema97 | Extract Kimi variant/target descriptor; exclude global update behavior. |
+| [#852](https://github.com/desarrollohg01/hgtran-ai/pull/852) | @statick88 | Extract Kilo capabilities/assets; do not ship provider-specific SDD orchestration. |
+| [#946](https://github.com/desarrollohg01/hgtran-ai/pull/946) | @mauricioalfarodev | Split provider source, model catalog, and resource reconciliation. |
+| [#973](https://github.com/desarrollohg01/hgtran-ai/pull/973) | @decode2 | Extract editing UX from mutation/snapshot/ownership engine work. |
+| [#976](https://github.com/desarrollohg01/hgtran-ai/pull/976) | @decode2 | Separate curated-registry ingestion from managed persistence. |
+| [#1059](https://github.com/desarrollohg01/hgtran-ai/pull/1059) | @aleka | Recast CodeGraph as the first reconciler-backed extension; split install runtime. |
+| [#1280](https://github.com/desarrollohg01/hgtran-ai/pull/1280) | @pablon | Extract JSONC/provider/model fixtures into the catalog source seam. |
+| [#1297](https://github.com/desarrollohg01/hgtran-ai/pull/1297) | @salema97 | Separate runtime provenance from the repository-wide `/v2` release migration. |
+| [#1359](https://github.com/desarrollohg01/hgtran-ai/pull/1359) | @Sitray | Split shared-skill convergence, backup/rollback, and containment tests. |
+| [#1608](https://github.com/desarrollohg01/hgtran-ai/pull/1608) | @ardelperal | Extract lifecycle probe/diagnostic fixtures; drop dormant threshold and planning payload. |
+| [#1713](https://github.com/desarrollohg01/hgtran-ai/pull/1713) | @pablontiv | Split persona projection from migration and transaction-backed writes. |
+| [#1749](https://github.com/desarrollohg01/hgtran-ai/pull/1749) | @pablontiv | Extract language-contract assets/compiler tests; route writes through reconciliation. |
 
 ### 10.3 Snapshot carrier posture
 
@@ -999,7 +999,7 @@ Live notes:
 
 ## Appendix B. Complete snapshot ledger
 
-Numbers in the issue table refer to `Gentleman-Programming/hgtran-ai` issues; numbers in the PR table refer to pull requests in the same repository. Each snapshot item appears exactly once in its table.
+Numbers in the issue table refer to `desarrollohg01/hgtran-ai` issues; numbers in the PR table refer to pull requests in the same repository. Each snapshot item appears exactly once in its table.
 
 ### B.1 Issues — 241/241
 

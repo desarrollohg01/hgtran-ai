@@ -279,7 +279,7 @@ func TestFindBinaryInTar(t *testing.T) {
 		content []byte
 	}{
 		{"README.md", []byte("readme content")},
-		{"gentle-ai_1.5.0_darwin_arm64/hgtran-ai", content}, // binary in subdir
+		{"hgtran-ai_1.5.0_darwin_arm64/hgtran-ai", content}, // binary in subdir
 	}
 
 	for _, e := range entries {
@@ -320,8 +320,8 @@ func TestFindBinaryInTar(t *testing.T) {
 func TestExpectedChecksumFor(t *testing.T) {
 	firstDigest := strings.Repeat("a", sha256.Size*2)
 	secondDigest := strings.Repeat("b", sha256.Size*2)
-	content := firstDigest + "  gentle-ai_1.0.0_darwin_arm64.tar.gz\n" +
-		secondDigest + "  gentle-ai_1.0.0_linux_amd64.tar.gz\n"
+	content := firstDigest + "  hgtran-ai_1.0.0_darwin_arm64.tar.gz\n" +
+		secondDigest + "  hgtran-ai_1.0.0_linux_amd64.tar.gz\n"
 
 	tests := []struct {
 		name     string
@@ -333,25 +333,25 @@ func TestExpectedChecksumFor(t *testing.T) {
 		{
 			name:     "found first entry",
 			content:  content,
-			filename: "gentle-ai_1.0.0_darwin_arm64.tar.gz",
+			filename: "hgtran-ai_1.0.0_darwin_arm64.tar.gz",
 			want:     firstDigest,
 		},
 		{
 			name:     "found second entry",
 			content:  content,
-			filename: "gentle-ai_1.0.0_linux_amd64.tar.gz",
+			filename: "hgtran-ai_1.0.0_linux_amd64.tar.gz",
 			want:     secondDigest,
 		},
 		{
 			name:     "not found returns error",
 			content:  content,
-			filename: "gentle-ai_1.0.0_windows_amd64.zip",
+			filename: "hgtran-ai_1.0.0_windows_amd64.zip",
 			wantErr:  true,
 		},
 		{
 			name:     "empty content returns error",
 			content:  "",
-			filename: "gentle-ai_1.0.0_darwin_arm64.tar.gz",
+			filename: "hgtran-ai_1.0.0_darwin_arm64.tar.gz",
 			wantErr:  true,
 		},
 	}
@@ -372,7 +372,7 @@ func TestExpectedChecksumFor(t *testing.T) {
 // --- TestFetchChecksums ---
 
 func TestFetchChecksums(t *testing.T) {
-	const fakeContent = "abc123  gentle-ai_1.0.0_darwin_arm64.tar.gz\n"
+	const fakeContent = "abc123  hgtran-ai_1.0.0_darwin_arm64.tar.gz\n"
 
 	t.Run("success returns content", func(t *testing.T) {
 		server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

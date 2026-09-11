@@ -45,7 +45,7 @@ import (
 // TestRunInstallRefusesMissingKimiRegardlessOfUVPresence for that opposite,
 // deliberately-kept case.
 func TestMain(m *testing.M) {
-	if err := os.Unsetenv("GENTLE_AI_CHANNEL"); err != nil {
+	if err := os.Unsetenv("HGTRAN_AI_CHANNEL"); err != nil {
 		panic(err)
 	}
 	testHome, err := os.MkdirTemp("", "hgtran-ai-cli-test-home-*")

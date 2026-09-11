@@ -82,7 +82,7 @@ The provider contract is shared by Claude Code, OpenCode, Codex, and Pi. Go deri
 
 Each provider-issued capture input is one slot. Its reviewer prompt starts with `HGTRAN_AI_REVIEW_BINDING ` followed by one-line binding JSON. A result echoes the exact `subject_hash`, reports completed inspection of the full manifest, and supplies structured findings/evidence. On malformed, incomplete, or unavailable inspection, query bound STATUS again; relaunch only when it reoffers the exact same slot.
 
-Reviewers inspect only provider-bound immutable trees. They never inspect the live worktree, index, `HEAD`, or another revision, and candidate bytes must not move through `/tmp`, a repository scratch file, or `GENTLE_AI_FROZEN_CANDIDATE_CONTEXT`.
+Reviewers inspect only provider-bound immutable trees. They never inspect the live worktree, index, `HEAD`, or another revision, and candidate bytes must not move through `/tmp`, a repository scratch file, or `HGTRAN_AI_FROZEN_CANDIDATE_CONTEXT`.
 
 ## Corrections and consent
 
@@ -115,7 +115,7 @@ A `stop` carries one reason code and no executable transition. The table below i
 | --- | --- |
 | `captured_artifacts_unverifiable` | Terminal — a captured reviewer artifact failed local verification. Ask a maintainer to inspect the B authority, or run `hgtran-ai review mode disable --scope clone --cwd <repo>`. |
 | `captured_result_selection_unavailable` | Terminal — an internal result-selection invariant failed. Ask a maintainer to inspect the lineage, or run `hgtran-ai review mode disable --scope clone --cwd <repo>`. |
-| `corrected_candidate_unavailable` | Change the correction candidate in B, then re-query `hgtran-ai review status --cwd <repo> --contract hgtran-ai.review-integration/v2 --agent {{GENTLE_AI_RUNTIME_AGENT_ID}} --next-transition` with the captured lineage and target. Do not reuse the pre-correction target. |
+| `corrected_candidate_unavailable` | Change the correction candidate in B, then re-query `hgtran-ai review status --cwd <repo> --contract hgtran-ai.review-integration/v2 --agent {{HGTRAN_AI_RUNTIME_AGENT_ID}} --next-transition` with the captured lineage and target. Do not reuse the pre-correction target. |
 | `empty_base_diff_bootstrap_required` | Terminal — the committed base has no reviewable paths. Use the separately authorized empty-root bootstrap for a new target, or run `hgtran-ai review mode disable --scope clone --cwd <repo>`. |
 | `lens_context_budget_exceeded` | Terminal — immutable reviewer context cannot be truncated. Reduce the B candidate scope and start a new transaction, or run `hgtran-ai review mode disable --scope clone --cwd <repo>`. |
 | `corrupted_or_unverifiable_authority` | Terminal — the authority is unreadable or unsupported. Ask a maintainer to inspect it, or run `hgtran-ai review mode disable --scope clone --cwd <repo>`. |

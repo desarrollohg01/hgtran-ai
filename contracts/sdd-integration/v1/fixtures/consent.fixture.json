@@ -21,7 +21,7 @@
       "answer": "granted",
       "label": "Grant this change edit authority over the named edit roots",
       "effect": "This change's apply actor may edit paths under the named edit roots. The grant is per-change, audited (who, when, which roots), and dies with archive; nothing is granted to any other change.",
-      "invocation": "hgtran-ai sdd-attempt grant --cwd \"/workspace/planning\" --change multi-repo-rollout --root \"/workspace/service-a\" --root \"/workspace/service-b\" --actor maintainer --reason edit-authority-consent-granted --request-id grant-ce874466367354a2 --change-instance sdd-b2f4c0a1d8e64953a7c15b9d3e0f2a68"
+      "invocation": "hgtran-ai sdd-attempt grant --cwd \"/workspace/planning\" --change multi-repo-rollout --root \"/workspace/service-a\" --root \"/workspace/service-b\" --actor maintainer --reason edit-authority-consent-granted --request-id grant-011a78a7cf14a559 --change-instance sdd-b2f4c0a1d8e64953a7c15b9d3e0f2a68"
     },
     {
       "answer": "declined",

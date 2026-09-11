@@ -97,7 +97,7 @@ func TestNoRawSharedSectionPlaceholderSurvivesRendering(t *testing.T) {
 		model.AgentHermes, model.AgentKimi, model.AgentWindsurf, model.AgentCodex,
 		model.AgentKiroIDE, model.AgentAntigravity, model.AgentClaudeCode,
 	} {
-		if rendered := renderSDDOrchestratorAsset(agent); strings.Contains(rendered, "{{GENTLE_AI_SDD_SECTION:") {
+		if rendered := renderSDDOrchestratorAsset(agent); strings.Contains(rendered, "{{HGTRAN_AI_SDD_SECTION:") {
 			t.Errorf("%s kept a raw shared-section placeholder", agent)
 		}
 	}

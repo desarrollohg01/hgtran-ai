@@ -89,7 +89,7 @@ func TestReviewLensContextEmitsFinishedReviewerBlockFromTwoTokens(t *testing.T) 
 		t.Fatalf("binding does not echo the supplied tokens: %v", binding)
 	}
 
-	contextJSON, found := strings.CutPrefix(lines[1], "GENTLE_AI_REVIEW_CONTEXT ")
+	contextJSON, found := strings.CutPrefix(lines[1], "HGTRAN_AI_REVIEW_CONTEXT ")
 	if !found {
 		t.Fatalf("second line is not the capture context: %q", lines[1])
 	}
@@ -117,8 +117,8 @@ func TestReviewLensContextEmitsFinishedReviewerBlockFromTwoTokens(t *testing.T) 
 		"--lens", lens, "--order", "0",
 	}
 	wantSections := map[string][]string{
-		"GENTLE_AI_REVIEW_NAME_STATUS": {"--operation", "name-status"},
-		"GENTLE_AI_REVIEW_NUMSTAT":     {"--operation", "numstat"},
+		"HGTRAN_AI_REVIEW_NAME_STATUS": {"--operation", "name-status"},
+		"HGTRAN_AI_REVIEW_NUMSTAT":     {"--operation", "numstat"},
 	}
 	for header, operation := range wantSections {
 		var expected bytes.Buffer
@@ -141,13 +141,13 @@ func TestReviewLensContextEmitsFinishedReviewerBlockFromTwoTokens(t *testing.T) 
 			[]string{"--operation", "patch", "--path-index", fmt.Sprint(index)}), &expected); err != nil {
 			t.Fatal(err)
 		}
-		want := fmt.Sprintf("GENTLE_AI_REVIEW_PATCH %d %s\n%s\nGENTLE_AI_REVIEW_PATCH_END\n",
+		want := fmt.Sprintf("HGTRAN_AI_REVIEW_PATCH %d %s\n%s\nHGTRAN_AI_REVIEW_PATCH_END\n",
 			index, entry["path"], strings.TrimSpace(expected.String()))
 		if !strings.Contains(block, want) {
 			t.Fatalf("block omits patch %d\nwant:\n%s\ngot:\n%s", index, want, block)
 		}
 	}
-	if !strings.HasSuffix(block, "GENTLE_AI_REVIEW_CONTEXT_END\n") {
+	if !strings.HasSuffix(block, "HGTRAN_AI_REVIEW_CONTEXT_END\n") {
 		t.Fatalf("block is not terminated:\n%s", block)
 	}
 }
@@ -181,7 +181,7 @@ func TestReviewLensContextRefusesUnboundInput(t *testing.T) {
 			if err == nil || !strings.Contains(err.Error(), test.want) {
 				t.Fatalf("error = %v, want %q", err, test.want)
 			}
-			if strings.Contains(output.String(), "GENTLE_AI_REVIEW_") {
+			if strings.Contains(output.String(), "HGTRAN_AI_REVIEW_") {
 				t.Fatalf("refusal leaked partial reviewer context to stdout:\n%s", output.String())
 			}
 		})
@@ -235,7 +235,7 @@ func TestNegotiatedStartRefusesOverBudgetCandidateWithoutPersistingAuthority(t *
 		!strings.Contains(failure.Failure.Cause, "hgtran-ai review status") {
 		t.Fatalf("over-budget START cause does not name the runnable continuation: %q", failure.Failure.Cause)
 	}
-	if strings.Contains(output.String(), "GENTLE_AI_REVIEW_") {
+	if strings.Contains(output.String(), "HGTRAN_AI_REVIEW_") {
 		t.Fatalf("over-budget START refusal emitted reviewer evidence:\n%s", output.String())
 	}
 	if after := snapshotAuthorityTree(t, authorityRoot); authorityBefore != after {
@@ -568,7 +568,7 @@ func TestReviewLensContextStandsAloneAsTheReviewerInstruction(t *testing.T) {
 	for _, lens := range record.State.SelectedLenses {
 		t.Run(lens, func(t *testing.T) {
 			block := lensContextBlock(t, args, lens)
-			instruction, found := lensContextSection(block, "GENTLE_AI_REVIEW_INSTRUCTION")
+			instruction, found := lensContextSection(block, "HGTRAN_AI_REVIEW_INSTRUCTION")
 			if !found {
 				t.Fatalf("block carries no reviewer instruction:\n%s", block)
 			}
@@ -599,7 +599,7 @@ func TestReviewLensContextStandsAloneAsTheReviewerInstruction(t *testing.T) {
 					t.Fatalf("instruction omits %q:\n%s", required, instruction)
 				}
 			}
-			schema, found := lensContextSection(block, "GENTLE_AI_REVIEW_RESULT_SCHEMA")
+			schema, found := lensContextSection(block, "HGTRAN_AI_REVIEW_RESULT_SCHEMA")
 			if !found {
 				t.Fatalf("block carries no reviewer result schema:\n%s", block)
 			}
@@ -608,10 +608,10 @@ func TestReviewLensContextStandsAloneAsTheReviewerInstruction(t *testing.T) {
 			}
 			// The instruction precedes the evidence, and the block still ends
 			// where every existing consumer expects it to.
-			if strings.Index(block, "GENTLE_AI_REVIEW_INSTRUCTION") > strings.Index(block, "GENTLE_AI_REVIEW_NAME_STATUS") {
+			if strings.Index(block, "HGTRAN_AI_REVIEW_INSTRUCTION") > strings.Index(block, "HGTRAN_AI_REVIEW_NAME_STATUS") {
 				t.Fatal("instruction appears after the evidence")
 			}
-			if !strings.HasSuffix(block, "GENTLE_AI_REVIEW_CONTEXT_END\n") {
+			if !strings.HasSuffix(block, "HGTRAN_AI_REVIEW_CONTEXT_END\n") {
 				t.Fatal("block terminator moved")
 			}
 		})

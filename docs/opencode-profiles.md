@@ -27,10 +27,10 @@ hgtran-ai install --agent opencode --component sdd --opencode-background-subagen
 hgtran-ai sync --opencode-background-subagents=off
 ```
 
-The environment equivalent is `GENTLE_AI_OPENCODE_BACKGROUND_SUBAGENTS=auto|on|off`. Resolution precedence is:
+The environment equivalent is `HGTRAN_AI_OPENCODE_BACKGROUND_SUBAGENTS=auto|on|off`. Resolution precedence is:
 
 1. CLI flag.
-2. Non-empty `GENTLE_AI_OPENCODE_BACKGROUND_SUBAGENTS`.
+2. Non-empty `HGTRAN_AI_OPENCODE_BACKGROUND_SUBAGENTS`.
 3. The prior managed choice in Hgtran AI state.
 4. `auto`.
 

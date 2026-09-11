@@ -81,7 +81,7 @@ func (b *battery) runOpenCodeHostEchoScenario(node string) {
 		b.fail(openCodeLane, openCodeEchoStep, "materialize the first Task: "+err.Error())
 		return
 	}
-	if !issue.BeforeOK || !strings.HasPrefix(issue.ChildPrompt, "GENTLE_AI_REVIEW_PROVIDER_MATERIALIZATION ") {
+	if !issue.BeforeOK || !strings.HasPrefix(issue.ChildPrompt, "HGTRAN_AI_REVIEW_PROVIDER_MATERIALIZATION ") {
 		b.fail(openCodeLane, openCodeEchoStep, "first Task did not receive a Go materialization: "+firstLine(issue.Error))
 		return
 	}

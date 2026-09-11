@@ -909,7 +909,7 @@ func TestAssessTargetStatusPropagatesOperationalAuthorityFailures(t *testing.T) 
 		writeSnapshotFile(t, repo, "tracked.txt", "drifted candidate\n")
 		originalCommand := gitCommandContext
 		t.Cleanup(func() { gitCommandContext = originalCommand })
-		t.Setenv("GENTLE_AI_TARGET_STATUS_GIT_HELPER", "exit73")
+		t.Setenv("HGTRAN_AI_TARGET_STATUS_GIT_HELPER", "exit73")
 		gitCommandContext = func(ctx context.Context, name string, args ...string) *exec.Cmd {
 			if gitInvocationContains(args, "--git-common-dir") {
 				return exec.CommandContext(ctx, os.Args[0], "-test.run=^TestTargetStatusGitHelperProcess$", "--")
@@ -931,7 +931,7 @@ func TestAssessTargetStatusPropagatesOperationalAuthorityFailures(t *testing.T) 
 		t.Cleanup(func() {
 			gitCommandContext, LocalGitCommandTimeout, gitCommandWaitDelay = originalCommand, originalTimeout, originalWait
 		})
-		t.Setenv("GENTLE_AI_TARGET_STATUS_GIT_HELPER", "sleep")
+		t.Setenv("HGTRAN_AI_TARGET_STATUS_GIT_HELPER", "sleep")
 		LocalGitCommandTimeout, gitCommandWaitDelay = 25*time.Millisecond, 10*time.Millisecond
 		gitCommandContext = func(ctx context.Context, name string, args ...string) *exec.Cmd {
 			if gitInvocationContains(args, "--git-common-dir") {
@@ -1164,7 +1164,7 @@ func TestAssessTargetStatusStopsStableReadOnDeadline(t *testing.T) {
 }
 
 func TestTargetStatusGitHelperProcess(t *testing.T) {
-	switch os.Getenv("GENTLE_AI_TARGET_STATUS_GIT_HELPER") {
+	switch os.Getenv("HGTRAN_AI_TARGET_STATUS_GIT_HELPER") {
 	case "exit73":
 		os.Exit(73)
 	case "sleep":
@@ -1267,4 +1267,331 @@ func gitInvocationContains(args []string, sequence ...string) bool {
 		}
 	}
 	return false
+}
+
+func TestAssessTargetStatusRecognizesAuthorizedCorrection(t *testing.T) {
+	repo := initSnapshotRepo(t)
+	writeSnapshotFile(t, repo, "tracked.txt", "base\none\ntwo\nthree\nfour\n")
+	state := newCompactTestState(t, repo, "review-correction-resume")
+	store := storeCompactStartAuthority(t, repo, state)
+	record, _ := store.Load()
+	finding := Finding{ID: "R3-001", Lens: "reliability", Location: "tracked.txt:5", Severity: "CRITICAL", Claim: "wrong value", ProofRefs: []string{"differential failure"}}
+	if err := state.CompleteReview(CompactReviewInput{LensResults: []LensResult{{Lens: LensReliability, Findings: []Finding{finding}, Evidence: []string{"reviewed"}}}, Classifications: []FindingEvidence{{FindingID: finding.ID, Class: EvidenceDeterministic, Causality: CausalIntroduced, Proof: "changed hunk"}}, RefuterOutcomes: []EvidenceResult{}}); err != nil {
+		t.Fatal(err)
+	}
+	revision, _ := store.Replace(record.Revision, "review/complete-review", state)
+	if err := state.BeginCorrection(2); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := store.Replace(revision, "review/begin-fix", state); err != nil {
+		t.Fatal(err)
+	}
+	writeSnapshotFile(t, repo, "tracked.txt", "base\none\ntwo\nthree\nfixed\n")
+	// The dev-branch original asserted TargetStatusActionFinalize here. That
+	// action (along with RetryFinalVerification and ReconcileFinalize) was
+	// retired along with the "finalize-attempt-journal subsystems" this
+	// file's rewrite removed: targetStatusAction's current switch collapses
+	// every matched-target CompactState (Reviewing, CorrectionRequired,
+	// Validating, Approved) to TargetStatusActionStop /
+	// ReplayabilityManualActionRequired instead of naming a distinct
+	// "finalize" shortcut, so that is the live equivalent asserted below.
+	got, err := AssessTargetStatus(context.Background(), repo, TargetStatusRequest{Target: Target{Kind: TargetCurrentChanges, IntendedUntracked: []string{}}, LineageID: state.LineageID})
+	if err != nil || got.Applicability != TargetApplicabilityCurrent || got.State != StateCorrectionRequired ||
+		got.Action != TargetStatusActionStop || got.Replayability != ReplayabilityManualActionRequired {
+		t.Fatalf("authorized correction status = %#v, err = %v", got, err)
+	}
+}
+
+func TestAssessTargetStatusReportsAmbiguousApprovedStagedScopeExpansion(t *testing.T) {
+	repo, base, predecessor, _, _ := approvedBaseDiffScopeRecoveryFixture(t, "staged-status-first")
+	peer := predecessor
+	peer.LineageID = "staged-status-second"
+	writeTerminalTargetStatusAuthority(t, repo, peer)
+	stageStagedScopeExtra(t, repo)
+
+	got, err := AssessTargetStatus(context.Background(), repo, TargetStatusRequest{Target: Target{
+		Kind: TargetBaseWorkspaceOverlay, Projection: ProjectionStaged,
+		BaseRef: base, IntendedUntracked: []string{},
+	}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got.Applicability != TargetApplicabilityAmbiguous || got.Action != TargetStatusActionSelectLineage ||
+		!equalStrings(got.CandidateLineageIDs, []string{"staged-status-first", "staged-status-second"}) {
+		t.Fatalf("ambiguous staged scope status = %#v", got)
+	}
+}
+
+// TestAssessTargetStatusReportsPluralStaleStagedOverlayLineagesAsUnrelatedWithStop
+// is the positive proof that organic-dx Phase 3e's fix composes correctly
+// with the live overlay+staged safety stop. Unlike
+// TestAssessTargetStatusReportsAmbiguousApprovedStagedScopeExpansion (which
+// queries status against the SAME base the review used, matching
+// compactApprovedStagedScopeRecoveryShape's per-candidate recovery match),
+// this queries against a base that already advanced past the reviewed diff
+// (its immutable review content was already committed to HEAD before the
+// review even started, matching approvedBaseDiffScopeRecoveryFixture's own
+// construction). That breaks the recovery shape's
+// `next.BaseTree == initial.BaseTree` requirement, so both lineages fall
+// through to the generic scope-changed classifier instead — the actual bug
+// this phase fixes. The overlay+staged safety stop
+// (TargetStatusActionStop / ReplayabilityManualActionRequired) still
+// applies: it is the identical live-projection safety check the
+// zero-candidate branch already performs, unrelated to lineage history.
+// Both stale lineages stay listed as optional recovery candidates.
+func TestAssessTargetStatusReportsPluralStaleStagedOverlayLineagesAsUnrelatedWithStop(t *testing.T) {
+	repo, _, predecessor, _, _ := approvedBaseDiffScopeRecoveryFixture(t, "staged-overlay-stale-first")
+	peer := predecessor
+	peer.LineageID = "staged-overlay-stale-second"
+	writeTerminalTargetStatusAuthority(t, repo, peer)
+	reviewedBase := strings.TrimSpace(gitSnapshot(t, repo, "rev-parse", "HEAD"))
+	writeSnapshotFile(t, repo, "docs/candidate.md", "# Candidate\nexpanded again\n")
+	gitSnapshot(t, repo, "add", "docs/candidate.md")
+
+	got, err := AssessTargetStatus(context.Background(), repo, TargetStatusRequest{Target: Target{
+		Kind: TargetBaseWorkspaceOverlay, Projection: ProjectionStaged,
+		BaseRef: reviewedBase, IntendedUntracked: []string{},
+	}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got.Applicability != TargetApplicabilityUnrelated || got.Action != TargetStatusActionStop ||
+		got.Replayability != ReplayabilityManualActionRequired ||
+		!equalStrings(got.CandidateLineageIDs, []string{"staged-overlay-stale-first", "staged-overlay-stale-second"}) {
+		t.Fatalf("plural stale staged overlay status = %#v", got)
+	}
+}
+
+// TestNonRecoveryStatusOmitsDisposition's two "finalize" subtests below were
+// adapted from the dev-branch original the same way
+// TestAssessTargetStatusRecognizesAuthorizedCorrection was: TargetStatusActionFinalize
+// no longer exists (see that test's comment), and targetStatusAction now
+// routes every matched-target non-recovery CompactState -- including
+// Reviewing and CorrectionRequired -- to TargetStatusActionStop. The
+// invariant this test actually pins (ActionDisposition stays empty outside a
+// recovery) is unaffected.
+func TestNonRecoveryStatusOmitsDisposition(t *testing.T) {
+	requireSnapshotGit(t)
+	t.Run("reviewing routes to stop without a disposition", func(t *testing.T) {
+		repo := initSnapshotRepo(t)
+		writeSnapshotFile(t, repo, "tracked.txt", "candidate\n")
+		state := newCompactTestState(t, repo, "disposition-reviewing")
+		storeCompactStartAuthority(t, repo, state)
+		status, err := AssessTargetStatus(context.Background(), repo, TargetStatusRequest{
+			Target: Target{Kind: TargetCurrentChanges, IntendedUntracked: []string{}}, LineageID: state.LineageID,
+		})
+		if err != nil || status.Action != TargetStatusActionStop || status.ActionDisposition != "" {
+			t.Fatalf("reviewing status = %#v, %v", status, err)
+		}
+	})
+	t.Run("authorized correction resume routes to stop without a disposition", func(t *testing.T) {
+		repo, predecessor, _, _ := correctionScopeRecoveryFixture(t, "disposition-resume")
+		status, err := AssessTargetStatus(context.Background(), repo, TargetStatusRequest{
+			Target: Target{Kind: TargetCurrentChanges, IntendedUntracked: []string{}}, LineageID: predecessor.LineageID,
+		})
+		if err != nil || status.State != StateCorrectionRequired || status.Action != TargetStatusActionStop ||
+			status.ActionDisposition != "" {
+			t.Fatalf("correction resume status = %#v, %v", status, err)
+		}
+	})
+	t.Run("historical failed validator with an unchanged target stops without a disposition", func(t *testing.T) {
+		repo, state, _, _ := historicalFailedValidatorFixture(t, "disposition-historical-stop")
+		status, err := AssessTargetStatus(context.Background(), repo, TargetStatusRequest{
+			Target: Target{Kind: TargetCurrentChanges, IntendedUntracked: []string{}}, LineageID: state.LineageID,
+		})
+		if err != nil || status.Action != TargetStatusActionStop || status.ActionDisposition != "" {
+			t.Fatalf("unchanged historical status = %#v, %v", status, err)
+		}
+	})
+}
+
+func TestAssessTargetStatusStillCorruptsMalformedAuthorityGraph(t *testing.T) {
+	requireSnapshotGit(t)
+	repo := initSnapshotRepo(t)
+	writeSnapshotFile(t, repo, "tracked.txt", "reviewed candidate\n")
+	predecessor, predecessorStore := approvedCompactCurrentChangesFixture(t, repo, "status-graph-predecessor", []string{})
+	predecessorRecord, err := predecessorStore.Load()
+	if err != nil {
+		t.Fatal(err)
+	}
+	writeSnapshotFile(t, repo, "tracked.txt", "successor candidate\n")
+	successor := newCompactTestState(t, repo, "status-graph-successor")
+	successor.Generation = predecessor.Generation + 1
+	if _, err := RecoverCompactAuthority(context.Background(), repo, CompactRecoveryRequest{
+		PredecessorLineageID: predecessor.LineageID, ExpectedPredecessorRevision: predecessorRecord.Revision,
+		Successor: successor, Disposition: RecoveryScopeChanged, Reason: "scope changed", Actor: "maintainer",
+	}); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.RemoveAll(predecessorStore.Dir); err != nil {
+		t.Fatal(err)
+	}
+
+	got, err := AssessTargetStatus(context.Background(), repo, targetStatusCurrentChangesRequest())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got.Applicability != TargetApplicabilityCorrupted || got.Action != TargetStatusActionRepairAuthority ||
+		got.Replayability != ReplayabilityManualActionRequired {
+		t.Fatalf("malformed graph status = %#v", got)
+	}
+}
+
+// newCompactStartStateForTarget builds a compact START state from an
+// arbitrary repository-derived target. It is a dev-parity restoration of a
+// helper that used to live in compact_store_test.go; approvedBaseDiffScopeRecoveryFixture
+// below is the only current caller.
+func newCompactStartStateForTarget(t *testing.T, repo, lineage string, target Target) CompactState {
+	t.Helper()
+	snapshot, err := (SnapshotBuilder{Repo: repo}).Build(context.Background(), target)
+	if err != nil {
+		t.Fatal(err)
+	}
+	risk, lines, err := (SnapshotBuilder{Repo: repo}).ClassifySnapshotRisk(context.Background(), snapshot)
+	if err != nil {
+		t.Fatal(err)
+	}
+	lenses := []string{}
+	if risk == RiskMedium {
+		lenses = []string{LensReliability}
+	} else if risk == RiskHigh {
+		lenses = append([]string(nil), supportedLenses...)
+	}
+	state, err := NewCompactState(Start{LineageID: lineage, Mode: ModeOrdinaryBounded, Generation: 1, Snapshot: snapshot, PolicyHash: hash("1"), RiskLevel: risk, SelectedLenses: lenses, OriginalChangedLines: &lines})
+	if err != nil {
+		t.Fatal(err)
+	}
+	return state
+}
+
+// storeCompactStartAuthority is a dev-parity restoration of a helper that
+// used to live in compact_store_test.go: it persists a fresh reviewing
+// compact authority directly through Store.Replace without the atomic-START
+// worktree binding, for fixtures that only need a plain reviewing baseline.
+func storeCompactStartAuthority(t *testing.T, repo string, state CompactState) CompactStore {
+	t.Helper()
+	store, err := CompactAuthoritativeStore(context.Background(), repo, state.LineageID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := store.Replace("", "review/start", state); err != nil {
+		t.Fatal(err)
+	}
+	return store
+}
+
+// approvedCompactCurrentChangesFixture builds an Approved compact authority
+// over the repository's current changes. It used to live in
+// compact_gate_test.go (now a stub -- its own production surface,
+// compact_gate.go, was reduced to the same stub by the upstream v2.5.0
+// merge) and originally reached Approved through CompactState.CompleteVerification
+// plus a written CompactReceipt via WriteCompactReceiptAtomic. Both of those
+// were removed with no replacement (CompactReceipt no longer exists as a
+// type at all), so this rebuild reaches Approved the same way
+// writeApprovedTargetStatusHistory above already does for a clean review
+// with no fix findings: CompleteReview to StateValidating, then
+// CloseCleanReviewOnLastEvent to StateApproved.
+func approvedCompactCurrentChangesFixture(t *testing.T, repo, lineage string, intended []string) (CompactState, CompactStore) {
+	t.Helper()
+	state := newCompactTestStateWithIntended(t, repo, lineage, intended)
+	store, err := CompactAuthoritativeStore(context.Background(), repo, lineage)
+	if err != nil {
+		t.Fatal(err)
+	}
+	revision, err := store.Replace("", "review/start", state)
+	if err != nil {
+		t.Fatal(err)
+	}
+	results := make([]LensResult, len(state.SelectedLenses))
+	for index, lens := range state.SelectedLenses {
+		results[index] = LensResult{Lens: lens, Findings: []Finding{}, Evidence: []string{"review completed"}}
+	}
+	if err := state.CompleteReview(CompactReviewInput{LensResults: results, Classifications: []FindingEvidence{}, RefuterOutcomes: []EvidenceResult{}}); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.CloseCleanReviewOnLastEvent(); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := store.Replace(revision, "review/complete-review", state); err != nil {
+		t.Fatal(err)
+	}
+	return state, store
+}
+
+// approvedBaseDiffScopeRecoveryFixture is a dev-parity restoration of a
+// helper that used to live in compact_scope_recovery_test.go. Like
+// approvedCompactCurrentChangesFixture above, it originally reached Approved
+// through CompleteVerification + WriteCompactReceiptAtomic; both are gone,
+// so it reaches Approved the same live way (CompleteReview +
+// CloseCleanReviewOnLastEvent) instead.
+func approvedBaseDiffScopeRecoveryFixture(t *testing.T, lineage string) (string, string, CompactState, CompactStore, CompactRecord) {
+	t.Helper()
+	repo := initSnapshotRepo(t)
+	base := strings.TrimSpace(gitSnapshot(t, repo, "rev-parse", "HEAD"))
+	writeSnapshotFile(t, repo, "docs/candidate.md", "# Candidate\n")
+	gitSnapshot(t, repo, "add", "docs/candidate.md")
+	gitSnapshot(t, repo, "commit", "-m", "add candidate")
+	state := newCompactStartStateForTarget(t, repo, lineage, Target{Kind: TargetBaseDiff, BaseRef: base, IntendedUntracked: []string{}})
+	store := storeCompactStartAuthority(t, repo, state)
+	record, err := store.Load()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := state.CompleteReview(CompactReviewInput{LensResults: []LensResult{}, Classifications: []FindingEvidence{}, RefuterOutcomes: []EvidenceResult{}}); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.CloseCleanReviewOnLastEvent(); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := store.Replace(record.Revision, "review/complete-review", state); err != nil {
+		t.Fatal(err)
+	}
+	record, err = store.Load()
+	if err != nil {
+		t.Fatal(err)
+	}
+	return repo, base, state, store, record
+}
+
+// stageStagedScopeExtra is a dev-parity restoration of a helper that used to
+// live alongside approvedBaseDiffScopeRecoveryFixture in
+// compact_scope_recovery_test.go.
+func stageStagedScopeExtra(t *testing.T, repo string) {
+	t.Helper()
+	writeSnapshotFile(t, repo, "docs/extra.md", "# Extra\n")
+	gitSnapshot(t, repo, "add", "docs/extra.md")
+}
+
+// historicalFailedValidatorFixture is a dev-parity restoration of a helper
+// that used to live in compact_store_test.go. Unlike the other rebuilt
+// fixtures above, none of its dependencies were touched by the merge --
+// pendingCompactCorrection, FixDeltaHashForSnapshot, CompactCorrectionAttempt,
+// ValidationCheck, and makeCompactRecord are all still live -- so it is
+// restored verbatim.
+func historicalFailedValidatorFixture(t *testing.T, lineage string) (string, CompactState, CompactRecord, []byte) {
+	t.Helper()
+	repo := initSnapshotRepo(t)
+	state, fix := pendingCompactCorrection(t, repo, lineage)
+	fixHash := FixDeltaHashForSnapshot(fix)
+	state.CorrectionAttempts = []CompactCorrectionAttempt{{Snapshot: fix, ProposedLines: 1, ActualLines: 1, FixDeltaHash: fixHash,
+		OriginalCriteria:     ValidationCheck{EvidenceHash: hash("6"), FixDeltaHash: fixHash, Passed: true},
+		CorrectionRegression: ValidationCheck{EvidenceHash: hash("7"), FixDeltaHash: fixHash}}}
+	state.State, state.CurrentSnapshot, state.CumulativeCorrectionLines = StateCorrectionRequired, fix, 1
+	state.ProposedCorrectionLines, state.ActualCorrectionLines = nil, nil
+	state.FixDeltaHash, state.OriginalCriteria, state.CorrectionRegression = EmptyFixDeltaHash, nil, nil
+	if err := state.Validate(); err != nil {
+		t.Fatal(err)
+	}
+	record, payload, err := makeCompactRecord(state)
+	if err != nil {
+		t.Fatal(err)
+	}
+	store, _ := CompactAuthoritativeStore(context.Background(), repo, lineage)
+	if err := os.MkdirAll(store.Dir, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(store.StatePath(), payload, 0o644); err != nil {
+		t.Fatal(err)
+	}
+	return repo, state, record, payload
 }

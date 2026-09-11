@@ -1196,7 +1196,7 @@ func TestRunInstallEngramFallsBackToInjectWhenSetupFails(t *testing.T) {
 }
 
 func TestRunInstallEngramSetupStrictFailsWhenSetupFails(t *testing.T) {
-	t.Setenv("GENTLE_AI_ENGRAM_SETUP_STRICT", "1")
+	t.Setenv("HGTRAN_AI_ENGRAM_SETUP_STRICT", "1")
 
 	home := t.TempDir()
 	restoreHome := osUserHomeDir
@@ -1482,7 +1482,7 @@ func TestRunInstallGGALinuxIncludesTempCleanupBeforeClone(t *testing.T) {
 		}
 		// Match the clone intent (URL + dest) instead of the full literal command,
 		// so the test stays valid when extra flags like --depth/--branch are added.
-		if strings.Contains(cmd, "git") && strings.Contains(cmd, "https://github.com/Gentleman-Programming/hgtran-guardian-angel.git") && strings.Contains(cmd, "/tmp/hgtran-guardian-angel") {
+		if strings.Contains(cmd, "git") && strings.Contains(cmd, "https://github.com/Gentleman-Programming/gentleman-guardian-angel.git") && strings.Contains(cmd, "/tmp/hgtran-guardian-angel") {
 			cloneIdx = i
 		}
 	}

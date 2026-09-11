@@ -22,7 +22,7 @@ func init() {
 		Review:   reviewUntouched,
 		Properties: []string{
 			"Runs the installed OpenCode plugin through Node against accepted and rejected host task-result shapes; it does not drive the hgtran-ai CLI alone.",
-			"Requires GENTLE_AI_BENCH_SDD_PLUGIN and a Node runtime that executes .mts files with built-in TypeScript type stripping; skips honestly when the plugin or runtime capability is unavailable.",
+			"Requires HGTRAN_AI_BENCH_SDD_PLUGIN and a Node runtime that executes .mts files with built-in TypeScript type stripping; skips honestly when the plugin or runtime capability is unavailable.",
 		},
 		Journeys: sddTaskResultJourneys,
 	})
@@ -67,12 +67,12 @@ func sddTaskResultJourneys() []Journey {
 }
 
 func sddTaskResultUnavailable(*Sandbox) string {
-	path := os.Getenv("GENTLE_AI_BENCH_SDD_PLUGIN")
+	path := os.Getenv("HGTRAN_AI_BENCH_SDD_PLUGIN")
 	if path == "" {
-		return "GENTLE_AI_BENCH_SDD_PLUGIN is not set"
+		return "HGTRAN_AI_BENCH_SDD_PLUGIN is not set"
 	}
 	if info, err := os.Stat(path); err != nil || !info.Mode().IsRegular() {
-		return "GENTLE_AI_BENCH_SDD_PLUGIN does not name an installed plugin"
+		return "HGTRAN_AI_BENCH_SDD_PLUGIN does not name an installed plugin"
 	}
 	node, err := exec.LookPath("node")
 	if err != nil {
@@ -201,7 +201,7 @@ func sddBackgroundSummaryTaskResult(r *journeyRun) error {
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), sddTaskResultHarnessTimeout)
 	defer cancel()
-	cmd := exec.CommandContext(ctx, "node", "harness.mts", os.Getenv("GENTLE_AI_BENCH_SDD_PLUGIN"), work)
+	cmd := exec.CommandContext(ctx, "node", "harness.mts", os.Getenv("HGTRAN_AI_BENCH_SDD_PLUGIN"), work)
 	cmd.Dir = root
 	cmd.Env = r.sandbox.env()
 	var output bytes.Buffer
@@ -351,7 +351,7 @@ result
 func runSDDTaskResultGrammarCase(r *journeyRun, root, work string, tc sddTaskResultGrammarCase) (sddTaskResultGrammarObservation, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), sddTaskResultHarnessTimeout)
 	defer cancel()
-	cmd := exec.CommandContext(ctx, "node", "harness.mts", os.Getenv("GENTLE_AI_BENCH_SDD_PLUGIN"), work, tc.taskOutput, tc.name)
+	cmd := exec.CommandContext(ctx, "node", "harness.mts", os.Getenv("HGTRAN_AI_BENCH_SDD_PLUGIN"), work, tc.taskOutput, tc.name)
 	cmd.Dir = root
 	cmd.Env = r.sandbox.env()
 	var output bytes.Buffer
@@ -385,7 +385,7 @@ func sddEmptyTaskResult(r *journeyRun) error {
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), sddTaskResultHarnessTimeout)
 	defer cancel()
-	cmd := exec.CommandContext(ctx, "node", "harness.mts", os.Getenv("GENTLE_AI_BENCH_SDD_PLUGIN"), work)
+	cmd := exec.CommandContext(ctx, "node", "harness.mts", os.Getenv("HGTRAN_AI_BENCH_SDD_PLUGIN"), work)
 	cmd.Dir = root
 	cmd.Env = r.sandbox.env()
 	var output bytes.Buffer

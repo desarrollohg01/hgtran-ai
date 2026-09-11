@@ -19,5 +19,5 @@ const OpenCode = "1.18.10"
 // renovate: datasource=npm depName=@upstash/context7-mcp
 const Context7MCP = "2.2.5"
 
-// renovate: datasource=github-releases depName=Gentleman-Programming/hgtran-guardian-angel
+// renovate: datasource=github-releases depName=Gentleman-Programming/gentleman-guardian-angel
 const GGAVersion = "2.10.1"

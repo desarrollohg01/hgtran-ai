@@ -267,7 +267,7 @@ func TestRunArgsInstallHelpPrintsInstallSpecificHelp(t *testing.T) {
 	}
 
 	out := buf.String()
-	for _, want := range []string{"--channel", "beta", "nightly", "GENTLE_AI_CHANNEL"} {
+	for _, want := range []string{"--channel", "beta", "nightly", "HGTRAN_AI_CHANNEL"} {
 		if !strings.Contains(out, want) {
 			t.Fatalf("install help missing %q; output:\n%s", want, out)
 		}

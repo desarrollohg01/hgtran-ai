@@ -32,7 +32,7 @@ type Sandbox struct {
 	Remote       string
 	TracePath    string
 	// BenchCrashAtPhase, when non-empty, is read by product binaries built
-	// with `-tags bench_fixture` as GENTLE_AI_BENCH_CRASH_AT_PHASE
+	// with `-tags bench_fixture` as HGTRAN_AI_BENCH_CRASH_AT_PHASE
 	// (format "<phase>:<lineage_id>"): the deterministic phase-hook
 	// interruption internal/reviewtransaction's own crash-position matrix
 	// uses in-process (compactReclaimPhaseHook), reachable here through the
@@ -101,7 +101,7 @@ func (s *Sandbox) env() []string {
 		"LANG=C",
 	}
 	if s.BenchCrashAtPhase != "" {
-		env = append(env, "GENTLE_AI_BENCH_CRASH_AT_PHASE="+s.BenchCrashAtPhase)
+		env = append(env, "HGTRAN_AI_BENCH_CRASH_AT_PHASE="+s.BenchCrashAtPhase)
 	}
 	if s.PiReviewRelayContract != "" {
 		env = append(env, "GENTLE_PI_REVIEW_RELAY_CONTRACT="+s.PiReviewRelayContract)

@@ -335,7 +335,7 @@
     {
       "id": "j103-sdd-interrupted-settlement-omits-evidence",
       "title": "Interrupted runtime settlement omits evidence and replays without a second record",
-      "source": "https://github.com/Gentleman-Programming/hgtran-ai/issues/3094",
+      "source": "https://github.com/desarrollohg01/hgtran-ai/issues/3094",
       "status": "completed",
       "metrics": {
         "human_prompts": {
@@ -3340,7 +3340,7 @@
     {
       "id": "j115-recovery-selector-is-collected-before-authorization",
       "title": "Default workspace-overlay recovery collects an unrepresentable selector before authorization",
-      "source": "https://github.com/Gentleman-Programming/hgtran-ai/issues/3065",
+      "source": "https://github.com/desarrollohg01/hgtran-ai/issues/3065",
       "status": "completed",
       "metrics": {
         "human_prompts": {
@@ -4012,7 +4012,7 @@
     {
       "id": "j117-doctor-dangling-managed-config",
       "title": "Doctor identifies a dangling managed config symlink without recommending sync",
-      "source": "https://github.com/Gentleman-Programming/hgtran-ai/issues/3557",
+      "source": "https://github.com/desarrollohg01/hgtran-ai/issues/3557",
       "status": "completed",
       "metrics": {
         "human_prompts": {
@@ -4072,7 +4072,7 @@
     {
       "id": "j118-doctor-dangling-config-ancestor",
       "title": "Doctor identifies a dangling ancestor of a managed config path without recommending sync",
-      "source": "https://github.com/Gentleman-Programming/hgtran-ai/pull/3561",
+      "source": "https://github.com/desarrollohg01/hgtran-ai/pull/3561",
       "status": "completed",
       "metrics": {
         "human_prompts": {
@@ -4901,7 +4901,7 @@
     {
       "id": "j2138-opencode-native-fallback-boundary",
       "title": "Zero-config OpenCode install emits bounded native fallback agents",
-      "source": "https://github.com/Gentleman-Programming/hgtran-ai/issues/2138",
+      "source": "https://github.com/desarrollohg01/hgtran-ai/issues/2138",
       "status": "completed",
       "metrics": {
         "human_prompts": {
@@ -4988,7 +4988,7 @@
     {
       "id": "j3043-opencode-managed-background-activation",
       "title": "OpenCode background subagents activate through a managed launcher",
-      "source": "https://github.com/Gentleman-Programming/hgtran-ai/issues/3043",
+      "source": "https://github.com/desarrollohg01/hgtran-ai/issues/3043",
       "status": "completed",
       "metrics": {
         "human_prompts": {
@@ -10910,7 +10910,7 @@
     {
       "id": "j96-sdd-same-parent-repository-edit-authority",
       "title": "Nested planning workspace blocks a sibling directory in the same Git repository",
-      "source": "https://github.com/Gentleman-Programming/hgtran-ai/issues/2891",
+      "source": "https://github.com/desarrollohg01/hgtran-ai/issues/2891",
       "status": "completed",
       "metrics": {
         "human_prompts": {

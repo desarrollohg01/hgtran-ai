@@ -6,7 +6,7 @@ The parent orchestrator coordinates one native transaction; reviewers, refuters,
 
 ## Atomic lifecycle
 
-1. **Preflight only.** Selectorless STATUS only preflights the current worktree candidate and returns one exact START invocation. It never discovers, resumes, recovers, or evaluates ambient authority from another lineage or worktree: `hgtran-ai review status --cwd <repo> --contract hgtran-ai.review-integration/v2 --agent {{GENTLE_AI_RUNTIME_AGENT_ID}} --next-transition`.
+1. **Preflight only.** Selectorless STATUS only preflights the current worktree candidate and returns one exact START invocation. It never discovers, resumes, recovers, or evaluates ambient authority from another lineage or worktree: `hgtran-ai review status --cwd <repo> --contract hgtran-ai.review-integration/v2 --agent {{HGTRAN_AI_RUNTIME_AGENT_ID}} --next-transition`.
 
 2. **Freeze once.** Invoke only the returned START operation and its ordered tokens unchanged. START freezes one compact atomic transaction with an explicit lineage, worktree, and target binding. It ignores every other lineage and worktree. Capture the returned lineage, revision, and target tokens. An exact replay of an active START may return `replayed`; a genuinely new START is independent.
 
@@ -47,7 +47,7 @@ If exact provider-returned START returns the typed `hgtran-ai.review-integration
 
 Claude Code, OpenCode, Codex, and Pi use the shared Go provider contract. Go owns frozen evidence, binding, schema, byte bounds, validation, admission, and capture; runtime adapters transport opaque provider output. Claude uses a tool-free fresh reviewer; OpenCode relays one host Task through its live Go transport; Codex uses its provider-bound subprocess; Pi uses its hgtran-pi-owned relay. Compiled capability is authoritative before repository, target, authority, collection, or process work.
 
-Reviewers inspect only the provider-bound immutable trees. Never hand candidate bytes through `/tmp`, an external file, a repository scratch file, or `GENTLE_AI_FROZEN_CANDIDATE_CONTEXT`. Use the provider-issued inspection path, never the live worktree, index, `HEAD`, or an unbound revision. Never pass `--binary`, change checkout, or substitute live files.
+Reviewers inspect only the provider-bound immutable trees. Never hand candidate bytes through `/tmp`, an external file, a repository scratch file, or `HGTRAN_AI_FROZEN_CANDIDATE_CONTEXT`. Use the provider-issued inspection path, never the live worktree, index, `HEAD`, or an unbound revision. Never pass `--binary`, change checkout, or substitute live files.
 
 <!-- authority-first-terminal-procedure:start -->
 ### Authority-First Terminal Procedure

@@ -31,8 +31,8 @@ var sddConsentDeclineInvocationShape = regexp.MustCompile(
 func TestSDDIntegrationConsentContractsArePinned(t *testing.T) {
 	root := filepath.Join("..", "..", "contracts", "sdd-integration", "v1")
 	want := map[string]string{
-		"fixtures/consent.fixture.json": "ee09d2b7405ae4a04874d41c5d0fde145ba6db70c92d0c3231cd85fbfa07f4ce",
-		"schemas/consent.schema.json":   "0d52b532d4e8813aa647ed0fff346e032da8783deaa9a59d73cefbbb1f44862c",
+		"fixtures/consent.fixture.json": "2ff2e09db482324990c3878c99dcb65be26469e4dc97a5421d4a42a6d5d7e444",
+		"schemas/consent.schema.json":   "5ef6cbf81364b522fb5b8b17eb7d1c5737ddb9dd766973baf24eacee4781823c",
 	}
 	for name, expected := range want {
 		payload, err := os.ReadFile(filepath.Join(root, filepath.FromSlash(name)))

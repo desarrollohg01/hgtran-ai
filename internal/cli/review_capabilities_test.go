@@ -282,7 +282,7 @@ func TestReviewCapabilitiesAdvertisesOnlyNativeSurface(t *testing.T) {
 	if slices.Contains(result.Operations, "review.capture_result") {
 		t.Fatal("headless capture-result was advertised as a negotiated repository operation")
 	}
-	if result.Executable.Evidence != "self-reported" || result.Executable.Verification != "compare-with-published-manifest" || result.Executable.SHA256 != "sha256:dcc846103b16d365eaeeb9d7f289c23fc4f2897f23def1cb3fe7f05557b64705" {
+	if result.Executable.Evidence != "self-reported" || result.Executable.Verification != "compare-with-published-manifest" || result.Executable.SHA256 != "sha256:5456c6c00b0621ec6b0337d815ae3107cd3fad8188567071cce9b720d00fcdce" {
 		t.Fatalf("executable identity = %#v", result.Executable)
 	}
 	var document any

@@ -25,7 +25,7 @@ When it is ours, never offer to switch to, inspect, modify, or directly repair t
 
 - Ask the user first, in the active orchestrator conversation language, for explicit consent to report the apparent defect. Present one single-select blocking envelope with exactly three semantic choices in this order. Its exact internal answer tokens are `report_and_continue`, `continue_without_reporting`, `stop_here`. Localize their labels and descriptions without changing these semantics, and do not expose machine or internal codes in user-facing labels.
 - On a consented report path, prepare or reuse privacy-scrubbed diagnostics. Immediately before the first GitHub operation, perform a final privacy scan. This scan precedes the definitive lookup, report creation, and occurrence comment. Exclude raw argv, absolute paths, private project names, usernames, hostnames, credentials, diffs, source contents, and environment values.
-  1. **Report the Hgtran AI defect and continue**: Only after explicit consent and that final privacy scan, search open and closed issues in `Gentleman-Programming/hgtran-ai`.
+  1. **Report the Hgtran AI defect and continue**: Only after explicit consent and that final privacy scan, search open and closed issues in `desarrollohg01/hgtran-ai`.
        - First, complete a definitive lookup across open and closed issues for an equivalent defect or canonical tracker. Equivalent means the same observable defect and affected contract, backed by concrete evidence rather than title similarity alone; a canonical tracker owns the causal class. A definitive lookup is a completed open+closed lookup with a classifiable result; incomplete, error, or unknown is not definitive.
        - Only a definitive lookup may branch to GitHub mutation. If no equivalent exists, create a new automated provider-defect report.
        - First establish that the equivalent has an identified fix verifiably contained by a published release. Then determine the installed build and derive its evidence channel only from its build string: the contract's recognized prerelease tags are `-rc.` and `-main.`; every other build is stable. That release is a relevant published fix only when it is in the installed build's evidence channel. A main-only commit, local/source build, unmerged PR, or unsupported assertion is not published-fix evidence, including for prerelease or main builds.
@@ -52,7 +52,7 @@ When native SDD status reports `blocked(edit_authority_missing)`, its structured
 
 ### Language Domain Contract
 
-{{GENTLE_AI_SDD_SECTION:Language Domain Contract}}
+{{HGTRAN_AI_SDD_SECTION:Language Domain Contract}}
 
 ### Delegation Rules
 
@@ -108,7 +108,7 @@ The canonical native bounded-review contract is injected from the shared provide
 - Let native review select its bounded checking plan; delivery remains human-owned under ordinary repository policy.
 - Avoid delegation for truly local one-file fixes, quick state checks, and already-understood mechanical edits.
 
-{{GENTLE_AI_RESEARCH_LIFECYCLE}}
+{{HGTRAN_AI_RESEARCH_LIFECYCLE}}
 
 ## SDD Workflow (lazy-loaded)
 

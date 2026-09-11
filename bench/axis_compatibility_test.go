@@ -49,7 +49,7 @@ func TestCompatibilityAxisDeclaresItselfAndItsJourneys(t *testing.T) {
 		}
 		for _, journey := range journeys {
 			delete(want, journey.ID)
-			if journey.ID == "cw04-unbound-recovery-executes-without-agent-guess" && journey.Source != "https://github.com/Gentleman-Programming/hgtran-ai/issues/2885" {
+			if journey.ID == "cw04-unbound-recovery-executes-without-agent-guess" && journey.Source != "https://github.com/Gentleman-Programming/gentle-ai/issues/2885" {
 				t.Fatalf("cw04 source = %q", journey.Source)
 			}
 		}

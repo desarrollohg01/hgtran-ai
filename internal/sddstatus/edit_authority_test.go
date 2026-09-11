@@ -239,7 +239,7 @@ func TestEngramTasksTextBlocksApplyOnUnauthorizedTargets(t *testing.T) {
 	initEditAuthorityGitRepo(t, planning, true)
 	initEditAuthorityGitRepo(t, serviceA, false)
 	mkdir(t, filepath.Join(planning, ".engram"))
-	runRuntimeLedgerGit(t, planning, "remote", "add", "origin", "git@github.com:Gentleman-Programming/hgtran-ai.git")
+	runRuntimeLedgerGit(t, planning, "remote", "add", "origin", "git@github.com:desarrollohg01/hgtran-ai.git")
 
 	restore := stubEngramExport(t, []engramObservation{
 		{Title: "sdd/cross-repo/proposal", Content: "## Proposal\nRoll out the header", Project: "hgtran-ai", Scope: "project"},

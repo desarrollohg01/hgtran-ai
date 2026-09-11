@@ -273,7 +273,7 @@ printf 'repo=%s;tag=%s\n' "$GITHUB_REPOSITORY" "${RELEASE_VERIFICATION_TAG:-$GIT
 				"PATH="+fakeBin+string(os.PathListSeparator)+os.Getenv("PATH"),
 				"GH_CALL_LOG="+ghLog,
 				"GH_TOKEN=read-only-test-token",
-				"GITHUB_REPOSITORY=Gentleman-Programming/hgtran-ai",
+				"GITHUB_REPOSITORY=desarrollohg01/hgtran-ai",
 				"GITHUB_REF_NAME="+tc.githubRef,
 				"MINISIGN_PUBLIC_KEYS="+firstKey+","+signingKey,
 				"EXPECTED_SIGNING_KEY="+signingKey,
@@ -352,7 +352,7 @@ func TestGoReleaserSignsBoundManifestAndInjectsTrustAnchors(t *testing.T) {
 		`signature: ${artifact}.minisig`,
 		`- "${artifact}"`,
 		`- "${signature}"`,
-		`repo=Gentleman-Programming/hgtran-ai;tag={{ .Tag }}`,
+		`repo=desarrollohg01/hgtran-ai;tag={{ .Tag }}`,
 		`github.com/desarrollohg01/hgtran-ai/v2/internal/update/upgrade.releaseMinisignPublicKeys={{ .Env.MINISIGN_PUBLIC_KEYS_CANONICAL }}`,
 		"-trimpath",
 		"go run ./internal/releaseprovenancecmd --out .goreleaser-provenance/manifest.json --config .goreleaser.yaml --goreleaser-version v2.15.2",
@@ -605,7 +605,7 @@ cat "$FAKE_GH_RESPONSE"
 				"HOME="+home,
 				"PATH="+fakeBin+string(os.PathListSeparator)+os.Getenv("PATH"),
 				"GH_TOKEN=test-token",
-				"GITHUB_REPOSITORY=Gentleman-Programming/hgtran-ai",
+				"GITHUB_REPOSITORY=desarrollohg01/hgtran-ai",
 				"GITHUB_SHA="+sha,
 				"FAKE_GH_RESPONSE="+responsePath,
 				"FAKE_GH_LOG="+filepath.Join(root, "gh.log"),
@@ -702,7 +702,7 @@ func TestReleaseDocumentationStatesArchiveDownloadCeiling(t *testing.T) {
 
 func TestIsolatedMinisignTestPublicKeyFixture(t *testing.T) {
 	fixture := strings.TrimSpace(readRepositoryFile(t, "internal", "update", "upgrade", "testdata", "minisign-test.pub"))
-	const expected = "RWS5glvo7U0Evs9J03vF/Lma+BY/2PMol//qa7T4gLxl7+KLNlSIDk0X"
+	const expected = "RWQfIcjHfJKFHB2Ag7DDPybhZdQTi94+6HR0jbjfs7rOLu5+VyT/daU+"
 	if fixture != expected {
 		t.Fatalf("isolated Minisign test public key = %q, want %q", fixture, expected)
 	}

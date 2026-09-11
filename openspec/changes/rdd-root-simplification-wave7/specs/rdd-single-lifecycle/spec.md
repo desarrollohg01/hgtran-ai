@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Define the exit gate for removing `GENTLE_AI_RDD_NEW_LINEAGE` so exactly one
+Define the exit gate for removing `HGTRAN_AI_RDD_NEW_LINEAGE` so exactly one
 review lifecycle (v3) remains. Grounded at post-W6 chain tip `40176a8f`
 (pending Wave 6 verify); re-validate line references at task time.
 
@@ -11,7 +11,7 @@ review lifecycle (v3) remains. Grounded at post-W6 chain tip `40176a8f`
 ### Requirement: Byte-Equivalence Exit Evidence Precedes Switch Removal
 
 Before the switch and its legacy start branch are deleted, the wave MUST
-prove a `GENTLE_AI_RDD_NEW_LINEAGE=1` build and a switch-free build produce
+prove a `HGTRAN_AI_RDD_NEW_LINEAGE=1` build and a switch-free build produce
 byte-identical goldens, envelopes, and receipts, via same-fixture on/off
 double-evaluation across the full journey set. A golden diff during this
 proof MUST be treated as a defect signal, never a golden-update task.
@@ -82,7 +82,7 @@ scenario left with its requirement) → 8/8 (this SL-1 scenario move).
 ## Amendment (Wave 7 S7, WU18 attempt — deferred, not landed)
 
 WU18 attempted the switch removal this spec describes. The production
-change (deleting `GENTLE_AI_RDD_NEW_LINEAGE` and the legacy start branch)
+change (deleting `HGTRAN_AI_RDD_NEW_LINEAGE` and the legacy start branch)
 was completed and passed the byte-equivalence exit evidence above with zero
 golden drift. W-9/W-10/W-11 were re-confirmed green immediately before
 attempting removal.

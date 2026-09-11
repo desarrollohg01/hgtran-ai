@@ -64,7 +64,7 @@ func gentleAIHint(profile system.PlatformProfile) string {
 
 	switch profile.OS {
 	case "linux":
-		return "curl -fsSL https://raw.githubusercontent.com/Gentleman-Programming/hgtran-ai/main/scripts/install.sh | bash"
+		return "curl -fsSL https://raw.githubusercontent.com/desarrollohg01/hgtran-ai/main/scripts/install.sh | bash"
 	case "darwin":
 		return "hgtran-ai upgrade (downloads pre-built binary)"
 	case "windows":
@@ -85,5 +85,5 @@ func ggaHint(profile system.PlatformProfile) string {
 	if profile.PackageManager == "brew" && homebrewPackageInstalled("hga") {
 		return "brew upgrade gga"
 	}
-	return "See https://github.com/Gentleman-Programming/hgtran-guardian-angel"
+	return "See https://github.com/Gentleman-Programming/gentleman-guardian-angel"
 }

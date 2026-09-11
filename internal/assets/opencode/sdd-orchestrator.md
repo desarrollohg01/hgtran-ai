@@ -25,7 +25,7 @@ When it is ours, never offer to switch to, inspect, modify, or directly repair t
 
 - Ask the user first, in the active orchestrator conversation language, for explicit consent to report the apparent defect. Present one single-select blocking envelope with exactly three semantic choices in this order. Its exact internal answer tokens are `report_and_continue`, `continue_without_reporting`, `stop_here`. Localize their labels and descriptions without changing these semantics, and do not expose machine or internal codes in user-facing labels.
 - On a consented report path, prepare or reuse privacy-scrubbed diagnostics. Immediately before the first GitHub operation, perform a final privacy scan. This scan precedes the definitive lookup, report creation, and occurrence comment. Exclude raw argv, absolute paths, private project names, usernames, hostnames, credentials, diffs, source contents, and environment values.
-  1. **Report the Hgtran AI defect and continue**: Only after explicit consent and that final privacy scan, search open and closed issues in `Gentleman-Programming/hgtran-ai`.
+  1. **Report the Hgtran AI defect and continue**: Only after explicit consent and that final privacy scan, search open and closed issues in `desarrollohg01/hgtran-ai`.
        - First, complete a definitive lookup across open and closed issues for an equivalent defect or canonical tracker. Equivalent means the same observable defect and affected contract, backed by concrete evidence rather than title similarity alone; a canonical tracker owns the causal class. A definitive lookup is a completed open+closed lookup with a classifiable result; incomplete, error, or unknown is not definitive.
        - Only a definitive lookup may branch to GitHub mutation. If no equivalent exists, create a new automated provider-defect report.
        - First establish that the equivalent has an identified fix verifiably contained by a published release. Then determine the installed build and derive its evidence channel only from its build string: the contract's recognized prerelease tags are `-rc.` and `-main.`; every other build is stable. That release is a relevant published fix only when it is in the installed build's evidence channel. A main-only commit, local/source build, unmerged PR, or unsupported assertion is not published-fix evidence, including for prerelease or main builds.
@@ -51,7 +51,7 @@ When native SDD status reports `blocked(edit_authority_missing)`, its structured
 
 ### Language Domain Contract
 
-{{GENTLE_AI_SDD_SECTION:Language Domain Contract}}
+{{HGTRAN_AI_SDD_SECTION:Language Domain Contract}}
 
 ### Delegation Rules
 
@@ -155,7 +155,7 @@ Meta-commands (type directly - orchestrator handles them, won't appear in autoco
 
 ### Native SDD Dispatcher Guard
 
-{{GENTLE_AI_SDD_SECTION:Native SDD Dispatcher Guard}}
+{{HGTRAN_AI_SDD_SECTION:Native SDD Dispatcher Guard}}
 
 ### SDD Session Preflight (HARD GATE)
 
@@ -259,7 +259,7 @@ Cache the mode choice for the session - do not ask again unless the user explici
 
 Interactive approval is phase-scoped. Words like "continue", "dale", or "go on" approve only the immediate next phase, not the rest of the SDD pipeline. Do not treat a generated artifact as approved until the user has had a chance to review or explicitly delegate that review.
 
-{{GENTLE_AI_RESEARCH_LIFECYCLE}}
+{{HGTRAN_AI_RESEARCH_LIFECYCLE}}
 
 ### Automatic Mode Gatekeeper (MANDATORY)
 
@@ -283,7 +283,7 @@ In **Automatic** mode the orchestrator is the gatekeeper between phases. The gat
 
 **On gate FAIL:** re-run the same phase exactly once with corrective feedback that names the specific failures the gatekeeper found (do not blanket-retry). Re-run the gate on the new result. If it passes, continue the chain. If it fails again, STOP the automatic chain and surface a report to the user naming the phase, what the gatekeeper caught, both attempts, and the recommended fix. Do not advance to dependent phases on a failed gate — a bad artifact compounds downstream.
 
-A terminal `sdd_task_result_empty` or `sdd_task_result_malformed` failure is a transport failure, not a gate failure: do NOT retry it automatically, create or promote artifacts, or launch another SDD phase. The failure begins with the literal token `GENTLE_AI_SDD_FAILURE`; it is followed immediately by exactly one ASCII space (`U+0020`); the `hgtran-ai.sdd-task-result-failure/v1` JSON handoff follows that space. Preserve that JSON unchanged, run its `continuation` exactly once to read the current state, then surface the typed terminal failure and wait for an explicit user decision. A later launch in the same session receives `sdd_task_dispatch_latched` instead: that launch never dispatched, so it names the phase it requested, the earlier phase and code that actually failed, and its `exit` -- start a new session to launch SDD phases again.
+A terminal `sdd_task_result_empty` or `sdd_task_result_malformed` failure is a transport failure, not a gate failure: do NOT retry it automatically, create or promote artifacts, or launch another SDD phase. The failure begins with the literal token `HGTRAN_AI_SDD_FAILURE`; it is followed immediately by exactly one ASCII space (`U+0020`); the `hgtran-ai.sdd-task-result-failure/v1` JSON handoff follows that space. Preserve that JSON unchanged, run its `continuation` exactly once to read the current state, then surface the typed terminal failure and wait for an explicit user decision. A later launch in the same session receives `sdd_task_dispatch_latched` instead: that launch never dispatched, so it names the phase it requested, the earlier phase and code that actually failed, and its `exit` -- start a new session to launch SDD phases again.
 
 OpenCode `background: true` launch acknowledgements and progress signals are nonterminal. They must not produce either transport failure or a session latch; wait for the child to complete, then use the normal artifact/status route.
 
@@ -291,7 +291,7 @@ The gatekeeper runs in addition to the Review Workload Guard and the Mandatory D
 
 ### Native Runtime Attempt Authority (MANDATORY)
 
-{{GENTLE_AI_SDD_SECTION:Native Runtime Attempt Authority (MANDATORY)}}
+{{HGTRAN_AI_SDD_SECTION:Native Runtime Attempt Authority (MANDATORY)}}
 
 ### Artifact Store Mode
 
@@ -329,7 +329,7 @@ When delivery planning yields chained PRs, treat `chained-pr` (registry skill `h
 
 ### Dependency Graph
 
-{{GENTLE_AI_SDD_SECTION:Dependency Graph}}
+{{HGTRAN_AI_SDD_SECTION:Dependency Graph}}
 
 ### Result Contract
 

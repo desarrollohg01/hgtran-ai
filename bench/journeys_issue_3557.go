@@ -111,7 +111,7 @@ func issue3557Journeys() []Journey {
 		ID:     "j117-doctor-dangling-managed-config",
 		Review: reviewUntouched,
 		Title:  "Doctor identifies a dangling managed config symlink without recommending sync",
-		Source: "https://github.com/Gentleman-Programming/hgtran-ai/issues/3557",
+		Source: "https://github.com/Gentleman-Programming/gentle-ai/issues/3557",
 		Steps: []Step{
 			{Name: "fixture: dangling OpenCode managed config symlink", Fixture: issue3557DanglingSymlinkFixture},
 			{Name: "doctor reports manual repair and preserves the filesystem", Skip: issue3557SymlinkSkip, Args: issue3557DoctorArgs, After: issue3557VerifyDoctor},

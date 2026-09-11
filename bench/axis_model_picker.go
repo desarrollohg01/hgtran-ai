@@ -33,7 +33,7 @@ func modelPickerJourneys() []Journey {
 		ID:     "j97-opencode-custom-agent-model-picker-runtime",
 		Review: reviewUntouched,
 		Title:  "Runtime model picker discovers and persists a custom native agent assignment",
-		Source: "https://github.com/Gentleman-Programming/hgtran-ai/issues/2098",
+		Source: "https://github.com/Gentleman-Programming/gentle-ai/issues/2098",
 		Steps: []Step{
 			{Name: "fixture: unconfigured custom agent and selectable model", Fixture: modelPickerFixture},
 			{Name: "public model-picker runtime exposes and persists the custom assignment", Requires: modelPickerCapability,

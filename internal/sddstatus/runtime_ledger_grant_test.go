@@ -4,10 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"os"
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"github.com/desarrollohg01/hgtran-ai/v2/internal/symlinktest"
 )
 
 // TestRuntimeLedgerGrantCommitsAndProjectsGrantedRoots is #2540 S2's core
@@ -30,9 +31,7 @@ func TestRuntimeLedgerGrantCommitsAndProjectsGrantedRoots(t *testing.T) {
 		t.Fatal(err)
 	}
 	link := filepath.Join(t.TempDir(), "sibling-link")
-	if err := os.Symlink(sibling, link); err != nil {
-		t.Fatal(err)
-	}
+	symlinktest.MustSymlink(t, sibling, link)
 
 	// The caller passes the SYMLINK path; the recorded and projected root must
 	// be the canonical evaluated target, following BeginWorktree's precedent.

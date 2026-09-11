@@ -19,6 +19,6 @@ const (
 	ReviewerBindingMarker = "HGTRAN_AI_REVIEW_BINDING"
 	// ReviewerContextMarker opens the immutable candidate evidence block, and
 	// ReviewerContextTerminator closes it.
-	ReviewerContextMarker     = "GENTLE_AI_REVIEW_CONTEXT"
+	ReviewerContextMarker     = "HGTRAN_AI_REVIEW_CONTEXT"
 	ReviewerContextTerminator = ReviewerContextMarker + "_END"
 )

@@ -16,7 +16,7 @@ func issue3094Journeys() []Journey {
 		ID:     "j103-sdd-interrupted-settlement-omits-evidence",
 		Review: reviewOptedIn,
 		Title:  "Interrupted runtime settlement omits evidence and replays without a second record",
-		Source: "https://github.com/Gentleman-Programming/hgtran-ai/issues/3094",
+		Source: "https://github.com/Gentleman-Programming/gentle-ai/issues/3094",
 		Steps: []Step{
 			{Name: "fixture: repository with a committed OpenSpec change", Fixture: sddRuntimeRepo},
 			{Name: "acquire through the public compact CLI and retain its token", Requires: sddAttemptAcquireCapability, Composite: issue3094Acquire},

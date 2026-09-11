@@ -132,7 +132,7 @@ func consentShellEnvironment(t *testing.T, home string) []string {
 	t.Helper()
 	binDir := t.TempDir()
 	if err := os.Symlink(organicBinary, filepath.Join(binDir, "hgtran-ai")); err != nil {
-		t.Fatal(err)
+		t.Skipf("directory aliases are unavailable: %v", err)
 	}
 	environment := organicEnvironment(home)
 	for index, entry := range environment {

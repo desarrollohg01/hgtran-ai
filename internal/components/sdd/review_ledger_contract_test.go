@@ -299,7 +299,7 @@ func assertOpenCodeProviderInjectedReviewer(t *testing.T, label string, agent ma
 	if strings.Contains(prompt, "unsupported-capability") {
 		t.Fatalf("%s prompt still refuses immutable inspection as unsupported: %s", label, prompt)
 	}
-	if !strings.Contains(prompt, "GENTLE_AI_REVIEW_CONTEXT") || !strings.Contains(prompt, "You have no execution tools") {
+	if !strings.Contains(prompt, "HGTRAN_AI_REVIEW_CONTEXT") || !strings.Contains(prompt, "You have no execution tools") {
 		t.Fatalf("%s prompt does not name the provider-injected context block: %s", label, prompt)
 	}
 	permission, ok := agent["permission"].(map[string]any)
@@ -486,7 +486,7 @@ func TestKilocodeReviewSettingsMatchCurrentMainBaseline(t *testing.T) {
 	// orquestador de OpenCode, asi que todas esas sustituciones entran en el
 	// contenido hasheado. Verificado: el hash se movio con cada renombrado y no
 	// por otra causa.
-	const want = "9c1979b04496a10eac983bee582b66dfd530dc5b980027ae7c6a60571cd1d230"
+	const want = "71469dff8f09250b9a673355ca4acbcf46414c3da6cd0d346e30b2f436400a32"
 	if got != want {
 		t.Fatalf("Kilocode settings SHA-256 = %s, want current-main baseline %s", got, want)
 	}

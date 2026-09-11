@@ -196,7 +196,7 @@ func containsString(values []string, target string) bool {
 // TickMsg drives the spinner animation on the installing screen.
 type TickMsg time.Time
 
-const noAnimationEnv = "GENTLE_AI_NO_ANIMATION"
+const noAnimationEnv = "HGTRAN_AI_NO_ANIMATION"
 
 func tuiAnimationsDisabled() bool {
 	return os.Getenv(noAnimationEnv) == "1"

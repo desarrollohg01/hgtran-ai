@@ -119,7 +119,7 @@ This is collected by `SDD Session Preflight`. If missing, enforce the hard gate 
 
 If the user doesn't specify, default to **Automatic**. After scope approval, expect zero further prompts on the happy path and at most one actionable prompt per recoverable failure; the gatekeeper summarizes phase progress instead of interrupting except on a second consecutive gate failure or a genuine scope/product decision. Interactive approval is phase-scoped; words like "continue", "dale", or "go on" approve only the immediate next phase.
 
-{{GENTLE_AI_RESEARCH_LIFECYCLE}}
+{{HGTRAN_AI_RESEARCH_LIFECYCLE}}
 
 ### Automatic Mode Gatekeeper (MANDATORY)
 

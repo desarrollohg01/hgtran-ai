@@ -106,7 +106,7 @@ func TestResolveEngramUsesTheSameNativeRuntimeAuthority(t *testing.T) {
 	if err := os.MkdirAll(filepath.Join(repo, ".engram"), 0o755); err != nil {
 		t.Fatal(err)
 	}
-	runRuntimeLedgerGit(t, repo, "remote", "add", "origin", "git@github.com:Gentleman-Programming/hgtran-ai.git")
+	runRuntimeLedgerGit(t, repo, "remote", "add", "origin", "git@github.com:desarrollohg01/hgtran-ai.git")
 	restore := stubEngramExport(t, []engramObservation{
 		{Title: "sdd/engram-runtime/proposal", Content: "## Proposal\nNative runtime", Project: "hgtran-ai", Scope: "project"},
 		{Title: "sdd/engram-runtime/spec", Content: "### Requirement: Runtime\n#### Scenario: Native authority\n", Project: "hgtran-ai", Scope: "project"},
@@ -154,7 +154,7 @@ func TestResolveExplainsFreshVerificationAfterEvidenceOnlyRuntimeRemediation(t *
 				if err := os.MkdirAll(filepath.Join(fixture.repo, ".engram"), 0o755); err != nil {
 					t.Fatal(err)
 				}
-				runRuntimeLedgerGit(t, fixture.repo, "remote", "add", "origin", "git@github.com:Gentleman-Programming/hgtran-ai.git")
+				runRuntimeLedgerGit(t, fixture.repo, "remote", "add", "origin", "git@github.com:desarrollohg01/hgtran-ai.git")
 				restore := stubEngramExport(t, []engramObservation{
 					{Title: "sdd/" + fixture.change + "/proposal", Content: "## Proposal\n", Project: "hgtran-ai", Scope: "project"},
 					{Title: "sdd/" + fixture.change + "/spec", Content: "### Requirement: Runtime\n#### Scenario: Fresh evidence\n", Project: "hgtran-ai", Scope: "project"},

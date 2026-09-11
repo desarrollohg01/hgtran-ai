@@ -1,9 +1,199 @@
 package reviewtransaction
 
 import (
+	"context"
+	"errors"
 	"reflect"
+	"strings"
 	"testing"
 )
+
+// TestAccountingOnlyRecoveryImportsExactPredecessorEvidenceIntoValidatingSuccessor
+// proves RecoverCompactAuthority's accounting-only evidence-import path: an
+// escalated predecessor whose only failure was correction-line accounting
+// (both original-criteria and correction-regression checks passed) recovers
+// into a validating successor that carries the predecessor's exact admitted
+// review evidence and repository-derived correction accounting, without
+// requiring (or mutating) anything else.
+func TestAccountingOnlyRecoveryImportsExactPredecessorEvidenceIntoValidatingSuccessor(t *testing.T) {
+	repo := initSnapshotRepo(t)
+	predecessor := accountingOnlyRecoverableEscalatedState(t, repo, "accounting-only-predecessor")
+	predecessorStore, predecessorRecord := persistEscalatedRecoveryFixture(t, repo, predecessor)
+
+	successor := recoveredEvidenceSuccessor(t, repo, predecessor, "accounting-only-successor")
+	const actor = "maintainer@example.com"
+	const reason = "recover repository-derived correction after historical line-accounting escalation"
+	authorization := compactRecoveryAuthorizationBinding(
+		predecessor.LineageID, predecessorRecord.Revision, successor.InitialSnapshot.Identity, actor, reason,
+	)
+	recovered, err := RecoverCompactAuthority(context.Background(), repo, CompactRecoveryRequest{
+		PredecessorLineageID: predecessor.LineageID, ExpectedPredecessorRevision: predecessorRecord.Revision,
+		Successor: successor, Disposition: RecoveryEscalated, Reason: reason, Actor: actor,
+		MaintainerAuthorization: authorization,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if recovered.State.State != StateValidating || recovered.State.Recovery == nil || recovered.State.Recovery.Evidence == nil {
+		t.Fatalf("recovered state = %#v", recovered.State)
+	}
+	evidence := recovered.State.Recovery.Evidence
+	attempt := predecessorRecord.State.CorrectionAttempts[len(predecessorRecord.State.CorrectionAttempts)-1]
+	request, err := rebuildCompactRecoveredTargetedValidationRequest(predecessorRecord.State, *evidence)
+	if err != nil {
+		t.Fatalf("rebuild targeted validation request: %v", err)
+	}
+	// The fixture's correction rewrites tracked.txt's final line only ("four"
+	// -> "fixed"): one repository-derived changed line, counted here as one
+	// removal plus one addition (2), even though the predecessor's recorded
+	// (accounted) total was budget+1 (3). That gap between the accounted total
+	// and the true repository-derived diff is exactly what makes this
+	// escalation accounting-only and recoverable.
+	if evidence.NativeCorrectionLines != 2 || evidence.NativeCorrectionLines > predecessorRecord.State.CorrectionBudget ||
+		evidence.NativeCorrectionLines >= attempt.ActualLines ||
+		request.ExpectedRevision != predecessorRecord.State.CapturePhaseRevision ||
+		request.TargetIdentity != predecessor.InitialSnapshot.Identity ||
+		request.CorrectionTargetIdentity != predecessorRecord.State.CurrentSnapshot.Identity ||
+		!reflect.DeepEqual(recovered.State.AdmittedRoleResults, predecessorRecord.State.AdmittedRoleResults) ||
+		recovered.State.FixDeltaHash != predecessor.FixDeltaHash ||
+		recovered.State.ActualCorrectionLines == nil || *recovered.State.ActualCorrectionLines != evidence.NativeCorrectionLines ||
+		len(recovered.State.CorrectionAttempts) != 0 || !snapshotsEqual(recovered.State.InitialSnapshot, recovered.State.CurrentSnapshot) {
+		t.Fatalf("imported recovery evidence = %#v, state=%#v", evidence, recovered.State)
+	}
+	if err := validateCompactRecoveryEdge(predecessorRecord, recovered.State); err != nil {
+		t.Fatalf("recovered edge: %v", err)
+	}
+
+	unchangedPredecessor, err := predecessorStore.Load()
+	if err != nil || unchangedPredecessor.Revision != predecessorRecord.Revision ||
+		!compactStateEqual(unchangedPredecessor.State, predecessorRecord.State) {
+		t.Fatalf("recovery mutated predecessor: err=%v before=%#v after=%#v", err, predecessorRecord, unchangedPredecessor)
+	}
+}
+
+// accountingOnlyRecoverableEscalatedState builds an escalated authority whose
+// only failure is correction-line accounting: the recorded correction actual
+// exceeds the frozen budget by exactly one line, but the repository-derived
+// native diff for that same correction attempt is a strictly smaller,
+// single-line replacement that stays within both the proposed lines and the
+// frozen budget. That gap between the (wrong) recorded accounting and the
+// (true) repository evidence is exactly what RecoverCompactAuthority's
+// accounting-only import path exists to repair. It intentionally builds its
+// own fixture (rather than reusing the shared accountingOnlyEscalatedState in
+// compact_escalation_accounting_test.go) because that shared fixture pins its
+// budget/proposed/actual at 1/1/2 for EscalationAccounting() reporting tests,
+// which makes the native and accounted lines equal — ineligible for recovery.
+func accountingOnlyRecoverableEscalatedState(t *testing.T, repo, lineage string) CompactState {
+	t.Helper()
+	writeSnapshotFile(t, repo, "tracked.txt", "base\none\ntwo\nthree\nfour\nfive\nsix\nseven\n")
+	state := newCompactTestState(t, repo, lineage)
+	t.Logf("DEBUG risk=%q originalChangedLines=%d budget=%d lenses=%v", state.RiskLevel, state.OriginalChangedLines, state.CorrectionBudget, state.SelectedLenses)
+	if state.CorrectionBudget < 2 || len(state.SelectedLenses) != 1 {
+		t.Fatalf("fixture risk/budget = %q/%d", state.RiskLevel, state.CorrectionBudget)
+	}
+	store, err := CompactAuthoritativeStore(context.Background(), repo, state.LineageID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := store.Replace("", "review/start", state); err != nil {
+		t.Fatal(err)
+	}
+	finding := Finding{
+		ID: "R3-001", Lens: strings.TrimPrefix(state.SelectedLenses[0], "review-"), Location: "tracked.txt:5", Severity: "CRITICAL",
+		Claim: "candidate retains the wrong value", ProofRefs: []string{"candidate-only differential failure"},
+		EvidenceClass: EvidenceDeterministic, CausalDisposition: CausalIntroduced,
+	}
+	state, _ = captureAndCompleteCompactReview(t, store, state, CompactReviewInput{
+		LensResults:     []LensResult{{Lens: state.SelectedLenses[0], Findings: []Finding{finding}, Evidence: []string{"reviewed exact candidate tree"}}},
+		Classifications: []FindingEvidence{{FindingID: finding.ID, Class: EvidenceDeterministic, Causality: CausalIntroduced, Proof: "changed hunk"}},
+		RefuterOutcomes: []EvidenceResult{},
+	})
+	if err := state.BeginCorrection(2); err != nil {
+		t.Fatal(err)
+	}
+	writeSnapshotFile(t, repo, "tracked.txt", "base\none\ntwo\nthree\nfixed\n")
+	fix, err := (SnapshotBuilder{Repo: repo}).Build(context.Background(), Target{
+		Kind: TargetFixDiff, BaseRef: state.CurrentSnapshot.CandidateTree,
+		IntendedUntracked: state.InitialSnapshot.IntendedUntracked, LedgerIDs: state.FixFindingIDs,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	fixHash := FixDeltaHashForSnapshot(fix)
+	validation := bindTargetedValidationForTest(ScopedValidationResult{
+		LedgerIDs: state.FixFindingIDs, FixCausedFindings: []Finding{}, FollowUps: []FollowUp{},
+		OriginalCriteria:     ValidationCheck{EvidenceHash: hash("2"), FixDeltaHash: fixHash, Passed: true},
+		CorrectionRegression: ValidationCheck{EvidenceHash: hash("3"), FixDeltaHash: fixHash, Passed: true},
+	}, fix)
+	if err := state.CompleteCorrection(fix, state.CorrectionBudget+1, validation); err != nil {
+		t.Fatal(err)
+	}
+	if !compactAccountingOnlyEscalation(state) {
+		t.Fatalf("fixture is not accounting-only escalation: %#v", state)
+	}
+	return state
+}
+
+// TestAccountingOnlyRecoveryFailsClosedOrStartsFreshWhenEvidenceDoesNotMatch
+// proves the accounting-only import path only ever engages for the exact
+// eligible predecessor/successor pair: a stale expected revision still fails
+// closed with ErrConcurrentUpdate, a policy mismatch refuses the import and
+// then finds the (unchanged) target already recovered, and a genuinely
+// changed target falls through to an ordinary fresh-review successor instead
+// of reusing stale evidence.
+func TestAccountingOnlyRecoveryFailsClosedOrStartsFreshWhenEvidenceDoesNotMatch(t *testing.T) {
+	t.Run("stale predecessor revision", func(t *testing.T) {
+		repo := initSnapshotRepo(t)
+		predecessor := accountingOnlyEscalatedState(t, repo, "accounting-stale-predecessor")
+		_, record := persistEscalatedRecoveryFixture(t, repo, predecessor)
+		successor := recoveredEvidenceSuccessor(t, repo, predecessor, "accounting-stale-successor")
+		request := CompactRecoveryRequest{
+			PredecessorLineageID: predecessor.LineageID, ExpectedPredecessorRevision: hash("8"), Successor: successor,
+			Disposition: RecoveryEscalated, Reason: "stale", Actor: "maintainer@example.com",
+			MaintainerAuthorization: compactRecoveryAuthorizationBinding(predecessor.LineageID, record.Revision, successor.InitialSnapshot.Identity, "maintainer@example.com", "stale"),
+		}
+		if _, err := RecoverCompactAuthority(context.Background(), repo, request); !errors.Is(err, ErrConcurrentUpdate) {
+			t.Fatalf("stale recovery error = %v", err)
+		}
+	})
+
+	t.Run("policy mismatch cannot import", func(t *testing.T) {
+		repo := initSnapshotRepo(t)
+		predecessor := accountingOnlyEscalatedState(t, repo, "accounting-policy-predecessor")
+		_, record := persistEscalatedRecoveryFixture(t, repo, predecessor)
+		successor := recoveredEvidenceSuccessor(t, repo, predecessor, "accounting-policy-successor")
+		successor.PolicyHash = hash("7")
+		const actor, reason = "maintainer@example.com", "policy mismatch"
+		_, err := RecoverCompactAuthority(context.Background(), repo, CompactRecoveryRequest{
+			PredecessorLineageID: predecessor.LineageID, ExpectedPredecessorRevision: record.Revision, Successor: successor,
+			Disposition: RecoveryEscalated, Reason: reason, Actor: actor,
+			MaintainerAuthorization: compactRecoveryAuthorizationBinding(predecessor.LineageID, record.Revision, successor.InitialSnapshot.Identity, actor, reason),
+		})
+		if err == nil || !strings.Contains(err.Error(), "target has not changed") {
+			t.Fatalf("policy-mismatched evidence import error = %v", err)
+		}
+	})
+
+	t.Run("changed bytes use fresh review", func(t *testing.T) {
+		repo := initSnapshotRepo(t)
+		predecessor := accountingOnlyEscalatedState(t, repo, "accounting-changed-predecessor")
+		_, record := persistEscalatedRecoveryFixture(t, repo, predecessor)
+		writeSnapshotFile(t, repo, "tracked.txt", "base\none\ntwo\nthree\nchanged again\n")
+		successor := recoveredEvidenceSuccessor(t, repo, predecessor, "accounting-changed-successor")
+		const actor, reason = "maintainer@example.com", "changed candidate recovery"
+		recovered, err := RecoverCompactAuthority(context.Background(), repo, CompactRecoveryRequest{
+			PredecessorLineageID: predecessor.LineageID, ExpectedPredecessorRevision: record.Revision, Successor: successor,
+			Disposition: RecoveryEscalated, Reason: reason, Actor: actor,
+			MaintainerAuthorization: compactRecoveryAuthorizationBinding(predecessor.LineageID, record.Revision, successor.InitialSnapshot.Identity, actor, reason),
+		})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if recovered.State.State != StateReviewing || recovered.State.Recovery.Evidence != nil || len(recovered.State.AdmittedRoleResults) != 0 {
+			t.Fatalf("changed target reused predecessor evidence: %#v", recovered.State)
+		}
+	})
+}
 
 func TestCompactRecoveredEvidenceOwnsOnlyAccountingReferences(t *testing.T) {
 	typeOfEvidence := reflect.TypeOf(CompactRecoveredEvidence{})

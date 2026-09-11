@@ -33,7 +33,7 @@ func TestSDDTaskResultRefusesAnEmptyResultWithTheTypedHandoff(t *testing.T) {
 	if err == nil {
 		t.Fatal("empty result was admitted")
 	}
-	if !strings.HasPrefix(err.Error(), "GENTLE_AI_SDD_FAILURE ") {
+	if !strings.HasPrefix(err.Error(), "HGTRAN_AI_SDD_FAILURE ") {
 		t.Errorf("error is not the typed handoff: %q", err.Error())
 	}
 	if !strings.Contains(err.Error(), `"code":"sdd_task_result_empty"`) {

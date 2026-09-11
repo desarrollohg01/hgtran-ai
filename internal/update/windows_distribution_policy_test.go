@@ -298,7 +298,7 @@ func TestReleaseDistributionPolicyAssertionFailsClosed(t *testing.T) {
 			mutate: func(t *testing.T, root string) {
 				replaceReleasePolicyFile(t, root, filepath.Join(".github", "workflows", "release.yml"),
 					"      - name: Verify published assets from GitHub\n",
-					"      - name: Create release through GitHub API\n        run: gh api --method POST repos/Gentleman-Programming/hgtran-ai/releases\n\n      - name: Verify published assets from GitHub\n")
+					"      - name: Create release through GitHub API\n        run: gh api --method POST repos/desarrollohg01/hgtran-ai/releases\n\n      - name: Verify published assets from GitHub\n")
 			},
 		},
 	} {
@@ -332,7 +332,7 @@ func TestModifiedReleaseVerifierCannotGainWriteAuthority(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if _, err := file.WriteString("\ngh api --method POST repos/Gentleman-Programming/hgtran-ai/releases\n"); err != nil {
+	if _, err := file.WriteString("\ngh api --method POST repos/desarrollohg01/hgtran-ai/releases\n"); err != nil {
 		_ = file.Close()
 		t.Fatal(err)
 	}
@@ -521,7 +521,7 @@ const releasePolicyArtifactsFixture = `[
   {"name":"hgtran-ai-review-provider-contract-1.1.0.tar.gz","path":"dist/hgtran-ai-review-provider-contract-1.1.0.tar.gz","type":"Archive","extra":{"Binaries":[],"Format":"tar.gz","ID":"review-provider-contract"}},
   {"name":"hgtran-ai-release-provenance-v1.tar.gz","path":"dist/hgtran-ai-release-provenance-v1.tar.gz","type":"Archive","extra":{"Binaries":[],"Format":"tar.gz","ID":"release-provenance"}},
   {"name":"checksums.txt","path":"dist/checksums.txt","type":"Checksum","extra":{}},
-  {"name":"hgtran-ai.rb","path":"dist/homebrew/Formula/hgtran-ai.rb","type":"Homebrew Formula","extra":{"BrewConfig":{"name":"hgtran-ai","repository":{"owner":"Gentleman-Programming","name":"homebrew-tap","token":"{{ .Env.HOMEBREW_TAP_TOKEN }}"},"directory":"Formula"}}}
+  {"name":"hgtran-ai.rb","path":"dist/homebrew/Formula/hgtran-ai.rb","type":"Homebrew Formula","extra":{"BrewConfig":{"name":"hgtran-ai","repository":{"owner":"desarrollohg01","name":"homebrew-tap","token":"{{ .Env.HOMEBREW_TAP_TOKEN }}"},"directory":"Formula"}}}
 ]`
 
 const releasePolicyRunID = "release-policy-test-run"

@@ -13,9 +13,9 @@ import (
 	"testing"
 )
 
-const claudeAdapterHelperEnvironment = "GENTLE_AI_REVIEWER_PROVIDER_CLAUDE_HELPER"
-const claudeAdapterPromptPathEnvironment = "GENTLE_AI_REVIEWER_PROVIDER_CLAUDE_PROMPT_PATH"
-const claudeAdapterArgumentsPathEnvironment = "GENTLE_AI_REVIEWER_PROVIDER_CLAUDE_ARGUMENTS_PATH"
+const claudeAdapterHelperEnvironment = "HGTRAN_AI_REVIEWER_PROVIDER_CLAUDE_HELPER"
+const claudeAdapterPromptPathEnvironment = "HGTRAN_AI_REVIEWER_PROVIDER_CLAUDE_PROMPT_PATH"
+const claudeAdapterArgumentsPathEnvironment = "HGTRAN_AI_REVIEWER_PROVIDER_CLAUDE_ARGUMENTS_PATH"
 
 func TestClaudeAdapterReturnsNoBytesWhenUnavailable(t *testing.T) {
 	adapter := &ClaudeAdapter{LookPath: func(string) (string, error) { return "", errors.New("not found") }}

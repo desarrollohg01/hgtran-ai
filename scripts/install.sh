@@ -6,10 +6,10 @@ set -euo pipefail
 # Ecosystem, Frameworks, Workflows for AI coding agents.
 #
 # Usage:
-#   curl -sL https://raw.githubusercontent.com/Gentleman-Programming/hgtran-ai/main/scripts/install.sh | bash
+#   curl -sL https://raw.githubusercontent.com/desarrollohg01/hgtran-ai/main/scripts/install.sh | bash
 #
 # Or download and run:
-#   curl -sLO https://raw.githubusercontent.com/Gentleman-Programming/hgtran-ai/main/scripts/install.sh
+#   curl -sLO https://raw.githubusercontent.com/desarrollohg01/hgtran-ai/main/scripts/install.sh
 #   chmod +x install.sh
 #   ./install.sh
 # ============================================================================

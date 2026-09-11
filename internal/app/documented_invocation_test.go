@@ -135,7 +135,7 @@ func collectDocumentedInvocations(t *testing.T) []documentedInvocation {
 var placeholderRegexp = regexp.MustCompile(`<[a-zA-Z][a-zA-Z0-9_ .-]*>`)
 var optionalWordRegexp = regexp.MustCompile(`^\[[a-z-]+\]$`)
 
-const documentedRuntimeAgentIDPlaceholder = "{{GENTLE_AI_RUNTIME_AGENT_ID}}"
+const documentedRuntimeAgentIDPlaceholder = "{{HGTRAN_AI_RUNTIME_AGENT_ID}}"
 const documentedRuntimeAgentID = "opencode"
 
 func wordNeedsShell(word string) bool {

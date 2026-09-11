@@ -103,7 +103,7 @@ Kiro uses native custom agents in `~/.kiro/agents/`. `hgtran-ai` writes phase ag
 
 - Full multi-agent overlay with 11 named agents in `opencode.json` (`hgtran-orchestrator` plus 10 SDD phase agents)
 - Slash commands for SDD phases (`/sdd-new`, `/sdd-explore`, etc.)
-- Native OpenCode `task` subagents; managed background execution is configured through `hgtran-ai install` / `hgtran-ai sync` with `--opencode-background-subagents=auto|on|off` or `GENTLE_AI_OPENCODE_BACKGROUND_SUBAGENTS`
+- Native OpenCode `task` subagents; managed background execution is configured through `hgtran-ai install` / `hgtran-ai sync` with `--opencode-background-subagents=auto|on|off` or `HGTRAN_AI_OPENCODE_BACKGROUND_SUBAGENTS`
 - CLI precedence is flag, non-empty environment, prior managed state, then `auto`; the interactive OpenCode + SDD installer prompts only when that preference is unresolved
 - Managed launchers live under `~/.hgtran-ai/bin/` and preserve an explicit `OPENCODE_EXPERIMENTAL_BACKGROUND_SUBAGENTS=false`; restart OpenCode after enabling them
 - `serve`, `attach`, Desktop, and sessions not launched through the managed launcher use the safe foreground fallback
@@ -257,7 +257,7 @@ For the full Pi command and package reference, see [Pi Agent](pi.md).
 - **`hgtran-engram` package**: adds persistent Engram memory for Pi. It captures sessions, exposes Engram MCP tools through `pi-mcp-adapter`, and degrades safely when the local `engram` binary is missing.
 - **MCP adapter wiring**: ComponentEngram declares `npm:pi-mcp-adapter` in `.pi/agent/settings.json` packages and adds `pi-mcp-adapter` `^2.6.0` to `.pi/npm/package.json` without removing unrelated user entries. `pi-engram init` owns the Pi Engram MCP config schema and is run during installation.
 - **`pi-subagents-j0k3r` package**: discovers and runs SDD agents from `.pi/agents/`; Hgtran AI installs it directly with `pi install npm:pi-subagents-j0k3r`.
-- **Background subagents**: managed background execution is configured through `hgtran-ai install` / `hgtran-ai sync` with `--pi-background-subagents=auto|on|off` or `GENTLE_AI_PI_BACKGROUND_SUBAGENTS`; there is no launcher or activation plumbing, because the primitive is the already-installed `pi-subagents-j0k3r` extension.
+- **Background subagents**: managed background execution is configured through `hgtran-ai install` / `hgtran-ai sync` with `--pi-background-subagents=auto|on|off` or `HGTRAN_AI_PI_BACKGROUND_SUBAGENTS`; there is no launcher or activation plumbing, because the primitive is the already-installed `pi-subagents-j0k3r` extension.
 - CLI precedence is flag, non-empty environment, prior managed state, then `auto`; `auto` never enables by itself, unresolved non-interactive `auto` stays foreground, and the interactive Pi installer prompts only when that preference is unresolved.
 - The resolved on/off policy is projected to `~/.pi/hgtran-ai/background-subagents.json` as `{"schema":"hgtran-pi.background-subagents/v1","policy":"on"|"off"}` (the base directory honors `GENTLE_PI_CONFIG_HOME`); `off` rewrites the policy instead of deleting files, and a file at that path without the managed schema marker is never overwritten.
 - **`@juicesharp/rpiv-ask-user-question` package**: lets Pi child agents ask the active user session for clarification when they need human input.

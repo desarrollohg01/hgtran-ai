@@ -153,7 +153,7 @@ func (b *battery) runOpenCodeLane() {
 		case !controlResult.AfterOK:
 			b.fail(openCodeLane, "lens frame: Go-typed control", firstLine(controlResult.Error))
 			return
-		case !strings.HasPrefix(controlResult.ChildPrompt, "GENTLE_AI_REVIEW_PROVIDER_MATERIALIZATION "):
+		case !strings.HasPrefix(controlResult.ChildPrompt, "HGTRAN_AI_REVIEW_PROVIDER_MATERIALIZATION "):
 			b.fail(openCodeLane, "lens frame: Go-typed control", "child prompt is not the Go-issued materialization")
 			return
 		default:
@@ -532,7 +532,7 @@ func grantedInvocation(consent map[string]any) string {
 // preserving the binding semantics byte-for-byte at the field level.
 func reserializeBindingLine(prompt string) (string, error) {
 	line, rest, hasRest := strings.Cut(prompt, "\n")
-	const header = "GENTLE_AI_REVIEW_PROVIDER_TASK "
+	const header = "HGTRAN_AI_REVIEW_PROVIDER_TASK "
 	encoded, found := strings.CutPrefix(line, header)
 	if !found {
 		return "", fmt.Errorf("provider task prompt has no role binding header")

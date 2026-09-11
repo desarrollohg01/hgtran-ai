@@ -19,7 +19,7 @@ const (
 	// trigger release.yml, so building one by hand is the documented path, and a
 	// local checkout knows no tag, run or workflow it could honestly name.
 	localSchema         = "hgtran-ai.release-provenance/local-build"
-	repository          = "Gentleman-Programming/hgtran-ai"
+	repository          = "desarrollohg01/hgtran-ai"
 	goReleaserVersion   = "v2.15.2"
 	providerArchiveKind = "provider-contract"
 )

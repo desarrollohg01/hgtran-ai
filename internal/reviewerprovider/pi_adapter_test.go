@@ -14,8 +14,8 @@ import (
 	"testing"
 )
 
-const piAdapterHelperEnvironment = "GENTLE_AI_REVIEWER_PROVIDER_PI_HELPER"
-const piAdapterPromptPathEnvironment = "GENTLE_AI_REVIEWER_PROVIDER_PI_PROMPT_PATH"
+const piAdapterHelperEnvironment = "HGTRAN_AI_REVIEWER_PROVIDER_PI_HELPER"
+const piAdapterPromptPathEnvironment = "HGTRAN_AI_REVIEWER_PROVIDER_PI_PROMPT_PATH"
 
 func TestPiAdapterReturnsNoBytesWhenUnavailable(t *testing.T) {
 	adapter := &PiAdapter{LookPath: func(string) (string, error) { return "", errors.New("not found") }}

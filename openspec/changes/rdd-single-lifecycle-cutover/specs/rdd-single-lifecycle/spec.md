@@ -11,7 +11,7 @@ depends on.
 
 ### Requirement: Exactly One Lifecycle After Removal
 
-After removal, no `GENTLE_AI_RDD_NEW_LINEAGE` reference, legacy start
+After removal, no `HGTRAN_AI_RDD_NEW_LINEAGE` reference, legacy start
 branch, or legacy mutation path MUST remain reachable.
 
 #### Scenario: Every start request takes the v3 path
@@ -26,7 +26,7 @@ branch, or legacy mutation path MUST remain reachable.
 ### Requirement: Byte-Equivalence Exit Evidence Precedes Switch Removal
 
 Before the switch and its legacy start branch are deleted, the wave MUST
-prove a `GENTLE_AI_RDD_NEW_LINEAGE=1` build and a switch-free build produce
+prove a `HGTRAN_AI_RDD_NEW_LINEAGE=1` build and a switch-free build produce
 byte-identical goldens, envelopes, and receipts, via same-fixture on/off
 double-evaluation across the full journey set. A golden diff during this
 proof MUST be treated as a defect signal, never a golden-update task.

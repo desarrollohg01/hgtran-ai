@@ -12,11 +12,11 @@ import (
 
 func TestHandoffCarriesThePrefixAndSchema(t *testing.T) {
 	handoff := Handoff(ClassEmpty, "sdd-apply", "/repo", "", "")
-	if !strings.HasPrefix(handoff, "GENTLE_AI_SDD_FAILURE ") {
+	if !strings.HasPrefix(handoff, "HGTRAN_AI_SDD_FAILURE ") {
 		t.Fatalf("handoff lost its literal prefix: %q", handoff)
 	}
 	var decoded map[string]any
-	if err := json.Unmarshal([]byte(strings.TrimPrefix(handoff, "GENTLE_AI_SDD_FAILURE ")), &decoded); err != nil {
+	if err := json.Unmarshal([]byte(strings.TrimPrefix(handoff, "HGTRAN_AI_SDD_FAILURE ")), &decoded); err != nil {
 		t.Fatalf("handoff payload is not JSON: %v", err)
 	}
 	for field, want := range map[string]any{
@@ -41,7 +41,7 @@ func TestHandoffQuotesACwdContainingASingleQuote(t *testing.T) {
 	// actually runs.
 	var decoded map[string]any
 	handoff := Handoff(ClassMalformed, "sdd-verify", "/re'po", "", "")
-	if err := json.Unmarshal([]byte(strings.TrimPrefix(handoff, "GENTLE_AI_SDD_FAILURE ")), &decoded); err != nil {
+	if err := json.Unmarshal([]byte(strings.TrimPrefix(handoff, "HGTRAN_AI_SDD_FAILURE ")), &decoded); err != nil {
 		t.Fatalf("handoff payload is not JSON: %v", err)
 	}
 	const want = `hgtran-ai sdd-status --cwd '/re'\''po' --json`
@@ -63,7 +63,7 @@ func TestHandoffCarriesAValidatedTaskModel(t *testing.T) {
 func TestDispatchLatchedNamesBothPhases(t *testing.T) {
 	handoff := DispatchLatched("sdd-verify", "sdd-apply", "sdd_task_result_empty", "/repo", "")
 	var decoded map[string]any
-	if err := json.Unmarshal([]byte(strings.TrimPrefix(handoff, "GENTLE_AI_SDD_FAILURE ")), &decoded); err != nil {
+	if err := json.Unmarshal([]byte(strings.TrimPrefix(handoff, "HGTRAN_AI_SDD_FAILURE ")), &decoded); err != nil {
 		t.Fatalf("latched payload is not JSON: %v", err)
 	}
 	for field, want := range map[string]any{

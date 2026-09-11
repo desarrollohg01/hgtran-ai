@@ -172,11 +172,11 @@ func TestAcquireRejectsSymlinkedRootComponent(t *testing.T) {
 }
 
 const (
-	filecoordHolderEnv        = "GENTLE_AI_TEST_FILECOORD_HOLDER"
-	filecoordHolderTargetEnv  = "GENTLE_AI_TEST_FILECOORD_TARGET"
-	filecoordHolderRootEnv    = "GENTLE_AI_TEST_FILECOORD_ROOT"
-	filecoordHolderReadyEnv   = "GENTLE_AI_TEST_FILECOORD_READY"
-	filecoordHolderReleaseEnv = "GENTLE_AI_TEST_FILECOORD_RELEASE"
+	filecoordHolderEnv        = "HGTRAN_AI_TEST_FILECOORD_HOLDER"
+	filecoordHolderTargetEnv  = "HGTRAN_AI_TEST_FILECOORD_TARGET"
+	filecoordHolderRootEnv    = "HGTRAN_AI_TEST_FILECOORD_ROOT"
+	filecoordHolderReadyEnv   = "HGTRAN_AI_TEST_FILECOORD_READY"
+	filecoordHolderReleaseEnv = "HGTRAN_AI_TEST_FILECOORD_RELEASE"
 )
 
 // TestFilecoordLockHolderHelperProcess is not a test: it is the subprocess

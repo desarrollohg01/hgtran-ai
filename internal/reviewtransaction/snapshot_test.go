@@ -1913,7 +1913,7 @@ func TestClassifyMergeTreeWriteTreeProbe(t *testing.T) {
 			err := tt.err
 			if tt.exitCode != "" {
 				cmd := exec.Command(os.Args[0], "-test.run=^TestMergeTreeProbeExitHelper$")
-				cmd.Env = append(os.Environ(), "GENTLE_AI_TEST_MERGE_TREE_EXIT="+tt.exitCode)
+				cmd.Env = append(os.Environ(), "HGTRAN_AI_TEST_MERGE_TREE_EXIT="+tt.exitCode)
 				err = cmd.Run()
 			}
 			got, err := classifyMergeTreeWriteTreeProbe([]byte(tt.output), err)
@@ -1925,7 +1925,7 @@ func TestClassifyMergeTreeWriteTreeProbe(t *testing.T) {
 }
 
 func TestMergeTreeProbeExitHelper(t *testing.T) {
-	switch os.Getenv("GENTLE_AI_TEST_MERGE_TREE_EXIT") {
+	switch os.Getenv("HGTRAN_AI_TEST_MERGE_TREE_EXIT") {
 	case "129":
 		os.Exit(129)
 	case "23":

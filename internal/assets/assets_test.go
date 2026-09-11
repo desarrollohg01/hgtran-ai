@@ -28,8 +28,8 @@ var retiredWorkRunCeremonyTokens = []string{
 	"authorizedTransition",
 	"Capability stop rule",
 	"connectorSessionRef",
-	"GENTLE_AI_PRODUCTIVE_RUNTIME",
-	"{{GENTLE_AI_RUNTIME_AGENT_ID}}",
+	"HGTRAN_AI_PRODUCTIVE_RUNTIME",
+	"{{HGTRAN_AI_RUNTIME_AGENT_ID}}",
 	"--contract hgtran-ai.work-",
 }
 
@@ -1057,7 +1057,7 @@ func TestOpenCodeSDDOrchestratorRequiresSessionPreflight(t *testing.T) {
 		"Ask before launching the next phase",
 		"Interactive approval is phase-scoped",
 		"approve only the immediate next phase",
-		"{{GENTLE_AI_RESEARCH_LIFECYCLE}}",
+		"{{HGTRAN_AI_RESEARCH_LIFECYCLE}}",
 	} {
 		if !strings.Contains(content, required) {
 			t.Fatalf("opencode/sdd-orchestrator.md missing required preflight wording %q", required)

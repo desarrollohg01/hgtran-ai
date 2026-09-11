@@ -358,10 +358,10 @@ When you select OpenCode in the installer, hgtran-ai asks whether to register ea
 
 ### Contributors
 
-This is HG Transportaciones' internal fork. The code was written by the contributors of the upstream project, [Gentleman-Programming/hgtran-ai](https://github.com/Gentleman-Programming/hgtran-ai). See [CONTRIBUTORS.md](CONTRIBUTORS.md) for the full list.
+This is HG Transportaciones' internal fork. The code was written by the contributors of the upstream project, [desarrollohg01/hgtran-ai](https://github.com/desarrollohg01/hgtran-ai). See [CONTRIBUTORS.md](CONTRIBUTORS.md) for the full list.
 
-<a href="https://github.com/Gentleman-Programming/hgtran-ai/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=Gentleman-Programming/hgtran-ai" />
+<a href="https://github.com/desarrollohg01/hgtran-ai/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=desarrollohg01/hgtran-ai" />
 </a>
 
 ---

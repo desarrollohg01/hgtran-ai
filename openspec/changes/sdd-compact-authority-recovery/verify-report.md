@@ -19,7 +19,7 @@ build_output_hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca49599
 ## Verification Report
 
 **Change**: `sdd-compact-authority-recovery`
-**Issue**: [#1179](https://github.com/Gentleman-Programming/hgtran-ai/issues/1179)
+**Issue**: [#1179](https://github.com/desarrollohg01/hgtran-ai/issues/1179)
 **Version**: N/A
 **Mode**: Strict TDD
 **Approved review authority**: `review-a690f3e160da0732`

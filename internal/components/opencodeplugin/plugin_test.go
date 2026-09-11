@@ -107,7 +107,7 @@ func TestInstallGentleLogoWritesLocalTUIPluginAndRegistersAbsolutePath(t *testin
 		t.Fatal("Install() changed = false, want true")
 	}
 
-	pluginPath := filepath.Join(home, ".config", "opencode", "tui-plugins", "gentle-logo.tsx")
+	pluginPath := filepath.Join(home, ".config", "opencode", "tui-plugins", "hgtran-logo.tsx")
 	configPath := filepath.Join(home, ".config", "opencode", "tui.json")
 	wantFiles := map[string]bool{pluginPath: true, configPath: true}
 	for _, file := range result.Files {
@@ -123,9 +123,9 @@ func TestInstallGentleLogoWritesLocalTUIPluginAndRegistersAbsolutePath(t *testin
 	}
 	pluginContent := string(pluginData)
 	for _, snippet := range []string{
-		`id = "gentle-logo"`,
+		`id = "hgtran-logo"`,
 		`home_logo`,
-		`const plugin = { id: "gentle-logo", tui }`,
+		`const plugin = { id: "hgtran-logo", tui }`,
 		`export default plugin`,
 	} {
 		if !strings.Contains(pluginContent, snippet) {

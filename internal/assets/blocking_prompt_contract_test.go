@@ -227,7 +227,7 @@ func TestCoordinatorOrchestratorsCarryGentleAIProviderDefectHandoff(t *testing.T
 		{name: "no internal labels", text: "do not expose machine or internal codes in user-facing labels"},
 		{name: "report and continue choice", text: "**Report the Hgtran AI defect and continue**: Only after explicit consent and that final privacy scan"},
 		{name: "continue without reporting choice", text: "**Continue without reporting**: Perform no GitHub search, write, comment, or label, and no report-side privacy scan is required."},
-		{name: "fixed repository", text: "`Gentleman-Programming/hgtran-ai`"},
+		{name: "fixed repository", text: "`desarrollohg01/hgtran-ai`"},
 		{name: "definitive equivalent lookup", text: "complete a definitive lookup across open and closed issues for an equivalent defect or canonical tracker"},
 		{name: "equivalent definition", text: "same observable defect and affected contract, backed by concrete evidence rather than title similarity alone"},
 		{name: "canonical definition", text: "owns the causal class"},

@@ -16,7 +16,7 @@ func issue2138Journeys() []Journey {
 		ID:     "j2138-opencode-native-fallback-boundary",
 		Review: reviewUntouched,
 		Title:  "Zero-config OpenCode install emits bounded native fallback agents",
-		Source: "https://github.com/Gentleman-Programming/hgtran-ai/issues/2138",
+		Source: "https://github.com/Gentleman-Programming/gentle-ai/issues/2138",
 		Steps: []Step{
 			{Name: "fixture: zero-config OpenCode runtime", Fixture: issue2138ZeroConfigFixture},
 			{Name: "public multi-mode install", Requires: issue2138InstallCapability, Args: issue2138InstallArgs("multi"), After: issue2138AssertGeneratedFallbacks("multi")},

@@ -125,7 +125,7 @@ func issue3561Journeys() []Journey {
 		ID:     "j118-doctor-dangling-config-ancestor",
 		Review: reviewUntouched,
 		Title:  "Doctor identifies a dangling ancestor of a managed config path without recommending sync",
-		Source: "https://github.com/Gentleman-Programming/hgtran-ai/pull/3561",
+		Source: "https://github.com/Gentleman-Programming/gentle-ai/pull/3561",
 		Steps: []Step{
 			{Name: "fixture: dangling ~/.config ancestor over the OpenCode managed path", Fixture: issue3561DanglingAncestorFixture},
 			{Name: "doctor reports manual repair and preserves the filesystem", Skip: issue3561SymlinkSkip, Args: issue3561DoctorArgs, After: issue3561VerifyDoctor},

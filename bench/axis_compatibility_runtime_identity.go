@@ -45,7 +45,7 @@ func compatibilityRuntimeIdentityJourneys() []Journey {
 		ID:     "cw04-unbound-recovery-executes-without-agent-guess",
 		Review: reviewOptedIn,
 		Title:  "An unbound direct-route refusal emits and executes a negotiated recovery without an agent guess",
-		Source: "https://github.com/Gentleman-Programming/hgtran-ai/issues/2885",
+		Source: "https://github.com/Gentleman-Programming/gentle-ai/issues/2885",
 		Steps: []Step{
 			{Name: "fixture: base commit, feature branch, committed candidate", Fixture: compatBaseDiffCandidate},
 			{Name: "extract and execute the exact unbound recovery without transport admission", Requires: startCapability, Composite: compatExecuteUnboundRecovery},

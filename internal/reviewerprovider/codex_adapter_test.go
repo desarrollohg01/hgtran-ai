@@ -14,9 +14,9 @@ import (
 	"testing"
 )
 
-const codexAdapterHelperEnvironment = "GENTLE_AI_REVIEWER_PROVIDER_CODEX_HELPER"
-const codexAdapterPromptPathEnvironment = "GENTLE_AI_REVIEWER_PROVIDER_CODEX_PROMPT_PATH"
-const codexAdapterArgumentsPathEnvironment = "GENTLE_AI_REVIEWER_PROVIDER_CODEX_ARGUMENTS_PATH"
+const codexAdapterHelperEnvironment = "HGTRAN_AI_REVIEWER_PROVIDER_CODEX_HELPER"
+const codexAdapterPromptPathEnvironment = "HGTRAN_AI_REVIEWER_PROVIDER_CODEX_PROMPT_PATH"
+const codexAdapterArgumentsPathEnvironment = "HGTRAN_AI_REVIEWER_PROVIDER_CODEX_ARGUMENTS_PATH"
 
 func TestCodexAdapterReturnsNoBytesWhenUnavailable(t *testing.T) {
 	adapter := &CodexAdapter{LookPath: func(string) (string, error) { return "", errors.New("not found") }}

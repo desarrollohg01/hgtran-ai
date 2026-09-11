@@ -38,13 +38,13 @@ type claudeRuntimeResult struct {
 
 func boundClaudeRuntime(t *testing.T) string {
 	t.Helper()
-	if testing.Short() || os.Getenv("GENTLE_AI_CLAUDE_RUNTIME_E2E") != "1" {
+	if testing.Short() || os.Getenv("HGTRAN_AI_CLAUDE_RUNTIME_E2E") != "1" {
 		t.Skip("claude_network_none_skipped: requires explicit opt-in and the prebuilt Docker image")
 	}
-	binary := os.Getenv("GENTLE_AI_CLAUDE_RUNTIME_BINARY")
+	binary := os.Getenv("HGTRAN_AI_CLAUDE_RUNTIME_BINARY")
 	payload, err := os.ReadFile(binary)
 	if err != nil {
-		if os.Getenv("GENTLE_AI_CLAUDE_RUNTIME_REQUIRED") == "1" {
+		if os.Getenv("HGTRAN_AI_CLAUDE_RUNTIME_REQUIRED") == "1" {
 			t.Fatalf("claude_network_none_unavailable: pinned binary unavailable: %v", err)
 		}
 		t.Skipf("claude_network_none_unavailable: prebuilt Docker image unavailable: %v", err)
@@ -57,7 +57,7 @@ func boundClaudeRuntime(t *testing.T) string {
 func requireNetworkNone(t *testing.T) {
 	t.Helper()
 	namespace, err := os.Readlink("/proc/self/ns/net")
-	parent := os.Getenv("GENTLE_AI_PARENT_NETNS")
+	parent := os.Getenv("HGTRAN_AI_PARENT_NETNS")
 	if err != nil || parent == "" || strings.Trim(namespace, "net:[]") == parent {
 		t.Fatalf("Claude proof does not have a distinct parent/container network namespace: child=%q parent=%q error=%v", namespace, parent, err)
 	}
@@ -146,7 +146,7 @@ func TestClaudeReviewerTransportInNetworkNone(t *testing.T) {
 	const evidenceA = "- path_index: 0\n  path: parser.go\n  patch: |\n    -    return ErrMalformedPort\n    +    return nil"
 	const evidenceB = "- path_index: 1\n  path: parser_test.go\n  patch: |\n    -    require.Error(t, err)\n    +    require.NoError(t, err)"
 	prompt := `HGTRAN_AI_REVIEW_BINDING {"lineage":"claude-runtime-e2e","target":"fixture","lens":"review-reliability","order":0,"revision":"1","repository_context":"opaque-fixture","subject_hash":"` + subject + `"}
-GENTLE_AI_REVIEW_CONTEXT
+HGTRAN_AI_REVIEW_CONTEXT
 artifact_subject: {"subject_hash":"` + subject + `"}
 base_tree: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 candidate_tree: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
@@ -154,7 +154,7 @@ changed_path_manifest: [{"path":"parser.go","status":"M"},{"path":"parser_test.g
 name_status: "M\tparser.go\nM\tparser_test.go"
 numstat: "1\t1\tparser.go\n1\t1\tparser_test.go"
 path_evidence:
-` + evidenceA + "\n" + evidenceB + "\nGENTLE_AI_REVIEW_CONTEXT_END"
+` + evidenceA + "\n" + evidenceB + "\nHGTRAN_AI_REVIEW_CONTEXT_END"
 	for _, test := range []struct {
 		name, prompt string
 		unknown      bool

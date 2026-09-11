@@ -65,7 +65,7 @@ version 2 and above.
 
 Receipt-Driven Development (RDD) began in `v1.47.0` on 2026-07-10, and `v2.2.0` made it the supported stable path. Those are historical milestones. The negotiated public review contract was published in `v2.1.6`.
 
-The current stable release is [`v2.3.0`](https://github.com/Gentleman-Programming/hgtran-ai/releases/tag/v2.3.0). `@latest` explicitly tracks this stable channel. The current opt-in prerelease is [`v2.4.0-rc.1`](https://github.com/Gentleman-Programming/hgtran-ai/releases/tag/v2.4.0-rc.1). `@main` installs unreleased development changes.
+The current stable release is [`v2.3.0`](https://github.com/desarrollohg01/hgtran-ai/releases/tag/v2.3.0). `@latest` explicitly tracks this stable channel. The current opt-in prerelease is [`v2.4.0-rc.1`](https://github.com/desarrollohg01/hgtran-ai/releases/tag/v2.4.0-rc.1). `@main` installs unreleased development changes.
 
 ### Install the stable channel
 
@@ -91,7 +91,7 @@ go install github.com/desarrollohg01/hgtran-ai/v2/cmd/hgtran-ai@main
 hgtran-ai version
 
 # Windows (PowerShell)
-$env:GENTLE_AI_CHANNEL="beta"; go install github.com/desarrollohg01/hgtran-ai/v2/cmd/hgtran-ai@main
+$env:HGTRAN_AI_CHANNEL="beta"; go install github.com/desarrollohg01/hgtran-ai/v2/cmd/hgtran-ai@main
 hgtran-ai version
 ```
 
@@ -99,10 +99,10 @@ To update a beta installation later, preserve the beta channel:
 
 ```bash
 # macOS / Linux
-GENTLE_AI_CHANNEL=beta hgtran-ai upgrade
+HGTRAN_AI_CHANNEL=beta hgtran-ai upgrade
 
 # Windows (PowerShell)
-$env:GENTLE_AI_CHANNEL="beta"; hgtran-ai upgrade
+$env:HGTRAN_AI_CHANNEL="beta"; hgtran-ai upgrade
 ```
 
 `hgtran-ai upgrade` advances the `hgtran-ai` binary from `main` and refreshes managed tools on macOS, Linux, and Windows with Go on `PATH`.
@@ -111,10 +111,10 @@ If you re-run an installer, pass beta explicitly because both installers default
 
 ```bash
 # macOS / Linux
-curl -fsSL https://raw.githubusercontent.com/Gentleman-Programming/hgtran-ai/main/scripts/install.sh | bash -s -- --channel beta
+curl -fsSL https://raw.githubusercontent.com/desarrollohg01/hgtran-ai/main/scripts/install.sh | bash -s -- --channel beta
 
 # Windows (PowerShell)
-$env:GENTLE_AI_CHANNEL="beta"; irm https://raw.githubusercontent.com/Gentleman-Programming/hgtran-ai/main/scripts/install.ps1 | iex
+$env:HGTRAN_AI_CHANNEL="beta"; irm https://raw.githubusercontent.com/desarrollohg01/hgtran-ai/main/scripts/install.ps1 | iex
 ```
 
 > **Go module proxy cache**: `proxy.golang.org` can lag behind new commits on `main` for up to several hours. If manual `go install ...@main` does not update to the newest commit, bypass the cache with `GOPROXY=direct go install github.com/desarrollohg01/hgtran-ai/v2/cmd/hgtran-ai@main` (PowerShell: `$env:GOPROXY="direct"; go install github.com/desarrollohg01/hgtran-ai/v2/cmd/hgtran-ai@main`).

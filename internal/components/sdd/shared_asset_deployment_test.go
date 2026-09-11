@@ -112,7 +112,7 @@ func TestSkillRelativeSharedLinksResolveAfterInject(t *testing.T) {
 
 // Issue #2846: the shared review ledger contract was raw-copied into every
 // runtime's skills/_shared, so the installed copy still carried the
-// {{GENTLE_AI_RUNTIME_AGENT_ID}} placeholder while the inline orchestrator copy
+// {{HGTRAN_AI_RUNTIME_AGENT_ID}} placeholder while the inline orchestrator copy
 // was rendered. The deployed shared file must bind the same runtime identity.
 func TestInjectBindsRuntimeIdentityInDeployedSharedReviewLedgerContract(t *testing.T) {
 	for agent, adapter := range map[string]agents.Adapter{"claude-code": claudeAdapter(), "opencode": opencodeAdapter()} {

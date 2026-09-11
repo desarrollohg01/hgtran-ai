@@ -117,7 +117,7 @@ func (b *battery) prepareClaudeProcessFixture() ([]string, string, error) {
 	promptPath := filepath.Join(dir, "provider-prompt.json")
 	fixture := `#!/bin/sh
 set -eu
-prompt_path="${GENTLE_AI_CROSSLANE_CLAUDE_PROMPT:?}"
+prompt_path="${HGTRAN_AI_CROSSLANE_CLAUDE_PROMPT:?}"
 cat > "$prompt_path"
 subject_hash=$(sed -n 's/.*"subject_hash"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$prompt_path" | head -n 1)
 if [ -z "$subject_hash" ]; then
@@ -131,6 +131,6 @@ printf '%s\n' '{"subject_hash":"'"$subject_hash"'","inspection":{"status":"compl
 	}
 	return []string{
 		"PATH=" + dir + string(os.PathListSeparator) + os.Getenv("PATH"),
-		"GENTLE_AI_CROSSLANE_CLAUDE_PROMPT=" + promptPath,
+		"HGTRAN_AI_CROSSLANE_CLAUDE_PROMPT=" + promptPath,
 	}, promptPath, nil
 }

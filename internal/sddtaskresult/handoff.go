@@ -11,7 +11,7 @@ import (
 // followed by exactly one ASCII space and then the JSON payload. Consumers are
 // told to preserve the payload unchanged, so the prefix and the single space
 // are part of the contract.
-const HandoffPrefix = "GENTLE_AI_SDD_FAILURE "
+const HandoffPrefix = "HGTRAN_AI_SDD_FAILURE "
 
 const handoffSchema = "hgtran-ai.sdd-task-result-failure/v1"
 

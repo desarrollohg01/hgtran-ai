@@ -4,9 +4,9 @@
 > **Current closure and delivery semantics.** A zero-lens START, or the final admitted lens, refuter, or validation capture, closes and burns a review. Delivery always follows ordinary repository policy; review closure is informational.
 
 > [!WARNING]
-> **Historical and superseded guide.** This document preserves the candidate-specific validation procedure for `v2.2.0-rc.1` and PR [#1801](https://github.com/Gentleman-Programming/hgtran-ai/pull/1801). It is not current installation or validation guidance for stable [`v2.3.0`](https://github.com/Gentleman-Programming/hgtran-ai/releases/tag/v2.3.0), prerelease [`v2.4.0-rc.1`](https://github.com/Gentleman-Programming/hgtran-ai/releases/tag/v2.4.0-rc.1), or unreleased `main`. Use the [Quickstart version policy](../quickstart.md#version-policy) for current installation channels and validation entry points.
+> **Historical and superseded guide.** This document preserves the candidate-specific validation procedure for `v2.2.0-rc.1` and PR [#1801](https://github.com/desarrollohg01/hgtran-ai/pull/1801). It is not current installation or validation guidance for stable [`v2.3.0`](https://github.com/desarrollohg01/hgtran-ai/releases/tag/v2.3.0), prerelease [`v2.4.0-rc.1`](https://github.com/desarrollohg01/hgtran-ai/releases/tag/v2.4.0-rc.1), or unreleased `main`. Use the [Quickstart version policy](../quickstart.md#version-policy) for current installation channels and validation entry points.
 >
-> Community testing guide for the candidate built from PR [#1801](https://github.com/Gentleman-Programming/hgtran-ai/pull/1801). Every **Expected** here was validated against real output before publication. The guide uses a throwaway HOME precisely so it does not touch your real config — do not skip the setup.
+> Community testing guide for the candidate built from PR [#1801](https://github.com/desarrollohg01/hgtran-ai/pull/1801). Every **Expected** here was validated against real output before publication. The guide uses a throwaway HOME precisely so it does not touch your real config — do not skip the setup.
 
 > [!IMPORTANT]
 > **This guide moves; a published asset does not.** It tracks the PR head and describes behaviour that may have landed *after* the binary you downloaded was built. Running it literally against an older asset produces false regressions — that is the guide's fault, not the product's.
@@ -21,7 +21,7 @@
 
 ## How to get this binary
 
-The binaries are on the prerelease page: **https://github.com/Gentleman-Programming/hgtran-ai/releases/tag/v2.2.0-rc.1**
+The binaries are on the prerelease page: **https://github.com/desarrollohg01/hgtran-ai/releases/tag/v2.2.0-rc.1**
 
 1. Download the asset for your platform from the Assets section of that page.
 2. Verify the checksum against `SHA256SUMS.txt`:
@@ -665,7 +665,7 @@ echo "exit=$?"
 
 ## Historical reporting instructions
 
-This section is retained to explain the original candidate procedure. Do not open a current issue or comment on PR [#1801](https://github.com/Gentleman-Programming/hgtran-ai/pull/1801) for results from `v2.2.0-rc.1`; that candidate process is complete. For a current concern, first reproduce it against stable [`v2.3.0`](https://github.com/Gentleman-Programming/hgtran-ai/releases/tag/v2.3.0) or the opt-in prerelease [`v2.4.0-rc.1`](https://github.com/Gentleman-Programming/hgtran-ai/releases/tag/v2.4.0-rc.1), then use the repository's current contribution and issue workflow.
+This section is retained to explain the original candidate procedure. Do not open a current issue or comment on PR [#1801](https://github.com/desarrollohg01/hgtran-ai/pull/1801) for results from `v2.2.0-rc.1`; that candidate process is complete. For a current concern, first reproduce it against stable [`v2.3.0`](https://github.com/desarrollohg01/hgtran-ai/releases/tag/v2.3.0) or the opt-in prerelease [`v2.4.0-rc.1`](https://github.com/desarrollohg01/hgtran-ai/releases/tag/v2.4.0-rc.1), then use the repository's current contribution and issue workflow.
 
 ## What is NOT a bug
 

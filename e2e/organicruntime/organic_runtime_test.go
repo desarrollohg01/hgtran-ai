@@ -43,7 +43,7 @@ import (
 const (
 	// realAgentE2EEnvironment gates the pinned real-agent journeys, which need a
 	// pinned OpenCode plus network access to the pinned plugin package.
-	realAgentE2EEnvironment = "GENTLE_AI_REAL_AGENT_E2E"
+	realAgentE2EEnvironment = "HGTRAN_AI_REAL_AGENT_E2E"
 	pinnedOpenCodeVersion   = versions.OpenCode
 
 	organicLocalTimeout     = 90 * time.Second
@@ -65,17 +65,17 @@ const (
 // never escalates its own route. Re-executing the compiled test binary keeps
 // that real without adding a language runtime dependency to the suite.
 const (
-	organicActorRoleEnvironment                     = "GENTLE_AI_ORGANIC_ACTOR_ROLE"
-	organicActorRepoEnvironment                     = "GENTLE_AI_ORGANIC_ACTOR_REPO"
-	organicActorPathEnvironment                     = "GENTLE_AI_ORGANIC_ACTOR_PATH"
-	organicActorBodyEnvironment                     = "GENTLE_AI_ORGANIC_ACTOR_BODY"
-	organicActorMessageEnvironment                  = "GENTLE_AI_ORGANIC_ACTOR_MESSAGE"
-	organicActorBinaryEnvironment                   = "GENTLE_AI_ORGANIC_ACTOR_BINARY"
-	organicTestBinaryEnvironment                    = "GENTLE_AI_ORGANIC_TEST_BINARY"
-	organicProviderCaptureFakeAgentEnvironment      = "GENTLE_AI_ORGANIC_PROVIDER_CAPTURE_FAKE_AGENT"
-	organicProviderCaptureFakePayloadEnvironment    = "GENTLE_AI_ORGANIC_PROVIDER_CAPTURE_FAKE_PAYLOAD"
-	organicProviderCaptureFakeFailureEnvironment    = "GENTLE_AI_ORGANIC_PROVIDER_CAPTURE_FAKE_FAILURE"
-	organicProviderCaptureFakeInvocationEnvironment = "GENTLE_AI_ORGANIC_PROVIDER_CAPTURE_FAKE_INVOCATION"
+	organicActorRoleEnvironment                     = "HGTRAN_AI_ORGANIC_ACTOR_ROLE"
+	organicActorRepoEnvironment                     = "HGTRAN_AI_ORGANIC_ACTOR_REPO"
+	organicActorPathEnvironment                     = "HGTRAN_AI_ORGANIC_ACTOR_PATH"
+	organicActorBodyEnvironment                     = "HGTRAN_AI_ORGANIC_ACTOR_BODY"
+	organicActorMessageEnvironment                  = "HGTRAN_AI_ORGANIC_ACTOR_MESSAGE"
+	organicActorBinaryEnvironment                   = "HGTRAN_AI_ORGANIC_ACTOR_BINARY"
+	organicTestBinaryEnvironment                    = "HGTRAN_AI_ORGANIC_TEST_BINARY"
+	organicProviderCaptureFakeAgentEnvironment      = "HGTRAN_AI_ORGANIC_PROVIDER_CAPTURE_FAKE_AGENT"
+	organicProviderCaptureFakePayloadEnvironment    = "HGTRAN_AI_ORGANIC_PROVIDER_CAPTURE_FAKE_PAYLOAD"
+	organicProviderCaptureFakeFailureEnvironment    = "HGTRAN_AI_ORGANIC_PROVIDER_CAPTURE_FAKE_FAILURE"
+	organicProviderCaptureFakeInvocationEnvironment = "HGTRAN_AI_ORGANIC_PROVIDER_CAPTURE_FAKE_INVOCATION"
 
 	organicActorRoleDirect    = "direct"
 	organicActorRoleDelegated = "delegated"
@@ -261,10 +261,10 @@ func TestOrganicDirectoryIdentityAcceptsCanonicalAliases(t *testing.T) {
 }
 
 func TestClaudeProviderAdapterUsesPinnedNetworkNoneRuntime(t *testing.T) {
-	if testing.Short() || os.Getenv("GENTLE_AI_CLAUDE_RUNTIME_E2E") != "1" {
+	if testing.Short() || os.Getenv("HGTRAN_AI_CLAUDE_RUNTIME_E2E") != "1" {
 		t.Skip("claude_network_none_skipped: requires the pinned Docker proof image")
 	}
-	binary := os.Getenv("GENTLE_AI_CLAUDE_RUNTIME_BINARY")
+	binary := os.Getenv("HGTRAN_AI_CLAUDE_RUNTIME_BINARY")
 	if binary == "" {
 		t.Fatal("claude_network_none_unavailable: pinned binary path is empty")
 	}
@@ -325,8 +325,8 @@ func TestClaudeProviderAdapterUsesPinnedNetworkNoneRuntime(t *testing.T) {
 }
 
 func TestCodexProviderAdapterUsesPinnedLocalRuntime(t *testing.T) {
-	if testing.Short() || strings.TrimSpace(os.Getenv("GENTLE_AI_CODEX_RUNTIME_E2E")) != "1" {
-		t.Skip("set GENTLE_AI_CODEX_RUNTIME_E2E=1 to run the pinned local Codex transport proof")
+	if testing.Short() || strings.TrimSpace(os.Getenv("HGTRAN_AI_CODEX_RUNTIME_E2E")) != "1" {
+		t.Skip("set HGTRAN_AI_CODEX_RUNTIME_E2E=1 to run the pinned local Codex transport proof")
 	}
 	if runtime.GOOS != "linux" {
 		t.Skip("the Codex egress proof requires Linux strace")
@@ -435,16 +435,16 @@ func TestCodexProviderAdapterUsesPinnedLocalRuntime(t *testing.T) {
 	wrapper := filepath.Join(bin, "codex")
 	if err := os.WriteFile(wrapper, []byte(`#!/bin/sh
 set -eu
-exec "$GENTLE_AI_RUNTIME_TRACE_BINARY" -ff -o "$GENTLE_AI_RUNTIME_TRACE_LOG" -e trace=connect "$GENTLE_AI_RUNTIME_TRACE_TARGET" "$@"
+exec "$HGTRAN_AI_RUNTIME_TRACE_BINARY" -ff -o "$HGTRAN_AI_RUNTIME_TRACE_LOG" -e trace=connect "$HGTRAN_AI_RUNTIME_TRACE_TARGET" "$@"
 `), 0o755); err != nil {
 		t.Fatal(err)
 	}
 	environment := append(harness.environment(),
 		"PATH="+bin+string(os.PathListSeparator)+os.Getenv("PATH"),
-		"GENTLE_AI_CODEX_REVIEWER_LOOPBACK_BASE_URL="+server.URL+"/v1",
-		"GENTLE_AI_RUNTIME_TRACE_BINARY="+strace,
-		"GENTLE_AI_RUNTIME_TRACE_LOG="+traceBase,
-		"GENTLE_AI_RUNTIME_TRACE_TARGET="+binary,
+		"HGTRAN_AI_CODEX_REVIEWER_LOOPBACK_BASE_URL="+server.URL+"/v1",
+		"HGTRAN_AI_RUNTIME_TRACE_BINARY="+strace,
+		"HGTRAN_AI_RUNTIME_TRACE_LOG="+traceBase,
+		"HGTRAN_AI_RUNTIME_TRACE_TARGET="+binary,
 		"HTTP_PROXY="+proxy.URL,
 		"HTTPS_PROXY="+proxy.URL,
 		"ALL_PROXY="+proxy.URL,
@@ -710,8 +710,8 @@ func writeCodexResponsesLoopback(t *testing.T, writer http.ResponseWriter, respo
 }
 
 func TestOpenCodeRuntimeIsPinnedForTheLiveProviderTransport(t *testing.T) {
-	if testing.Short() || strings.TrimSpace(os.Getenv("GENTLE_AI_OPENCODE_RUNTIME_E2E")) != "1" {
-		t.Skip("set GENTLE_AI_OPENCODE_RUNTIME_E2E=1 to verify the pinned ordinary OpenCode runtime")
+	if testing.Short() || strings.TrimSpace(os.Getenv("HGTRAN_AI_OPENCODE_RUNTIME_E2E")) != "1" {
+		t.Skip("set HGTRAN_AI_OPENCODE_RUNTIME_E2E=1 to verify the pinned ordinary OpenCode runtime")
 	}
 	if runtime.GOOS != "linux" {
 		t.Fatal("OpenCode egress isolation requires Linux")
@@ -754,7 +754,7 @@ func TestOpenCodeRuntimeIsPinnedForTheLiveProviderTransport(t *testing.T) {
 		t.Fatal(err)
 	}
 	const poison = "OPENCODE_CURRENT_SESSION_POISON_MUST_NOT_REACH_REVIEWER"
-	const reviewerSystemMarker = "GENTLE_AI_OPENCODE_REVIEWER_SYSTEM_MARKER"
+	const reviewerSystemMarker = "HGTRAN_AI_OPENCODE_REVIEWER_SYSTEM_MARKER"
 	hostPrompt := "HGTRAN_AI_REVIEW_BINDING " + string(boundTask) + "\n" + poison
 	reviewerRaw, err := json.Marshal(map[string]any{
 		"subject_hash": binding["subject-hash"], "inspection": map[string]any{"status": "completed", "paths": []string{"internal/provider/candidate.go"}},
@@ -819,7 +819,7 @@ func TestOpenCodeRuntimeIsPinnedForTheLiveProviderTransport(t *testing.T) {
 				writer.WriteHeader(http.StatusBadRequest)
 				return
 			}
-			if !strings.Contains(reviewBinding.message, "GENTLE_AI_REVIEW_CONTEXT_END") {
+			if !strings.Contains(reviewBinding.message, "HGTRAN_AI_REVIEW_CONTEXT_END") {
 				lock.Lock()
 				handlerFailure = "OpenCode reviewer request omitted the Go-materialized canonical prompt"
 				lock.Unlock()
@@ -914,7 +914,7 @@ func TestOpenCodeRuntimeIsPinnedForTheLiveProviderTransport(t *testing.T) {
 	wrapper := filepath.Join(bin, "opencode")
 	if err := os.WriteFile(wrapper, []byte(`#!/bin/sh
 set -eu
-exec "$GENTLE_AI_RUNTIME_TRACE_BINARY" -ff -o "$GENTLE_AI_RUNTIME_TRACE_LOG" -e trace=connect "$GENTLE_AI_RUNTIME_TRACE_TARGET" "$@"
+exec "$HGTRAN_AI_RUNTIME_TRACE_BINARY" -ff -o "$HGTRAN_AI_RUNTIME_TRACE_LOG" -e trace=connect "$HGTRAN_AI_RUNTIME_TRACE_TARGET" "$@"
 `), 0o755); err != nil {
 		t.Fatal(err)
 	}
@@ -924,9 +924,9 @@ exec "$GENTLE_AI_RUNTIME_TRACE_BINARY" -ff -o "$GENTLE_AI_RUNTIME_TRACE_LOG" -e 
 		"OPENCODE_CONFIG_DIR="+configDirectory,
 		"OPENCODE_CONFIG_CONTENT="+string(config),
 		"PATH="+bin+string(os.PathListSeparator)+filepath.Dir(organicBinary)+string(os.PathListSeparator)+os.Getenv("PATH"),
-		"GENTLE_AI_RUNTIME_TRACE_BINARY="+strace,
-		"GENTLE_AI_RUNTIME_TRACE_LOG="+traceBase,
-		"GENTLE_AI_RUNTIME_TRACE_TARGET="+binary,
+		"HGTRAN_AI_RUNTIME_TRACE_BINARY="+strace,
+		"HGTRAN_AI_RUNTIME_TRACE_LOG="+traceBase,
+		"HGTRAN_AI_RUNTIME_TRACE_TARGET="+binary,
 		"HTTP_PROXY="+proxy.URL,
 		"HTTPS_PROXY="+proxy.URL,
 		"ALL_PROXY="+proxy.URL,
@@ -975,8 +975,8 @@ exec "$GENTLE_AI_RUNTIME_TRACE_BINARY" -ff -o "$GENTLE_AI_RUNTIME_TRACE_LOG" -e 
 // the barrier, and completion order is intentionally decoupled from Go admission
 // and election.
 func TestOpenCodeRuntimeRunsFourBoundReviewersConcurrently(t *testing.T) {
-	if testing.Short() || strings.TrimSpace(os.Getenv("GENTLE_AI_OPENCODE_RUNTIME_E2E")) != "1" {
-		t.Skip("set GENTLE_AI_OPENCODE_RUNTIME_E2E=1 to verify grouped foreground OpenCode 4R scheduling")
+	if testing.Short() || strings.TrimSpace(os.Getenv("HGTRAN_AI_OPENCODE_RUNTIME_E2E")) != "1" {
+		t.Skip("set HGTRAN_AI_OPENCODE_RUNTIME_E2E=1 to verify grouped foreground OpenCode 4R scheduling")
 	}
 	binary, err := exec.LookPath("opencode")
 	if err != nil {
@@ -1085,7 +1085,7 @@ func TestOpenCodeRuntimeRunsFourBoundReviewersConcurrently(t *testing.T) {
 			return
 		}
 		reviewBinding, bound, bindingErr := organicOpenCodeReviewBindingFromProvider(payload)
-		if bytes.Contains(payload, []byte("GENTLE_AI_OPENCODE_FOUR_R_REVIEWER")) {
+		if bytes.Contains(payload, []byte("HGTRAN_AI_OPENCODE_FOUR_R_REVIEWER")) {
 			lock.Lock()
 			handlerFailure = "OpenCode passed the configured 4R reviewer system prompt to the provider"
 			lock.Unlock()
@@ -1185,7 +1185,7 @@ func TestOpenCodeRuntimeRunsFourBoundReviewersConcurrently(t *testing.T) {
 	reviewers := make(map[string]any, len(wantLenses))
 	for _, lens := range wantLenses {
 		reviewers[lens] = map[string]any{
-			"mode": "subagent", "hidden": true, "description": "test reviewer", "prompt": "GENTLE_AI_OPENCODE_FOUR_R_REVIEWER " + lens,
+			"mode": "subagent", "hidden": true, "description": "test reviewer", "prompt": "HGTRAN_AI_OPENCODE_FOUR_R_REVIEWER " + lens,
 			"tools": map[string]bool{"read": false, "write": false, "edit": false, "bash": false, "task": false},
 		}
 	}
@@ -4109,7 +4109,7 @@ func equalOrganicStrings(left, right []string) bool {
 // fixture, because a scripted model is what makes an agent journey repeatable.
 func TestRealAgentOrganicJourneys(t *testing.T) {
 	if os.Getenv(realAgentE2EEnvironment) != "1" {
-		t.Skip("set GENTLE_AI_REAL_AGENT_E2E=1 to run the pinned real-agent journeys")
+		t.Skip("set HGTRAN_AI_REAL_AGENT_E2E=1 to run the pinned real-agent journeys")
 	}
 	requireOrganicExecutableVersion(t, "opencode", pinnedOpenCodeVersion)
 	sharedConfig := prepareOpenCodeConfig(t)
@@ -4201,8 +4201,8 @@ func TestRealAgentOrganicJourneys(t *testing.T) {
 				organicActorBodyEnvironment+"="+body,
 				organicActorMessageEnvironment+"=docs: implement the real-agent outcome",
 				organicActorBinaryEnvironment+"="+organicBinary,
-				"GENTLE_AI_ORGANIC_ACTOR_EXECUTABLE="+os.Args[0],
-				"GENTLE_AI_ORGANIC_BINARY="+organicBinary,
+				"HGTRAN_AI_ORGANIC_ACTOR_EXECUTABLE="+os.Args[0],
+				"HGTRAN_AI_ORGANIC_BINARY="+organicBinary,
 			)
 
 			ctx, cancel := context.WithTimeout(context.Background(), organicAgentTimeout)
@@ -4238,7 +4238,7 @@ func TestRealAgentOrganicJourneys(t *testing.T) {
 
 func TestRealAgentInstalledSDDApplyExecutorDoesNotDelegate(t *testing.T) {
 	if os.Getenv(realAgentE2EEnvironment) != "1" {
-		t.Skip("set GENTLE_AI_REAL_AGENT_E2E=1 to run the pinned real-agent journeys")
+		t.Skip("set HGTRAN_AI_REAL_AGENT_E2E=1 to run the pinned real-agent journeys")
 	}
 	requireOrganicExecutableVersion(t, "opencode", pinnedOpenCodeVersion)
 
@@ -4403,12 +4403,12 @@ func TestInstalledSDDApplyExecutorRoundTripRejectsUnrelatedBashOutput(t *testing
 // bash tool, so the implementation step is a real child process of a real agent.
 func organicActorToolCommand(t *testing.T) string {
 	t.Helper()
-	return organicToolCommand(t, "GENTLE_AI_ORGANIC_ACTOR_EXECUTABLE")
+	return organicToolCommand(t, "HGTRAN_AI_ORGANIC_ACTOR_EXECUTABLE")
 }
 
 func organicReviewToolCommand(t *testing.T, arguments ...string) string {
 	t.Helper()
-	return organicToolCommand(t, "GENTLE_AI_ORGANIC_BINARY", arguments...)
+	return organicToolCommand(t, "HGTRAN_AI_ORGANIC_BINARY", arguments...)
 }
 
 // organicToolCommand turns one fixture-authored argv into the string the

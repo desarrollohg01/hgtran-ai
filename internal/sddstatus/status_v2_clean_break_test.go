@@ -227,7 +227,7 @@ func TestResolveRuntimeAuthorityFailureBlocksFinalRoutingBeforeOfferingReview(t 
 				if err := os.MkdirAll(filepath.Join(repo, ".engram"), 0o755); err != nil {
 					t.Fatal(err)
 				}
-				runRuntimeLedgerGit(t, repo, "remote", "add", "origin", "git@github.com:Gentleman-Programming/hgtran-ai.git")
+				runRuntimeLedgerGit(t, repo, "remote", "add", "origin", "git@github.com:desarrollohg01/hgtran-ai.git")
 				restore := stubEngramExport(t, []engramObservation{
 					{Title: "sdd/" + change + "/proposal", Content: "# Proposal\n", Project: "hgtran-ai", Scope: "project"},
 					{Title: "sdd/" + change + "/spec", Content: "### Requirement: Runtime\n#### Scenario: Routing\n", Project: "hgtran-ai", Scope: "project"},

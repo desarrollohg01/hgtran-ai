@@ -17,7 +17,7 @@ import (
 // background-subagent preference. It mirrors the OpenCode contract; there is
 // no launcher or activation plumbing behind it because the primitive is the
 // already-installed pi-subagents extension reading a projected policy file.
-const PiBackgroundSubagentsEnv = "GENTLE_AI_PI_BACKGROUND_SUBAGENTS"
+const PiBackgroundSubagentsEnv = "HGTRAN_AI_PI_BACKGROUND_SUBAGENTS"
 
 // PiConfigHomeEnv overrides hgtran-pi's config base directory (default
 // ~/.pi), matching hgtran-pi's own configuration precedent.

@@ -181,19 +181,19 @@ func TestCheckOneTool_WindowsPowerShellShimFallback(t *testing.T) {
 	executableExtsFn = func() []string { return []string{".exe", ".cmd"} }
 
 	dir := t.TempDir()
-	ps1Path := filepath.Join(dir, "gga.ps1")
+	ps1Path := filepath.Join(dir, "hga.ps1")
 	if err := os.WriteFile(ps1Path, []byte("fake"), 0o755); err != nil {
 		t.Fatal(err)
 	}
 
 	lookPathFn = func(file string) (string, error) {
-		if file == "gga.ps1" {
+		if file == "hga.ps1" {
 			return ps1Path, nil
 		}
 		return "", errors.New("not found")
 	}
 
-	got := checkOneTool("gga", []string{dir})
+	got := checkOneTool("hga", []string{dir})
 
 	if got.Status != CheckStatusPass {
 		t.Fatalf("expected pass, got %s: %s", got.Status, got.Detail)
@@ -216,21 +216,21 @@ func TestCheckOneTool_WindowsShimVariantsInSameDirAreNotDuplicates(t *testing.T)
 	executableExtsFn = func() []string { return []string{".cmd"} }
 
 	dir := t.TempDir()
-	cmdPath := filepath.Join(dir, "gga.cmd")
-	for _, path := range []string{cmdPath, filepath.Join(dir, "gga.ps1")} {
+	cmdPath := filepath.Join(dir, "hga.cmd")
+	for _, path := range []string{cmdPath, filepath.Join(dir, "hga.ps1")} {
 		if err := os.WriteFile(path, []byte("fake"), 0o755); err != nil {
 			t.Fatal(err)
 		}
 	}
 
 	lookPathFn = func(file string) (string, error) {
-		if file == "gga" {
+		if file == "hga" {
 			return cmdPath, nil
 		}
 		return "", errors.New("not found")
 	}
 
-	got := checkOneTool("gga", []string{dir})
+	got := checkOneTool("hga", []string{dir})
 
 	if got.Status != CheckStatusPass {
 		t.Fatalf("expected pass for same-directory shim variants, got %s: %s", got.Status, got.Detail)
@@ -1004,7 +1004,7 @@ func TestRunDoctor_IntegrationAllMocked(t *testing.T) {
 =======================================
 
   [ok]  tool:hgtran-ai                 hgtran-ai found at /usr/local/bin/hgtran-ai; invoked executable: /usr/local/bin/hgtran-ai (version dev)
-  [ok]  tool:gga                       gga found at /usr/local/bin/gga
+  [ok]  tool:hga                       hga found at /usr/local/bin/hga
   [ok]  tool:engram                    engram found at /usr/local/bin/engram
   [ok]  tool:claude                    claude found at /usr/local/bin/claude
   [ok]  state:json                     state file OK — 1 agent(s) installed: claude-code
@@ -1254,7 +1254,7 @@ func TestCheckToolBinaries_StateMissing_ChecksCoreOnly(t *testing.T) {
 	for _, r := range results {
 		required[string(r.Name)] = struct{}{}
 	}
-	for _, core := range []string{"tool:hgtran-ai", "tool:gga", "tool:engram"} {
+	for _, core := range []string{"tool:hgtran-ai", "tool:hga", "tool:engram"} {
 		if _, ok := required[core]; !ok {
 			t.Errorf("expected %s in core-only output, got %+v", core, required)
 		}

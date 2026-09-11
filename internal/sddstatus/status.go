@@ -1032,7 +1032,7 @@ func shouldTryEngram(workspaceRoot string) bool {
 	if declared, ok := declaredArtifactStore(workspaceRoot); ok {
 		return declared == ArtifactStoreEngram || declared == ArtifactStoreHybrid
 	}
-	if os.Getenv("GENTLE_AI_SDD_STATUS_ENGRAM") != "" {
+	if os.Getenv("HGTRAN_AI_SDD_STATUS_ENGRAM") != "" {
 		return true
 	}
 	if _, err := os.Stat(filepath.Join(workspaceRoot, ".engram")); err == nil {

@@ -103,7 +103,7 @@ func TestOrganicRuntimeE2EUsesInstalledOpenCodePin(t *testing.T) {
 	}
 	for _, required := range []string{
 		"TestOpenCodeRuntimeIsPinnedForTheLiveProviderTransport",
-		`GENTLE_AI_OPENCODE_RUNTIME_E2E: ${{ matrix.os == 'ubuntu-latest' && '1' || '0' }}`,
+		`HGTRAN_AI_OPENCODE_RUNTIME_E2E: ${{ matrix.os == 'ubuntu-latest' && '1' || '0' }}`,
 	} {
 		if !strings.Contains(string(data), required) {
 			t.Fatalf("organic runtime E2E is missing live OpenCode provider isolation guard %q", required)

@@ -43,7 +43,7 @@ Layer the change onto existing modules without new packages. State store (`inter
 
 ### Decision: Advisory manifest = single JSON release asset, async, fail-open
 
-**Choice**: Host `advisory.json` as a release asset on the hgtran-ai repo's `latest` release (stable, owner-controlled, CDN-backed, no extra infra): `https://github.com/Gentleman-Programming/hgtran-ai/releases/latest/download/advisory.json`. Schema: `{"message": string, "severity": "info"|"warn", "url": string}` — all optional, informational only. Fetch with a 2s timeout in a background goroutine kicked off alongside `CheckAll`; on any error, return empty (fail-open, no blocking). Display the message after the update prompt / on Welcome; never gate.
+**Choice**: Host `advisory.json` as a release asset on the hgtran-ai repo's `latest` release (stable, owner-controlled, CDN-backed, no extra infra): `https://github.com/desarrollohg01/hgtran-ai/releases/latest/download/advisory.json`. Schema: `{"message": string, "severity": "info"|"warn", "url": string}` — all optional, informational only. Fetch with a 2s timeout in a background goroutine kicked off alongside `CheckAll`; on any error, return empty (fail-open, no blocking). Display the message after the update prompt / on Welcome; never gate.
 
 **Alternatives considered**: GitHub Pages (extra setup, another moving part), raw repo file (tied to a branch ref, no CDN), gist (low discoverability, easy to lose).
 **Rationale**: A release asset is the most stable owner-controlled option for a solo maintainer — same trust boundary as releases, CDN latency, editable by re-uploading the asset without a code change. 2s timeout + fail-open guarantees zero added launch latency on a slow/absent endpoint.

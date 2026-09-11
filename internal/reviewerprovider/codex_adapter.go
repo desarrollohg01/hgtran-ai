@@ -13,7 +13,7 @@ import (
 	"strings"
 )
 
-const codexReviewerLoopbackBaseURLEnvironment = "GENTLE_AI_CODEX_REVIEWER_LOOPBACK_BASE_URL"
+const codexReviewerLoopbackBaseURLEnvironment = "HGTRAN_AI_CODEX_REVIEWER_LOOPBACK_BASE_URL"
 
 const codexReviewerLoopbackProviderID = "gentle_ai_reviewer_loopback"
 

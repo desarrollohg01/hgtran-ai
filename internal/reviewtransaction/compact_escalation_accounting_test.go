@@ -157,6 +157,44 @@ func TestBeginCorrectionRefusesForecastBeyondTheFrozenBudget(t *testing.T) {
 	}
 }
 
+// TestCompactEscalationAccountingForecastBudgetCrossing pins the escalation
+// shape EscalationAccounting still derives for a forecast-only budget
+// crossing: State escalated, ActualCorrectionLines nil, ProposedCorrectionLines
+// alone over the frozen budget. BeginCorrection itself now refuses any
+// forecast beyond the remaining budget (see
+// TestBeginCorrectionRefusesForecastBeyondTheFrozenBudget), so this shape is
+// no longer reachable through the live BeginCorrection API -- but Validate()
+// still accepts it as the one case where an over-budget forecast may survive
+// (a terminally escalated state with no actual correction lines), which is
+// exactly the historically-persisted authority shape EscalationAccounting's
+// forecast branch exists to explain. Reading CumulativeCorrectionLines alone
+// would report "spent 0" with no derivable cause for that escalation.
+func TestCompactEscalationAccountingForecastBudgetCrossing(t *testing.T) {
+	repo := initSnapshotRepo(t)
+	writeSnapshotFile(t, repo, "tracked.txt", "base\none\ntwo\nthree\nwrong\n")
+	state, _, _ := correctionRequiredAuthorityFixture(t, repo, "escalation-accounting-forecast")
+	proposed := state.CorrectionBudget + 1
+	state.State = StateEscalated
+	state.ProposedCorrectionLines = &proposed
+	if err := state.Validate(); err != nil {
+		t.Fatalf("forecast-only escalated state must satisfy Validate(): %v", err)
+	}
+	if state.ActualCorrectionLines != nil || state.CumulativeCorrectionLines != 0 {
+		t.Fatalf("fixture is not a forecast-only budget crossing: %#v", state)
+	}
+
+	accounting := state.EscalationAccounting()
+	if accounting.Cause != CompactEscalationCauseBudgetExceeded {
+		t.Fatalf("Cause = %q, want %q", accounting.Cause, CompactEscalationCauseBudgetExceeded)
+	}
+	if accounting.Spent != proposed {
+		t.Fatalf("Spent = %d, want the %d forecast lines that crossed the budget", accounting.Spent, proposed)
+	}
+	if accounting.Total != state.CorrectionBudget || accounting.Remaining != 0 {
+		t.Fatalf("accounting = %#v, want total %d and remaining clamped to 0", accounting, state.CorrectionBudget)
+	}
+}
+
 // TestCompactEscalationAccountingNotEscalatedHasNoCause pins that a
 // non-escalated compact state (e.g. a fresh pending correction) reports a
 // zero-value Cause while Spent/Remaining/Total still reflect the current

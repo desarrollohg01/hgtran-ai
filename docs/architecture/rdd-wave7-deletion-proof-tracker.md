@@ -9,11 +9,11 @@ paths" coverage row (Wave 7 REMOVE disposition):
 
 | # | Kind | Title |
 |---|---|---|
-| [hgtran-ai#1455](https://github.com/Gentleman-Programming/hgtran-ai/issues/1455) | Issue | fix(review): reject completed tasks with empty reviewer results |
-| [hgtran-ai#1462](https://github.com/Gentleman-Programming/hgtran-ai/issues/1462) | Issue | fix(review): quarantine seven invalid legacy-v1 authority records |
-| [hgtran-ai#1570](https://github.com/Gentleman-Programming/hgtran-ai/issues/1570) | Issue | fix(review): expose legacy HEAD required by repair-legacy-alias |
-| [hgtran-ai#1549](https://github.com/Gentleman-Programming/hgtran-ai/pull/1549) | PR | fix(review): reject completed tasks with empty reviewer results, distinguish from nested-envelope |
-| [hgtran-ai#1550](https://github.com/Gentleman-Programming/hgtran-ai/pull/1550) | PR | fix(review): reject completed tasks with empty reviewer results |
+| [hgtran-ai#1455](https://github.com/desarrollohg01/hgtran-ai/issues/1455) | Issue | fix(review): reject completed tasks with empty reviewer results |
+| [hgtran-ai#1462](https://github.com/desarrollohg01/hgtran-ai/issues/1462) | Issue | fix(review): quarantine seven invalid legacy-v1 authority records |
+| [hgtran-ai#1570](https://github.com/desarrollohg01/hgtran-ai/issues/1570) | Issue | fix(review): expose legacy HEAD required by repair-legacy-alias |
+| [hgtran-ai#1549](https://github.com/desarrollohg01/hgtran-ai/pull/1549) | PR | fix(review): reject completed tasks with empty reviewer results, distinguish from nested-envelope |
+| [hgtran-ai#1550](https://github.com/desarrollohg01/hgtran-ai/pull/1550) | PR | fix(review): reject completed tasks with empty reviewer results |
 
 That document's own "Closure audit protocol" step 4 already names the exact
 proof obligation for these rows: *"for #1455/#1462/#1570: proof that the
